@@ -64,8 +64,35 @@ void Game::Initialize(HWND window, int width, int height)
 	m_states = std::make_unique<CommonStates>(m_d3dDevice.Get());
 	//デバックカメラを生成
 	m_debugCamera = std::make_unique<DebugCamera>(m_outputWidth, m_outputHeight);
-}
 
+	//エフェクトファクタリ
+	m_factory = std::make_unique<EffectFactory>(m_d3dDevice.Get());
+	//テクスチャパスをしてい
+	m_factory->SetDirectory(L"Resources");
+	//モデルの生成
+	m_Skydome = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/Skydoome.cmo", *m_factory);
+	//モデルの生成
+	m_Ground = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/ground1m.cmo", *m_factory);
+
+	m_ball = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/balll.cmo", *m_factory);
+
+	for (int i = 0; i < MAX_GROUND; i++)
+	{
+
+		for (int j = 0; j < MAX_GROUND; j++)
+		{
+			//ワールド行列を計算
+			Matrix scalemat = Matrix::CreateScale(1.0f);
+			////平行移動
+			Matrix transmat = Matrix::CreateTranslation(i- MAX_GROUND/2, 0.0f, j -MAX_GROUND / 2);
+			m_worldGround[i][j] = scalemat * transmat;
+		}
+	}
+
+	m_rotation = 0.0f;
+
+}
+;
 // Executes the basic game loop.
 void Game::Tick()
 {
@@ -86,6 +113,46 @@ void Game::Update(DX::StepTimer const& timer)
     elapsedTime;
 	//毎フレーム処理を追加します
 	m_debugCamera->Update();
+
+	m_rotation++;
+
+	////平行移動
+	//Matrix transmat = Matrix::CreateTranslation(1.0f,0,0);
+	////ロール
+	//Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(15.0f));
+	//
+	////ヨー　(方位角)
+	//Matrix rotmaty = Matrix::CreateRotationZ(XM_PIDIV4);
+	////回転行列の合成
+	//Matrix rotmat = rotmatz * rotmatx * rotmaty;
+
+	//ワールド行列の合成(SRT)
+	for (int i = 1; i <= 2; i++)
+	{
+		for (int j = 1; j <= MAX_BALL / 2; j++)
+		{
+			//ワールド行列を計算
+			Matrix scalemat = Matrix::CreateScale(1.2f * i);
+			////平行移動
+			Matrix transmat = Matrix::CreateTranslation(20.0f * i, 0.0f,0.0f);
+			//ヨー　(方位角)
+			if (i == 2)
+			{
+				rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36.0f * j + m_rotation * -1.0f));
+			}
+			else
+			{
+				rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36.0f * j + m_rotation));
+			}
+			
+
+			m_worldBall[MAX_BALL / 2 * (i- 1)+j - 1] = scalemat * transmat* rotmaty;
+		}
+	}
+	
+	rotmaty = Matrix::CreateRotationY(XMConvertToRadians(m_rotation));
+	Matrix scalemat = Matrix::CreateScale(10.0f);
+	m_worldBall[MAX_BALL + 1] = scalemat * rotmaty;
 }
 
 // Draws the scene.
@@ -136,7 +203,7 @@ void Game::Render()
 		XM_PI / 4.f,//視野角(上下方向)
 		float(m_outputWidth) / float(m_outputHeight),//アスペクト比(画面の幅と長さの比率を教える)
 		0.1f,//ニアクリップ
-		10.f//ファークリップ
+		500.f//ファークリップ
 	);
 
 	m_effect->SetView(m_view);
@@ -147,6 +214,28 @@ void Game::Render()
 
 	//描画をする
 	m_batch->Begin();
+
+	//モデルの描画
+	m_Skydome->Draw(m_d3dContext.Get(), *m_states, m_world, m_view, m_proj);
+	//モデルの描画
+	/*m_Ground->Draw(m_d3dContext.Get(), *m_states, m_world, m_view, m_proj);*/
+	//モデルの描画
+	for (int i = 0; i < MAX_BALL + 1; i++)
+	{
+		m_ball->Draw(m_d3dContext.Get(), *m_states, m_worldBall[i], m_view, m_proj);
+
+	}
+
+
+	for (int i = 0; i < MAX_GROUND; i++)
+	{
+
+		for (int j = 0; j < MAX_GROUND; j++)
+		{
+			m_Ground->Draw(m_d3dContext.Get(), *m_states, m_worldGround[i][j], m_view, m_proj);
+		}
+	}
+
 
 	//配列の数、頂点数
 	m_batch->DrawIndexed(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, indices, 6, vertices, 4);

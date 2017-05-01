@@ -6,11 +6,15 @@
 
 #include "StepTimer.h"
 #include "DebugCamera.h"
+#include <Model.h>
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
 #include <Effects.h>
 #include <CommonStates.h>
 #include <SimpleMath.h>
+
+const static int MAX_BALL = 20;
+const static int MAX_GROUND = 10;
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -86,4 +90,21 @@ private:
 
 	//デバックカメラ
 	std::unique_ptr<DebugCamera> m_debugCamera;
+
+	//エフェクトファクトリ
+	std::unique_ptr<DirectX::EffectFactory>m_factory;
+	//天球
+	std::unique_ptr<DirectX::Model>m_Skydome;
+	//地面
+	std::unique_ptr<DirectX::Model>m_Ground;
+	//球
+	std::unique_ptr<DirectX::Model>m_ball;
+	//球ワールド
+	DirectX::SimpleMath::Matrix m_worldBall[MAX_BALL + 1];
+
+	//床ワールド
+	DirectX::SimpleMath::Matrix m_worldGround[MAX_GROUND][MAX_GROUND];
+
+	float m_rotation;
+	DirectX::SimpleMath::Matrix rotmaty;
 };
