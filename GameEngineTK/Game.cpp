@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "Game.h"
 
+
 extern void ExitGame();
 
 using namespace DirectX;
@@ -72,25 +73,67 @@ void Game::Initialize(HWND window, int width, int height)
 	//モデルの生成
 	m_Skydome = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/Skydoome.cmo", *m_factory);
 	//モデルの生成
-	m_Ground = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/ground1m.cmo", *m_factory);
+	m_Ground = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/gropund200.cmo", *m_factory);
 
 	m_ball = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/balll.cmo", *m_factory);
 
-	for (int i = 0; i < MAX_GROUND; i++)
-	{
+	m_Teapot = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/Teapot2.cmo", *m_factory);
 
-		for (int j = 0; j < MAX_GROUND; j++)
-		{
-			//ワールド行列を計算
-			Matrix scalemat = Matrix::CreateScale(1.0f);
-			////平行移動
-			Matrix transmat = Matrix::CreateTranslation(i- MAX_GROUND/2, 0.0f, j -MAX_GROUND / 2);
-			m_worldGround[i][j] = scalemat * transmat;
-		}
-	}
+	m_Head = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources/head.cmo", *m_factory);
 
+	//for (int i = 0; i < MAX_GROUND; i++)
+	//{
+
+	//	for (int j = 0; j < MAX_GROUND; j++)
+	//	{
+	//		//ワールド行列を計算
+	//		Matrix scalemat = Matrix::CreateScale(1.0f);
+	//		////平行移動
+	//		Matrix transmat = Matrix::CreateTranslation(i- MAX_GROUND/2, 0.0f, j -MAX_GROUND / 2);
+	//		m_worldGround[i][j] = scalemat * transmat;
+	//	}
+	//}
+	//ワールド行列を計算
+	Matrix scalemat = Matrix::CreateScale(1.0f);
+	////平行移動
+	Matrix transmat = Matrix::CreateTranslation( MAX_GROUND / 2, 0.0f, MAX_GROUND / 2);
+	m_worldGround = scalemat * transmat;
 	m_rotation = 0.0f;
 
+	for (int i = 0; i < 20; i++)
+	{
+		int a = rand() % 100;
+		float b = rand() % 360;
+		
+		//ワールド行列を計算
+		Matrix scalemat = Matrix::CreateScale(1.0f);
+		////平行移動
+		Matrix transmat = Matrix::CreateTranslation(a, 0.0f, 0.0f);
+		rotmaty = Matrix::CreateRotationY(XMConvertToRadians(b + m_rotation));
+		m_worldTeapot[i] = scalemat * transmat* rotmaty;
+
+		m_teapotPos[i] = Vector3(m_worldTeapot[i]._41, m_worldTeapot[i]._42, m_worldTeapot[i]._43) ;
+	}
+	m_scale = 1;
+
+
+	m_time = 0.0f;
+
+	distance = 1.0f;
+
+	//////////////////頭
+	//ワールド行列を計算
+	Matrix scalemat2 = Matrix::CreateScale(1.0f);
+	////平行移動
+	Matrix transmat2 = Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+	rotmaty = Matrix::CreateRotationY(XMConvertToRadians(0.0f));
+
+	m_worldHead = scalemat2 * transmat2* rotmaty;
+
+	//キーボードの生成
+	keyboard = std::make_unique<Keyboard>();
+
+	head_lotate = 0;
 }
 ;
 // Executes the basic game loop.
@@ -104,6 +147,24 @@ void Game::Tick()
     Render();
 }
 
+static float Lerpcos(float time)
+{
+	return (1 - cosf(time) * (time * XM_PI)) / 2;
+}
+
+
+static float Lerp(float startPosition, float targetPosition, float t)
+{
+	float lerpPosition = 0.0f;
+
+	lerpPosition = (1 - Lerpcos(t)) * startPosition + Lerpcos(t) * targetPosition;
+
+	return lerpPosition;
+}
+
+
+
+
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
@@ -114,8 +175,11 @@ void Game::Update(DX::StepTimer const& timer)
 	//毎フレーム処理を追加します
 	m_debugCamera->Update();
 
-	m_rotation++;
-
+	m_rotation += 1.0f;
+	//if (m_scale > 6)
+	//{
+	//	m_scale = 1;
+	//}
 	////平行移動
 	//Matrix transmat = Matrix::CreateTranslation(1.0f,0,0);
 	////ロール
@@ -149,11 +213,98 @@ void Game::Update(DX::StepTimer const& timer)
 			m_worldBall[MAX_BALL / 2 * (i- 1)+j - 1] = scalemat * transmat* rotmaty;
 		}
 	}
+
+
+	for (int i = 0; i < 20; i++)
+	{
+		Matrix transmat = Matrix::CreateTranslation(m_teapotPos[i] * distance);
+		////ワールド行列を計算
+		Matrix scalemat = Matrix::CreateScale(m_scale);
+		//////平行移動
+		//Matrix transmat = Matrix::CreateTranslation(a, 0.0f, 0.0f);
+		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(m_rotation));
 	
-	rotmaty = Matrix::CreateRotationY(XMConvertToRadians(m_rotation));
-	Matrix scalemat = Matrix::CreateScale(10.0f);
-	m_worldBall[MAX_BALL + 1] = scalemat * rotmaty;
+		m_worldTeapot[i] = scalemat *  rotmaty *transmat;
+	}
+
+	float Total = float(timer.GetTotalSeconds());
+
+
+	//timeStep = (Total - m_time) / 10;
+	
+	//Total += XM_2PI / 180.0f;
+
+	float kakudo;
+	kakudo = Total * XM_2PI / 3;
+	m_scale = cosf(kakudo) * (5 - 1)/2 + (5 + 1)/2;
+
+
+	
+	if (distance > 0)
+	{
+		distance -= 1.0f / 600.0f;
+
+	}
+
+	Keyboard::State kb = keyboard->GetState();
+
+	if (kb.W)
+	{
+		//移動量のベクトル
+		Vector3 movesV(0, 0, -0.1f);
+		//移動ベクトルを角度回転させる
+		movesV = Vector3::TransformNormal(movesV, m_worldHead);
+
+
+		//自機の座標を移動
+		head_pos += movesV;
+	}
+	if (kb.S)
+	{
+		//移動量のベクトル
+		Vector3 movesV(0, 0, 0.1f);
+		//移動ベクトルを角度回転させる
+		movesV = Vector3::TransformNormal(movesV, m_worldHead);
+		//自機の座標を移動
+		head_pos += movesV;
+	}
+	if (kb.A)
+	{
+		head_lotate += 10;
+	}if (kb.D)
+	{
+		head_lotate -= 10;
+	}
+
+	{//自機のワールド行列を計算
+	 ////平行移動
+		Matrix rotmatz = Matrix::CreateRotationY(XMConvertToRadians(head_lotate));
+		Matrix transmat = Matrix::CreateTranslation(head_pos);
+		m_worldHead = rotmatz * transmat;
+	}
+	//if (timeStep < 1.0f)
+	//{
+	//	m_scale = Lerp(1.0f,5.0f, timeStep);
+	//}
+	//else if (timeStep < 2.0f)
+	//{
+	//	m_scale = Lerp(5,1, timeStep - 1.0f);
+	//}
+	//else
+	//{
+	//	m_time = delta;
+	//}
+
+
 }
+
+
+
+
+
+
+
+
 
 // Draws the scene.
 void Game::Render()
@@ -219,22 +370,33 @@ void Game::Render()
 	m_Skydome->Draw(m_d3dContext.Get(), *m_states, m_world, m_view, m_proj);
 	//モデルの描画
 	/*m_Ground->Draw(m_d3dContext.Get(), *m_states, m_world, m_view, m_proj);*/
-	//モデルの描画
-	for (int i = 0; i < MAX_BALL + 1; i++)
-	{
-		m_ball->Draw(m_d3dContext.Get(), *m_states, m_worldBall[i], m_view, m_proj);
+	////モデルの描画
+	//for (int i = 0; i < MAX_BALL + 1; i++)
+	//{
+	//	m_ball->Draw(m_d3dContext.Get(), *m_states, m_worldBall[i], m_view, m_proj);
 
-	}
+	//}
+
+	//for (int i = 0; i < 20; i++)
+	//{
+	//	m_Teapot->Draw(m_d3dContext.Get(), *m_states, m_worldTeapot[i], m_view, m_proj);
+	//}
 
 
-	for (int i = 0; i < MAX_GROUND; i++)
-	{
+	m_Head->Draw(m_d3dContext.Get(), *m_states, m_worldHead, m_view, m_proj);
 
-		for (int j = 0; j < MAX_GROUND; j++)
-		{
-			m_Ground->Draw(m_d3dContext.Get(), *m_states, m_worldGround[i][j], m_view, m_proj);
-		}
-	}
+
+
+	//for (int i = 0; i < MAX_GROUND; i++)
+	//{
+
+	//	for (int j = 0; j < MAX_GROUND; j++)
+	//	{
+	//		m_Ground->Draw(m_d3dContext.Get(), *m_states, m_worldGround[i][j], m_view, m_proj);
+	//	}
+	//}
+
+	m_Ground->Draw(m_d3dContext.Get(), *m_states, m_worldGround, m_view, m_proj);
 
 
 	//配列の数、頂点数

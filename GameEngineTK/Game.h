@@ -12,7 +12,7 @@
 #include <Effects.h>
 #include <CommonStates.h>
 #include <SimpleMath.h>
-
+#include <Keyboard.h>ww
 const static int MAX_BALL = 20;
 const static int MAX_GROUND = 10;
 
@@ -99,12 +99,41 @@ private:
 	std::unique_ptr<DirectX::Model>m_Ground;
 	//球
 	std::unique_ptr<DirectX::Model>m_ball;
-	//球ワールド
+	//ティーポット
+	std::unique_ptr<DirectX::Model>m_Teapot;
+	//頭
+	std::unique_ptr<DirectX::Model>m_Head;
+
+
+
+	////球ワールド
 	DirectX::SimpleMath::Matrix m_worldBall[MAX_BALL + 1];
+	//球ワールド
+	DirectX::SimpleMath::Matrix m_worldGround;
+	//ティーポットワールド
+	DirectX::SimpleMath::Matrix m_worldTeapot[20];
+	//頭ワールド
+	DirectX::SimpleMath::Matrix m_worldHead;
+	////床ワールド
+	//DirectX::SimpleMath::Matrix m_worldGround[MAX_GROUND][MAX_GROUND];
 
-	//床ワールド
-	DirectX::SimpleMath::Matrix m_worldGround[MAX_GROUND][MAX_GROUND];
-
+	//ティーポット初期座標
+	DirectX::SimpleMath::Vector3 m_teapotPos[20];
 	float m_rotation;
+	float m_scale;
 	DirectX::SimpleMath::Matrix rotmaty;
+
+	float timeStep;
+	float m_time;
+	DX::StepTimer s_timer;
+
+	float distance;
+
+
+	std::unique_ptr<DirectX::Keyboard> keyboard;
+	//自機のざひょう
+	DirectX::SimpleMath::Vector3 head_pos;
+
+	float head_lotate;
+//	float m_pos[20];
 };
