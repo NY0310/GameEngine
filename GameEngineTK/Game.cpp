@@ -64,7 +64,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//
 	m_states = std::make_unique<CommonStates>(m_d3dDevice.Get());
 	//デバックカメラを生成
-	m_debugCamera = std::make_unique<DebugCamera>(m_outputWidth, m_outputHeight);
+	//m_debugCamera = std::make_unique<DebugCamera>(m_outputWidth, m_outputHeight);
 
 	//エフェクトファクタリ
 	m_factory = std::make_unique<EffectFactory>(m_d3dDevice.Get());
@@ -134,6 +134,13 @@ void Game::Initialize(HWND window, int width, int height)
 	keyboard = std::make_unique<Keyboard>();
 
 	head_lotate = 0;
+
+
+
+	//カメラの生成
+	m_Camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
+
+	head_pos = Vector3(0, 0, 30);
 }
 ;
 // Executes the basic game loop.
@@ -173,7 +180,7 @@ void Game::Update(DX::StepTimer const& timer)
     // TODO: Add your game logic here.
     elapsedTime;
 	//毎フレーム処理を追加します
-	m_debugCamera->Update();
+	//m_debugCamera->Update();
 
 	m_rotation += 1.0f;
 	//if (m_scale > 6)
@@ -262,20 +269,20 @@ void Game::Update(DX::StepTimer const& timer)
 	if (kb.S)
 	{
 		//移動量のベクトル
-		Vector3 movesV(0, 0, 0.1f);
+		 Vector3 movesV(0, 0, 0.1f);
 		//移動ベクトルを角度回転させる
 		movesV = Vector3::TransformNormal(movesV, m_worldHead);
 		//自機の座標を移動
 		head_pos += movesV;
 	}
+
 	if (kb.A)
 	{
-		head_lotate += 10;
+		head_lotate++;
 	}if (kb.D)
 	{
-		head_lotate -= 10;
+		head_lotate--;
 	}
-
 	{//自機のワールド行列を計算
 	 ////平行移動
 		Matrix rotmatz = Matrix::CreateRotationY(XMConvertToRadians(head_lotate));
@@ -296,6 +303,18 @@ void Game::Update(DX::StepTimer const& timer)
 	//}
 
 
+	//カメラの更新
+	/*m_Camera->SetEyePos(head_pos+Vector3(sinf(XMConvertToRadians(head_lotate)),0.1f,cosf(XMConvertToRadians(head_lotate))));
+	m_Camera->SetRefPos(head_pos);
+	m_Camera->Update();
+	m_view = m_Camera->GetViewMatrix();
+	m_proj = m_Camera->GetProjectionMatrix()*/
+	m_Camera->SetTargetAngle(XMConvertToRadians(head_lotate));
+	m_Camera->SetTargetPos(head_pos);
+	m_Camera->Update();
+
+	m_view = m_Camera->GetViewMatrix();
+	m_proj = m_Camera->GetProjectionMatrix();
 }
 
 
@@ -347,7 +366,34 @@ void Game::Render()
 	//    Vector3(1,0,0)
 	//);//上方向ベクトル
 	//デバックカメラ
-	m_view = m_debugCamera->GetCameraMatrix();
+	//m_view = m_debugCamera->GetCameraMatrix();
+
+	//ビュー行列
+	////視点座標（カメラの位置）
+	//Vector3 eyepos(0, 0, 5.0f);
+	////参照点/注視点(カメラの見ている先）
+	//Vector3 refpos(0, 0, 0);
+	////上方向ベクトル
+	//Vector3 upvec(0, 1, 0);
+//ななめVector3 upvec(1, 1, 0);
+//角度を保ったまま長さを1にする	upvec.Normalize();
+
+	////ビュー行列生成
+	//m_view = Matrix::CreateLookAt(eyepos, refpos, upvec);
+
+
+	////プロジェクション行列(射影行列)を計算(どっからどこまで表示するか)
+	////垂直方向視野角(縦方向に何度までうつるか)
+	//float fovY = XMConvertToRadians(60.0f);
+	////アスペクト比(横縦の比率)
+	//float aspect = (float)m_outputWidth/ m_outputHeight;
+	////ニアクリップ(手前の表示限界距離)
+	//float nearClip = 0.1f;
+	////ファークリップ(奥の表示限界距離)
+	//float farClip = 0.1f;
+	////射影行列の生成
+	//Matrix projmat = Matrix::CreatePerspectiveFieldOfView(fovY, aspect, nearClip, farClip);
+
 
 	//プロジェクション行列を生成
 	m_proj = Matrix::CreatePerspectiveFieldOfView(

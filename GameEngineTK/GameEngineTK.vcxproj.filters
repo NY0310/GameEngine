@@ -11,12 +11,16 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="FollowCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

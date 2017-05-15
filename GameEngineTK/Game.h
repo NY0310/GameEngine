@@ -12,7 +12,9 @@
 #include <Effects.h>
 #include <CommonStates.h>
 #include <SimpleMath.h>
-#include <Keyboard.h>ww
+#include <Keyboard.h>
+#include  "Camera.h"
+#include "FollowCamera.h"
 const static int MAX_BALL = 20;
 const static int MAX_GROUND = 10;
 
@@ -89,7 +91,7 @@ private:
 	DirectX::SimpleMath::Matrix m_proj;
 
 	//デバックカメラ
-	std::unique_ptr<DebugCamera> m_debugCamera;
+	//std::unique_ptr<DebugCamera> m_debugCamera;
 
 	//エフェクトファクトリ
 	std::unique_ptr<DirectX::EffectFactory>m_factory;
@@ -136,4 +138,10 @@ private:
 
 	float head_lotate;
 //	float m_pos[20];
+
+	//カメラ距離
+	const float CAMERA_DISTANCE = 5.0f;
+
+	//カメラ
+	std::unique_ptr<FollowCamera>m_Camera;
 };
