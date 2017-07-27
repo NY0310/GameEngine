@@ -1,8 +1,8 @@
 //
 // Main.cpp
 //
-//#include <Keyboard.h>
-#include "pch.h"
+
+//#include "pch.h"
 #include "Game.h"
 
 using namespace DirectX;
@@ -177,8 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_ACTIVATEAPP:
-	
-
+		Keyboard::ProcessMessage(message, wParam, lParam);
         if (game)
         {
             if (wParam)
@@ -253,11 +252,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // A menu is active and the user presses a key that does not correspond
         // to any mnemonic or accelerator key. Ignore so we don't produce an error beep.
         return MAKELRESULT(0, MNC_CLOSE);
-	case WM_KEYDOWN:
-	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		Keyboard::ProcessMessage(message, wParam, lParam);
-		break;
+
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
 	case WM_LBUTTONDOWN:
@@ -273,10 +268,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Mouse::ProcessMessage(message, wParam, lParam);
 		break;
 
-
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
     }
-
-
 
     return DefWindowProc(hWnd, message, wParam, lParam);
 }

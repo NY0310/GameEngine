@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <RootNamespace>GameEngineTK</RootNamespace>
-    <ProjectGuid>{eb715131-3f88-4e0a-b932-296f4b9bef00}</ProjectGuid>
+    <ProjectGuid>{EB715131-3F88-4E0A-B932-296F4B9BEF00}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -71,15 +71,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH)</ExecutablePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH)</ExecutablePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -164,24 +165,42 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="CollisionNode.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="LandShape.h" />
+    <ClInclude Include="LandShapeData.h" />
+    <ClInclude Include="ModelEffect.h" />
+    <ClInclude Include="ModelExpansionEffect.h" />
+    <ClInclude Include="Obj3d.h" />
+    <ClInclude Include="PARTICLE.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="State.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionNode.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LandShape.cpp" />
+    <ClCompile Include="LandShapeData.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="ModelEffect.cpp" />
+    <ClCompile Include="ModelExpansionEffect.cpp" />
+    <ClCompile Include="Obj3d.cpp" />
+    <ClCompile Include="PARTICLE.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="State.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -190,9 +209,7 @@
     <Image Include="directx.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="settings.manifest">
-      <SubType>Designer</SubType>
-    </Manifest>
+    <Manifest Include="settings.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\..\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
@@ -200,13 +217,29 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Aseets\balll.FBX" />
-    <MeshContentTask Include="Aseets\gropund200.FBX" />
-    <MeshContentTask Include="Aseets\ground1m.FBX" />
-    <MeshContentTask Include="Aseets\head.FBX" />
-    <MeshContentTask Include="Aseets\Skydoome.FBX" />
-    <MeshContentTask Include="Aseets\Teapot.FBX" />
-    <MeshContentTask Include="Aseets\Teapot2.FBX" />
+    <MeshContentTask Include="Assets\Arm.FBX" />
+    <MeshContentTask Include="Assets\Body.FBX" />
+    <MeshContentTask Include="Assets\Body2.FBX" />
+    <MeshContentTask Include="Assets\Fing.FBX" />
+    <MeshContentTask Include="Assets\Foot.FBX" />
+    <MeshContentTask Include="Assets\ground1m.FBX" />
+    <MeshContentTask Include="Assets\ground200m.FBX" />
+    <MeshContentTask Include="Assets\Gun.FBX" />
+    <MeshContentTask Include="Assets\head.FBX" />
+    <MeshContentTask Include="Assets\Leg.FBX" />
+    <MeshContentTask Include="Assets\Skydome.FBX" />
+    <MeshContentTask Include="Assets\Sphere.FBX" />
+    <MeshContentTask Include="Assets\SphereNode.FBX" />
+    <MeshContentTask Include="Assets\Teapot.FBX" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Geometry.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

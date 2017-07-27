@@ -27,18 +27,18 @@
 #define NOHELP
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-#include <wrl/client.h>
-
-#include <d3d11_1.h>
-#include <DirectXMath.h>
-#include <DirectXColors.h>
-
-#include <algorithm>
-#include <exception>
-#include <memory>
-#include <stdexcept>
+//#include <windows.h>
+//
+//#include <wrl/client.h>
+//
+//#include <d3d11_1.h>
+//#include <DirectXMath.h>
+//#include <DirectXColors.h>
+//
+//#include <algorithm>
+//#include <exception>
+//#include <memory>
+//#include <stdexcept>
 
 namespace DX
 {

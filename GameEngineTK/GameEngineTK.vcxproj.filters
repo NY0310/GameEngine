@@ -2,25 +2,125 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Assets">
-      <UniqueIdentifier>d949262d-ec03-4193-9296-8daf1b34a063</UniqueIdentifier>
+      <UniqueIdentifier>1e92bf82-9181-4ad6-a481-5a9a58b738ba</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{ed3b177c-c7a7-4f5c-8efd-76debb93e7d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collisiton">
+      <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PARTICLE">
+      <UniqueIdentifier>{29af85b1-b77d-4347-baf4-b25ebc9be8c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Device">
+      <UniqueIdentifier>{bfe89338-d642-460d-b173-f661ea4eebda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{c7180978-e9e6-4655-9953-ba4723eac26c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{a8dde476-e2a9-4ad1-808c-aec5656e44b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="StepTimer.h" />
-    <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="State.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="Obj3d.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Collision.h">
+      <Filter>Collisiton</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionNode.h">
+      <Filter>Collisiton</Filter>
+    </ClInclude>
+    <ClInclude Include="LandShape.h">
+      <Filter>Collisiton</Filter>
+    </ClInclude>
+    <ClInclude Include="LandShapeData.h">
+      <Filter>Collisiton</Filter>
+    </ClInclude>
+    <ClInclude Include="PARTICLE.h">
+      <Filter>PARTICLE</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelExpansionEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
+    <ClCompile Include="State.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="Obj3d.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Collision.cpp">
+      <Filter>Collisiton</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionNode.cpp">
+      <Filter>Collisiton</Filter>
+    </ClCompile>
+    <ClCompile Include="LandShape.cpp">
+      <Filter>Collisiton</Filter>
+    </ClCompile>
+    <ClCompile Include="LandShapeData.cpp">
+      <Filter>Collisiton</Filter>
+    </ClCompile>
+    <ClCompile Include="PARTICLE.cpp">
+      <Filter>PARTICLE</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelExpansionEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="FollowCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Device</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -36,26 +136,57 @@
     </Manifest>
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Aseets\ground1m.FBX">
+    <MeshContentTask Include="Assets\ground1m.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Aseets\Skydoome.FBX">
+    <MeshContentTask Include="Assets\Skydome.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Aseets\balll.FBX">
+    <MeshContentTask Include="Assets\Sphere.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Aseets\gropund200.FBX">
+    <MeshContentTask Include="Assets\ground200m.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Aseets\Teapot.FBX">
+    <MeshContentTask Include="Assets\Teapot.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Aseets\Teapot2.FBX">
+    <MeshContentTask Include="Assets\head.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-    <MeshContentTask Include="Aseets\head.FBX">
+    <MeshContentTask Include="Assets\Arm.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
+    <MeshContentTask Include="Assets\Body.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Foot.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Gun.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Fing.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Leg.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\Body2.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\SphereNode.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader.hlsl">
+      <Filter>hlsl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Geometry.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
