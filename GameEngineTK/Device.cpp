@@ -91,6 +91,8 @@ void Devices::CreateDevice()
 
 	// TODO: デバイスに依存したオブジェクトを初期化する 
 	// Initialize device dependent objects here (independent of window size).
+
+	spriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
 }
 
 // SizeChangedイベントでウィンドウを変更するすべてのメモリリソースを配置する

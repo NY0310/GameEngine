@@ -7,37 +7,31 @@
 
 //
 //
+struct PART
+{
+	D3DXVECTOR3 Pos;
+	D3DXVECTOR3 Dir;
+	float Speed;
+	int BirthFrame;
 
+	PART()
+	{
+		ZeroMemory(this,sizeof(PART));
+	}
+};
 //
 //
 //
 class PARTICLE
 {
 public:
-	struct PART
-	{
-		D3DXVECTOR3 Pos;
-		D3DXVECTOR3 Dir;
-		float Speed;
-		int BirthFrame;
-
-		PART()
-		{
-			ZeroMemory(this, sizeof(PART));
-		}
-	};
-
-
-	PARTICLE(D3DXVECTOR3& EmitPos);
+	PARTICLE(int MaxParticle,D3DXVECTOR3& EmitPos);
 	~PARTICLE();
 	void Run();
-	D3DXVECTOR3& GetParticlePos();
+	D3DXVECTOR3 GetParticlePos(int Index);
 
 	int m_MaxParticle;
 	D3DXVECTOR3 m_EmitPos;
-	PART pPartArray;
+	PART* pPartArray;
 	int m_Frame;
-	int cnt;
-
-	
 };

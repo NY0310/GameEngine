@@ -68,7 +68,7 @@ Obj3d::Obj3d()
 	// スケールは1倍がデフォルト
 	m_Scale = Vector3(1, 1, 1);
 	//ワールド行列の掛け算順序ファクトリーの初期化
-	m_order = WorldMatrixOrderFactory.Set(WorldMatrixOrder::ORDER::ROTOMAT_SCALEM_TRANSMAT);
+	m_order = WorldMatrixOrderFactory.Set(WorldMatrixOrder::ORDER::SCALEM_ROTOMAT_TRANSMAT);
 
 }
 
@@ -224,13 +224,13 @@ void Obj3d::DrawSubtractive()
 	{
 		assert(s_Common.camera);
 		const Matrix& view = s_Common.camera->GetView();
-	//	const Matrix& projection = s_Common.camera->GetProj();
+		const Matrix& projection = s_Common.camera->GetProjection();
 
 		assert(s_Common.deviceContext);
 		assert(s_Common.states);
 
 		// 減算描画用の設定関数を渡して描画
-	//	m_pModel->Draw(s_Common.deviceContext, *s_Common.states, m_World, view, projection, false, Obj3d::SetSubtractive);
+		m_pModel->Draw(s_Common.deviceContext, *s_Common.states, m_World, view, projection, false, Obj3d::SetSubtractive);
 	}
 }
 

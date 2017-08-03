@@ -3,18 +3,21 @@
 //
 //
 //
-
-PARTICLE::PARTICLE(D3DXVECTOR3& EmitPos)
+PARTICLE::PARTICLE(int MaxParticle,D3DXVECTOR3& EmitPos)
 {
-	
-		m_EmitPos=EmitPos;
+	ZeroMemory(this,sizeof(PARTICLE));
+	m_MaxParticle=MaxParticle;
+	m_EmitPos=EmitPos;
+	pPartArray =new PART[m_MaxParticle];
 
-		pPartArray.Pos=EmitPos;
-		pPartArray.Dir= D3DXVECTOR3(2*((float)rand()/(float)RAND_MAX)-1,(float)rand()/(float)RAND_MAX,2*((float)rand()/(float)RAND_MAX)-1);
-		D3DXVec3Normalize(&pPartArray.Dir,&pPartArray.Dir);
-		pPartArray.Speed=(5+((float)rand()/(float)RAND_MAX))*0.00001;
-		pPartArray.BirthFrame=rand();
-		cnt = 0;
+	for(int i=0;i<m_MaxParticle;i++)
+	{
+		pPartArray[i].Pos=EmitPos;
+		pPartArray[i].Dir=D3DXVECTOR3(2*((float)rand()/(float)RAND_MAX)-1,(float)rand()/(float)RAND_MAX,2*((float)rand()/(float)RAND_MAX)-1);
+		D3DXVec3Normalize(&pPartArray[i].Dir,&pPartArray[i].Dir);
+		pPartArray[i].Speed=(5+((float)rand()/(float)RAND_MAX))*0.0001;
+		pPartArray[i].BirthFrame=rand();
+	}
 }
 //
 //
@@ -31,30 +34,23 @@ void PARTICLE::Run()
 	m_Frame++;
 	for(int i=0;i<m_MaxParticle;i++)
 	{
-		if(m_Frame>pPartArray.BirthFrame)
+		if(m_Frame>0)
 		{
-			pPartArray.Pos+=pPartArray.Dir*pPartArray.Speed;
+			pPartArray[i].Pos+=pPartArray[i].Dir*pPartArray[i].Speed;
 			//重力
-			pPartArray.Dir+= D3DXVECTOR3(0,-0.0000098,0);
+			pPartArray[i].Dir+=D3DXVECTOR3(0,-0.0000098,0);
 			//地面でのバウンド
-			if(pPartArray.Pos.y<0)
+			if(pPartArray[i].Pos.y<0)
 			{
-				pPartArray.Dir.y=-pPartArray.Dir.y;
+				pPartArray[i].Dir.y=-pPartArray[i].Dir.y;
 			}
 		}
 	}
-
-	cnt++;
-	if (cnt > 240)
-	{
-		delete this;
-	}
-
 }
 //
 //
 //
-D3DXVECTOR3& PARTICLE::GetParticlePos()
+D3DXVECTOR3 PARTICLE::GetParticlePos(int Index)
 {
-	return pPartArray.Pos;
+	return pPartArray[Index].Pos;
 }

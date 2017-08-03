@@ -128,7 +128,7 @@ void LandShape::Initialize(const wstring& filename_bin, const wstring& filename_
 	if (filename_cmo.size() > 0)
 	{
 		// フルパスに補完
-		wstring fullpath_cmo = L"Resources/" + filename_cmo + L".cmo";
+		wstring fullpath_cmo =/* L"Resources/" +*/ filename_cmo + L".cmo";
 		// オブジェクト初期化
 		m_Obj.LoadModel(fullpath_cmo.c_str());
 	}

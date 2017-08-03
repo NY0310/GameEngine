@@ -75,6 +75,19 @@ void FollowCamera::Update()
 	this->SetEyePos(eyepos);
 	this->SetRefPos(refpos);
 
+	//this->SetEyePos(Vector3(0.00749884499f, 1.54812920f, 4.99988747f)); //視点位置
+	//this->SetRefPos(Vector3(-3.61911745e-08f, 1.98155320f, -3.12580148e-08f));//注視位置
+
+
+	//this->SetEyePos(Vector3(0.0f, 0.0f, -2.0f)); //視点位置
+	//this->SetRefPos(Vector3(-0.0f, 0.5f, 0.0f));//注視位置
+	//this->SetUpVec(Vector3(0.0f, 1.0f, 0.0f));//上方位置
+	//m_fovY = XM_PI / 4;
+	//m_aspect = (FLOAT)640 / (FLOAT)480;
+	//m_NearClip = 0.1f;
+	//m_FarClip = 100.0f;
+
+
 	//	基底クラスの更新
 	Camera::Update();
 }

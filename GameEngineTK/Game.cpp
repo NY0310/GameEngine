@@ -48,16 +48,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_outputWidth = max(width, 1);
 	m_outputHeight = max(height, 1);
 
-	//CreateDevice();
 
-	//CreateResources();
-
-	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
-	// e.g. for 60 FPS fixed timestep update logic, call:
-	/*
-	m_timer.SetFixedTimeStep(true);
-	m_timer.SetTargetElapsedSeconds(1.0 / 60);
-	*/
 
 
 
@@ -69,7 +60,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_Camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
 	//	カメラにキーボードをセット
 	m_Camera->SetKeyboard(keyboard.get());
-
+	m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
 
 
 	{//OBj3dのシステム初期化
@@ -90,13 +81,17 @@ void Game::Initialize(HWND window, int width, int height)
 	//土地のあたり判定共通初期化
 	LandShape::InitializeCommon(lscDef);
 
+
+	m_LandShape.Initialize(L"Skydome2", L"Skydome2");
+	m_LandShape.SetScale(1.1);
+	
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(devices.Context().Get());
 
 
 	m_effect = std::make_unique<BasicEffect>(devices.Device().Get());
 
 	m_effect->SetProjection(XMMatrixOrthographicOffCenterRH(0,
-		m_outputWidth, m_outputHeight, 0, 0, 1));
+		m_outputWidth, m_outputHeight, 0, 0, 1.0f));
 	m_effect->SetVertexColorEnabled(true);
 
 	void const* shaderByteCode;
@@ -112,6 +107,10 @@ void Game::Initialize(HWND window, int width, int height)
 	//	汎用ステートを生成	q
 	m_states = std::make_unique<CommonStates>(devices.Device().Get());
 
+
+	devices.Context().Get()->RSSetState(m_states->CullClockwise());
+
+
 	//	デバッグカメラを生成
 	m_debugCamera = std::make_unique<DebugCamera>(m_outputWidth, m_outputHeight);
 
@@ -120,38 +119,9 @@ void Game::Initialize(HWND window, int width, int height)
 	//	テクスチャのパスを指定
 	m_factory->SetDirectory(L"Resources");
 	//	天球モデルの生成
-	m_objSkydome.LoadModel(L"Skydome.cmo");
-	//地形データの読み込み landshepe cmoファイル名
-	m_LandShape.Initialize(L"ground200m",L"ground200m");
-
+//	m_objSkydome.LoadModel(L"Skydome.cmo");
 	
-	m_LandShape.SetRot (Vector3(0, 4.0f, 0));
-	for (int i = 0; i < 20; i++)
-	{
-		//	ワールド行列を計算
-		//	スケーリング
-		Matrix scalemat = Matrix::CreateScale(1.0f);
-		//	ロール
-		Matrix rotmatz = Matrix::CreateRotationZ(0.0f);
-		//	ピッチ(仰角）
-		Matrix rotmatx = Matrix::CreateRotationX(0.0f);
-		//	ヨー(方位角）
-		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36.0f * (i + 1)));
-		//	回転行列の合成
-		Matrix rotmat = rotmatz * rotmatx * rotmaty;
-		//	平行移動
-		Matrix transmat;
-		if (i < 10)
-		{
-			transmat = Matrix::CreateTranslation(20.0f, 0.0f, 0.0f);
-		}
-		else
-		{
-			transmat = Matrix::CreateTranslation(40.0f, 0.0f, 0.0f);
-		}
-		//	ワールド行列の合成(SRT)
-		m_worldBall[i] = scalemat * transmat * rotmat;
-	}
+
 
 	player = std::make_unique<Player>(keyboard.get());
 	player->Initialize();
@@ -159,21 +129,19 @@ void Game::Initialize(HWND window, int width, int height)
 	m_Camera->SetPlayer(player.get());
 
 	//敵の生成
-	int enemyNum = rand() % 10 + 1;
+	int enemyNum = 5;
 
 	m_Enemies.resize(enemyNum);
 
 	for (int i = 0; i < enemyNum; i++)
 	{
 		m_Enemies[i] = std::make_unique<Enemy>(keyboard.get());
-		m_Enemies[i]->Initialize();
+		//m_Enemies[i]->Initialize();
 	}
 
-	Effect = ModelExpansionEffect::getInstance();
 
-	m_spriteBatch = std::make_unique<SpriteBatch>(devices.Context().Get());
-	m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
-
+	clearcnt = 0;
+	
 
 	m_str = L"CLEAR";
 
@@ -182,8 +150,7 @@ void Game::Initialize(HWND window, int width, int height)
 	this->InitModel();
 
 
-
-
+	//article = new PARTICLE(MAX_PARTICLE, VectorToD3DXVECTOR3(Vector3(0.0f, 0.0f, 0.0f)));
 
 }
 
@@ -195,7 +162,7 @@ HRESULT Game::InitD3D()
 
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *pCompiledShader = NULL;
-
+	D3D11_BLEND_DESC bd;
 	//バーテックスシェーダー作成
 	if (FAILED(MakeShader("Shader.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader))) return E_FAIL;
 
@@ -210,11 +177,10 @@ HRESULT Game::InitD3D()
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 
 	//頂点インプットレイアウトを作成
-	if (FAILED(devices.Device().Get()->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
+	if (FAILED(devices.Device()->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
 	{
 		return FALSE;
 	}
-
 	SAFE_RELEASE(pCompiledShader);
 
 
@@ -256,7 +222,7 @@ HRESULT Game::InitD3D()
 
 	//アルファブレンド用ブレンドステート作成
 	//pngファイル内にアルファ情報がある。アルファにより透過するよう指定している
-	D3D11_BLEND_DESC bd;
+	
 	ZeroMemory(&bd, sizeof(D3D11_BLEND_DESC));
 	bd.IndependentBlendEnable = false;
 	bd.AlphaToCoverageEnable = false;
@@ -278,41 +244,38 @@ HRESULT Game::InitD3D()
 	devices.Context().Get()->OMSetBlendState(m_pBlendState, NULL, mask);
 
 
-	//パーティクル初期化
-	for (int i = 0; i < MAX_PARTICLE; i++)
-	{
-		m_pParticle.push_back(new PARTICLE(D3DXVECTOR3(0, 0, 0)));
-	}
 
 
 
-	/////////////////OBJフォーマット//////////////////////////////////
+
+	///////////////////OBJフォーマット//////////////////////////////////
 
 	////hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
-	//ID3DBlob *pCompiledShader = NULL;
+	//ID3DBlob *pCompiledShader2 = NULL;
 	//ID3DBlob *pErrors = NULL;
 	////ブロブからバーテックスシェーダー作成
-	//if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "OBJ_VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	//if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	//{
 	//	MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 	//	return E_FAIL;
 	//}
 	//SAFE_RELEASE(pErrors);
 
-	//if (FAILED(devices.Device.Get()->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pVertexShader)))
+	//if (FAILED(devices.Device().Get()->CreateVertexShader(pCompiledShader2->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pVertexShader)))
 	//{
-	//	SAFE_RELEASE(pCompiledShader);
+	//	SAFE_RELEASE(pCompiledShader2);
 	//	MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
 	//	return E_FAIL;
 	//}
+
 	////頂点インプットレイアウトを定義	
-	//D3D11_INPUT_ELEMENT_DESC layout[] =
+	//D3D11_INPUT_ELEMENT_DESC layout2[] =
 	//{
 	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	//};
-	//UINT numElements = sizeof(layout) / sizeof(layout[0]);
+	//numElements = sizeof(layout2) / sizeof(layout2[0]);
 	////頂点インプットレイアウトを作成
-	//if (FAILED(devices.Device.Get()->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
+	//if (FAILED(devices.Device().Get()->CreateInputLayout(layout2, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
 	//{
 	//	return FALSE;
 	//}
@@ -323,7 +286,7 @@ HRESULT Game::InitD3D()
 	//	return E_FAIL;
 	//}
 	//SAFE_RELEASE(pErrors);
-	//if (FAILED(devices.Device.Get()->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pPixelShader)))
+	//if (FAILED(devices.Device().Get()->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pPixelShader)))
 	//{
 	//	SAFE_RELEASE(pCompiledShader);
 	//	MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
@@ -331,14 +294,14 @@ HRESULT Game::InitD3D()
 	//}
 	//SAFE_RELEASE(pCompiledShader);
 	////コンスタントバッファー作成
-	//D3D11_BUFFER_DESC cb;
-	//cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//cb.ByteWidth = sizeof(SIMPLESHADER_CONSTANT_BUFFER);
-	//cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//cb.MiscFlags = 0;
-	//cb.Usage = D3D11_USAGE_DYNAMIC;
+	//D3D11_BUFFER_DESC cb2;
+	//cb2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cb2.ByteWidth = sizeof(SIMPLESHADER_CONSTANT_BUFFER);
+	//cb2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//cb2.MiscFlags = 0;
+	//cb2.Usage = D3D11_USAGE_DYNAMIC;
 
-	//if (FAILED(devices.Device.Get()->CreateBuffer(&cb, NULL, &m_OBJpConstantBuffer)))
+	//if (FAILED(devices.Device().Get()->CreateBuffer(&cb2, NULL, &m_OBJpConstantBuffer)))
 	//{
 	//	return E_FAIL;
 	//}
@@ -349,7 +312,7 @@ HRESULT Game::InitD3D()
 	//{
 	//	return E_FAIL;
 	//}
-
+	stage.Initialize();
 
 	return S_OK;
 
@@ -599,17 +562,22 @@ void Game::RenderSprite(D3DXMATRIX& WVP)
 	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampler);
 	devices.Context().Get()->PSSetShaderResources(0, 1, &m_pTexture);	//プリミティブをレンダリング
 	
+	//devices.Context().Get()->RSSetState(m_states->CullNone());
 	
 	devices.Context().Get()->Draw(1, 0);
 
 
-	//パーティクルのアニメを進める
-	vector<PARTICLE*>::iterator iterator;
 
-	for (iterator = m_pParticle.begin(); iterator != m_pParticle.end(); iterator++)
+	for (vector<PARTICLE*>::iterator iterator = m_pParticle.begin(); iterator !=  m_pParticle.end(); iterator++)
 	{
+		if ((*iterator) != nullptr)
 		(*iterator)->Run();
 	}
+	
+
+	//article->Run();
+	
+	
 
 
 	devices.Context().Get()->VSSetShader(NULL, NULL, 0);
@@ -635,27 +603,16 @@ void Game::Tick()
 void Game::Update(DX::StepTimer const& timer)
 {
 
-
 	// TODO: Add your game logic here.
 
 
 	//	毎フレーム処理を書く
 	m_debugCamera->Update();
 
-	m_LandShape.Update();
+	stage.GetLandShape().Update();
 
 	//	キーボードの取得
 	Keyboard::State key = keyboard->GetState();
-
-
-	//if (KeybordTracker.IsKeyPressed(Keyboard::Keys::Space))
-
-	//{
-	//	HeadMoveFlag[FiringCnt] = true;
-	//	FiringCnt++;
-	//}
-	//
-
 
 
 	////キーボードの様態を取得
@@ -664,111 +621,206 @@ void Game::Update(DX::StepTimer const& timer)
 	player->Update();
 
 	////キーボードトラッカーの更新
-	//KeybordTracker.Update(kb);
+	KeybordTracker.Update(kb);
 
-	// 全パーツ分行列更新
-	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+
+	m_LandShape.Update();
+
+	if (player->Gethitcnt() == player->GetMAX_HOMING())
 	{
-		//Enemy* enemy = it->get();
-		(*it)->Update();
+		if (key.IsKeyDown(Keyboard::Keys::R))
+		{
+			player->ResetCnt();
+			FireHomingBullets(player->GetTrans());
+		}
 	}
 
-
-
 	{//弾丸と敵のあたり判定
-		const Sphere& bulletSphere = player->GetCollisionNodeBullet();
-		for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); )
+		for (std::vector<SphereNode*>::iterator Sphereit = player->GetCollisionNodeBullet().begin(); Sphereit != player->GetCollisionNodeBullet().end(); )
 		{
-			Enemy* enemy = it->get();
-			//敵の判定球を取得
-			const Sphere& enemySphere = enemy->GetCollisionNodeBody();
-
-			//二つの球が当たっていたら
-			if (CheckSpere2Sphere(bulletSphere, enemySphere))
-
+			if (m_Enemies.size() == 0)
 			{
-				Effect->Entry(L"Resources/HitEffect.cmo", 10, (*it)->GetTrans(), Vector3(0, 0.2, 0),
-					Vector3(0,0,0), Vector3(2.0f, 2.0f, 2.0f), Vector3(4.0f, 4.0f, 4.0f), Vector3(2.0f, 2.0f, 2.0f),
-					Vector3(4.0f, 4.0f, 4.0f), 50);
-				//敵を殺す
-				it = m_Enemies.erase(it);
+				break;
 			}
-			else
+			for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); )
 			{
-				//消さなかったので
-				it++;
+
+				Enemy* enemy = it->get();
+				//敵の判定球を取得
+				const Sphere& enemySphere = enemy->GetCollisionNodeBody();
+
+				//二つの球が当たっていたら
+				if (CheckSpere2Sphere(*(*Sphereit), enemySphere))
+				{
+					(*it)->SetHp((*it)->GetHp() - 10);
+
+					//当たった弾を消す
+					Sphereit = player->GetCollisionNodeBullet().erase(Sphereit);
+			
+
+					if(player->Gethitcnt() != player->GetMAX_HOMING())
+					player->Sethitcnt(player->Gethitcnt() + 1);
+					//hpがなくなったら敵を殺す
+					if ((*it)->GetHp() <= 0)
+					{
+						//パーティクル
+						Vector3 enemypos = (*it)->GetTrans();
+						enemypos.y += 1;
+						m_pParticle.push_back(new PARTICLE(MAX_PARTICLE, VectorToD3DXVECTOR3(enemypos)));
+						m_Particlecnt.push_back(0);
+
+
+						//削除する敵をターゲットにしているホーミング弾を削除	
+						for (std::vector<std::unique_ptr<HomingBullet>>::iterator ithoming = m_HomingBullets.begin();
+							ithoming != m_HomingBullets.end();)
+						{
+							if ((*it).get() == (*ithoming)->GetEnemy())
+							{
+								ithoming = m_HomingBullets.erase(ithoming);
+							}
+							else
+							{
+								ithoming++;
+							}
+						}
+
+						it = m_Enemies.erase(it);
+		
+			
+					
+						m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
+						clearcnt++;
+					}
+					break;
+					
+				}
+				else
+				{
+					//消さなかったので
+					it++;
+					//何にも当たらなかったので消す
+					if (m_Enemies.end() == it)
+					{
+							//球を消したのでループから抜ける
+  							Sphereit++;
+					}
+				}
 			}
 		}
 
 	}
 
-	Effect->Update();
-	//	カメラの座標
-	//Vector3 CameraPos(head_pos.x, head_pos.y + 1, head_pos.z + 3);
 
+
+
+	{//敵弾丸とプレイヤのあたり判定
+		for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end();it++)
+		{
+			for (std::vector<SphereNode*>::iterator Sphereit = (*it)->GetCollisionNodeBullet().begin(); Sphereit != (*it)->GetCollisionNodeBullet().end(); )
+			{
+					//敵の判定球を取得
+					const Sphere& playerSphere = player->GetCollisionNodeBody();
+
+					//二つの球が当たっていたら
+					if (CheckSpere2Sphere(*(*Sphereit), playerSphere))
+
+					{
+						player->SetHp(player->GetHp() - 10);
+
+						//当たった弾を消す
+						Sphereit = (*it)->GetCollisionNodeBullet().erase(Sphereit);
+				
+						//hpがなくなったら敵を殺す
+						if (player->GetHp() <= 0)
+						{
+							//パーティクル
+							Vector3 playerpos = player->GetTrans();
+							playerpos.y += 1;
+							m_pParticle.push_back(new PARTICLE(MAX_PARTICLE, VectorToD3DXVECTOR3(playerpos)));
+							m_Particlecnt.push_back(0);
+						}
+
+					}
+					else
+					{
+							//球を消したのでループから抜ける
+							Sphereit++;
+					}
+
+			}
+
+		}
+
+	}
+
+
+
+
+
+
+	
 	//
 	{//	自機に追従するカメラ
-		//m_Camera->SetTarGetTrans(player->GetTrans());
-		//m_Camera->SetTargetAngle(player->get);
-
+		
 		m_Camera->Update();
 		m_view = m_Camera->GetView();
 		m_proj = m_Camera->GetProjection();
 	}
 
-	m_objSkydome.Update();
+	//m_objSkydome.Update();
 
-	for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
+	//for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
+	//{
+	//	it->Update();
+	//}
+
+
+	std::vector<PARTICLE*>::iterator partecle = m_pParticle.begin();
+
+
+
+	std::vector<int> veccnt;
+	std::vector<int>::iterator cntit;
+
+
+	int cnt = 0;
+	for (std::vector<int>::iterator it = m_Particlecnt.begin(); it != m_Particlecnt.end(); )
 	{
-		it->Update();
-	}
+		(*it)++;
 
-//	std::vector<std::unique_ptr<Enemy>> it = m_Enemies
-	
-	//std::wstringstream ss;
-	////ストリングストリームから文字列を取得
-	//ss << L"aiueo" << m_cnt;
-
-	//m_str = ss.str();
-	
-
-	//自機の地形へのめりこみを解消する
-	{
-		Sphere sphere = player->GetCollisionNodeBody();
-
-		//自機のワールド座標
-		Vector3 trans = player->GetTrans();
-
-		Vector3 sphere2player = trans - sphere.Center;
-		//めりこみ排斥ベクトル
-		Vector3 reject;
-
-		if (m_LandShape.IntersectSphere(sphere,&reject))
-		{
-			sphere.Center += reject;
+		if ((*it) == 90)
+		{	 
+			partecle = m_pParticle.erase(partecle);
+			it = m_Particlecnt.erase(it);
 		}
-
-		player->SetTrans(sphere.Center + sphere2player);
-
-
-		player->Calc();
-
+		else
+		{
+			partecle++;
+			it++;
+		}
 	}
+
+	for (std::vector<int>::iterator it = veccnt.begin(); it != veccnt.end(); it++) {
+		m_pParticle[(*it)]->Run();
+		
+	}
+
+
 	const Vector3 vel = player->GetVelocity();
 	if (vel.y <= 0)
 	{//自機が地面に乗る処理
-		//自機の頭から足元への線分
+	 //自機の頭から足元への線分
 		Segment player_segment;
 		//自機のワールド座標
 		Vector3 trans = player->GetTrans();
 		player_segment.Start = trans + Vector3(0, 1, 0);
-		player_segment.End = trans + Vector3(0,-0.5f,0);
+		player_segment.End = trans + Vector3(0, -0.5f, 0);
 
 		//交点座標
 		Vector3 inter;
 
 		//地形と線分のあたり判定(レイキャスト Ray)
-		if (m_LandShape.IntersectSegment(player_segment,&inter))
+		if (stage.GetLandShape().IntersectSegment(player_segment, &inter))
 		{
 			trans.y = inter.y;
 			//落下を終了
@@ -782,16 +834,132 @@ void Game::Update(DX::StepTimer const& timer)
 		//自機を移動
 		player->SetTrans(trans);
 		//ワールド行列の更新
-		player->Calc();
+	//	player->Calc();
+	}
+
+
+
+	//自機の天球へのめりこみを解消する
+	{
+		Sphere sphere = player->GetCollisionNodeBody();
+
+		//自機のワールド座標
+		Vector3 trans = player->GetTrans();
+
+		Vector3 sphere2player = trans - sphere.Center;
+		//めりこみ排斥ベクトル
+		Vector3 reject;
+
+		if (m_LandShape.IntersectSphere(sphere, &reject))
+		{
+			sphere.Center += reject;
+
+		}
+		
+			player->SetTrans(sphere.Center + sphere2player);
+
+
+
+	}
+
+
+	//敵の天球へのめりこみを解消する
+
+	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+
+	{
+		Vector3 pos = (*it)->GetTrans();
+		pos.x = abs(pos.x);
+		pos.y = abs(pos.y);
+		pos.z = abs(pos.z);
+
+		if ((pos.x >= 75) || (pos.z >= 75))
+		{
+
+			//自機の天球へのめりこみを解消する
+			{
+				Sphere sphere = (*it)->GetCollisionNodeBody();
+
+				//自機のワールド座標
+				Vector3 trans = (*it)->GetTrans();
+
+				Vector3 sphere2player = trans - sphere.Center;
+				//めりこみ排斥ベクトル
+				Vector3 reject;
+
+				if (m_LandShape.IntersectSphere(sphere, &reject))
+				{
+					
+					
+					//削除する敵をターゲットにしているホーミング弾を削除	
+					for (std::vector<std::unique_ptr<HomingBullet>>::iterator ithoming = m_HomingBullets.begin();
+						ithoming != m_HomingBullets.end();)
+					{
+						if ((*it).get() == (*ithoming)->GetEnemy())
+						{
+							ithoming = m_HomingBullets.erase(ithoming);
+						}
+						else
+						{
+							ithoming++;
+						}
+					}
+					it = m_Enemies.erase(it);
+					m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
+
+				}
+				else
+				{
+					//it++;
+				}
+
+
+			}
+
+
+		}
+		else
+		{
+		//	it++;
+		}
+	}
+
+
+
+	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
+		it != m_HomingBullets.end();
+		)
+	{
+		if ((*it)->Update())
+		{
+			
+			it = m_HomingBullets.erase(it);
+
+		}
+		else
+		{
+			it++;
+		}
 	}
 	
+
+	// 全パーツ分行列更新
+	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+	{
+		Enemy* enemy = it->get();
+		(*it)->Update();
+	}
+
+
+
 }
 
 // Draws the scene.
 void Game::Render()
 {
 
-
+	auto& devices = Devices::Get();
+	
 
 	uint16_t indices[] =
 	{
@@ -815,6 +983,15 @@ void Game::Render()
 	}
 
 	Clear();
+
+//#if 0
+	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
+		it != m_HomingBullets.end();
+		it++)
+	{
+		(*it)->Draw();
+	}
+
 
 	// TODO: Add your rendering code here.
 	//	描画処理を書く
@@ -869,7 +1046,7 @@ void Game::Render()
 	//m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 
 	//	天球モデルの描画
-	m_objSkydome.Draw();
+	//m_objSkydome.Draw();
 
 	//for (int i = 0; i < 40000; i++)
 	//{
@@ -881,57 +1058,9 @@ void Game::Render()
 
 	////	地面モデルの描画
 	//m_modelGround->Draw(m_d3dContext.Get(), *m_states, Matrix::Identity, m_view, m_proj);
+	stage.GetLandShape().Draw();
+
 	m_LandShape.Draw();
-	//for (int i = 0; i < 20; i++)
-	//{
-	//	//	球モデルの描画
-	//	m_modelBall->Draw(m_d3dContext.Get(), *m_states, m_worldBall[i], m_view, m_proj);
-	//}
-
-	//for (int i = 0; i < 20; i++)
-	//{
-	//	//	ティーポットモデルの描画
-	//	m_modelTeapot->Draw(m_d3dContext.Get(), *m_states, m_worldTeapot[i], m_view, m_proj);
-	//}
-
-	//for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
-	//{
-	//	it->Draw();
-	//}
-
-
-	//// 全パーツ分行列更新
-	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
-	//{
-	//	Enemy* enemy = it->get();
-	//	(*it)->Draw();
-	//}
-
-
-	////	パーツ1の描画
-	//m_modelHead->Draw(m_d3dContext.Get(), *m_states, head_world, m_view, m_proj);
-
-	////	パーツ2の描画
-	//m_modelHead->Draw(m_d3dContext.Get(), *m_states, head_world2, m_view, m_proj);
-
-	//m_batch->Begin();
-
-	//m_batch->DrawIndexed(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, indices, 6, vertices, 4);
-
-	player->Draw();
-
-	//Effect->Draw();
-
-
-	//m_batch->DrawLine(
-	//	VertexPositionColor(
-	//	SimpleMath::Vector3(0, 0, 0),
-	//		SimpleMath::Color(1, 1, 1)),
-	//	VertexPositionColor(
-	//		SimpleMath::Vector3(800, 600, 0),
-	//		SimpleMath::Color(1, 0, 0))
-	//);
-
 	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::SkyBlue);
 	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::SandyBrown);
 	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::PaleGoldenrod);
@@ -942,21 +1071,34 @@ void Game::Render()
 	//m_batch->DrawTriangle(v1, v2, v3);
 
 	//m_batch->End();
-//	CommonStates states(devices.Device.Get().Get());
+	CommonStates states(devices.Device().Get());
 
-	//m_spriteBatch->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
-	//if (m_Enemies.empty() == true)
-	//{
-	//
-	//	
+	devices.SpriteBatch()->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
 
 
-	//	//スプライトフォントの描画
-	//	m_spriteFont->DrawString(m_spriteBatch.get(), m_str.c_str(), XMFLOAT2(200, 200));
+	// 全パーツ分行列更新
+	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+	{
+		Enemy* enemy = it->get();
+		(*it)->Draw();
 
-	//}
+
+	}
+
+	player->Draw();
+
+	if (clearcnt == CLEARNUM)
+	{
+		m_Enemies.clear();
+		//スプライトフォントの描画
+  		m_spriteFont->DrawString(devices.SpriteBatch().get(), m_str.c_str(), XMFLOAT2(200, 200));
+
+	}
+
+	devices.SpriteBatch().get()->End();
+	
 	//m_spriteBatch->End();
-
+//#endif
 	D3DXMATRIX World;
 	D3DXMATRIX View;
 	D3DXMATRIX Proj;
@@ -966,72 +1108,121 @@ void Game::Render()
 	D3DXMATRIX Tran;
 	D3DXMatrixTranslation(&Tran, x, 0, 0);
 	World = Tran;
-	// ビュートランスフォーム
-	D3DXVECTOR3 vEyePt(0.0f, 0.0f, -2.0f); //視点位置
-	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);//注視位置
-	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
-	D3DXMatrixLookAtLH(&View, &vEyePt, &vLookatPt, &vUpVec);
-	// プロジェクショントランスフォーム
-	D3DXMatrixPerspectiveFovLH(&Proj, D3DX_PI / 4, (FLOAT)WINDOW_WIDTH / (FLOAT)WINDOW_HEIGHT, 0.1f, 100.0f);
 
 
-	//パーティクル１粒を１枚ポイントスプライトとして５００枚描画
-	vector<PARTICLE*>::iterator iterator;
-	for (iterator = m_pParticle.begin(); iterator != m_pParticle.end(); iterator++)
+	if (KeybordTracker.IsKeyPressed(Keyboard::Keys::Z))
 	{
-		(*iterator)->Run();
-		//ワールドトランスフォームは個々で異なる
-		D3DXMATRIX Scale, Tran;
-		D3DXMatrixScaling(&Scale, 0.01, 0.01, 0.01);
-		D3DXVECTOR3 ParticlePos = (*iterator)->GetParticlePos();
-		D3DXMatrixTranslation(&Tran, ParticlePos.x, ParticlePos.y, ParticlePos.z);
-		World = Scale*Tran;
-
-		RenderSprite(World);
+		a+= 0.1f;
 	}
 
 
+	////// ビュートランスフォーム
+	//D3DXVECTOR3 vEyePt(0.0f, 0.5f, -2.0f); //視点位置
+	//D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);//注視位置
+	//D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
+	//D3DXMatrixLookAtLH(&View, &vEyePt, &vLookatPt, &vUpVec);
+	//// プロジェクショントランスフォーム
+//	D3DXMatrixPerspectiveFovLH(&Proj, D3DX_PI / 4, (FLOAT)WINDOW_WIDTH / (FLOAT)WINDOW_HEIGHT, 0.1f, 100.0f);
 
+	D3DXVECTOR3 vEyePt = VectorToD3DXVECTOR3(m_Camera->m_eyepos);
+	D3DXVECTOR3 vLookatPt = VectorToD3DXVECTOR3(m_Camera->m_refpos);
+	D3DXVECTOR3 vUpVec = VectorToD3DXVECTOR3(m_Camera->m_upvec);
+	//vEyePt.z = -vEyePt.z;
+	//vLookatPt.z = -vLookatPt.z;
+	//D3DXMatrixLookAtLH(&View, &vEyePt, &vLookatPt, &vUpVec);
+	//D3DXMatrixPerspectiveFovLH(&Proj, m_Camera->m_fovY, m_Camera->m_aspect, m_Camera->m_NearClip, m_Camera->m_FarClip);
 
+	D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
+	D3DXMatrixPerspectiveFovRH(&Proj, m_Camera->m_fovY, m_Camera->m_aspect, m_Camera->m_NearClip, m_Camera->m_FarClip);
+
+	//D3DXMatrixPerspectiveFovLH(&Proj, XMConvertToRadians(30.0f), (float)800/600, 0.1f, 1000.0f);
+
+	////深度テストを”無効”にする
+	//D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	//ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	//depthStencilDesc.DepthEnable = false;
+
+	//devices.Device().Get()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
+	//devices.Context().Get()->OMSetDepthStencilState(m_DepthStencilState, 1);
+	//
+	D3DXMATRIX CancelRotation = View;
+	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
+	D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
+	World = CancelRotation * World;
+
+	//パーティクル１粒を１枚ポイントスプライトとして５００枚描画
+
+	for (vector<PARTICLE*>::iterator iterator = m_pParticle.begin(); iterator != m_pParticle.end(); iterator++)
+	{
+		if ((*iterator) != nullptr)
+		{
+			for (int i = 0; i < MAX_PARTICLE; i++)
+			{
+				//ワールドトランスフォームは個々で異なる
+				D3DXMATRIX Scale, Tran;
+				D3DXMatrixScaling(&Scale,5, 5, 5);
+				D3DXVECTOR3 ParticlePos = (*iterator)->GetParticlePos(i);
+				D3DXMatrixTranslation(&Tran, ParticlePos.x, ParticlePos.y, ParticlePos.z);
+				//D3DXMatrixTranslation(&Tran, 0.0f, 0.0f, 0.0f);
+				World = Scale*CancelRotation*Tran;
+
+				//RenderSprite(World* MatrixToD3DXMATRIX( m_view)* MatrixToD3DXMATRIX (m_proj));
+				RenderSprite(World * View * Proj);
+				//RenderSprite(World * Proj);
+				//RenderSprite(World);
+			}
+			//D3DXVECTOR3 ParticlePos = (*iterator)->GetParticlePos(7);
+		}
+	}
 	
-	////使用するシェーダーの登録	
-	//m_d3dContext->VSSetShader(m_pVertexShader, NULL, 0);
-	//m_d3dContext->PSSetShader(m_pPixelShader, NULL, 0);
-	////シェーダーのコンスタントバッファーに各種データを渡す	
-	//D3D11_MAPPED_SUBRESOURCE pData;
-	//SIMPLESHADER_CONSTANT_BUFFER cb;
-	//if (SUCCEEDED(m_d3dContext->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-	//{
-	//	//ワールド、カメラ、射影行列を渡す
-	//	D3DXMATRIX m = World * View * Proj;
-	//	D3DXMatrixTranspose(&m, &m);
-	//	cb.mWVP = m;
 
-	//	memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-	//	m_d3dContext->Unmap(m_pConstantBuffer, 0);
-	//}
-	////このコンスタントバッファーを使うシェーダーの登録
-	//m_d3dContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	//m_d3dContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	////頂点インプットレイアウトをセット
-	//m_d3dContext->IASetInputLayout(m_pVertexLayout);
-	////プリミティブ・トポロジーをセット
-	//m_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	////バーテックスバッファーをセット
-	//UINT stride = sizeof(D3DXVECTOR3);
-	//UINT offset = 0;
-	//m_d3dContext->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
-	////インデックスバッファーをセット
-	//stride = sizeof(int);
-	//offset = 0;
-	//m_d3dContext->IASetIndexBuffer(m_Mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	////プリミティブをレンダリング
-	//m_d3dContext->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
+
+
+
+//	auto& devices = Devices::Get();
+//
+//	
+//	//使用するシェーダーの登録	
+//	devices.Context().Get()->VSSetShader(m_pVertexShader, NULL, 0);
+//	devices.Context().Get()->PSSetShader(m_pPixelShader, NULL, 0);
+//	//シェーダーのコンスタントバッファーに各種データを渡す	
+//	D3D11_MAPPED_SUBRESOURCE pData;
+//	SIMPLESHADER_CONSTANT_BUFFER cb;
+//	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+//	{
+//		//ワールド、カメラ、射影行列を渡す
+//		D3DXMATRIX m = World * View * Proj;
+//		D3DXMatrixTranspose(&m, &m);
+//		cb.mWVP = m;
+//
+//		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
+//		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
+//	}
+//	//このコンスタントバッファーを使うシェーダーの登録
+//	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+//	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+//	//頂点インプットレイアウトをセット
+//	devices.Context().Get()->IASetInputLayout(m_pVertexLayout);
+//	//プリミティブ・トポロジーをセット
+//	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//	//バーテックスバッファーをセット
+//	UINT stride = sizeof(D3DXVECTOR3);
+//	UINT offset = 0;
+//	devices.Context().Get()->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
+//	//インデックスバッファーをセット
+//	stride = sizeof(int);
+//	offset = 0;
+//	devices.Context().Get()->IASetIndexBuffer(m_Mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+//	//プリミティブをレンダリング
+//	devices.Context().Get()->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
+//
+
+
 
 	Present();
 }
-
-// Helper method to clear the back buffers.
+//
+//// Helper method to clear the back buffers.
 void Game::Clear()
 {
 	auto& devices = Devices::Get();
@@ -1040,12 +1231,14 @@ void Game::Clear()
 	// Clear the views.
 	devices.Context().Get()->ClearRenderTargetView(devices.RenderTargetView().Get(), Colors::CornflowerBlue);
 	devices.Context().Get()->ClearDepthStencilView(devices.DepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
 	devices.Context().Get()->OMSetRenderTargets(1, devices.RenderTargetView().GetAddressOf(), devices.DepthStencilView().Get());
 
 	// Set the viewport.
-	CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
+	CD3D11_VIEWPORT  viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
 	devices.Context().Get()->RSSetViewports(1, &viewport);
+
+	devices.Viewport(viewport);
+
 }
 
 // Presents the back buffer contents to the screen.
@@ -1110,7 +1303,7 @@ void Game::GetDefaultSize(int& width, int& height) const
 }
 
 
-void Game::MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix& matrix)
+D3DXMATRIX Game::MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix matrix)
 {
 	const int MATRIX_NUM_QUARTER = 4;
 	D3DXMATRIX d3dxmatrix;
@@ -1118,12 +1311,33 @@ void Game::MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix& matrix)
 	{
 		for (int j = 0; j < MATRIX_NUM_QUARTER; j++)
 		{
-			matrix.m[i][j] = d3dxmatrix.m[i][j];
+			d3dxmatrix.m[i][j] = matrix.m[i][j];
 		}
 	}
+
+	return d3dxmatrix;
 }
 
-void Game::D3DXMATRIXToMatrix(D3DXMATRIX & d3dxmatrix)
+D3DXVECTOR3 Game::VectorToD3DXVECTOR3(DirectX::SimpleMath::Vector3 vector3)
+{
+	float x = vector3.x;
+	float y = vector3.y;
+	float z = vector3.z;
+	D3DXVECTOR3 d3dxvector3 = D3DXVECTOR3(x, y, z);
+	return d3dxvector3;
+
+}
+
+Vector3 Game::TD3DXVECTOR3ToVector(D3DXVECTOR3 d3dxvector3)
+{
+	float x = d3dxvector3.x;
+	float y = d3dxvector3.y;
+	float z = d3dxvector3.z;
+	Vector3 vector3 = Vector3(x, y, z);
+	return vector3;
+}
+
+Matrix Game::D3DXMATRIXToMatrix(D3DXMATRIX d3dxmatrix)
 {
 	const int MATRIX_NUM_QUARTER = 4;
 	Matrix matrix;
@@ -1131,10 +1345,34 @@ void Game::D3DXMATRIXToMatrix(D3DXMATRIX & d3dxmatrix)
 	{
 		for (int j = 0; j < MATRIX_NUM_QUARTER; j++)
 		{
-			d3dxmatrix.m[i][j] = matrix.m[i][j];
+			matrix.m[i][j] = d3dxmatrix.m[i][j];
 		}
 	}
+
+
+	return matrix;
 }
+
+
+void Game::FireHomingBullets(const DirectX::SimpleMath::Vector3 pos)
+{
+	// 敵の数分だけ発射
+	unsigned int enemyNum = m_Enemies.size();
+	for (unsigned int i = 0; i < enemyNum; i++)
+	{
+		Enemy* enemy = m_Enemies[i].get();
+
+		// 弾生成
+		std::unique_ptr<HomingBullet> bullet = std::make_unique<HomingBullet>();
+		bullet->Initialize();
+		// 上に発射
+		bullet->Fire(pos, Vector3::UnitY);
+		bullet->SetTarget(enemy);
+
+		m_HomingBullets.push_back(std::move(bullet));
+	}
+}
+
 
 // These are the resources that depend on the device.
 //void Game::CreateDevice()

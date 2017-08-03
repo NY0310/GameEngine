@@ -64,7 +64,7 @@ bool Camera::Project(const Vector3& worldPos, Vector2* screenPos)
 	clipPos = Vector4::Transform(clipPos, m_proj);
 
 	// ビューポートの取得
-	//D3D11_VIEWPORT viewport = devices.;
+	D3D11_VIEWPORT viewport = devices.Viewport();
 
 	// ニアクリップより前方にいなければ計算できない
 	if (clipPos.w <= 1.0e-5) return false;
@@ -73,8 +73,8 @@ bool Camera::Project(const Vector3& worldPos, Vector2* screenPos)
 	float ndcX = clipPos.x / clipPos.w;
 	float ndcY = -clipPos.y / clipPos.w;
 
-	//screenPos->x = (ndcX + 1.0f) * 0.5f * viewport.Width + viewport.TopLeftX;
-	//screenPos->y = (ndcY + 1.0f) * 0.5f * viewport.Height + viewport.TopLeftY;
+	screenPos->x = (ndcX + 1.0f) * 0.5f * viewport.Width + viewport.TopLeftX;
+	screenPos->y = (ndcY + 1.0f) * 0.5f * viewport.Height + viewport.TopLeftY;
 
 	return true;
 }

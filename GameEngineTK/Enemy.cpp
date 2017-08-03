@@ -18,6 +18,8 @@ Enemy::Enemy(DirectX::Keyboard* keyboard)
 	m_pKeyboard = keyboard;
 
 	Initialize();
+
+
 }
 
 Enemy::~Enemy()
@@ -29,8 +31,12 @@ Enemy::~Enemy()
 //-----------------------------------------------------------------------------
 void Enemy::Initialize()
 {
+
+	auto& devices = Devices::Get();
+
+
 	//	自機パーツの読み込み
-m_Obj.resize(PARTS_NUM);
+	m_Obj.resize(PARTS_NUM);
 	Load();
 	m_Obj[PARTS_BODY].LoadModel(L"Resources\\Body2.cmo");
 	m_Obj[PARTS_BREAST].LoadModel(L"Resources\\Body.cmo");
@@ -67,7 +73,7 @@ m_Obj.resize(PARTS_NUM);
 
 
 
-	m_Obj[PARTS_BREAST].SetTrans(Vector3(10.0f, 3.0f, 0.0f));
+	m_Obj[PARTS_BREAST].SetTrans(Vector3(10.0f, 0.0f, 10.0f));
 
 	//	子パーツの親からのオフセット(座標のずれ)をセット
 	m_Obj[PARTS_BODY].SetTrans(Vector3(0, 0.5f, 0));
@@ -97,11 +103,11 @@ m_Obj.resize(PARTS_NUM);
 	FingRotX = 0.0f;
 	head_rotate = 0;
 	FiringCnt = 0;
-	flag = true;
-	for (int i = 0; i < MAX_HEAD; i++)
-	{
-		Flag[i] = false;
-	}
+	//flag = true;
+	//for (int i = 0; i < MAX_HEAD; i++)
+	//{
+	//	Flag[i] = false;
+	//}
 
 	m_time = 0;
 
@@ -132,11 +138,30 @@ m_Obj.resize(PARTS_NUM);
 		m_CollisionNodeBody.Initialize();
 		// 親パーツを設定
 		m_CollisionNodeBody.SetParant(&m_Obj[0]);
-		m_CollisionNodeBody.SetTrans(Vector3(0, 0, 0));
+		m_CollisionNodeBody.SetTrans(Vector3(0, 2, 0));
 		m_CollisionNodeBody.SetLocalRadious(2.0f);
 	}
 
+	Microsoft::WRL::ComPtr<ID3D11Resource> resTexture;
+	// テクスチャのロード
+	CreateWICTextureFromFile(devices.Device().Get(), L"HP.png", resTexture.GetAddressOf(),
+		m_texture.ReleaseAndGetAddressOf());
 
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+	resTexture.As(&texture);
+
+	// テクスチャの中心を割り出す
+	CD3D11_TEXTURE2D_DESC textureDesc;
+	texture->GetDesc(&textureDesc);
+
+	m_origin.x = float(textureDesc.Width / 2);
+	m_origin.y = float(textureDesc.Height / 2);
+
+	m_InScreen = false;
+
+	m_hp = MAX_HP;
+
+	MoveFlag = false;
 }
 
 
@@ -230,6 +255,34 @@ void Enemy::Load()
 }
 
 
+/*==================================
+目的の角度への最短角度を取得（ラジアン）
+引数	_angle0	ベースとなる角度
+_angle1	目標とする角度
+戻り値	差分角度
+角度０から角度１に最短コースで向かう際に加算する角度を取得する
+===================================*/
+static float GetShortAngleRad(float _angle0, float _angle1)
+{
+	float angle_sub;
+
+	angle_sub = _angle1 - _angle0;	// 角度の差
+									// 差が１８０度(π）より大きかった場合、逆回転の方が近いので、マイナスに変換
+									// 最終的に-180～+180度の範囲に。
+	if (angle_sub > XM_PI)
+	{
+		angle_sub -= XM_2PI;
+	}
+	else if (angle_sub < -XM_PI)
+	{
+		angle_sub += XM_2PI;
+	}
+
+	return angle_sub;
+}
+
+
+
 //-----------------------------------------------------------------------------
 // 更新
 //-----------------------------------------------------------------------------
@@ -237,7 +290,7 @@ void Enemy::Update()
 {
 	// キーボードの状態取得
 
-
+	FiringCnt++;
 	m_timer--;
 	if (m_timer < 0)
 	{
@@ -275,7 +328,8 @@ void Enemy::Update()
 	}
 
 
-
+	
+//	if(MoveFlag )
 	{
 		// 移動量のベクトル
 		Vector3 moveV(0, 0, -0.1f);
@@ -284,6 +338,10 @@ void Enemy::Update()
 		float angle = m_Obj[0].GetRot().y;
 		Matrix rotmat = Matrix::CreateRotationY(angle);
 		moveV = Vector3::TransformNormal(moveV, rotmat);
+
+
+
+
 		// 自機の座標を移動
 		Vector3 pos = m_Obj[0].GetTrans();
 		m_Obj[0].SetTrans(pos + moveV);
@@ -335,22 +393,71 @@ void Enemy::Update()
 		}
 	}
 
-		// //敵のワールド座標に対応するスクリーン座標を得る
-	//Vector2 screenPos;
-	//if (Obj3d::GetCamera()->(m_Obj[0].GetTrans(), &screenPos))
-	//{
-	//	// ビューポートの取得
-	//	D3D11_VIEWPORT viewport = DX::DeviceResources::GetInstance()->GetScreenViewport();
 
-	//	// 画面の範囲に収まっているか？
-	//	if (viewport.TopLeftX <= screenPos.x && screenPos.x <= viewport.TopLeftX + viewport.Width &&
-	//		viewport.TopLeftY <= screenPos.y && screenPos.y <= viewport.TopLeftY + viewport.Height)
-	//	{
-	//		// スクリーン座標を記録
-	//		m_screenPos = screenPos;
-	//		m_InScreen = true;
-	//	}
-	//}
+	auto& devices = Devices::Get();
+	// 敵のワールド座標に対応するスクリーン座標を得る
+	Vector2 screenPos;
+	if (Obj3d::GetCamera()->Project(m_Obj[0].GetTrans() + Vector3(0,3,0), &screenPos))
+	{
+		// ビューポートの取得
+		D3D11_VIEWPORT viewport = devices.Viewport();;
+
+		// 画面の範囲に収まっているか？
+		if (viewport.TopLeftX <= screenPos.x && screenPos.x <= viewport.TopLeftX + viewport.Width &&
+			viewport.TopLeftY <= screenPos.y && screenPos.y <= viewport.TopLeftY + viewport.Height)
+		{
+			// スクリーン座標を記録
+			m_screenPos = screenPos;
+			m_InScreen = true;
+		}
+		else {
+			m_InScreen = false;
+		}
+	}
+
+
+	if(FiringCnt % 120 == 0)
+	{
+		BulletDate data;
+		data.Trans = m_Obj[0].GetTrans() + Vector3(0, 1, 0);
+
+		Matrix worldm = m_Obj[0].GetLocalWorld();
+
+		// 抽出した情報をしまっておく変数
+		Vector3 scale;			// ワールドスケーリング
+		Quaternion rotation;	// ワールド回転
+		Vector3 translation;	// ワールド座標
+
+								// ワールド行列から各要素を抽出
+		worldm.Decompose(scale, rotation, translation);
+
+
+		//弾丸パーツに速度を設定
+		data.Velocity = Vector3(0, 0, -0.5f);
+		//パーツの向きに合わせて速度ベクトルを回転
+		data.Velocity = Vector3::Transform(data.Velocity, rotation);
+
+
+		Bullet* bullet = new Bullet(data);
+
+
+		m_bullet.push_back(bullet);
+
+		{//弾丸用の当たり判定ノードの設定
+			SphereNode* spherenode = new SphereNode();
+			spherenode->Initialize();
+			//
+			spherenode->SetParant(&bullet->GetObj3d());
+			//
+			spherenode->SetTrans(Vector3(0.0f, 0.0f, 0));
+			spherenode->SetLocalRadious(0.2f);
+			m_CollisionNodeBullet.push_back(spherenode);
+		}
+
+	}
+
+	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end(); it++)
+		(*it)->Update();
 
 
 	Calc();
@@ -367,6 +474,21 @@ void Enemy::Calc()
 		it->Update();
 	}
 
+	for (std::vector<Bullet*>::iterator it = m_bullet.begin();
+		it != m_bullet.end();
+		it++) {
+		(*it)->Update();
+	}
+
+
+
+	for (std::vector<SphereNode*>::iterator it = m_CollisionNodeBullet.begin();
+		it != m_CollisionNodeBullet.end(); it++)
+	{
+		(*it)->Update();
+	}
+
+
 	m_CollisionNodeBody.Update();
 }
 //-----------------------------------------------------------------------------
@@ -379,7 +501,37 @@ void Enemy::Draw()
 		it->Draw();
 	}
 
-	m_CollisionNodeBody.Draw();
+	//m_CollisionNodeBody.Draw();
+
+
+
+	auto& devices = Devices::Get();
+
+
+	//for (std::vector<SphereNode*>::iterator it = m_CollisionNodeBullet.begin();
+	//	it != m_CollisionNodeBullet.end(); it++)
+	//{
+	//	(*it)->Draw();
+	//}
+
+
+	// アイコン描画
+	if (m_InScreen)
+	{
+		float  a  = static_cast<float>( m_hp) /static_cast<float>( MAX_HP);
+		const RECT rect ={0, 0, 170 * a, 30};
+		devices.SpriteBatch()->Draw(m_texture.Get(), m_screenPos ,&rect, Colors::White,
+			0.0f, m_origin, Vector2(0.2f,0.2f), SpriteEffects_None, 0.0f);
+		//devices.SpriteBatch()->Draw(m_texture.Get(), m_screenPos, &rect, Colors::White,
+		//	0.0f, m_origin, Vector2(1,1), SpriteEffects_None, 0);
+
+	}
+
+
+	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end(); it++)
+	{
+		(*it)->Draw();
+	}
 
 }
 

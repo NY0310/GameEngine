@@ -25,7 +25,6 @@
 #include <SimpleMath.h>
 #include <Model.h>
 #include <Keyboard.h>
-#include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include "DebugCamera.h"
 #include "FollowCamera.h"
@@ -34,12 +33,12 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "ModelExpansionEffect.h"
-#include "LandShape.h"
 #include "Device.h"
 
 #include <d3dCompiler.h>
 #include "PARTICLE.h"
-
+#include "Stage.h";
+#include "HomingBullet.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -109,7 +108,6 @@ class Game
 {
 public:
 
-
 	Game();
 
 	// Initialization and management
@@ -130,12 +128,16 @@ public:
 	// Properties
 	void GetDefaultSize( int& width, int& height ) const;
 
-	void D3DXMATRIXToMatrix(D3DXMATRIX & d3dxmatrix);
+	DirectX::SimpleMath::Matrix D3DXMATRIXToMatrix(D3DXMATRIX  d3dxmatrix);
 
-	void MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix& matrix);
+	void FireHomingBullets(const DirectX::SimpleMath::Vector3 pos);
 
+	D3DXMATRIX MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix matrix);
+
+	D3DXVECTOR3 VectorToD3DXVECTOR3(DirectX::SimpleMath::Vector3 vector3);
+
+	DirectX::SimpleMath::Vector3  TD3DXVECTOR3ToVector(D3DXVECTOR3 d3dxvector3);
 //	void D3DXMATRIXToMatrix(D3DXMATRIX& d3dxmatrix);
-
 private:
 
 	void Update(DX::StepTimer const& timer);
@@ -194,7 +196,7 @@ private:
 	std::unique_ptr<DirectX::EffectFactory> m_factory;
 	//	天球モデル
 	Obj3d m_objSkydome;
-	LandShape m_LandShape;
+
 	//	球モデル
 	std::unique_ptr<DirectX::Model> m_modelBall;
 	//	球のワールド行列
@@ -203,31 +205,31 @@ private:
 	////	頭モデル
 	//std::unique_ptr<DirectX::Model> m_modelHead;
 
-	//	回転を加えるための行列
-	DirectX::SimpleMath::Matrix m_rot;
-	//	逆回転を加えるための行列
-	DirectX::SimpleMath::Matrix m_Rrot;
+	////	回転を加えるための行列
+	//DirectX::SimpleMath::Matrix m_rot;
+	////	逆回転を加えるための行列
+	//DirectX::SimpleMath::Matrix m_Rrot;
 
-	//	ティーポットのスケールを変化させるための行列
-	DirectX::SimpleMath::Matrix m_Scale;
+	////	ティーポットのスケールを変化させるための行列
+	//DirectX::SimpleMath::Matrix m_Scale;
 
 	//	キーボード
 	std::unique_ptr<DirectX::Keyboard> keyboard;
-	//	自機の座標
-	DirectX::SimpleMath::Vector3 head_pos;
+	////	自機の座標
+	//DirectX::SimpleMath::Vector3 head_pos;
 
-	//	自機の回転角
-	float head_rot;
+	////	自機の回転角
+	//float head_rot;
 
-	//	自機のワールド行列1
-	DirectX::SimpleMath::Matrix head_world;
-	//	自機のワールド行列2
-	DirectX::SimpleMath::Matrix head_world2;
+	////	自機のワールド行列1
+	//DirectX::SimpleMath::Matrix head_world;
+	////	自機のワールド行列2
+	//DirectX::SimpleMath::Matrix head_world2;
 
-	//	自機パーツ
-	std::vector<Obj3d> m_Obj;
-	//	サイン用の角度
-	float m_cycle;
+	////	自機パーツ
+	//std::vector<Obj3d> m_Obj;
+	////	サイン用の角度
+	//float m_cycle;
 
 	//	カメラ
 	std::unique_ptr<FollowCamera> m_Camera;
@@ -236,17 +238,18 @@ private:
 	Camera* m_CurrentCamera;
 
 	////キーボードトラッカー
-	//DirectX::Keyboard::KeyboardStateTracker KeybordTracker;
+	DirectX::Keyboard::KeyboardStateTracker KeybordTracker;
 	std::unique_ptr<Player> player;
 
 	//敵
 	std::vector<std::unique_ptr<Enemy>> m_Enemies;
 
-	ModelExpansionEffect* Effect;
+	//ModelExpansionEffect* Effect;
 
 
-	//スプライトバッチ
-	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+
+
+
 	//スプライトフォント
 	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 
@@ -259,11 +262,12 @@ private:
 	//ID3D11RenderTargetView* m_pBackBuffer_TexRTV;
 
 	ID3D11Buffer* m_pConstantBuffer;
-	ID3D11InputLayout* m_pVertexLayout;
+	ID3D11InputLayout* pCompiledShader2;
 
 	ID3D11GeometryShader* m_pGeometryShader;
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11VertexShader* m_pVertexShader;
+	ID3D11InputLayout* m_pVertexLayout;
 
 	ID3D11SamplerState* m_pSampler;//テクスチャーのサンプラー
 	ID3D11ShaderResourceView* m_pTexture;//テクスチャー（用意するのはリソースビューだけでいい）
@@ -273,10 +277,17 @@ private:
 
 
 	D3DXMATRIX World;
-	D3DXMATRIX View;
-	D3DXMATRIX Proj;
+	//D3DXMATRIX View;
+	//D3DXMATRIX Proj;
 
 
+	/// <summary>
+	/// obj
+	/// </summary>
+
+
+	ID3D11PixelShader* m_Obj_pPixelShader;
+	ID3D11VertexShader* m_Obj_pVertexShader;
 
 	ID3D11Buffer* m_OBJpConstantBuffer;
 	MY_MESH m_Mesh;
@@ -291,7 +302,25 @@ private:
 
 
 	
-	std::vector<PARTICLE*> m_pParticle;
-	int MAX_PARTICLE = 300;
+	std::vector< PARTICLE*> m_pParticle;
+	std::vector<int> m_Particlecnt;
+
+	int MAX_PARTICLE = 100;
+
+	Stage stage;
+
+
+	int Particlecnt = 0;
+	// ホーミング弾
+	std::vector<std::unique_ptr<HomingBullet>> m_HomingBullets;
+	LandShape m_LandShape;
+
+
+	float a = 0;
+
+
+	int clearcnt;
+	int CLEARNUM = 15;
+//	PARTICLE* article;
 
 };       

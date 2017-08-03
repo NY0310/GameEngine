@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <SimpleMath.h>
 #include <wrl.h>
-
+#include <SpriteBatch.h>
 
 
 
@@ -100,6 +100,13 @@ public:
 	ComPtr<IDXGISwapChain> SwapChain() {
 		return swapChain;
 	}
+
+	//ビューポートを取得する
+	CD3D11_VIEWPORT Viewport() { return viewport; }
+
+	//ビューポートを設定する
+	void Viewport(CD3D11_VIEWPORT viewport) {this->viewport=viewport; }
+
 	// スワップチェインを設定する Set SwapChain
 	void SwapChain(ComPtr<IDXGISwapChain> swapChain) {
 		this->swapChain = swapChain;
@@ -121,6 +128,15 @@ public:
 	void DepthStencilView(ComPtr<ID3D11DepthStencilView> depthStencilView) {
 		this->depthStencilView = depthStencilView;
 	}
+
+	//スプライトバッチを取得する
+	std::unique_ptr<DirectX::SpriteBatch>& SpriteBatch() { return spriteBatch; }
+
+	//スプライトバッチを設定する
+	void SpriteBatch(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
+		this->spriteBatch = std::move(spriteBatch);
+	}
+
 
 	// デバイスを生成する Create device
 	void CreateDevice();
@@ -155,6 +171,11 @@ private:
 	ComPtr<IDXGISwapChain1> swapChain1;
 	ComPtr<ID3D11RenderTargetView> renderTargetView;
 	ComPtr<ID3D11DepthStencilView> depthStencilView;
+
+	//ビューポート
+	CD3D11_VIEWPORT  viewport;
+	//スプライトバッチ
+	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
 
 
 

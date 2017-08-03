@@ -30,8 +30,8 @@ void ComputeTriangle(const Vector3& _p0, const Vector3& _p1, const Vector3& _p2,
 {
 	//座標をコピー
 	_Triangle->P0 = _p0;
-	_Triangle->P0 = _p1;
-	_Triangle->P0 = _p2;
+	_Triangle->P1 = _p1;
+	_Triangle->P2 = _p2;
 	//法線ベクトルを計算
 	Vector3 P0_P1 = _p1 - _p0;
 	Vector3 P1_P2 = _p2 - _p1;

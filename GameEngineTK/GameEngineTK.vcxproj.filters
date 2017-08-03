@@ -26,6 +26,15 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{a8dde476-e2a9-4ad1-808c-aec5656e44b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{1dd6822a-9f99-4476-91bb-81c8894fd63e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player\HomingBullet">
+      <UniqueIdentifier>{47f7593f-b24b-44ee-9916-fd9024e839b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player\Bullet">
+      <UniqueIdentifier>{9a6bd89c-c67e-4a33-8a76-080a9f8a7ef1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -38,7 +47,6 @@
     <ClInclude Include="Obj3d.h">
       <Filter>State</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Collision.h">
       <Filter>Collisiton</Filter>
@@ -51,9 +59,6 @@
     </ClInclude>
     <ClInclude Include="LandShapeData.h">
       <Filter>Collisiton</Filter>
-    </ClInclude>
-    <ClInclude Include="PARTICLE.h">
-      <Filter>PARTICLE</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
@@ -73,6 +78,19 @@
     <ClInclude Include="Device.h">
       <Filter>Device</Filter>
     </ClInclude>
+    <ClInclude Include="PARTICLE.h">
+      <Filter>PARTICLE</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h" />
+    <ClInclude Include="HomingBullet.h">
+      <Filter>Player\HomingBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Player\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -85,7 +103,6 @@
     <ClCompile Include="Obj3d.cpp">
       <Filter>State</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Collision.cpp">
       <Filter>Collisiton</Filter>
@@ -98,9 +115,6 @@
     </ClCompile>
     <ClCompile Include="LandShapeData.cpp">
       <Filter>Collisiton</Filter>
-    </ClCompile>
-    <ClCompile Include="PARTICLE.cpp">
-      <Filter>PARTICLE</Filter>
     </ClCompile>
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Camera.cpp">
@@ -120,6 +134,19 @@
     </ClCompile>
     <ClCompile Include="Device.cpp">
       <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="PARTICLE.cpp">
+      <Filter>PARTICLE</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="HomingBullet.cpp">
+      <Filter>Player\HomingBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Player\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,14 +205,15 @@
     <MeshContentTask Include="Assets\SphereNode.FBX">
       <Filter>Assets</Filter>
     </MeshContentTask>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shader.hlsl">
-      <Filter>hlsl</Filter>
-    </None>
+    <MeshContentTask Include="Assets\Skydome2.FBX">
+      <Filter>Assets</Filter>
+    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Geometry.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
   </ItemGroup>

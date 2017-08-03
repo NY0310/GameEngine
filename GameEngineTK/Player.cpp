@@ -15,7 +15,6 @@ using namespace DirectX::SimpleMath;
 Player::Player(DirectX::Keyboard* keyboard)
 {
 	m_pKeyboard = keyboard;
-
 	Initialize();
 
 
@@ -30,6 +29,9 @@ Player::~Player()
 //-----------------------------------------------------------------------------
 void Player::Initialize()
 {
+	auto& devices = Devices::Get();
+
+
 	//	自機パーツの読み込み
 	m_Obj.resize(PARTS_NUM);
 
@@ -39,10 +41,10 @@ void Player::Initialize()
 	m_Obj[PARTS_FING_L].LoadModel(L"Resources\\Fing.cmo");
 	m_Obj[PARTS_FING_R].LoadModel(L"Resources\\Fing.cmo");
 
-	for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
-	{
-		m_Obj[i].LoadModel(L"Resources\\head.cmo");
-	}
+	//for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
+	//{
+	//	m_Obj[i].LoadModel(L"Resources\\head.cmo");
+	//}
 
 
 	m_Obj[PARTS_LEG_L].LoadModel(L"Resources\\Leg.cmo");
@@ -56,10 +58,10 @@ void Player::Initialize()
 	m_Obj[PARTS_LEG_R].SetObjParent(&m_Obj[PARTS_BODY]);
 
 
-	for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
-	{
-		m_Obj[i].SetObjParent(&m_Obj[PARTS_BREAST]);
-	}
+	//for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
+	//{
+	//	m_Obj[i].SetObjParent(&m_Obj[PARTS_BREAST]);
+	//}
 
 
 	m_Obj[PARTS_BREAST].SetTrans(Vector3(0.0f, 0.0f, 0.0f));
@@ -78,26 +80,26 @@ void Player::Initialize()
 	m_Obj[PARTS_FING_R].SetRot(Vector3(0, 90.0f, 0));
 
 
-	for (int i = 0; i < MAX_HEAD; i++)
-	{
-		Start_head_rotate[i] = 60 * i + 1;
+	//for (int i = 0; i < MAX_HEAD; i++)
+	//{
+	//	Start_head_rotate[i] = 60 * i + 1;
 
-		m_Obj[PARTS_HEAD1 + i].ChangeOrder(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT);
+	//	m_Obj[PARTS_HEAD1 + i].ChangeOrder(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT);
 
-		m_Obj[PARTS_HEAD1 + i].SetTrans(Vector3(2.0f, 2.0f, 0));
+	//	m_Obj[PARTS_HEAD1 + i].SetTrans(Vector3(2.0f, 2.0f, 0));
 
-		m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(0, XMConvertToRadians(Start_head_rotate[i]), 0));
-	}
+	//	m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(0, XMConvertToRadians(Start_head_rotate[i]), 0));
+	//}
 
 
 	FingRotX = 0.0f;
 	head_rotate = 0;
 	FiringCnt = 0;
 	flag = true;
-	for (int i = 0; i < MAX_HEAD; i++)
-	{
-		Flag[i] = false;
-	}
+	//for (int i = 0; i < MAX_HEAD; i++)
+	//{
+	//	Flag[i] = false;
+	//}
 
 	m_time = 0;
 
@@ -105,15 +107,33 @@ void Player::Initialize()
 
 	head_rotate = 1.0;
 
-	for (int i = 0; i < MAX_HEAD; i++)
-	{//弾丸用の当たり判定ノードの設定
-		m_CollisionNodeBullet[ i].Initialize();
-		//
-		m_CollisionNodeBullet[i].SetParant(&m_Obj[PARTS_HEAD1 + i]);
-		//
-		m_CollisionNodeBullet[ i].SetTrans(Vector3(0.0f, 0.5f, 0));
-		m_CollisionNodeBullet[ i].SetLocalRadious(0.5f);
-	}
+	hitcnt = 0;
+
+
+	Microsoft::WRL::ComPtr<ID3D11Resource> resTexture;
+	// テクスチャのロード
+	CreateWICTextureFromFile(devices.Device().Get(), L"HP.png", resTexture.GetAddressOf(),
+		m_texture.ReleaseAndGetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+	resTexture.As(&texture);
+
+	// テクスチャの中心を割り出す
+	CD3D11_TEXTURE2D_DESC textureDesc;
+	texture->GetDesc(&textureDesc);
+
+	m_origin.x = float(textureDesc.Width / 2);
+	m_origin.y = float(textureDesc.Height / 2);
+
+
+
+	Microsoft::WRL::ComPtr<ID3D11Resource> hitresTexture;
+	// テクスチャのロード
+	CreateWICTextureFromFile(devices.Device().Get(), L"homing.png", hitresTexture.GetAddressOf(),
+		m_hittexture.ReleaseAndGetAddressOf());
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> hittexture;
+	hitresTexture.As(&hittexture);
 
 
 
@@ -127,7 +147,15 @@ void Player::Initialize()
 		m_CollisionNodeBody.SetLocalRadious(2.0f);
 	}
 
+
+	m_Shadow.LoadModel(L"shadow.cmo");
+	m_Shadow.SetTrans(Vector3(0, SHADOW_OFFSET, 0));
+
 	m_isJump = false;
+
+
+	m_hp = MAX_HP;
+	
 }
 //-----------------------------------------------------------------------------
 // 更新
@@ -146,8 +174,9 @@ void Player::Update()
 	if (KeybordTracker.IsKeyPressed(Keyboard::Keys::Space))
 	{
 		//ジャンプ開始
- 		StartJump();
+ 		// StartJump();
 	}
+	Vector3 inter;
 
 	//落下中に
 	if (m_isJump)
@@ -159,7 +188,56 @@ void Player::Update()
 		{
 			m_Velocity.y = -JUMP_SPEED_MAX;
 		}
+
+		// 影の位置更新
+		Vector3 shadow_pos = m_Obj[0].GetTrans();
+		shadow_pos.y = inter.y + SHADOW_OFFSET;
+		m_Shadow.SetTrans(shadow_pos);
 	}
+
+
+	// 影の更新
+	{
+		Vector3 pos = m_Obj[0].GetTrans();
+		pos.y = SHADOW_OFFSET;
+		m_Shadow.SetTrans(pos);
+	}
+
+	// 垂直方向地形あたり判定
+	{
+		const Vector3& vel = GetVelocity();
+
+		bool hit = false;
+		Segment player_segment;
+		Vector3 player_pos = GetTrans();
+		player_segment.Start = player_pos + Vector3(0, SEGMENT_LENGTH, 0);
+		// 影の位置を検出するため、足元から下方向に余裕をもって判定を取る
+		player_segment.End = player_pos + Vector3(0, -SHADOW_DISTANCE, 0);
+
+		// 大きい数字で初期化
+		float distance = 1.0e5;
+
+
+			
+			float temp_distance;
+			Vector3 temp_inter;
+
+
+			Stage stage;
+			// 床面との当たりを判定
+			if ((&stage.GetLandShape())->IntersectSegment(player_segment, &temp_inter))
+			{
+				hit = true;
+				temp_distance = Vector3::Distance(player_segment.Start, temp_inter);
+				if (temp_distance < distance)
+				{
+					inter = temp_inter;
+					distance = temp_distance;
+				}
+			}
+		
+	}
+
 
 
 	{//速度による移動
@@ -170,42 +248,53 @@ void Player::Update()
 	}
 
 
-
 	if (KeybordTracker.IsKeyPressed(Keyboard::Keys::Space))
-		if(FiringCnt != 7)
 	{
-		HeadMoveFlag[FiringCnt] = true;
-		FiringCnt++;
-	}
+		BulletDate data;
+		data.Trans  = m_Obj[0].GetTrans() + Vector3(0,1,0);
+		
+		Matrix worldm = m_Obj[0].GetLocalWorld();
+
+		// 抽出した情報をしまっておく変数
+		Vector3 scale;			// ワールドスケーリング
+		Quaternion rotation;	// ワールド回転
+		Vector3 translation;	// ワールド座標
+
+								// ワールド行列から各要素を抽出
+		worldm.Decompose(scale, rotation, translation);
 
 
-	if (keystate.Space && (FiringCnt == 7))
-	{
-		for (int i = 0; i < MAX_HEAD; i++)
-		{
-			HeadMoveFlag[i] = false;
-			Start_head_rotate[i] = 60 * i;
-			FiringCnt = 0;
-			Flag[i] = false;
-			MoveVec[i] = Vector3(0.0f,0.0f,0.0f);
-			//親子関係を再構築
-			for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
-			{
-				m_Obj[i].SetObjParent(&m_Obj[PARTS_BREAST]);
-			}
-
-			const_cast<unique_ptr<WorldMatrixOrder>&>(m_Obj[PARTS_HEAD1 + i].GetOrder()).reset();
-			m_Obj[PARTS_HEAD1 + i].SetOrder((m_Obj[PARTS_HEAD1 + i].GetWorldMatrixOrderFactory().Set(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT)));
-
-			m_Obj[PARTS_HEAD1 + i].SetTrans(Vector3(2, 2, 0));
-
-			m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(0, XMConvertToRadians(Start_head_rotate[i]), 0));
+		//弾丸パーツに速度を設定
+		data.Velocity = Vector3(0, 0, -0.5f);
+		//パーツの向きに合わせて速度ベクトルを回転
+		data.Velocity = Vector3::Transform(data.Velocity, rotation);
 
 
+		Bullet* bullet = new Bullet(data);
+
+
+		m_bullet.push_back(bullet);
+
+		{//弾丸用の当たり判定ノードの設定
+			SphereNode* spherenode = new SphereNode();
+			spherenode->Initialize();
+			//
+			spherenode->SetParant(&bullet->GetObj3d());
+			//
+			spherenode->SetTrans(Vector3(0.0f, 0.0f, 0));
+			spherenode->SetLocalRadious(0.2f);
+			m_CollisionNodeBullet.push_back(spherenode);
 		}
+	
 	}
 
 
+
+	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end();it++ )
+	{
+		(*it)->Update();
+
+	}
 
 
 	//	左旋回処理
@@ -267,47 +356,6 @@ void Player::Update()
 
 
 
-	for (int i = 0; i < MAX_HEAD; i++)
-	{
-
-		//if (HeadMoveFlag[i] == true)
-		//{
-		//	if (Flag[i] == false)
-		//	{
-
-		//		
-		//		Flag[i] = true;
-		//		//親から切り離す
-		//		FireBullet(PARTS_HEAD1 + i);
-
-		//		m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(m_Obj[0].GetRot()));
-		//	
-
-		//	}
-		//	
-		//	const_cast<unique_ptr<WorldMatrixOrder>&>(m_Obj[PARTS_HEAD1 + i].GetOrder()).reset();
-		//	m_Obj[PARTS_HEAD1 + i].SetOrder((m_Obj[PARTS_HEAD1 + i].GetWorldMatrixOrderFactory().Set(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT)));
-
-		//	//弾丸パーツの座標を移動
-		//	Vector3 pos = m_Obj[PARTS_HEAD1 + i].GetTrans();
-		//	m_Obj[PARTS_HEAD1 + i].SetTrans(pos + m_BulletVel[PARTS_HEAD1 + i]);
-		//	
-		//	 
-		//	m_Obj[PARTS_HEAD1 + i].SetTrans(
-		//		Vector3(m_Obj[PARTS_HEAD1 + i].GetTrans().x, m_Obj[PARTS_HEAD1 + i].GetTrans().y, m_Obj[PARTS_HEAD1 + i].GetTrans().z -1 * MoveVec[i].z));
-
-		//	
-		//	MoveVec[i].z += 0.5;
-		//
-		//}
-		//else
-		{
-			m_Obj[PARTS_HEAD1 + i].ChangeOrder(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT);
-			m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(0, XMConvertToRadians(Start_head_rotate[i] + head_rotate), 0));
-
-			Start_head_rotate[i] += head_rotate;
-		}
-	}
 
 	//	後退処理
 	if (keystate.S)
@@ -358,27 +406,71 @@ void Player::Calc()
 		it->Update();
 	}
 
-	for (int i = 0; i < MAX_HEAD; i++)
-	{
-		m_CollisionNodeBullet[i].Update();
+	for (std::vector<Bullet*>::iterator it = m_bullet.begin();
+		it != m_bullet.end();
+		it++) {
+		(*it)->Update();
 	}
 
 
-	m_CollisionNodeBody.Update();
+	for (std::vector<SphereNode*>::iterator Sphereit = m_CollisionNodeBullet.begin(); Sphereit != m_CollisionNodeBullet.end(); Sphereit++)
+
+	{
+		(*Sphereit)->Update();
+	}
+
+	// 影の更新
+	m_Shadow.Update();
+
+	
 }
 //-----------------------------------------------------------------------------
 // 描画
 //-----------------------------------------------------------------------------
 void Player::Draw()
 {
+	auto& devices = Devices::Get();
+
+
 	for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
 	{
 		it->Draw();
 	}
-	for (int i = 0; i < MAX_HEAD; i++)
+	
+
+	// 影を減算描画
+	m_Shadow.DrawSubtractive();
+
+
+	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end(); it++)
 	{
-		m_CollisionNodeBullet[i].Draw();
+		(*it)->Draw();
 	}
+
+
+	float  a = static_cast<float>(m_hp) / static_cast<float>(MAX_HP);
+	const RECT rect = { 0, 0, 170 * a, 30 };
+	devices.SpriteBatch()->Draw(m_texture.Get(), Vector2(410,560), &rect, Colors::White,
+		0.0f, m_origin, Vector2(1.0f, 1.0f), SpriteEffects_None, 0.0f);
+
+
+	float  b = static_cast<float>(hitcnt) / static_cast<float>(MAX_HOMING);
+	const RECT homingrect = { 0, 0, 170 * b, 30  };
+	Color color;
+	if (hitcnt == MAX_HOMING)
+	{
+		color = Colors::Red;
+	}
+	else
+	{
+		color = Colors::White;
+	}
+	devices.SpriteBatch()->Draw(m_hittexture.Get(), Vector2(100, 440), &homingrect, color,
+		-1.6f, m_origin, Vector2(1.0f, 1.0f), SpriteEffects_None, 0.0f);
+
+
+
+	m_CollisionNodeBody.Update();
 }
 
 const DirectX::SimpleMath::Vector3& Player::GetTrans()
@@ -404,11 +496,11 @@ void Player::FireBullet(int parts)
 	Vector3 scale;
 	Quaternion rotq;
 	Vector3 pos;
-	//行列の1行ずつを、Vector3として扱う
-	Vector3* m0 = (Vector3*)&worldm.m[0];
-	Vector3* m1 = (Vector3*)&worldm.m[1];
-	Vector3* m2 = (Vector3*)&worldm.m[2];
-	Vector3* m3 = (Vector3*)&worldm.m[3];
+	////行列の1行ずつを、Vector3として扱う
+	//Vector3* m0 = (Vector3*)&worldm.m[0];
+	//Vector3* m1 = (Vector3*)&worldm.m[1];
+	//Vector3* m2 = (Vector3*)&worldm.m[2];
+	//Vector3* m3 = (Vector3*)&worldm.m[3];
 
 	//ワールド座行列から各要素を抽出
 	worldm.Decompose(scale, rotq, pos);

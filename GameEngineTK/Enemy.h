@@ -12,12 +12,15 @@
 #include <SimpleMath.h>
 #include <Keyboard.h>
 #include "Obj3d.h"
+#include <WICTextureLoader.h>
+
 #include <vector>
 #include "CollisionNode.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-
+#include <SpriteBatch.h>
+#include "Bullet.h"
 
 // 自機
 class Enemy
@@ -74,7 +77,38 @@ public:
 	void FireBullet(int parts);
 
 	// 全身用の当たり判定を取得
-	const SphereNode& GetCollisionNodeBody() { return m_CollisionNodeBody; }
+	SphereNode& GetCollisionNodeBody() { return m_CollisionNodeBody; }
+
+
+	//画像取得
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> GetTexture() {
+		return m_texture;
+	}
+
+
+
+	bool GetInScreen() { return m_InScreen; }
+	DirectX::SimpleMath::Vector2 GetOrigin() { return m_origin; }
+
+
+	//hp取得
+	int GetHp() { return m_hp; }
+	//hp設定
+	void SetHp(int hp) { m_hp = hp; }
+
+
+	DirectX::SimpleMath::Vector3 GetBulletVel() { return m_BulletVel; }
+
+	bool SetMoveFlag(bool  flag) { return MoveFlag = flag; }
+
+
+
+	const Obj3d* GetObj3d() { return &m_Obj[0]; }
+
+
+	std::vector<SphereNode*>& GetCollisionNodeBullet() { return m_CollisionNodeBullet; }
+
+
 protected:
 	// キーボード
 	DirectX::Keyboard* m_pKeyboard;
@@ -143,6 +177,27 @@ protected:
 	//弾丸の速度ベクトル
 	DirectX::SimpleMath::Vector3 m_BulletVel;
 
+	//スクリーンに収まっているか
+	bool m_InScreen;
+	//スクリーン座標
+	DirectX::SimpleMath::Vector2 m_screenPos;
 
 
+	//画像
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>  m_texture;
+
+	DirectX::SimpleMath::Vector2 m_origin;
+
+	//体力上限
+	const int MAX_HP = 30;
+	//体力
+	int m_hp;
+
+	//移動するか
+	bool MoveFlag;
+
+	//弾丸
+	std::vector<Bullet*> m_bullet;
+	//弾丸用の当たり判定
+	std::vector<SphereNode*> m_CollisionNodeBullet;
 };

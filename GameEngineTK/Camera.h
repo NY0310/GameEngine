@@ -60,7 +60,7 @@ public:
 	//	ファークリップのセット
 	void SetFarClip(float farclip);
 
-protected:
+public:
 	//	カメラの位置(視点座標）
 	DirectX::SimpleMath::Vector3 m_eyepos;
 	//	カメラの見ている先(注視点/参照点)

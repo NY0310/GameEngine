@@ -1,7 +1,7 @@
 #include "CollisionNode.h"
 using namespace DirectX::SimpleMath;
 
-bool CollisionNode::m_DebugVisible = true;
+bool CollisionNode::m_DebugVisible = false;
 
 /* ---- CollisionNode‚Ìƒƒ“ƒoŠÖ” ---------- */
 void CollisionNode::SetParant(Obj3d * parant)
