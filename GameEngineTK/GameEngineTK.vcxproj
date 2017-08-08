@@ -178,12 +178,15 @@
     <ClInclude Include="LandShapeData.h" />
     <ClInclude Include="ModelEffect.h" />
     <ClInclude Include="ModelExpansionEffect.h" />
+    <ClInclude Include="OBJ.h" />
     <ClInclude Include="Obj3d.h" />
     <ClInclude Include="PARTICLE.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="ToManageParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
@@ -201,12 +204,15 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModelEffect.cpp" />
     <ClCompile Include="ModelExpansionEffect.cpp" />
+    <ClCompile Include="OBJ.cpp" />
     <ClCompile Include="Obj3d.cpp" />
     <ClCompile Include="PARTICLE.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
+    <ClCompile Include="ToManageParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

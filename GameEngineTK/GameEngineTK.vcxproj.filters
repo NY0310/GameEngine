@@ -35,6 +35,9 @@
     <Filter Include="Player\Bullet">
       <UniqueIdentifier>{9a6bd89c-c67e-4a33-8a76-080a9f8a7ef1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{9b430cb5-d219-4f11-8eb7-607e22b8ad82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -90,6 +93,13 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>Player\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="ToManageParticle.h">
+      <Filter>PARTICLE</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="OBJ.h">
+      <Filter>Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +157,13 @@
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>Player\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="ToManageParticle.cpp">
+      <Filter>PARTICLE</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="OBJ.cpp">
+      <Filter>Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
