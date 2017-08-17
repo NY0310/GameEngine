@@ -104,6 +104,8 @@ public:
 
 
 	int GetMAX_HOMING() { return MAX_HOMING;}
+
+
 protected:
 	// キーボード
 	DirectX::Keyboard* m_pKeyboard;

@@ -40,6 +40,7 @@
 #include "Stage.h";
 #include "HomingBullet.h"
 #include "OBJ.h"
+#include "D3DXDROW.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -180,5 +181,5 @@ private:
 	ToManageParticle* tomanageparticle;
 	OBJ* obj;
 	ShaderManager shadermanager;//シェーダー関連
-
+	D3DXDROW* d3dxdrow;//D3DXMESHライブラリを使用してXファイルを描画するクラス
 };       

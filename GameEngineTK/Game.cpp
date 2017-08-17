@@ -96,7 +96,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//	汎用ステートを生成	q
 	m_states = std::make_unique<CommonStates>(devices.Device().Get());
 
-
+	
 	devices.Context().Get()->RSSetState(m_states->CullClockwise());
 
 
@@ -143,6 +143,12 @@ void Game::Initialize(HWND window, int width, int height)
 	obj->Init();
 
 	shadermanager = ShaderManager::Get();
+
+
+	//D3DXMESHライブラリを使用するクラス生成
+	d3dxdrow = new D3DXDROW();
+	//初期化
+	d3dxdrow->InitD3D();
 }
 
 
@@ -385,64 +391,64 @@ void Game::Update(DX::StepTimer const& timer)
 
 	//敵の天球へのめりこみを解消する
 
-	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
 
-	{
-		Vector3 pos = (*it)->GetTrans();
-		pos.x = abs(pos.x);
-		pos.y = abs(pos.y);
-		pos.z = abs(pos.z);
+	//{
+	//	Vector3 pos = (*it)->GetTrans();
+	//	pos.x = abs(pos.x);
+	//	pos.y = abs(pos.y);
+	//	pos.z = abs(pos.z);
 
-		if ((pos.x >= 75) || (pos.z >= 75))
-		{
+	//	if ((pos.x >= 75) || (pos.z >= 75))
+	//	{
 
-			//自機の天球へのめりこみを解消する
-			{
-				Sphere sphere = (*it)->GetCollisionNodeBody();
+	//		//自機の天球へのめりこみを解消する
+	//		{
+	//			Sphere sphere = (*it)->GetCollisionNodeBody();
 
-				//自機のワールド座標
-				Vector3 trans = (*it)->GetTrans();
+	//			//自機のワールド座標
+	//			Vector3 trans = (*it)->GetTrans();
 
-				Vector3 sphere2player = trans - sphere.Center;
-				//めりこみ排斥ベクトル
-				Vector3 reject;
+	//			Vector3 sphere2player = trans - sphere.Center;
+	//			//めりこみ排斥ベクトル
+	//			Vector3 reject;
 
-				if (m_LandShape.IntersectSphere(sphere, &reject))
-				{
-					
-					
-					//削除する敵をターゲットにしているホーミング弾を削除	
-					for (std::vector<std::unique_ptr<HomingBullet>>::iterator ithoming = m_HomingBullets.begin();
-						ithoming != m_HomingBullets.end();)
-					{
-						if ((*it).get() == (*ithoming)->GetEnemy())
-						{
-							ithoming = m_HomingBullets.erase(ithoming);
-						}
-						else
-						{
-							ithoming++;
-						}
-					}
-					it = m_Enemies.erase(it);
-					m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
+	//			if (m_LandShape.IntersectSphere(sphere, &reject))
+	//			{
+	//				
+	//				
+	//				//削除する敵をターゲットにしているホーミング弾を削除	
+	//				for (std::vector<std::unique_ptr<HomingBullet>>::iterator ithoming = m_HomingBullets.begin();
+	//					ithoming != m_HomingBullets.end();)
+	//				{
+	//					if ((*it).get() == (*ithoming)->GetEnemy())
+	//					{
+	//						ithoming = m_HomingBullets.erase(ithoming);
+	//					}
+	//					else
+	//					{
+	//						ithoming++;
+	//					}
+	//				}
+	//				it = m_Enemies.erase(it);
+	//				m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
 
-				}
-				else
-				{
-					//it++;
-				}
-
-
-			}
+	//			}
+	//			else
+	//			{
+	//				//it++;
+	//			}
 
 
-		}
-		else
-		{
-		//	it++;
-		}
-	}
+	//		}
+
+
+	//	}
+	//	else
+	//	{
+	//	//	it++;
+	//	}
+	//}
 
 
 
@@ -492,6 +498,10 @@ void Game::Render()
 	Clear();
 
 //#if 0
+//アルファ値を有効にする
+	devices.Context().Get()->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xffffffff);
+
+
 	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
 		it != m_HomingBullets.end();
 		it++)
@@ -532,13 +542,15 @@ void Game::Render()
 	}
 
 	tomanageparticle->Render(m_Camera);
-
-
 	obj->Render(m_Camera);
+
+	//アルファ値を無効にする
+	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
 	devices.SpriteBatch().get()->End();
 	
-	
+	//D3DXMESHライブラリを使用してXファイルを描画するクラス
+	d3dxdrow->Render(m_Camera);
 
 
 	Present();

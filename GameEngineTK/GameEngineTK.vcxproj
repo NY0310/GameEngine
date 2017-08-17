@@ -168,6 +168,8 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionNode.h" />
+    <ClInclude Include="D3DXREAD.h" />
+    <ClInclude Include="D3DXDROW.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Enemy.h" />
@@ -193,6 +195,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionNode.cpp" />
+    <ClCompile Include="D3DXREAD.cpp" />
+    <ClCompile Include="D3DXDROW.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -259,6 +263,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="D3DXMESH.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

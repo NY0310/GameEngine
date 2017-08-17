@@ -3,7 +3,9 @@
 
 OBJ::OBJ()
 {
+
 }
+
 
 
 OBJ::~OBJ()
@@ -13,7 +15,13 @@ OBJ::~OBJ()
 void OBJ::Init()
 {
 	shadermanager = ShaderManager::Get();
-	this->InitD3D();
+	InitD3D();
+
+	m_vLight = D3DXVECTOR3(0, 0, 1);
+	D3DXVec3Normalize(&m_vLight, &m_vLight);
+
+	birthcnt = 0;
+
 }
 
 HRESULT OBJ::InitD3D()
@@ -24,14 +32,14 @@ HRESULT OBJ::InitD3D()
 	ID3DBlob *pCompiledShader = NULL;
 	ID3DBlob *pErrors = NULL;
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "VS", "vs_5_0", D3D10_SHADER_DEBUG, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 		return E_FAIL;
 	}
 	SAFE_RELEASE(pErrors);
 
-	if (FAILED(devices.Device().Get()->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_Obj_pVertexShader)))
+	if (FAILED(devices.Device().Get()->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pVertexShader)))
 	{
 		SAFE_RELEASE(pCompiledShader);
 		MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
@@ -42,6 +50,8 @@ HRESULT OBJ::InitD3D()
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 	//頂点インプットレイアウトを作成
@@ -50,13 +60,13 @@ HRESULT OBJ::InitD3D()
 		return FALSE;
 	}
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "PS", "ps_5_0", D3D10_SHADER_DEBUG, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 		return E_FAIL;
 	}
 	SAFE_RELEASE(pErrors);
-	if (FAILED(devices.Device().Get()->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_Obj_pPixelShader)))
+	if (FAILED(devices.Device().Get()->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pPixelShader)))
 	{
 		SAFE_RELEASE(pCompiledShader);
 		MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
@@ -71,38 +81,62 @@ HRESULT OBJ::InitD3D()
 	cb.MiscFlags = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	if (FAILED(devices.Device().Get()->CreateBuffer(&cb, NULL, &m_OBJpConstantBuffer)))
+	ID3D11RasterizerState* m_pRasterizerState;
+
+
+
+	if (FAILED(devices.Device().Get()->CreateBuffer(&cb, NULL, &m_pConstantBuffer)))
 	{
 		return E_FAIL;
 	}
-
-
-	//メッシュ作成
+	//ポリゴン作成
 	if (FAILED(InitStaticMesh("Geometry.obj", &m_Mesh)))
 	{
 		return E_FAIL;
 	}
+	//テクスチャー作成
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(devices.Device().Get(), "Hand_ColorMap.bmp", NULL, NULL, &m_pTexture, NULL)))
+	{
+		return E_FAIL;
+	}
+
+
+
+
+
+	////メッシュ作成
+	//if (FAILED(InitStaticMesh("Geometry.obj", &m_Mesh)))
+	//{
+	//	return E_FAIL;
+	//}
 
 	return S_OK;
 }
 
 HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 {
+
 	auto& devices = Devices::Get();
 
-	pMesh->pIndexBuffer = NULL;
-	pMesh->pVertexBuffer = NULL;
-	pMesh->dwNumFace = 0;
-	pMesh->dwNumVert = 0;
-	float x, y, z;
+
+	float x = 0, y = 0, z = 0;
 	int v1 = 0, v2 = 0, v3 = 0;
-	char key[500] = { 0 };
-	//ファイルを開いて内容を読み込む
+	int vn1 = 0, vn2 = 0, vn3 = 0;
+	int vt1 = 0, vt2 = 0, vt3 = 0;
+	DWORD dwVCount = 0;//読み込みカウンター
+	DWORD dwVNCount = 0;//読み込みカウンター
+	DWORD dwVTCount = 0;//読み込みカウンター
+	DWORD dwFCount = 0;//読み込みカウンター
+	pMesh->dwNumVert = 0;
+	pMesh->dwNumFace = 0;
+
+
+	char key[200] = { 0 };
+	//OBJファイルを開いて内容を読み込む
 	FILE* fp = NULL;
 	fopen_s(&fp, FileName, "rt");
 
-	//まずは頂点数、ポリゴン数を調べる
-	int a = 0;
+	//事前に頂点数、ポリゴン数を調べる
 	while (!feof(fp))
 	{
 		//キーワード読み込み
@@ -110,8 +144,17 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 		//頂点
 		if (strcmp(key, "v") == 0)
 		{
-			a++;
 			pMesh->dwNumVert++;
+		}
+		//法線
+		if (strcmp(key, "vn") == 0)
+		{
+			dwVNCount++;
+		}
+		//テクスチャー座標
+		if (strcmp(key, "vt") == 0)
+		{
+			dwVTCount++;
 		}
 		//フェイス（ポリゴン）
 		if (strcmp(key, "f") == 0)
@@ -121,50 +164,102 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	}
 
 	//一時的なメモリ確保（頂点バッファとインデックスバッファ）
-	D3DXVECTOR3* pvVertexBuffer = new D3DXVECTOR3[pMesh->dwNumVert];
+	SimpleVertex* pvVertexBuffer = new SimpleVertex[pMesh->dwNumFace * 3];
+	D3DXVECTOR3* pvCoord = new D3DXVECTOR3[pMesh->dwNumVert];
+	D3DXVECTOR3* pvNormal = new D3DXVECTOR3[dwVNCount];
+	D3DXVECTOR2* pvTexture = new D3DXVECTOR2[dwVTCount];
 	int* piFaceBuffer = new int[pMesh->dwNumFace * 3];//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
 
-													  //本読み込み
+													  //本読み込み	
 	fseek(fp, SEEK_SET, 0);
-	DWORD dwVCount = 0;//読み込みカウンター
-	DWORD dwFCount = 0;//読み込みカウンター
+	dwVCount = 0;
+	dwVTCount = 0;
+	dwVNCount = 0;
+	dwFCount = 0;
+
+	SimpleVertex test[6000];
+
 	while (!feof(fp))
 	{
 		//キーワード 読み込み
 		ZeroMemory(key, sizeof(key));
 		fscanf_s(fp, "%s ", key, sizeof(key));
+
 		//頂点 読み込み
 		if (strcmp(key, "v") == 0)
 		{
 			fscanf_s(fp, "%f %f %f", &x, &y, &z);
-			pvVertexBuffer[dwVCount].x = -x;//OBJは右手座標系なのでxあるいはｚを反転
-			pvVertexBuffer[dwVCount].y = y;
-			pvVertexBuffer[dwVCount].z = z;
+			pvCoord[dwVCount].x = -x;//OBJは右手座標系なのでxあるいはｚを反転
+			pvCoord[dwVCount].y = y;
+			pvCoord[dwVCount].z = z;			
+			
 			dwVCount++;
 		}
-		//フェイス（ポリゴン） 読み込み
+		//法線 読み込み
+		if (strcmp(key, "vn") == 0)
+		{
+			fscanf_s(fp, "%f %f %f", &x, &y, &z);
+			pvNormal[dwVNCount].x = -x;//OBJは右手座標系なのでxあるいはｚを反転
+			pvNormal[dwVNCount].y = y;
+			pvNormal[dwVNCount].z = z;
+			dwVNCount++;
+		}
+
+
+		//テクスチャー座標 読み込み
+		if (strcmp(key, "vt") == 0)
+		{
+			fscanf_s(fp, "%f %f", &x, &y);
+			pvTexture[dwVTCount].x = x;
+			pvTexture[dwVTCount].y = 1 - y;//OBJファイルはY成分が逆なので合わせる
+			dwVTCount++;
+		}
+		//フェイス 読み込み→頂点インデックスに
 		if (strcmp(key, "f") == 0)
 		{
 			fscanf_s(fp, "%d// %d// %d//", &v1, &v2, &v3);
-			piFaceBuffer[dwFCount * 3] = v1 - 1;
-			piFaceBuffer[dwFCount * 3 + 1] = v2 - 1;
-			piFaceBuffer[dwFCount * 3 + 2] = v3 - 1;
+			//fscanf_s(fp, "%d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3);
+			piFaceBuffer[dwFCount * 3] = dwFCount * 3;
+			piFaceBuffer[dwFCount * 3 + 1] = dwFCount * 3 + 1;
+			piFaceBuffer[dwFCount * 3 + 2] = dwFCount * 3 + 2;
+			//頂点構造体に代入
+			//pvVertexBuffer[dwFCount * 3].Pos = pvCoord[v1 - 1];
+			//pvVertexBuffer[dwFCount * 3].Normal = pvNormal[vn1 - 1];
+			//pvVertexBuffer[dwFCount * 3].Tex = pvTexture[vt1 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 1].Pos = pvCoord[v2 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 1].Normal = pvNormal[vn2 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 1].Tex = pvTexture[vt2 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 2].Pos = pvCoord[v3 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 2].Normal = pvNormal[vn3 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 2].Tex = pvTexture[vt3 - 1];
+
+			pvVertexBuffer[dwFCount * 3].Pos = pvCoord[v1 - 1];
+			pvVertexBuffer[dwFCount * 3].Normal = D3DXVECTOR3(0,0,0);
+			pvVertexBuffer[dwFCount * 3].Tex = D3DXVECTOR2(0,0);
+			pvVertexBuffer[dwFCount * 3 + 1].Pos = pvCoord[v2 - 1];
+			pvVertexBuffer[dwFCount * 3 + 1].Normal = D3DXVECTOR3(0, 0, 0);
+			pvVertexBuffer[dwFCount * 3 + 1].Tex = D3DXVECTOR2(0, 0);
+			pvVertexBuffer[dwFCount * 3 + 2].Pos = pvCoord[v3 - 1];
+			pvVertexBuffer[dwFCount * 3 + 2].Normal = D3DXVECTOR3(0, 0, 0);
+			pvVertexBuffer[dwFCount * 3 + 2].Tex = D3DXVECTOR2(0, 0);
+
+			test[dwFCount * 3 + 0] = pvVertexBuffer[dwFCount * 3 + 0];
+			test[dwFCount * 3 + 1] = pvVertexBuffer[dwFCount * 3 + 1];
+			test[dwFCount * 3 + 2] = pvVertexBuffer[dwFCount * 3 + 2];
+
 			dwFCount++;
 		}
-
 	}
 
 	fclose(fp);
-	//バーテックスバッファー作成
+
+	//バーテックスバッファーを作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(D3DXVECTOR3) *pMesh->dwNumVert * 3;
+	bd.ByteWidth = sizeof(SimpleVertex) *pMesh->dwNumFace * 3;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
-
-
-
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = pvVertexBuffer;
 	if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pVertexBuffer)))
@@ -177,16 +272,108 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	InitData.pSysMem = piFaceBuffer;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
 	if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
 		return FALSE;
 
 	//一時的な入れ物は、もはや不要
+	delete pvCoord;
+	delete pvNormal;
+	delete pvTexture;
 	delete[] pvVertexBuffer;
 	delete[] piFaceBuffer;
 
 	return S_OK;
+
+//float x, y, z;
+//int v1 = 0, v2 = 0, v3 = 0;
+//char key[190] = { 0 };
+//pMesh->dwNumVert = 0;
+//pMesh->dwNumFace = 0;
+////ファイルを開いて内容を読み込む
+//FILE* fp = NULL;
+//fopen_s(&fp, FileName, "rt");
+//
+////まずは頂点数、ポリゴン数を調べる
+//while (!feof(fp))
+//{
+//	//キーワード読み込み
+//	fscanf_s(fp, "%s ", key, sizeof(key));
+//	//頂点
+//	if (strcmp(key, "v") == 0)
+//	{
+//		pMesh->dwNumVert++;
+//	}
+//	//フェイス（ポリゴン）
+//	if (strcmp(key, "f") == 0)
+//	{
+//		pMesh->dwNumFace++;
+//	}
+//}
+//
+////一時的なメモリ確保（頂点バッファとインデックスバッファ）
+//D3DXVECTOR3* pvVertexBuffer = new D3DXVECTOR3[pMesh->dwNumVert];
+//int* piFaceBuffer = new int[pMesh->dwNumFace * 3];//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
+//
+//												  //本読み込み
+//fseek(fp, SEEK_SET, 0);
+//DWORD dwVCount = 0;//読み込みカウンター
+//DWORD dwFCount = 0;//読み込みカウンター
+//while (!feof(fp))
+//{
+//	//キーワード 読み込み
+//	ZeroMemory(key, sizeof(key));
+//	fscanf_s(fp, "%s ", key, sizeof(key));
+//	//頂点 読み込み
+//	if (strcmp(key, "v") == 0)
+//	{
+//		fscanf_s(fp, "%f %f %f", &x, &y, &z);
+//		pvVertexBuffer[dwVCount].x = -x;//OBJは右手座標系なのでxあるいはｚを反転
+//		pvVertexBuffer[dwVCount].y = y;
+//		pvVertexBuffer[dwVCount].z = z;
+//		dwVCount++;
+//	}
+//	//フェイス（ポリゴン） 読み込み
+//	if (strcmp(key, "f") == 0)
+//	{
+//		fscanf_s(fp, "%d// %d// %d//", &v1, &v2, &v3);
+//		piFaceBuffer[dwFCount * 3] = v1 - 1;
+//		piFaceBuffer[dwFCount * 3 + 1] = v2 - 1;
+//		piFaceBuffer[dwFCount * 3 + 2] = v3 - 1;
+//		dwFCount++;
+//	}
+//
+//}
+//
+//fclose(fp);
+////バーテックスバッファー作成
+//D3D11_BUFFER_DESC bd;
+//bd.Usage = D3D11_USAGE_DEFAULT;
+//bd.ByteWidth = sizeof(D3DXVECTOR3) *pMesh->dwNumVert * 3;
+//bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//bd.CPUAccessFlags = 0;
+//bd.MiscFlags = 0;
+//D3D11_SUBRESOURCE_DATA InitData;
+//InitData.pSysMem = pvVertexBuffer;
+//if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pVertexBuffer)))
+//return FALSE;
+//
+////インデックスバッファーを作成
+//bd.Usage = D3D11_USAGE_DEFAULT;
+//bd.ByteWidth = sizeof(int) * pMesh->dwNumFace * 3;
+//bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+//bd.CPUAccessFlags = 0;
+//bd.MiscFlags = 0;
+//InitData.pSysMem = piFaceBuffer;
+//InitData.SysMemPitch = 0;
+//InitData.SysMemSlicePitch = 0;
+//if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
+//return FALSE;
+//
+////一時的な入れ物は、もはや不要
+//delete[] pvVertexBuffer;
+//delete[] piFaceBuffer;
+
+//return S_OK;
 }
 
 void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
@@ -202,7 +389,7 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	static float x = 0;
 	x += 0.00001;
 	D3DXMATRIX Tran;
-	D3DXMatrixTranslation(&Tran, x, 0, 0);
+	D3DXMatrixTranslation(&Tran, x, 1, 0);
 	World = Tran;
 
 
@@ -215,46 +402,83 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 
 
 
-	D3DXMATRIX CancelRotation = View;
-	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
-	D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
-	World = CancelRotation * World;
+	//D3DXMATRIX CancelRotation = View;
+	//CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
+	//D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
+	//World = CancelRotation * World;
 
 
 	//使用するシェーダーの登録	
-	devices.Context().Get()->VSSetShader(m_Obj_pVertexShader, NULL, 0);
-	devices.Context().Get()->PSSetShader(m_Obj_pPixelShader, NULL, 0);
+	devices.Context().Get()->VSSetShader(m_pVertexShader, NULL, 0);
+	devices.Context().Get()->PSSetShader(m_pPixelShader, NULL, 0);
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
 	SIMPLESHADER_CONSTANT_BUFFER cb;
-	if (SUCCEEDED(devices.Context().Get()->Map(m_OBJpConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		//ワールドトランスフォームは個々で異なる
-		D3DXMATRIX Scale, Tran;
-		D3DXMatrixTranslation(&Tran, 0, 0, 0);
+		//birthcnt+= 100;
+		////ワールドトランスフォームは個々で異なる
+		//D3DXMATRIX Scale, Tran, Rot;
+
+		////ワールド行列計算
+		//D3DXMatrixScaling(&World, 1, 1, 1);
+		////World *= Scale;
+		// 
+
+		//////ワールドトランスフォーム（絶対座標変換）
+		//D3DXMatrixRotationY(&Rot, birthcnt / 1000.0f);//単純にyaw回転させる
+		//World *= Rot;
+
+		//D3DXMatrixTranslation(&Tran, 0, 1, 0);
+
+		//World *= Tran;
+
+		////ワールド行列を渡す
+		////cb.mW = World;
+		////D3DXMatrixTranspose(&cb.mW, &cb.mW);
+
+		//
+		////ワールド、カメラ、射影行列を渡す
+		//D3DXMATRIX m = World *View * Proj;
+		//D3DXMatrixTranspose(&m, &m);
+		//cb.mWVP = m;
 
 		//ワールド、カメラ、射影行列を渡す
-		D3DXMatrixScaling(&Scale, 5, 5, 5);
-		World = Scale*CancelRotation*Tran;
+		cb.mWVP = World*View*Proj;
+		D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
 
-		D3DXMATRIX m = World *View * Proj;
-		D3DXMatrixTranspose(&m, &m);
-		cb.mWVP = m;
+		//カラーを渡す
+		//D3DXVECTOR4 vColor(1, 0, 0, 1);
+		//cb.vColor = vColor;
+
+
+		////ライト方向を渡す
+		//cb.vLightDir = (D3DXVECTOR4)m_vLight;
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-		devices.Context().Get()->Unmap(m_OBJpConstantBuffer, 0);
-	}
+		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
 
+
+
+		//memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
+		//devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
+
+	}
+	m_pSampleLimear = NULL;
+	//m_pTexture = NULL;
+	//テクスチャーをシェーダーに渡す
+	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLimear);
+	devices.Context().Get()->PSSetShaderResources(0, 1, &m_pTexture);
 
 	//このコンスタントバッファーを使うシェーダーの登録
-	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_OBJpConstantBuffer);
-	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_OBJpConstantBuffer);
+	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	//頂点インプットレイアウトをセット
 	devices.Context().Get()->IASetInputLayout(m_pVertexLayout);
 	//プリミティブ・トポロジーをセット
 	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//バーテックスバッファーをセット
-	UINT stride = sizeof(D3DXVECTOR3);
+	UINT stride = sizeof(SimpleVertex);
 	UINT offset = 0;
 	devices.Context().Get()->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
 	//インデックスバッファーをセット

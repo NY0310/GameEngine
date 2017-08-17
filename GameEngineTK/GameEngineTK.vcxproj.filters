@@ -38,6 +38,12 @@
     <Filter Include="Mesh">
       <UniqueIdentifier>{9b430cb5-d219-4f11-8eb7-607e22b8ad82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh\D3DX">
+      <UniqueIdentifier>{eee5079f-0b59-46b0-a4cd-32a29edf4b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh\OBJ">
+      <UniqueIdentifier>{e922770e-a639-46f0-a5ad-52905d0fb0b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -99,7 +105,13 @@
     </ClInclude>
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="OBJ.h">
-      <Filter>Mesh</Filter>
+      <Filter>Mesh\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DXREAD.h">
+      <Filter>Mesh\D3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DXDROW.h">
+      <Filter>Mesh\D3DX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,7 +175,13 @@
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="OBJ.cpp">
-      <Filter>Mesh</Filter>
+      <Filter>Mesh\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DXDROW.cpp">
+      <Filter>Mesh\D3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DXREAD.cpp">
+      <Filter>Mesh\D3DX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +249,9 @@
       <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Shader.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="D3DXMESH.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
   </ItemGroup>
