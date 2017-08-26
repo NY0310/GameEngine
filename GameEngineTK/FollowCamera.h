@@ -25,6 +25,9 @@ public:
 	//	追従対象の回転角をセット
 	void SetTargetAngle(float targetAngle);
 
+
+
+
 	//	キーボードをセット
 	void SetKeyboard(DirectX::Keyboard* keyboard);
 	//プレイヤをセット

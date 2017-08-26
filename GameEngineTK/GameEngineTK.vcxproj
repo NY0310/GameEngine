@@ -169,7 +169,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionNode.h" />
     <ClInclude Include="D3DXREAD.h" />
-    <ClInclude Include="D3DXDROW.h" />
+    <ClInclude Include="CD3DXMESH.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Enemy.h" />
@@ -196,7 +196,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionNode.cpp" />
     <ClCompile Include="D3DXREAD.cpp" />
-    <ClCompile Include="D3DXDROW.cpp" />
+    <ClCompile Include="CD3DXMESH.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Enemy.cpp" />

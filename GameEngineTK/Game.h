@@ -40,7 +40,7 @@
 #include "Stage.h";
 #include "HomingBullet.h"
 #include "OBJ.h"
-#include "D3DXDROW.h"
+#include "CD3DXMESH.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -86,7 +86,7 @@ public:
 	// Properties
 	void GetDefaultSize( int& width, int& height ) const;
 
-	DirectX::SimpleMath::Matrix D3DXMATRIXToMatrix(D3DXMATRIX  d3dxmatrix);
+	//DirectX::SimpleMath::Matrix D3DXMATRIXToMatrix(D3DXMATRIX  d3dxmatrix);
 
 	void FireHomingBullets(const DirectX::SimpleMath::Vector3 pos);
 private:
@@ -181,5 +181,5 @@ private:
 	ToManageParticle* tomanageparticle;
 	OBJ* obj;
 	ShaderManager shadermanager;//シェーダー関連
-	D3DXDROW* d3dxdrow;//D3DXMESHライブラリを使用してXファイルを描画するクラス
+	CD3DXMESH* m_pMesh;//D3DXMESHライブラリを使用してXファイルを描画するクラス
 };       

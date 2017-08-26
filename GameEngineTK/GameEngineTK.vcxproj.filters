@@ -110,7 +110,7 @@
     <ClInclude Include="D3DXREAD.h">
       <Filter>Mesh\D3DX</Filter>
     </ClInclude>
-    <ClInclude Include="D3DXDROW.h">
+    <ClInclude Include="CD3DXMESH.h">
       <Filter>Mesh\D3DX</Filter>
     </ClInclude>
   </ItemGroup>
@@ -177,10 +177,10 @@
     <ClCompile Include="OBJ.cpp">
       <Filter>Mesh\OBJ</Filter>
     </ClCompile>
-    <ClCompile Include="D3DXDROW.cpp">
+    <ClCompile Include="D3DXREAD.cpp">
       <Filter>Mesh\D3DX</Filter>
     </ClCompile>
-    <ClCompile Include="D3DXREAD.cpp">
+    <ClCompile Include="CD3DXMESH.cpp">
       <Filter>Mesh\D3DX</Filter>
     </ClCompile>
   </ItemGroup>

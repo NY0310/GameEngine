@@ -33,6 +33,8 @@ public:
 	const DirectX::SimpleMath::Matrix& GetBillboard() const { return m_Billboard; }
 	const DirectX::SimpleMath::Matrix& GetBillboardConstrainY() const { return m_BillboardConstrainY; }
 
+	const DirectX::SimpleMath::Vector3& GetEyepos()const { return m_eyepos; }
+
 	//	ƒrƒ…[s—ñ‚Ìæ“¾
 	const DirectX::SimpleMath::Matrix& GetView();
 

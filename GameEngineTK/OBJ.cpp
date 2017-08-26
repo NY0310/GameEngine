@@ -53,6 +53,8 @@ HRESULT OBJ::InitD3D()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
+
+
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 	//頂点インプットレイアウトを作成
 	if (FAILED(devices.Device().Get()->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
@@ -90,7 +92,7 @@ HRESULT OBJ::InitD3D()
 		return E_FAIL;
 	}
 	//ポリゴン作成
-	if (FAILED(InitStaticMesh("Geometry.obj", &m_Mesh)))
+	if (FAILED(InitStaticMesh("Geometry+Normal+UV.obj", &m_Mesh)))
 	{
 		return E_FAIL;
 	}
@@ -112,6 +114,63 @@ HRESULT OBJ::InitD3D()
 
 	return S_OK;
 }
+
+HRESULT OBJ::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL* pMarial)
+{
+	auto& devices = Devices::Get();
+
+
+	//マテリアルファイルを開いて内容を読み込む
+	FILE* fp = NULL;
+	fopen_s(&fp, FileName, "rt");
+
+	char key[110] = { 0 };
+	while (!feof(fp))
+	{
+	D3DXVECTOR4 v(0, 0, 0, 0);
+		//キーワード読み込み
+		fscanf_s(fp, "%s", key, sizeof(key));
+		//マリテリアル名
+		if (strcmp(key,"newmtl")==0)
+		{
+			fscanf_s(fp, "%s", key, sizeof(key));
+			strcpy_s(m_Material.szName, key);
+		}
+		//Ka アンビエント
+		if (strcmp(key,"Ka")==0)
+		{
+			fscanf_s(fp, "%f %f %f", &v.x, &v.y, &v.z);
+			m_Material.Ka = v;
+		}
+		//Kb ディヒューズ
+		if (strcmp(key,"Kd")==0)
+		{
+			fscanf_s(fp, "%f %f %f", &v.x, &v.y, &v.z);
+			m_Material.Kd = v;
+		}
+		//Ks スペキュラー
+		if (strcmp(key, "Ks") == 0)
+		{
+			fscanf_s(fp, "%f %f %f", &v.x, &v.y, &v.z);
+			m_Material.Ks = v;
+		}
+		//map_Kd　テクスチャー
+		if (strcmp(key, "map_Kd") == 0)
+		{
+			fscanf_s(fp, "%s", &m_Material.szTextureName, sizeof(m_Material.szTextureName));
+			//テクスチャー作成
+			if (FAILED(D3DX11CreateShaderResourceViewFromFileA(devices.Device().Get(), m_Material.szTextureName, NULL, NULL, &m_pTexture, NULL)))
+			{
+				return E_FAIL;
+			}
+		}
+
+	}
+	fclose(fp);
+
+	return S_OK;
+}
+
 
 HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 {
@@ -141,6 +200,12 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	{
 		//キーワード読み込み
 		fscanf_s(fp, "%s ", key, sizeof(key));
+		//マテリアル読み込み
+		if (strcmp(key, "mtllib") == 0)
+		{
+			fscanf_s(fp, "%s ", key, sizeof(key));
+			LoadMaterialFromFile(key, &m_Material);
+		}
 		//頂点
 		if (strcmp(key, "v") == 0)
 		{
@@ -217,31 +282,31 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 		//フェイス 読み込み→頂点インデックスに
 		if (strcmp(key, "f") == 0)
 		{
-			fscanf_s(fp, "%d// %d// %d//", &v1, &v2, &v3);
-			//fscanf_s(fp, "%d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3);
+			//fscanf_s(fp, "%d// %d// %d//", &v1, &v2, &v3);
+			fscanf_s(fp, "%d/%d/%d %d/%d/%d %d/%d/%d", &v1, &vt1, &vn1, &v2, &vt2, &vn2, &v3, &vt3, &vn3);
 			piFaceBuffer[dwFCount * 3] = dwFCount * 3;
 			piFaceBuffer[dwFCount * 3 + 1] = dwFCount * 3 + 1;
 			piFaceBuffer[dwFCount * 3 + 2] = dwFCount * 3 + 2;
 			//頂点構造体に代入
-			//pvVertexBuffer[dwFCount * 3].Pos = pvCoord[v1 - 1];
-			//pvVertexBuffer[dwFCount * 3].Normal = pvNormal[vn1 - 1];
-			//pvVertexBuffer[dwFCount * 3].Tex = pvTexture[vt1 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 1].Pos = pvCoord[v2 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 1].Normal = pvNormal[vn2 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 1].Tex = pvTexture[vt2 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 2].Pos = pvCoord[v3 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 2].Normal = pvNormal[vn3 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 2].Tex = pvTexture[vt3 - 1];
-
 			pvVertexBuffer[dwFCount * 3].Pos = pvCoord[v1 - 1];
-			pvVertexBuffer[dwFCount * 3].Normal = D3DXVECTOR3(0,0,0);
-			pvVertexBuffer[dwFCount * 3].Tex = D3DXVECTOR2(0,0);
+			pvVertexBuffer[dwFCount * 3].Normal = pvNormal[vn1 - 1];
+			pvVertexBuffer[dwFCount * 3].Tex = pvTexture[vt1 - 1];
 			pvVertexBuffer[dwFCount * 3 + 1].Pos = pvCoord[v2 - 1];
-			pvVertexBuffer[dwFCount * 3 + 1].Normal = D3DXVECTOR3(0, 0, 0);
-			pvVertexBuffer[dwFCount * 3 + 1].Tex = D3DXVECTOR2(0, 0);
+			pvVertexBuffer[dwFCount * 3 + 1].Normal = pvNormal[vn2 - 1];
+			pvVertexBuffer[dwFCount * 3 + 1].Tex = pvTexture[vt2 - 1];
 			pvVertexBuffer[dwFCount * 3 + 2].Pos = pvCoord[v3 - 1];
-			pvVertexBuffer[dwFCount * 3 + 2].Normal = D3DXVECTOR3(0, 0, 0);
-			pvVertexBuffer[dwFCount * 3 + 2].Tex = D3DXVECTOR2(0, 0);
+			pvVertexBuffer[dwFCount * 3 + 2].Normal = pvNormal[vn3 - 1];
+			pvVertexBuffer[dwFCount * 3 + 2].Tex = pvTexture[vt3 - 1];
+
+			//pvVertexBuffer[dwFCount * 3].Pos = pvCoord[v1 - 1];
+			//pvVertexBuffer[dwFCount * 3].Normal = D3DXVECTOR3(0,0,0);
+			//pvVertexBuffer[dwFCount * 3].Tex = D3DXVECTOR2(0,0);
+			//pvVertexBuffer[dwFCount * 3 + 1].Pos = pvCoord[v2 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 1].Normal = D3DXVECTOR3(0, 0, 0);
+			//pvVertexBuffer[dwFCount * 3 + 1].Tex = D3DXVECTOR2(0, 0);
+			//pvVertexBuffer[dwFCount * 3 + 2].Pos = pvCoord[v3 - 1];
+			//pvVertexBuffer[dwFCount * 3 + 2].Normal = D3DXVECTOR3(0, 0, 0);
+			//pvVertexBuffer[dwFCount * 3 + 2].Tex = D3DXVECTOR2(0, 0);
 
 			test[dwFCount * 3 + 0] = pvVertexBuffer[dwFCount * 3 + 0];
 			test[dwFCount * 3 + 1] = pvVertexBuffer[dwFCount * 3 + 1];
@@ -416,44 +481,44 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	SIMPLESHADER_CONSTANT_BUFFER cb;
 	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		//birthcnt+= 100;
-		////ワールドトランスフォームは個々で異なる
-		//D3DXMATRIX Scale, Tran, Rot;
+		birthcnt+= 100;
+		//ワールドトランスフォームは個々で異なる
+		D3DXMATRIX Scale, Tran, Rot;
 
-		////ワールド行列計算
-		//D3DXMatrixScaling(&World, 1, 1, 1);
-		////World *= Scale;
-		// 
+		//ワールド行列計算
+		D3DXMatrixScaling(&World, 1, 1, 1);
+		//World *= Scale;
+		 
 
-		//////ワールドトランスフォーム（絶対座標変換）
-		//D3DXMatrixRotationY(&Rot, birthcnt / 1000.0f);//単純にyaw回転させる
-		//World *= Rot;
+		////ワールドトランスフォーム（絶対座標変換）
+		D3DXMatrixRotationY(&Rot, birthcnt / 1000.0f);//単純にyaw回転させる
+		World *= Rot;
 
-		//D3DXMatrixTranslation(&Tran, 0, 1, 0);
+		D3DXMatrixTranslation(&Tran, 0, 1, 0);
 
-		//World *= Tran;
+		World *= Tran;
 
-		////ワールド行列を渡す
-		////cb.mW = World;
-		////D3DXMatrixTranspose(&cb.mW, &cb.mW);
+		//ワールド行列を渡す
+		//cb.mW = World;
+		//D3DXMatrixTranspose(&cb.mW, &cb.mW);
 
-		//
-		////ワールド、カメラ、射影行列を渡す
-		//D3DXMATRIX m = World *View * Proj;
-		//D3DXMatrixTranspose(&m, &m);
-		//cb.mWVP = m;
+		
+		//ワールド、カメラ、射影行列を渡す
+		D3DXMATRIX m = World *View * Proj;
+		D3DXMatrixTranspose(&m, &m);
+		cb.mWVP = m;
 
 		//ワールド、カメラ、射影行列を渡す
-		cb.mWVP = World*View*Proj;
-		D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
+		//cb.mWVP = World*View*Proj;
+		//D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
 
-		//カラーを渡す
-		//D3DXVECTOR4 vColor(1, 0, 0, 1);
-		//cb.vColor = vColor;
+		//ライト方向を渡す
+		cb.vLightDir = (D3DXVECTOR4)m_vLight;
 
-
-		////ライト方向を渡す
-		//cb.vLightDir = (D3DXVECTOR4)m_vLight;
+		//ディフューズカラーを渡す
+		cb.vDiffuse = m_Material.Kd;
+		//スペキュラーを渡す
+		cb.vSpecular = m_Material.Ks;
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
 		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);

@@ -2,8 +2,8 @@
 // Game.cpp
 //
 
-#pragma comment(lib,"d3dx10.lib")
-#pragma comment(lib,"d3dx11.lib")
+//#pragma comment(lib,"d3dx10.lib")
+//#pragma comment(lib,"d3dx11.lib")
 
 #include "Game.h"
 #include <ctime>
@@ -47,10 +47,6 @@ void Game::Initialize(HWND window, int width, int height)
 	m_window = window;
 	m_outputWidth = max(width, 1);
 	m_outputHeight = max(height, 1);
-
-
-
-
 
 
 	//	初期化はここに書く
@@ -146,9 +142,9 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 	//D3DXMESHライブラリを使用するクラス生成
-	d3dxdrow = new D3DXDROW();
+	m_pMesh = new CD3DXMESH;
 	//初期化
-	d3dxdrow->InitD3D();
+	m_pMesh->Init("RobotA_pivot.x");
 }
 
 
@@ -550,7 +546,7 @@ void Game::Render()
 	devices.SpriteBatch().get()->End();
 	
 	//D3DXMESHライブラリを使用してXファイルを描画するクラス
-	d3dxdrow->Render(m_Camera);
+	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
 
 
 	Present();

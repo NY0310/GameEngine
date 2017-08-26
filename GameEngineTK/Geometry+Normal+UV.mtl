@@ -1,0 +1,10 @@
+newmtl skin
+Ka 0.37 0.37 0.37
+Kd 1 0.941176 0.941176
+Ks 0.27 0.27 0.27
+Ni 1
+Ns 314
+Tf 1 1 1
+d 1
+map_Kd Hand_ColorMap.bmp
+

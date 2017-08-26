@@ -25,12 +25,22 @@ public:
 	//Simpleシェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
 	struct SIMPLESHADER_CONSTANT_BUFFER
 	{
-		//D3DXMATRIX mW;//ワールド行列
+		D3DXMATRIX mW;//ワールド行列
 		D3DXMATRIX mWVP;//ワールドから射影までの変換行列
-		//D3DXVECTOR4 vLightDir;//ライト方向
-		//D3DXVECTOR4 vColor;//ディヒューズ色
-		//D3DXVECTOR4 vSpecular;//鏡面反射光
-		//D3DXVECTOR4 vEyes;//カメラ位置
+		D3DXVECTOR4 vLightDir;//ライト方向
+		D3DXVECTOR4 vDiffuse;//ディヒューズ色
+		D3DXVECTOR4 vSpecular;//鏡面反射光
+		D3DXVECTOR4 vEyes;//カメラ位置
+	};
+
+	//オリジナル　マテリアル構造体
+	struct MY_MATERIAL
+	{
+		CHAR szName[111];
+		D3DXVECTOR4 Ka;//アンビエント
+		D3DXVECTOR4 Kd;//ディヒューズ
+		D3DXVECTOR4 Ks;//スペキュラー
+		CHAR szTextureName[110];//テクスチャーファイル名
 	};
 
 
@@ -46,6 +56,7 @@ public:
 	~OBJ();
 	void Init();
 	HRESULT InitD3D();
+	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	void Render(std::unique_ptr<FollowCamera>& camera);
 private:
@@ -64,6 +75,9 @@ private:
 	ID3D11SamplerState* m_pSampleLimear;//テクスチャサンプラ
 	ID3D11ShaderResourceView* m_pTexture;//テクスチャ
 	int birthcnt;
+
+	MY_MATERIAL m_Material;//マテリアル構造体
+
 
 };
 

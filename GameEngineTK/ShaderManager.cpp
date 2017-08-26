@@ -30,7 +30,7 @@ HRESULT ShaderManager::MakeShader(LPSTR szFileName,LPSTR szFuncName,LPSTR szProf
 		SAFE_RELEASE(pErrors);
 		char szProfile[3] = { 0 };
 		memcpy(szProfile, szProfileName, 2);
-		if (strcmp(szProfile, "vs") == 0)//Vertex Shader
+		if (strcmp(szProfile, "vs") == 0)// Shader
 		{
 			if (FAILED(devices.Device().Get()->CreateVertexShader((*ppBlob)->GetBufferPointer(), (*ppBlob)->GetBufferSize(), NULL, (ID3D11VertexShader**)ppShader))) return E_FAIL;
 		}
