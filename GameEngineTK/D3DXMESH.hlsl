@@ -60,21 +60,11 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Norm : NORMAL, float2 Tex : TEXCOORD)
 	return output;
 }
 
-//
-//ピクセルシェーダー
-//
-float4 PS(VS_OUTPUT input) : SV_Target
-{
-	float4 color = g_texColor.Sample(g_samLinear, input.Tex);
-	color += input.Color / 2;
-
-	return color;
-}
 
 //
 //バーテックスシェーダー
 //
-VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Norm : NORMAL)
+VS_OUTPUT VS_NoTex(float4 Pos : POSITION, float4 Norm : NORMAL)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	//射影変換（ワールド→ビュー→プロジェクション）
@@ -98,6 +88,17 @@ VS_OUTPUT VS_NoTeX(float4 Pos : POSITION, float4 Norm : NORMAL)
 	output.Color = g_Diffuse * NL + specular*g_Specular;
 
 	return output;
+}
+
+//
+//ピクセルシェーダー
+//
+float4 PS(VS_OUTPUT input) : SV_Target
+{
+	float4 color = g_texColor.Sample(g_samLinear, input.Tex);
+	color += input.Color / 2;
+
+	return color;
 }
 
 //

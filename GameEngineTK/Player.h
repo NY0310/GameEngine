@@ -23,6 +23,7 @@
 class Player
 {
 public:
+
 	//重力加速度
 	const float GRAVITY_ACC = 0.03f;
 	//ジャンプ初速
@@ -105,8 +106,8 @@ public:
 
 	int GetMAX_HOMING() { return MAX_HOMING;}
 
-
 protected:
+
 	// キーボード
 	DirectX::Keyboard* m_pKeyboard;
 

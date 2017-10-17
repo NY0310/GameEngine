@@ -26,7 +26,7 @@ public:
 	void SetTargetAngle(float targetAngle);
 
 
-
+	//const DirectX::SimpleMath::Vector3& GetEyepos()const { return ; }
 
 	//	キーボードをセット
 	void SetKeyboard(DirectX::Keyboard* keyboard);

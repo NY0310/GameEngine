@@ -78,6 +78,6 @@ private:
 
 	MY_MATERIAL m_Material;//マテリアル構造体
 
-
+	ID3D11RasterizerState* m_pRasterizerState;
 };
 

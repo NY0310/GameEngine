@@ -17,7 +17,7 @@ void OBJ::Init()
 	shadermanager = ShaderManager::Get();
 	InitD3D();
 
-	m_vLight = D3DXVECTOR3(0, 0, 1);
+	m_vLight = D3DXVECTOR3(-1, 0, -1);
 	D3DXVec3Normalize(&m_vLight, &m_vLight);
 
 	birthcnt = 0;
@@ -83,7 +83,7 @@ HRESULT OBJ::InitD3D()
 	cb.MiscFlags = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	ID3D11RasterizerState* m_pRasterizerState;
+	
 
 
 
@@ -462,6 +462,7 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
 	D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
 
+
 	D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
 	D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
 
@@ -481,12 +482,12 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	SIMPLESHADER_CONSTANT_BUFFER cb;
 	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		birthcnt+= 100;
+		birthcnt+= 10;
 		//ワールドトランスフォームは個々で異なる
 		D3DXMATRIX Scale, Tran, Rot;
 
 		//ワールド行列計算
-		D3DXMatrixScaling(&World, 1, 1, 1);
+		D3DXMatrixScaling(&World, 5, 5, 5);
 		//World *= Scale;
 		 
 
@@ -512,13 +513,18 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 		//cb.mWVP = World*View*Proj;
 		//D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
 
-		//ライト方向を渡す
-		cb.vLightDir = (D3DXVECTOR4)m_vLight;
+		//ライトの方向を渡す
+		D3DXVECTOR3 vLightDir(-1, 0, -1);
+		cb.vLightDir = D3DXVECTOR4(vLightDir.x, vLightDir.y, vLightDir.z, 0.0f);
 
 		//ディフューズカラーを渡す
 		cb.vDiffuse = m_Material.Kd;
 		//スペキュラーを渡す
 		cb.vSpecular = m_Material.Ks;
+
+		//視点位置を渡す
+		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
+
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
 		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
