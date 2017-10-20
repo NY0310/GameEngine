@@ -144,7 +144,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//D3DXMESHライブラリを使用するクラス生成
 	m_pMesh = new CD3DXMESH;
 	//初期化
-	m_pMesh->Init("Josh_Motion_Wakeup.x");
+	m_pMesh->Init("RobotA_1motion_2truck.x");
 }
 
 
@@ -539,6 +539,17 @@ void Game::Render()
 
 	tomanageparticle->Render(m_Camera);
 	obj->Render(m_Camera);
+
+
+	//キーボードの様態を取得
+	Keyboard::State kb = keyboard->GetState();
+	//キーボードトラッカーの更新
+	KeybordTracker.Update(kb);
+
+	if (kb.D)
+	{
+		m_pMesh->ChangeAnimSet(1);
+	}
 
 
 	//D3DXMESHライブラリを使用してXファイルを描画するクラス

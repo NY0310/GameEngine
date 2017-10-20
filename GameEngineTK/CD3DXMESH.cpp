@@ -351,6 +351,15 @@ HRESULT CD3DXMESH::LoadXAnimMesh(LPSTR FileName)
 	//あとは、そこから必要な情報をとりだしつつ、かくフレームごとにアプリ独自のメッシュを構築していく
 	BuildAllMesh(m_pFrameRoot);
 
+
+	//アニメーショントラックを得る 　本サンプル添付のXファイルの場合は2セットだけだが100個までに対応できる
+	for (DWORD i = 0; i<m_pAnimController->GetNumAnimationSets(); i++)
+	{
+		LPD3DXANIMATIONSET animSet;
+		m_pAnimController->GetAnimationSet(i, &animSet);
+		m_pAnimSet.emplace_back(animSet);
+	}
+
 	return S_OK;
 
 
@@ -846,7 +855,7 @@ void CD3DXMESH::DrawPartsMesh(PARTS_MESH * pPartsMesh, D3DXMATRIX World , unique
 		devices.Context().Get()->PSSetConstantBuffers(1, 1, &m_pConstantBuffer1);
 
 		//テクスチャーをシェーダーに渡す
-		if (pPartsMesh->pMaterial[i].szTextureName[0] != NULL)
+		if (pPartsMesh->Tex == true)
 		{
 			devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLinear);
 			devices.Context().Get()->PSSetShaderResources(0, 1, &pPartsMesh->pMaterial[i].pTexture);
@@ -861,4 +870,18 @@ void CD3DXMESH::DrawPartsMesh(PARTS_MESH * pPartsMesh, D3DXMATRIX World , unique
 
 	}
 
+}
+
+
+void CD3DXMESH::ChangeAnimSet(int index)
+{
+	D3DXTRACK_DESC TrackDesc;
+	ZeroMemory(&TrackDesc, sizeof(TrackDesc));
+
+	TrackDesc.Weight = 1;
+	TrackDesc.Speed = 1;
+	TrackDesc.Enable = 1;
+	m_pAnimController->SetTrackDesc(0, &TrackDesc);
+	m_pAnimController->SetTrackAnimationSet(0, m_pAnimSet[index]);
+	m_pAnimController->SetTrackEnable(index, true);
 }

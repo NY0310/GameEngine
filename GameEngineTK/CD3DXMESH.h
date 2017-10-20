@@ -163,6 +163,10 @@ public:
 		return m_pAnimController;
 	}
 	float&  GetfYaw() { return m_fYaw; }
+
+
+	void ChangeAnimSet(int index);
+
 private:
 	//Date
 	//DWORD m_dwNumMaterial;
@@ -213,6 +217,7 @@ private:
 	//bool m_Texture;//テクスチャデータが存在するか
 	int birthcnt;//生成されてからのフレーム数
 
+	vector<LPD3DXANIMATIONSET> m_pAnimSet;//アニメーションセットに対応
 
 
 };
