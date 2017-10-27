@@ -107,11 +107,14 @@
     <ClInclude Include="OBJ.h">
       <Filter>Mesh\OBJ</Filter>
     </ClInclude>
-    <ClInclude Include="D3DXREAD.h">
-      <Filter>Mesh\D3DX</Filter>
-    </ClInclude>
     <ClInclude Include="CD3DXMESH.h">
       <Filter>Mesh\D3DX</Filter>
+    </ClInclude>
+    <ClInclude Include="sss.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjAbstract.h">
+      <Filter>Mesh\OBJ</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,14 +177,17 @@
       <Filter>PARTICLE</Filter>
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="CD3DXMESH.cpp">
+      <Filter>Mesh\D3DX</Filter>
+    </ClCompile>
+    <ClCompile Include="sss.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
     <ClCompile Include="OBJ.cpp">
       <Filter>Mesh\OBJ</Filter>
     </ClCompile>
-    <ClCompile Include="D3DXREAD.cpp">
-      <Filter>Mesh\D3DX</Filter>
-    </ClCompile>
-    <ClCompile Include="CD3DXMESH.cpp">
-      <Filter>Mesh\D3DX</Filter>
+    <ClCompile Include="ObjAbstract.cpp">
+      <Filter>Mesh\OBJ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +258,9 @@
       <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="D3DXMESH.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="sss.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
   </ItemGroup>

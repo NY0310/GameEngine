@@ -168,7 +168,6 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionNode.h" />
-    <ClInclude Include="D3DXREAD.h" />
     <ClInclude Include="CD3DXMESH.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="Device.h" />
@@ -182,9 +181,11 @@
     <ClInclude Include="ModelExpansionEffect.h" />
     <ClInclude Include="OBJ.h" />
     <ClInclude Include="Obj3d.h" />
+    <ClInclude Include="ObjAbstract.h" />
     <ClInclude Include="PARTICLE.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="sss.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StepTimer.h" />
@@ -193,10 +194,9 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CD3DXMESH.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionNode.cpp" />
-    <ClCompile Include="D3DXREAD.cpp" />
-    <ClCompile Include="CD3DXMESH.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -210,10 +210,12 @@
     <ClCompile Include="ModelExpansionEffect.cpp" />
     <ClCompile Include="OBJ.cpp" />
     <ClCompile Include="Obj3d.cpp" />
+    <ClCompile Include="ObjAbstract.cpp" />
     <ClCompile Include="PARTICLE.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="sss.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="ToManageParticle.cpp" />
@@ -256,6 +258,17 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="sss.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

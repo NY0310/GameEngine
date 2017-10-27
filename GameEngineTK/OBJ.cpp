@@ -348,109 +348,26 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	delete[] piFaceBuffer;
 
 	return S_OK;
-
-//float x, y, z;
-//int v1 = 0, v2 = 0, v3 = 0;
-//char key[190] = { 0 };
-//pMesh->dwNumVert = 0;
-//pMesh->dwNumFace = 0;
-////ファイルを開いて内容を読み込む
-//FILE* fp = NULL;
-//fopen_s(&fp, FileName, "rt");
-//
-////まずは頂点数、ポリゴン数を調べる
-//while (!feof(fp))
-//{
-//	//キーワード読み込み
-//	fscanf_s(fp, "%s ", key, sizeof(key));
-//	//頂点
-//	if (strcmp(key, "v") == 0)
-//	{
-//		pMesh->dwNumVert++;
-//	}
-//	//フェイス（ポリゴン）
-//	if (strcmp(key, "f") == 0)
-//	{
-//		pMesh->dwNumFace++;
-//	}
-//}
-//
-////一時的なメモリ確保（頂点バッファとインデックスバッファ）
-//D3DXVECTOR3* pvVertexBuffer = new D3DXVECTOR3[pMesh->dwNumVert];
-//int* piFaceBuffer = new int[pMesh->dwNumFace * 3];//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
-//
-//												  //本読み込み
-//fseek(fp, SEEK_SET, 0);
-//DWORD dwVCount = 0;//読み込みカウンター
-//DWORD dwFCount = 0;//読み込みカウンター
-//while (!feof(fp))
-//{
-//	//キーワード 読み込み
-//	ZeroMemory(key, sizeof(key));
-//	fscanf_s(fp, "%s ", key, sizeof(key));
-//	//頂点 読み込み
-//	if (strcmp(key, "v") == 0)
-//	{
-//		fscanf_s(fp, "%f %f %f", &x, &y, &z);
-//		pvVertexBuffer[dwVCount].x = -x;//OBJは右手座標系なのでxあるいはｚを反転
-//		pvVertexBuffer[dwVCount].y = y;
-//		pvVertexBuffer[dwVCount].z = z;
-//		dwVCount++;
-//	}
-//	//フェイス（ポリゴン） 読み込み
-//	if (strcmp(key, "f") == 0)
-//	{
-//		fscanf_s(fp, "%d// %d// %d//", &v1, &v2, &v3);
-//		piFaceBuffer[dwFCount * 3] = v1 - 1;
-//		piFaceBuffer[dwFCount * 3 + 1] = v2 - 1;
-//		piFaceBuffer[dwFCount * 3 + 2] = v3 - 1;
-//		dwFCount++;
-//	}
-//
-//}
-//
-//fclose(fp);
-////バーテックスバッファー作成
-//D3D11_BUFFER_DESC bd;
-//bd.Usage = D3D11_USAGE_DEFAULT;
-//bd.ByteWidth = sizeof(D3DXVECTOR3) *pMesh->dwNumVert * 3;
-//bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//bd.CPUAccessFlags = 0;
-//bd.MiscFlags = 0;
-//D3D11_SUBRESOURCE_DATA InitData;
-//InitData.pSysMem = pvVertexBuffer;
-//if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pVertexBuffer)))
-//return FALSE;
-//
-////インデックスバッファーを作成
-//bd.Usage = D3D11_USAGE_DEFAULT;
-//bd.ByteWidth = sizeof(int) * pMesh->dwNumFace * 3;
-//bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-//bd.CPUAccessFlags = 0;
-//bd.MiscFlags = 0;
-//InitData.pSysMem = piFaceBuffer;
-//InitData.SysMemPitch = 0;
-//InitData.SysMemSlicePitch = 0;
-//if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
-//return FALSE;
-//
-////一時的な入れ物は、もはや不要
-//delete[] pvVertexBuffer;
-//delete[] piFaceBuffer;
-
-//return S_OK;
 }
 
 void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 {
-
 	auto& devices = Devices::Get();
+	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+
+
+
+
+	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+
+	//auto& devices = Devices::Get();
 
 
 	D3DXMATRIX World;
-	D3DXMATRIX View;
-	D3DXMATRIX Proj;
-	//ワールドトランスフォーム
+	//D3DXMATRIX View;
+	//D3DXMATRIX Proj;
+	////ワールドトランスフォーム
 	static float x = 0;
 	x += 0.00001;
 	D3DXMATRIX Tran;
@@ -458,13 +375,13 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	World = Tran;
 
 
-	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->m_eyepos);
-	D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
-	D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
+	//D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->m_eyepos);
+	//D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
+	//D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
 
 
-	D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
-	D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
+	//D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
+	//D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
 
 
 

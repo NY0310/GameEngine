@@ -747,31 +747,32 @@ void CD3DXMESH::DrawFrame(LPD3DXFRAME p, unique_ptr<FollowCamera>& camera, D3DXV
 
 void CD3DXMESH::DrawPartsMesh(PARTS_MESH * pPartsMesh, D3DXMATRIX World , unique_ptr<FollowCamera>& camera , D3DXVECTOR3& vLight)
 {
-	auto& devices = Devices::Get();
 
 
-	D3DXMATRIX mWorld, mTran, mYaw, mPitch, mRoll, mScale;
-	//ワールドトランスフォーム（絶対座標変換）
-	D3DXMatrixScaling(&mScale, m_fScale, m_fScale, m_fScale);
-	D3DXMatrixRotationY(&mYaw, m_fYaw);
-	D3DXMatrixRotationX(&mPitch, m_fPitch);
-	D3DXMatrixRotationZ(&mRoll, m_fRoll);
-	D3DXMatrixTranslation(&mTran, m_vPos.x, m_vPos.y, m_vPos.z);
+	//D3DXMATRIX mWorld, mTran, mYaw, mPitch, mRoll, mScale;
+	////ワールドトランスフォーム（絶対座標変換）
+	//D3DXMatrixScaling(&mScale, m_fScale, m_fScale, m_fScale);
+	//D3DXMatrixRotationY(&mYaw, m_fYaw);
+	//D3DXMatrixRotationX(&mPitch, m_fPitch);
+	//D3DXMatrixRotationZ(&mRoll, m_fRoll);
+	//D3DXMatrixTranslation(&mTran, m_vPos.x, m_vPos.y, m_vPos.z);
 
 	//mWorld = mScale*mYaw*mPitch*mRoll*mTran;
-	mWorld = World;
-	D3DXMATRIX View;
-	D3DXMATRIX Proj;
+	auto& devices = Devices::Get();
+	D3DXMATRIX mWorld = World;
+	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
 
 
 
 
-	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->m_eyepos);
-	D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
-	D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
+	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+	//D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->GetRefPos());
+	//D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->GetUpVec());
 
-	D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
-	D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
+
+	//D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
+	//D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
 
 
 

@@ -17,14 +17,14 @@ Camera::Camera(int width, int height)
 	m_aspect = (float)width / height;
 	m_NearClip = 0.1f;
 	m_FarClip = 1000.0f;
-
+	m_zoom = 1.0f;
 	m_proj = Matrix::Identity;
 
 	//	ビュー行列の生成
 	m_view = Matrix::CreateLookAt(m_eyepos, m_refpos, m_upvec);
 
 	//	射影行列の生成
-	m_proj = Matrix::CreatePerspectiveFieldOfView(m_fovY, m_aspect, m_NearClip, m_FarClip);
+	m_proj = Matrix::CreatePerspectiveFieldOfView(m_fovY / m_zoom, m_aspect, m_NearClip, m_FarClip);
 }
 
 //	デストラクタ
@@ -40,7 +40,7 @@ void Camera::Update()
 	m_view = Matrix::CreateLookAt(m_eyepos, m_refpos, m_upvec);
 
 	//	射影行列の生成
-	m_proj = Matrix::CreatePerspectiveFieldOfView(m_fovY, m_aspect, m_NearClip, m_FarClip);
+	m_proj = Matrix::CreatePerspectiveFieldOfView(m_fovY / m_zoom, m_aspect, m_NearClip, m_FarClip);
 }
 
 

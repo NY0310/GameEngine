@@ -67,13 +67,38 @@ void FollowCamera::Update()
 		eyepos = refpos + cameraV;
 	}
 
-	//	視点を現在位置から補間する
-	eyepos = m_eyepos + (eyepos - m_eyepos) * 0.05f;
-	//	参照点を現在位置から補間する
-	refpos = m_refpos + (refpos - m_refpos) * 0.2f;
+	////	視点を現在位置から補間する
+	//eyepos = m_eyepos + (eyepos - m_eyepos) * 0.05f;
+	////	参照点を現在位置から補間する
+	//refpos = m_refpos + (refpos - m_refpos) * 0.2f;
+
+	//ローカル回転
+	//Yaw
+	if (eyepos.y != m_eyepos.y) 
+	{
+		//	視点を現在位置から補間する
+		eyepos.y = m_eyepos.y + (eyepos.y - m_eyepos.y) * 0.05f;
+		//	参照点を現在位置から補間する
+		refpos.y = m_refpos.y + (refpos.y - m_refpos.y) * 0.2f;
+	}
+	//Pich
+	else if (eyepos.x != m_eyepos.x)
+	{
+		eyepos.x = m_eyepos.x + (eyepos.x - m_eyepos.x) * 0.05f;
+		refpos.x = m_refpos.x + (refpos.x - m_refpos.x) * 0.2f;
+	}
+	//Roll
+	else if (eyepos.z != m_eyepos.z)
+	{
+		eyepos.z = m_eyepos.z + (eyepos.z - m_eyepos.z) * 0.05f;
+		refpos.z = m_refpos.z + (refpos.z - m_refpos.z) * 0.2f;
+	}
 
 	this->SetEyePos(eyepos);
 	this->SetRefPos(refpos);
+
+	//拡大倍率の補完
+	//m_zoom += (zoom - m_zoom) * 0.05f;
 
 	//this->SetEyePos(Vector3(0.00749884499f, 1.54812920f, 4.99988747f)); //視点位置
 	//this->SetRefPos(Vector3(-3.61911745e-08f, 1.98155320f, -3.12580148e-08f));//注視位置
@@ -91,7 +116,6 @@ void FollowCamera::Update()
 	//	基底クラスの更新
 	Camera::Update();
 }
-
 void FollowCamera::SetTarGetTrans(const DirectX::SimpleMath::Vector3 & targetPos)
 {
 	m_tarGetTrans = targetPos;

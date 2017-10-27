@@ -33,13 +33,23 @@ public:
 	const DirectX::SimpleMath::Matrix& GetBillboard() const { return m_Billboard; }
 	const DirectX::SimpleMath::Matrix& GetBillboardConstrainY() const { return m_BillboardConstrainY; }
 
-	
+	//	カメラの位置(視点座標）の取得
+	const DirectX::SimpleMath::Vector3& GetEyePos() { return m_eyepos; }
+
+	//	カメラの見ている先(注視点/参照点)の取得
+	const DirectX::SimpleMath::Vector3& GetRefPos() { return m_eyepos; }
+
+	//カメラの上方向ベクトルの取得
+	const DirectX::SimpleMath::Vector3& GetUpVec() { return m_refpos; }
 
 	//	ビュー行列の取得
 	const DirectX::SimpleMath::Matrix& GetView();
 
 	//	射影行列の取得
 	const DirectX::SimpleMath::Matrix& GetProjection();
+
+	//拡大倍率の取得
+	const float& GetZoom() { return m_zoom; }
 
 	//	視点座標のセット
 	void SetEyePos(const DirectX::SimpleMath::Vector3& eyepos);
@@ -62,7 +72,10 @@ public:
 	//	ファークリップのセット
 	void SetFarClip(float farclip);
 
-public:
+	//拡大倍率のセット
+	void SetZoom(float zoom) { m_zoom = zoom; }
+
+protected:
 	//	カメラの位置(視点座標）
 	DirectX::SimpleMath::Vector3 m_eyepos;
 	//	カメラの見ている先(注視点/参照点)
@@ -85,4 +98,6 @@ public:
 	DirectX::SimpleMath::Matrix m_Billboard;
 	// ビルボード行列(Y軸周り限定）
 	DirectX::SimpleMath::Matrix m_BillboardConstrainY;
+	//拡大倍率
+	float m_zoom;
 };

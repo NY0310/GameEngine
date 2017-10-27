@@ -219,27 +219,37 @@ void ToManageParticle::Update()
 /// <param name="camera">参照カメラ</param>
 void ToManageParticle::Render(std::unique_ptr<FollowCamera>& camera)
 {
-
 	D3DXMATRIX World;
-	D3DXMATRIX View;
-	D3DXMATRIX Proj;
-	//ワールドトランスフォーム
-	static float x = 0;
-	x += 0.00001;
-	D3DXMATRIX Tran;
-	D3DXMatrixTranslation(&Tran, x, 0, 0);
-	World = Tran;
-
-
-	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->m_eyepos);
-	D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
-	D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
-
-	D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
-	D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
+	auto& devices = Devices::Get();
+	D3DXMATRIX mWorld = World;
+	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
 
 
 
+
+	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+
+	//D3DXMATRIX View;
+	//D3DXMATRIX Proj;
+	////ワールドトランスフォーム
+	//static float x = 0;
+	//x += 0.00001;
+	//D3DXMATRIX Tran;
+	//D3DXMatrixTranslation(&Tran, x, 0, 0);
+	//World = Tran;
+
+
+	//D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->m_eyepos);
+	//D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
+	//D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
+
+	//D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
+	//D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
+
+
+
+	//
 	D3DXMATRIX CancelRotation = View;
 	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
 	D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);

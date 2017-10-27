@@ -145,6 +145,10 @@ void Game::Initialize(HWND window, int width, int height)
 	m_pMesh = new CD3DXMESH;
 	//初期化
 	m_pMesh->Init("RobotA_1motion_2truck.x");
+
+
+	pSss = new sss();
+	pSss->InitD3D();
 }
 
 
@@ -491,6 +495,8 @@ void Game::Render()
 		return;
 	}
 
+	pSss->ZTexRender(m_Camera);
+
 	Clear();
 
 //#if 0
@@ -556,11 +562,17 @@ void Game::Render()
 	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
 	m_pMesh->GetfYaw() += 0.0002;
 	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
+
+
+
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
+	pSss->Render(m_Camera);
+
 	devices.SpriteBatch().get()->End();
 	
+
 
 	Present();
 }
