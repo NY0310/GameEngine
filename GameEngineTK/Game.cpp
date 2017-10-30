@@ -277,44 +277,44 @@ void Game::Update(DX::StepTimer const& timer)
 
 
 
-	{//敵弾丸とプレイヤのあたり判定
-		for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end();it++)
-		{
-			for (std::vector<SphereNode*>::iterator Sphereit = (*it)->GetCollisionNodeBullet().begin(); Sphereit != (*it)->GetCollisionNodeBullet().end(); )
-			{
-					//敵の判定球を取得
-					const Sphere& playerSphere = player->GetCollisionNodeBody();
+	//{//敵弾丸とプレイヤのあたり判定
+	//	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end();it++)
+	//	{
+	//		for (std::vector<SphereNode*>::iterator Sphereit = (*it)->GetCollisionNodeBullet().begin(); Sphereit != (*it)->GetCollisionNodeBullet().end(); )
+	//		{
+	//				//敵の判定球を取得
+	//				const Sphere& playerSphere = player->GetCollisionNodeBody();
 
-					//二つの球が当たっていたら
-					if (CheckSpere2Sphere(*(*Sphereit), playerSphere))
+	//				//二つの球が当たっていたら
+	//				if (CheckSpere2Sphere(*(*Sphereit), playerSphere))
 
-					{
-						player->SetHp(player->GetHp() - 10);
+	//				{
+	//					player->SetHp(player->GetHp() - 10);
 
-						//当たった弾を消す
-						Sphereit = (*it)->GetCollisionNodeBullet().erase(Sphereit);
-				
-						//hpがなくなったら敵を殺す
-						if (player->GetHp() <= 0)
-						{
-							//パーティクル
-							Vector3 playerpos = player->GetTrans();
-							playerpos.y += 1;
-							tomanageparticle->AddParticle(playerpos);
-						}
+	//					//当たった弾を消す
+	//					Sphereit = (*it)->GetCollisionNodeBullet().erase(Sphereit);
+	//			
+	//					//hpがなくなったら敵を殺す
+	//					if (player->GetHp() <= 0)
+	//					{
+	//						//パーティクル
+	//						Vector3 playerpos = player->GetTrans();
+	//						playerpos.y += 1;
+	//						tomanageparticle->AddParticle(playerpos);
+	//					}
 
-					}
-					else
-					{
-							//球を消したのでループから抜ける
-							Sphereit++;
-					}
+	//				}
+	//				else
+	//				{
+	//						//球を消したのでループから抜ける
+	//						Sphereit++;
+	//				}
 
-			}
+	//		}
 
-		}
+	//	}
 
-	}
+	//}
 
 
 
@@ -333,60 +333,60 @@ void Game::Update(DX::StepTimer const& timer)
 	
 
 	const Vector3 vel = player->GetVelocity();
-	if (vel.y <= 0)
-	{//自機が地面に乗る処理
-	 //自機の頭から足元への線分
-		Segment player_segment;
-		//自機のワールド座標
-		Vector3 trans = player->GetTrans();
-		player_segment.Start = trans + Vector3(0, 1, 0);
-		player_segment.End = trans + Vector3(0, -0.5f, 0);
+	//if (vel.y <= 0)
+	//{//自機が地面に乗る処理
+	// //自機の頭から足元への線分
+	//	Segment player_segment;
+	//	//自機のワールド座標
+	//	Vector3 trans = player->GetTrans();
+	//	player_segment.Start = trans + Vector3(0, 1, 0);
+	//	player_segment.End = trans + Vector3(0, -0.5f, 0);
 
-		//交点座標
-		Vector3 inter;
+	//	//交点座標
+	//	Vector3 inter;
 
-		//地形と線分のあたり判定(レイキャスト Ray)
-		if (stage.GetLandShape().IntersectSegment(player_segment, &inter))
-		{
-			trans.y = inter.y;
-			//落下を終了
-			player->StopJump();
-		}
-		else
-		{
-			player->StartFall();
-		}
+	//	//地形と線分のあたり判定(レイキャスト Ray)
+	//	if (stage.GetLandShape().IntersectSegment(player_segment, &inter))
+	//	{
+	//		trans.y = inter.y;
+	//		//落下を終了
+	//		player->StopJump();
+	//	}
+	//	else
+	//	{
+	//		player->StartFall();
+	//	}
 
-		//自機を移動
-		player->SetTrans(trans);
-		//ワールド行列の更新
-	//	player->Calc();
-	}
-
-
-
-	//自機の天球へのめりこみを解消する
-	{
-		Sphere sphere = player->GetCollisionNodeBody();
-
-		//自機のワールド座標
-		Vector3 trans = player->GetTrans();
-
-		Vector3 sphere2player = trans - sphere.Center;
-		//めりこみ排斥ベクトル
-		Vector3 reject;
-
-		if (m_LandShape.IntersectSphere(sphere, &reject))
-		{
-			sphere.Center += reject;
-
-		}
-		
-			player->SetTrans(sphere.Center + sphere2player);
+	//	//自機を移動
+	//	player->SetTrans(trans);
+	//	//ワールド行列の更新
+	////	player->Calc();
+	//}
 
 
 
-	}
+	////自機の天球へのめりこみを解消する
+	//{
+	//	Sphere sphere = player->GetCollisionNodeBody();
+
+	//	//自機のワールド座標
+	//	Vector3 trans = player->GetTrans();
+
+	//	Vector3 sphere2player = trans - sphere.Center;
+	//	//めりこみ排斥ベクトル
+	//	Vector3 reject;
+
+	//	if (m_LandShape.IntersectSphere(sphere, &reject))
+	//	{
+	//		sphere.Center += reject;
+
+	//	}
+	//	
+	//		player->SetTrans(sphere.Center + sphere2player);
+
+
+
+	//}
 
 
 	//敵の天球へのめりこみを解消する
@@ -470,11 +470,11 @@ void Game::Update(DX::StepTimer const& timer)
 	
 
 	// 全パーツ分行列更新
-	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
-	{
-		Enemy* enemy = it->get();
-		(*it)->Update();
-	}
+	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+	//{
+	//	Enemy* enemy = it->get();
+	//	(*it)->Update();
+	//}
 
 	//パーティクル更新処理
 	tomanageparticle->Update();
@@ -494,14 +494,14 @@ void Game::Render()
 	{
 		return;
 	}
+//#if 0
+//アルファ値を有効にする
+	devices.Context().Get()->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xffffffff);
 
 	pSss->ZTexRender(m_Camera);
 
 	Clear();
 
-//#if 0
-//アルファ値を有効にする
-	devices.Context().Get()->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xffffffff);
 
 
 	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
@@ -529,8 +529,6 @@ void Game::Render()
 	{
 		Enemy* enemy = it->get();
 		(*it)->Draw();
-
-
 	}
 
 	player->Draw();
@@ -565,13 +563,14 @@ void Game::Render()
 
 
 
-	//アルファ値を無効にする
-	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
-	pSss->Render(m_Camera);
 
 	devices.SpriteBatch().get()->End();
-	
+	//アルファ値を無効にする
+	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
+	pSss->Render(m_Camera);
+
+
 
 
 	Present();
@@ -584,9 +583,9 @@ void Game::Clear()
 
 
 	// Clear the views.
+	devices.Context().Get()->OMSetRenderTargets(1, devices.RenderTargetView().GetAddressOf(), devices.DepthStencilView().Get());
 	devices.Context().Get()->ClearRenderTargetView(devices.RenderTargetView().Get(), Colors::CornflowerBlue);
 	devices.Context().Get()->ClearDepthStencilView(devices.DepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	devices.Context().Get()->OMSetRenderTargets(1, devices.RenderTargetView().GetAddressOf(), devices.DepthStencilView().Get());
 
 	// Set the viewport.
 	CD3D11_VIEWPORT  viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));

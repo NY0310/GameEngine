@@ -5,6 +5,9 @@ using namespace DirectX::SimpleMath;
 sss::sss()
 {
 	modelAngele = 0.0f;
+
+	m_vLightPos = D3DXVECTOR3(0.5f, 0.5f, 3.0f);
+
 }
 
 
@@ -55,7 +58,6 @@ HRESULT sss::InitD3D()
 	}
 	//深度テクスチャ用　深度ステンシルビューテクスチャー作成
 	D3D11_TEXTURE2D_DESC descDepth;
-	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
 	descDepth.Width = DEPTHTEX_WIDTH;
 	descDepth.Height = DEPTHTEX_HEIGHT;
 	descDepth.MipLevels = 1;
@@ -139,11 +141,7 @@ HRESULT sss::InitShader()
 
 void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 {
-	m_mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	m_mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
 
-	//1パス目
-	//深度テクスチャ作成
 
 	////////ビューポートの設定
 	D3D11_VIEWPORT vp;
@@ -160,14 +158,23 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 	pDeviceContext->ClearRenderTargetView(m_pDepthRTV, ClearColor);
 	pDeviceContext->ClearDepthStencilView(m_pDepthDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
 
+	m_mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
+	m_mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+
+
 	//モデルワールド行列 
+	D3DXMATRIX mR;
 	D3DXMatrixRotationY(&mR, modelAngele);
+	D3DXMatrixTranslation(&mR, 0.0f, 2.0f, 0.0f);
+
 	m_pMesh->mWorld = mR;
-	//ビューポートトランスフォーム　個々ではライトの視界
-	//ライト回転
-	vLight = m_vLightPos;
-	D3DXMatrixRotationY(&mR, 10);
+	// ビュートランスフォーム ここではライトからの視界
+	//ライトを回転させる
+	D3DXMATRIX mLight;
+	D3DXVECTOR3 vLight = m_vLightPos;
+	D3DXMatrixRotationY(&mR, angle);
 	D3DXVec3TransformCoord(&vLight, &vLight, &mR);
+
 
 	D3DXVECTOR3 vLookatPt(0.0f, 0.5f, 0.0f);//注視位置
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
@@ -176,17 +183,19 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 	//シェーダーのコンスタントバッファーに各種データを渡す
 	D3D11_MAPPED_SUBRESOURCE pData;
 	CONSTANT_BUFFER_SSS cb;
-	if (SUCCEEDED(pDeviceContext->Map(m_pConstantBuffer[0],0,D3D11_MAP_WRITE_DISCARD,0,&pData)))
+	if (SUCCEEDED(pDeviceContext->Map(m_pConstantBuffer[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		D3DXMATRIX s;
+		//ワールド・ライトビュー・プロジェクション行列をシェーダーに渡す
+		D3DXMATRIX s;//重要！　丸め誤差によるテクセルの端でのアーティファクト防止
 		D3DXMatrixScaling(&s, 3.1, 3.1, 3.1);
-		cb.mWLP = s * m_pMesh->mWorld * mLight * m_mProj;
+		cb.mWLP = s*m_pMesh->mWorld*mLight*m_mProj;
 		D3DXMatrixTranspose(&cb.mWLP, &cb.mWLP);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(m_pConstantBuffer[0], 0);
 	}
-	//このコンスタントバッファを使うシェーダーの登録
+
+	//このコンスタントバッファーを使うシェーダーの登録
 	pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer[0]);
 	pDeviceContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer[0]);
 	//頂点インプットレイアウトをセット
@@ -196,55 +205,34 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(SIMPLE_VERTEX);
 	UINT offset = 0;
-	pDeviceContext->IASetVertexBuffers(0,1,&m_pMesh->pVertexBuffer, &stride, &offset);
+	pDeviceContext->IASetVertexBuffers(0, 1, &m_pMesh->pVertexBuffer, &stride, &offset);
 	//インデックスバッファーをセット
 	stride = sizeof(int);
 	offset = 0;
 	pDeviceContext->IASetIndexBuffer(m_pMesh->pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	//使用するシェーダーの登録
-	pDeviceContext->VSSetShader(m_pVertexShader[1], nullptr, 0);
-	pDeviceContext->PSSetShader(m_pPixelShader[1], nullptr, 0);
-	auto a = m_pMesh->dwNumFace;
+	//使用するシェーダーの登録	
+	pDeviceContext->VSSetShader(m_pVertexShader[1], NULL, 0);
+	pDeviceContext->PSSetShader(m_pPixelShader[1], NULL, 0);
 	//プリミティブをレンダリング
 	pDeviceContext->DrawIndexed(m_pMesh->dwNumFace * 3, 0, 0);
-	//レンダーターゲットを戻す
-	//pDeviceContext->OMSetRenderTargets(1, Devices::Get().RenderTargetView().GetAddressOf(), Devices::Get().DepthStencilView().Get());
 
 }
 
 void sss::Render(std::unique_ptr<FollowCamera>& camera)
 {
-
-	//2パス目
-	//SSSレンダー
-	//D3D11_MAPPED_SUBRESOURCE pData;
-	//CONSTANT_BUFFER_SSS cb;
-	////////ビューポートの設定
-	//D3D11_VIEWPORT vp;
-	//vp.Width = WINDOW_WIDTH;
-	//vp.Height = WINDOW_HEIGHT;
-	//vp.MinDepth = 0.0f;
-	//vp.MaxDepth = 1.0f;
-	//vp.TopLeftX = 0;
-	//vp.TopLeftY = 0;
-	//pDeviceContext->RSSetViewports(1, &vp);
-
-	//pDeviceContext->ClearRenderTargetView(*Devices::Get().RenderTargetView().GetAddressOf(), Colors::CornflowerBlue);//画面クリア
-	//pDeviceContext->ClearDepthStencilView(Devices::Get().DepthStencilView().Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
-
-
 	D3D11_MAPPED_SUBRESOURCE pData;
-	CONSTANT_BUFFER_SSS cb;																			   //シェーダーのコンスタントバッファーに各種データを渡す
+	CONSTANT_BUFFER_SSS cb;
+
+	//シェーダーのコンスタントバッファーに各種データを渡す
 	if (SUCCEEDED(pDeviceContext->Map(m_pConstantBuffer[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		//ワールド行列をシェーダに渡す
+		//ワールド行列をシェーダーに渡す
 		cb.mW = m_pMesh->mWorld;
 		D3DXMatrixTranspose(&cb.mW, &cb.mW);
-		//ワールド・ビュー・プロジェクション行列をシェーダに渡す
-		cb.mWVP = m_pMesh->mWorld* m_mView * m_mProj;
-		D3DXMatrixTranspose(&cb.mWLP, &cb.mWLP);
-		//ワールド・ライトビュー・プロジェクション行列をシェーダに渡す
+		//ワールド・ビュー・プロジェクション行列をシェーダーに渡す
+		cb.mWVP = m_pMesh->mWorld*m_mView*m_mProj;
+		D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
+		//ワールド・”ライトビュー”・プロジェクション行列をシェーダーに渡す
 		cb.mWLP = m_pMesh->mWorld*mLight*m_mProj;
 		D3DXMatrixTranspose(&cb.mWLP, &cb.mWLP);
 		//射影空間からテクスチャ座標空間へ変換する行列を渡す
@@ -256,9 +244,9 @@ void sss::Render(std::unique_ptr<FollowCamera>& camera)
 		m._41 = 0.5;
 		m._42 = 0.5;
 		m._44 = 1;
-		cb.mWLPT = m_pMesh->mWorld * mLight * m_mProj*m;
+		cb.mWLPT = m_pMesh->mWorld*mLight*m_mProj*m;
 		D3DXMatrixTranspose(&cb.mWLPT, &cb.mWLPT);
-		//マテリアルの各要素をシェーダに渡す
+		//マテリアルの各要素をエフェクト（シェーダー）に渡す
 		D3DXVECTOR4 mat(0, 0, 0, 0);
 		mat = D3DXVECTOR4(0.0, 0.0, 0.0, 1);
 		cb.Ambient = mat;
@@ -266,21 +254,21 @@ void sss::Render(std::unique_ptr<FollowCamera>& camera)
 		cb.Diffuse = mat;
 		mat = D3DXVECTOR4(0.5, 0.5, 0.5, 1);
 		cb.Specular = mat;
-		//ライトの位置をシェーダに渡す
-		cb.vLightPos = vLight;//vLightは上で、回転させた後のライト現在位置
-							  //視線ベクトルをシェーダに渡す
+		//ライトの位置をシェーダーに渡す
+		cb.vLightPos = vLight;//vLightは上で、回転させたあとのライト現在位置
+
+							  //視線ベクトルをエフェクト（シェーダー）に通知・適用
 		cb.vEye = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
-		//光が通過する距離
+		//どこまで透過するかの距離
 		cb.g_Transparent = 2.4;
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(m_pConstantBuffer[0], 0);
-
 	}
 	//このコンスタントバッファーを使うシェーダーの登録
 	pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer[0]);
 	pDeviceContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer[0]);
-	//1パス目で作った深度テクスチャ作成をシェーダに渡す
+	//１パス目で作った深度テクスチャーをシェーダーに渡す
 	pDeviceContext->PSSetSamplers(0, 1, &m_pSamLinear);
 	pDeviceContext->PSSetShaderResources(0, 1, &m_pDepthTextureView);
 	//バーテックスバッファーをセット
@@ -296,10 +284,11 @@ void sss::Render(std::unique_ptr<FollowCamera>& camera)
 	//頂点インプットレイアウトをセット
 	pDeviceContext->IASetInputLayout(m_pVertexLayout[0]);
 	//使用するシェーダーの登録	
-	pDeviceContext->VSSetShader(m_pVertexShader[0], nullptr, 0);
-	pDeviceContext->PSSetShader(m_pPixelShader[0], nullptr, 0);
-	//プリミティブをレンダリング
+	pDeviceContext->VSSetShader(m_pVertexShader[0], NULL, 0);
+	pDeviceContext->PSSetShader(m_pPixelShader[0], NULL, 0);
+	//プリミティブをレンダリング	
 	pDeviceContext->DrawIndexed(m_pMesh->dwNumFace * 3, 0, 0);
+
 
 }
 

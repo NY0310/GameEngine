@@ -452,7 +452,7 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 		//devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
 
 	}
-	m_pSampleLimear = NULL;
+	m_pSampleLimear = nullptr;
 	//m_pTexture = NULL;
 	//テクスチャーをシェーダーに渡す
 	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLimear);

@@ -65,7 +65,7 @@ private:
 	D3DXMATRIX mR; 
 	D3DXMATRIX mLight;
 	D3DXVECTOR3 vLight;
-
+	D3D11_MAPPED_SUBRESOURCE pData;
 public:
 	sss();
 	~sss();
