@@ -15,6 +15,8 @@ cbuffer global
 	float4 g_Diffuse; //拡散反射光
 	float4 g_Specular;//鏡面反射光
 	float4 g_vEye;//カメラ（視点）
+
+	float4 WaveMove;//波の動き
 };
 
 //構造体
@@ -36,8 +38,8 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Normal : NORMAL, float2 Tex : TEXCOOR
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	float3 worldPos = mul(Pos, g_mW).xyz;
-	float3 LightVector = normalize(g_vLight).xyz;
+	float3 worldPos = mul(Pos, (float3x3)g_mW);
+	float3 LightVector = normalize(g_vLight);
 	float3 EyeVector = normalize(g_vEye.xyz - worldPos);
 	float3 HalfVector = normalize(LightVector + EyeVector);
 
@@ -49,9 +51,8 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Normal : NORMAL, float2 Tex : TEXCOOR
 		T.x, B.x, N.x,
 		T.y, B.y, N.y,
 		T.z, B.z, N.z);
-	output.Normal = mul(Normal, g_mW);
 	output.Pos = mul(Pos, g_mWVP);
-	output.Tex = Tex;
+	output.Tex = Tex + WaveMove.xy;
 	output.HalfVector = mul(HalfVector, TangentToObject);
 	output.Light = mul(LightVector, TangentToObject);
 
@@ -68,7 +69,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 Normal = normalize(g_texNormal.Sample(g_samLinear, input.Tex).rgb * 2.0f - 1.0f);
 	float NH = saturate(dot(Normal, HalfVector));
 	float NL = saturate(dot(Normal, Light));
-	float Power = (NL == 0.0f) ? 0.0f : pow(NH,2);
+	float Power = (NL == 0.0f) ? 0.0f : pow(NH,1);
 
 	float4 FinalColor = (g_Diffuse * NL) + (g_Specular * Power);
 

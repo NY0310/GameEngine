@@ -80,7 +80,7 @@ HRESULT BumpMapping::InitShader()
 
 	//ブロブからバーテックスシェーダー作成
 	if (FAILED(shadermanager.MakeShader("BumpMapping.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader)))return E_FAIL;
-	//頂点インプットレイアウトを定義
+	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -88,7 +88,6 @@ HRESULT BumpMapping::InitShader()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 	//頂点インプットレイアウトを作成
 	if (FAILED(pDevice->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))return FALSE;
@@ -103,8 +102,10 @@ HRESULT BumpMapping::InitShader()
 	cb.StructureByteStride = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	if (FAILED(pDevice->CreateBuffer(&cb, nullptr, &m_pConstantBuffer)))return E_FAIL;
-
+	if (FAILED(pDevice->CreateBuffer(&cb, nullptr, &m_pConstantBuffer)))
+	{
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -116,12 +117,12 @@ HRESULT BumpMapping::InitPolygon()
 	SimpleVertex vertices[] =
 	{
 		// 座標、法線、UV、タンジェントの順
-		D3DXVECTOR3(-0.5,-0.5,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(0,1),D3DXVECTOR4(0,0,0,0),//頂点1, タンジェントは今はずべてゼロ（あとで計算）
-		D3DXVECTOR3(-0.5,0.5,0), D3DXVECTOR3(0,0,-1),D3DXVECTOR2(0,0),D3DXVECTOR4(0,0,0,0),//頂点2
-		D3DXVECTOR3(0.5,-0.5,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,1),D3DXVECTOR4(0,0,0,0), //頂点3
-		D3DXVECTOR3(-0.5,0.5,0),D3DXVECTOR3(0,0,-1), D3DXVECTOR2(0,0),D3DXVECTOR4(0,0,0,0), //頂点4
-		D3DXVECTOR3(0.5,0.5,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,0),D3DXVECTOR4(0,0,0,0),//頂点5
-		D3DXVECTOR3(0.5,-0.5,0),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,1),D3DXVECTOR4(0,0,0,0), //頂点6
+		D3DXVECTOR3(-0.5,0,-0.5),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(0,1),D3DXVECTOR4(0,0,0,0),//頂点1, タンジェントは今はずべてゼロ（あとで計算）
+		D3DXVECTOR3(-0.5,0,0.5), D3DXVECTOR3(0,0,-1),D3DXVECTOR2(0,0),D3DXVECTOR4(0,0,0,0),//頂点2
+		D3DXVECTOR3(0.5,0,-0.5),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,1),D3DXVECTOR4(0,0,0,0), //頂点3
+		D3DXVECTOR3(-0.5,0,0.5),D3DXVECTOR3(0,0,-1), D3DXVECTOR2(0,0),D3DXVECTOR4(0,0,0,0), //頂点4
+		D3DXVECTOR3(0.5,0,0.5),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,0),D3DXVECTOR4(0,0,0,0),//頂点5
+		D3DXVECTOR3(0.5,0,-0.5),D3DXVECTOR3(0,0,-1),D3DXVECTOR2(1,1),D3DXVECTOR4(0,0,0,0), //頂点6
 	};
 	//接線を計算
 	{
@@ -192,7 +193,7 @@ HRESULT BumpMapping::InitPolygon()
 	li.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	li.CpuAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	li.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(D3DX11CreateTextureFromFile(pDevice, L"Bump_Normal.bmp", &li, NULL, (ID3D11Resource**)&m_pNormalTexture, NULL)))
+	if (FAILED(D3DX11CreateTextureFromFile(pDevice, L"WaterBump.bmp", &li, NULL, (ID3D11Resource**)&m_pNormalTexture, NULL)))
 	{
 		return E_FAIL;
 	}
@@ -216,15 +217,14 @@ HRESULT BumpMapping::InitPolygon()
 void BumpMapping::Render(std::unique_ptr<FollowCamera>& camera)
 {
 
-
 	D3DXMATRIX mWorld;
 	D3DXMATRIX mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
 	D3DXMATRIX mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMatrixIdentity(&mWorld);
 
-	D3DXMatrixTranslation(&mWorld, 3.0f, 100.0f, 0);
+	//D3DXMatrixTranslation(&mWorld, 3.0f, 8.0f, -3.0f);
 	//ワールドトランスフォーム（絶対座標変換）
-	D3DXMatrixRotationY(&mWorld, timeGetTime() / 1000.0f);//単純にyaw回転させる
-	D3DXMatrixScaling(&mWorld, 2, 2, 2);
+	//D3DXMatrixRotationY(&mWorld, timeGetTime() / 1000.0f);//単純にyaw回転させる
 
 	//使用するシェーダの登録
 	pDeviceContext->VSSetShader(m_pVertexShader, nullptr, 0);
@@ -243,7 +243,7 @@ void BumpMapping::Render(std::unique_ptr<FollowCamera>& camera)
 		D3DXMatrixInverse(&cb.mWIT, NULL, &cb.mWIT);
 		D3DXMatrixTranspose(&cb.mWIT, &cb.mWIT);
 		//ワールド、カメラ、射影行列を渡す
-		cb.mWVP = mWorld*mView*mProj;;
+		cb.mWVP = mWorld*mView*mProj;
 		D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
 		//ライト方向を渡す
 		cb.vLightDir = (D3DXVECTOR4)m_vLight;
@@ -256,8 +256,18 @@ void BumpMapping::Render(std::unique_ptr<FollowCamera>& camera)
 		//カメラの位置(視点)をシェーダーに渡す
 		D3DXVECTOR3 eyepos = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
 		cb.Specular = D3DXVECTOR4(eyepos.x, eyepos.y, eyepos.z, 0);
+
+		//波　関連
+		static D3DXVECTOR4 WaveMove(0, 0, 0, 0);
+		WaveMove.x += 0.0001f;
+		WaveMove.y += 0.0005f;
+		//波の位置変化量を渡す
+		cb.WaveMove = WaveMove;
+
+
 		memcpy_s(SubRes.pData, SubRes.RowPitch, (void*)&cb, sizeof(SHADER_CONSTANT_BUFFER));
 		pDeviceContext->Unmap(m_pConstantBuffer, 0);
+
 	}
 	//このコンスタントバッファーを使うシェーダーの登録
 	pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);

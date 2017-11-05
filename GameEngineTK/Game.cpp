@@ -502,79 +502,79 @@ void Game::Render()
 //アルファ値を有効にする
 devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
-	pSss->ZTexRender(m_Camera);
+	//pSss->ZTexRender(m_Camera);
 
 	Clear();
 
+
+	//pSss->Render(m_Camera);
+
+
+	//for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
+	//	it != m_HomingBullets.end();
+	//	it++)
+	//{
+	//	(*it)->Draw();
+	//}
+
+
+	//stage.GetLandShape().Draw();
+
+	//m_LandShape.Draw();
+	//VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::SkyBlue);
+	//VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::SandyBrown);
+	//VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::PaleGoldenrod);
+
+	//CommonStates states(devices.Device().Get());
+
+	//devices.SpriteBatch()->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
+
+
+	//// 全パーツ分行列更新
+	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
+	//{
+	//	Enemy* enemy = it->get();
+	//	(*it)->Draw();
+	//}
+
+	//player->Draw();
+
+	//if (clearcnt == CLEARNUM)
+	//{
+	//	m_Enemies.clear();
+	//	//スプライトフォントの描画
+ // 		m_spriteFont->DrawString(devices.SpriteBatch().get(), m_str.c_str(), XMFLOAT2(200, 200));
+
+	//}
+
+	//tomanageparticle->Render(m_Camera);
+	//obj->Render(m_Camera);
+
+
+	////キーボードの様態を取得
+	//Keyboard::State kb = keyboard->GetState();
+	////キーボードトラッカーの更新
+	//KeybordTracker.Update(kb);
+
+	//if (kb.D)
+	//{
+	//	m_pMesh->ChangeAnimSet(1);
+	//}
+
+
+
+
+
 	pBumpMapping->Render(m_Camera);
 
-	pSss->Render(m_Camera);
-
-
-	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
-		it != m_HomingBullets.end();
-		it++)
-	{
-		(*it)->Draw();
-	}
-
-
-	stage.GetLandShape().Draw();
-
-	m_LandShape.Draw();
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::SkyBlue);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::SandyBrown);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::PaleGoldenrod);
-
-	CommonStates states(devices.Device().Get());
-
-	devices.SpriteBatch()->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
-
-
-	// 全パーツ分行列更新
-	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
-	{
-		Enemy* enemy = it->get();
-		(*it)->Draw();
-	}
-
-	player->Draw();
-
-	if (clearcnt == CLEARNUM)
-	{
-		m_Enemies.clear();
-		//スプライトフォントの描画
-  		m_spriteFont->DrawString(devices.SpriteBatch().get(), m_str.c_str(), XMFLOAT2(200, 200));
-
-	}
-
-	tomanageparticle->Render(m_Camera);
-	obj->Render(m_Camera);
-
-
-	//キーボードの様態を取得
-	Keyboard::State kb = keyboard->GetState();
-	//キーボードトラッカーの更新
-	KeybordTracker.Update(kb);
-
-	if (kb.D)
-	{
-		m_pMesh->ChangeAnimSet(1);
-	}
-
-
-
-
-
-
-	devices.SpriteBatch().get()->End();
+	//devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
-	//D3DXMESHライブラリを使用してXファイルを描画するクラス
-	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
-	m_pMesh->GetfYaw() += 0.0002;
-	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
+	////D3DXMESHライブラリを使用してXファイルを描画するクラス
+	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
+	//m_pMesh->GetfYaw() += 0.0002;
+	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
 
 
@@ -600,6 +600,7 @@ void Game::Clear()
 	devices.Context().Get()->RSSetViewports(1, &viewport);
 
 	devices.Viewport(viewport);
+
 
 }
 

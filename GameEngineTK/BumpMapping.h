@@ -32,12 +32,12 @@ private:
 		D3DXVECTOR4 Diffuse;//拡散反射光
 		D3DXVECTOR4 Specular;//鏡面反射光
 		D3DXVECTOR4 vEye;//カメラ位置（視点位置）
+		D3DXVECTOR4 WaveMove;//波の動き
 	};
 
 	ShaderManager& shadermanager = ShaderManager::Get();
 	ID3D11Device* pDevice = Devices::Get().Device().Get();
 	ID3D11DeviceContext* pDeviceContext = Devices::Get().Context().Get();
-
 public:
 	BumpMapping();
 	~BumpMapping();
