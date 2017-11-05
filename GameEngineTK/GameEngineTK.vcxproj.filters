@@ -11,9 +11,6 @@
     <Filter Include="Collisiton">
       <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hlsl">
-      <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PARTICLE">
       <UniqueIdentifier>{29af85b1-b77d-4347-baf4-b25ebc9be8c8}</UniqueIdentifier>
     </Filter>
@@ -43,6 +40,12 @@
     </Filter>
     <Filter Include="Mesh\OBJ">
       <UniqueIdentifier>{e922770e-a639-46f0-a5ad-52905d0fb0b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bunp">
+      <UniqueIdentifier>{43741387-380b-4d6d-bdfe-808261f3c135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effect\hlsl">
+      <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="ObjAbstract.h">
       <Filter>Mesh\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="BumpMapping.h">
+      <Filter>Bunp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +195,9 @@
     <ClCompile Include="ObjAbstract.cpp">
       <Filter>Mesh\OBJ</Filter>
     </ClCompile>
+    <ClCompile Include="BumpMapping.cpp">
+      <Filter>Bunp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -252,16 +261,19 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Geometry.hlsl">
-      <Filter>hlsl</Filter>
+      <Filter>Effect\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Shader.hlsl">
-      <Filter>hlsl</Filter>
+      <Filter>Effect\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="D3DXMESH.hlsl">
-      <Filter>hlsl</Filter>
+      <Filter>Effect\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="sss.hlsl">
-      <Filter>hlsl</Filter>
+      <Filter>Effect\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="BumpMapping.hlsl">
+      <Filter>Effect\hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

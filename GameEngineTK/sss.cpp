@@ -5,8 +5,8 @@ using namespace DirectX::SimpleMath;
 sss::sss()
 {
 	modelAngele = 0.0f;
-
-	m_vLightPos = D3DXVECTOR3(0.5f, 0.5f, 3.0f);
+	angle = 0.0f;
+	m_vLightPos = D3DXVECTOR3(0.0f, -45.5f, 0.0f);
 
 }
 
@@ -164,8 +164,10 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 
 	//モデルワールド行列 
 	D3DXMATRIX mR;
+	D3DXMatrixIdentity(&mR);
+	modelAngele += 0.01f;
 	D3DXMatrixRotationY(&mR, modelAngele);
-	D3DXMatrixTranslation(&mR, 0.0f, 2.0f, 0.0f);
+	//D3DXMatrixTranslation(&mR, 0.0f, 2.0f, 0.0f);
 
 	m_pMesh->mWorld = mR;
 	// ビュートランスフォーム ここではライトからの視界
@@ -173,10 +175,11 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 	D3DXMATRIX mLight;
 	D3DXVECTOR3 vLight = m_vLightPos;
 	D3DXMatrixRotationY(&mR, angle);
+	angle += 0.01f;
 	D3DXVec3TransformCoord(&vLight, &vLight, &mR);
 
 
-	D3DXVECTOR3 vLookatPt(0.0f, 0.5f, 0.0f);//注視位置
+	D3DXVECTOR3 vLookatPt(0.0f, -5.5f, 0.0f);//注視位置
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
 	D3DXMatrixLookAtRH(&mLight, &vLight, &vLookatPt, &vUpVec);
 
@@ -288,7 +291,7 @@ void sss::Render(std::unique_ptr<FollowCamera>& camera)
 	pDeviceContext->PSSetShader(m_pPixelShader[0], NULL, 0);
 	//プリミティブをレンダリング	
 	pDeviceContext->DrawIndexed(m_pMesh->dwNumFace * 3, 0, 0);
-
+	
 
 }
 

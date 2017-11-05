@@ -149,6 +149,10 @@ void Game::Initialize(HWND window, int width, int height)
 
 	pSss = new sss();
 	pSss->InitD3D();
+
+
+	pBumpMapping = new BumpMapping();
+	pBumpMapping->InitD3D();
 }
 
 
@@ -496,12 +500,15 @@ void Game::Render()
 	}
 //#if 0
 //アルファ値を有効にする
-	devices.Context().Get()->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xffffffff);
+devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
 	pSss->ZTexRender(m_Camera);
 
 	Clear();
 
+	pBumpMapping->Render(m_Camera);
+
+	pSss->Render(m_Camera);
 
 
 	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
@@ -556,11 +563,6 @@ void Game::Render()
 	}
 
 
-	//D3DXMESHライブラリを使用してXファイルを描画するクラス
-	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
-	m_pMesh->GetfYaw() += 0.0002;
-	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
-
 
 
 
@@ -568,7 +570,13 @@ void Game::Render()
 	devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
-	pSss->Render(m_Camera);
+
+	//D3DXMESHライブラリを使用してXファイルを描画するクラス
+	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
+	m_pMesh->GetfYaw() += 0.0002;
+	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
+
+
 
 
 

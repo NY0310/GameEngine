@@ -164,6 +164,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BumpMapping.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="ToManageParticle.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BumpMapping.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CD3DXMESH.cpp" />
@@ -252,6 +254,10 @@
     <MeshContentTask Include="Assets\Teapot.FBX" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BumpMapping.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shader.hlsl">
       <FileType>Document</FileType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
