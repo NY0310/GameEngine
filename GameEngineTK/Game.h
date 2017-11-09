@@ -44,6 +44,7 @@
 #include "sss.h"
 #include "BumpMapping.h"
 #include "Tessellation.h"
+#include "DisplacementMapping.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -188,4 +189,5 @@ private:
 	sss* pSss;
 	BumpMapping* pBumpMapping;//バンプマッピング
 	Tessellation* pTessellation;//テセレーション
+	DisplacementMapping* pDisplacementMapping;//ディスプレイスマッピング
 };       

@@ -160,8 +160,8 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 
-
-
+	pDisplacementMapping = new DisplacementMapping();
+	pDisplacementMapping->InitD3D();
 
 	//D3D11_RASTERIZER_DESC rdc;
 	//ZeroMemory(&rdc, sizeof(rdc));
@@ -524,14 +524,15 @@ void Game::Render()
 
 //#if 0
 //アルファ値を有効にする
-//devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
+devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
-	pSss->ZTexRender(m_Camera);
+	//pSss->ZTexRender(m_Camera);
 
 	Clear();
+	//pBumpMapping->Render(m_Camera);
 
 
-	pSss->Render(m_Camera);
+	//pSss->Render(m_Camera);
 
 
 	//for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
@@ -588,12 +589,11 @@ void Game::Render()
 
 
 
-	//pBumpMapping->Render(m_Camera);
 
 	//devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
-	//pTessellation->Render(m_Camera);
+	pTessellation->Render(m_Camera);
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
 	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
@@ -601,7 +601,7 @@ void Game::Render()
 	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
 
-
+	pDisplacementMapping->Render(m_Camera);
 
 
 

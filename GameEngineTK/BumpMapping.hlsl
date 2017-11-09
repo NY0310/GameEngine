@@ -69,7 +69,7 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float3 Normal = normalize(g_texNormal.Sample(g_samLinear, input.Tex).rgb * 2.0f - 1.0f);
 	float NH = saturate(dot(Normal, HalfVector));
 	float NL = saturate(dot(Normal, Light));
-	float Power = (NL == 0.0f) ? 0.0f : pow(NH,1);
+	float Power = (NL == 0.0f) ? 0.0f : pow(NH,6);
 
 	float4 FinalColor = (g_Diffuse * NL) + (g_Specular * Power);
 

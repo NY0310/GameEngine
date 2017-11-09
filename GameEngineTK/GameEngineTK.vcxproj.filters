@@ -128,6 +128,9 @@
     <ClInclude Include="Tessellation.h">
       <Filter>Tesselation</Filter>
     </ClInclude>
+    <ClInclude Include="DisplacementMapping.h">
+      <Filter>Tesselation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -205,6 +208,9 @@
       <Filter>Bunp</Filter>
     </ClCompile>
     <ClCompile Include="Tessellation.cpp">
+      <Filter>Tesselation</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplacementMapping.cpp">
       <Filter>Tesselation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -285,6 +291,9 @@
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Tessellation.hlsl">
+      <Filter>Effect\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementMapping.hlsl">
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
   </ItemGroup>

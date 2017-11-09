@@ -245,11 +245,11 @@ void BumpMapping::Render(std::unique_ptr<FollowCamera>& camera)
 		//ƒ‰ƒCƒg•ûŒü‚ð“n‚·
 		cb.vLightDir = (D3DXVECTOR4)m_vLight;
 		//Ambient‚ð“n‚·
-		cb.Ambient = D3DXVECTOR4(0.4, 0.4, 0.4, 1);
+		cb.Ambient = D3DXVECTOR4(0.0, 0.0, 0.4, 1);
 		//Diffuse‚ð“n‚·
-		cb.Diffuse = D3DXVECTOR4(0.7, 0.7, 0.7, 1);
+		cb.Diffuse = D3DXVECTOR4(0.0, 0.0, 0.7, 1);
 		//Specular‚ð“n‚·
-		cb.Specular = D3DXVECTOR4(0.5, 0.5, 0.5, 1);
+		cb.Specular = D3DXVECTOR4(1.5, 1.5, 1.5, 1);
 		//ƒJƒƒ‰‚ÌˆÊ’u(Ž‹“_)‚ðƒVƒF[ƒ_[‚É“n‚·
 		D3DXVECTOR3 eyepos = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
 		cb.Specular = D3DXVECTOR4(eyepos.x, eyepos.y, eyepos.z, 0);
