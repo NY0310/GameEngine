@@ -75,9 +75,6 @@ HRESULT BumpMapping::InitShader()
 {
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *pCompiledShader = nullptr;
-	ID3DBlob *pErrors = nullptr;
-
-
 	//ブロブからバーテックスシェーダー作成
 	if (FAILED(shadermanager.MakeShader("BumpMapping.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader)))return E_FAIL;
 	//頂点インプットレイアウトを定義	

@@ -93,8 +93,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float thickness = abs(LightOut - LightIn);
 	//透過する光	
 	float4 transparent = g_Diffuse*(1.0f - saturate(thickness / g_Transparent));
-
-	color = phong / 4.0f + 2 * transparent*3.0f / 4.0f;//フォンシェーディングの色に透過光をプラス
+	
+	color = phong  * 4 + 2 * transparent*3.0f / 4.0f;//フォンシェーディングの色に透過光をプラス
 
 	return color;
 }

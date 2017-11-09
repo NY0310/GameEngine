@@ -6,7 +6,7 @@ sss::sss()
 {
 	modelAngele = 0.0f;
 	angle = 0.0f;
-	m_vLightPos = D3DXVECTOR3(0.0f, -45.5f, 0.0f);
+	m_vLightPos = D3DXVECTOR3(0.0f, -5.0f, 0.0f);
 
 }
 
@@ -175,13 +175,13 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 	D3DXMATRIX mLight;
 	D3DXVECTOR3 vLight = m_vLightPos;
 	D3DXMatrixRotationY(&mR, angle);
-	angle += 0.01f;
+	//angle += 0.01f;
 	D3DXVec3TransformCoord(&vLight, &vLight, &mR);
 
 
-	D3DXVECTOR3 vLookatPt(0.0f, -5.5f, 0.0f);//注視位置
+	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);//注視位置
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);//上方位置
-	D3DXMatrixLookAtRH(&mLight, &vLight, &vLookatPt, &vUpVec);
+	D3DXMatrixLookAtLH(&mLight, &vLight, &vLookatPt, &vUpVec);
 
 	//シェーダーのコンスタントバッファーに各種データを渡す
 	D3D11_MAPPED_SUBRESOURCE pData;

@@ -47,6 +47,9 @@
     <Filter Include="Effect\hlsl">
       <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tesselation">
+      <UniqueIdentifier>{c6a4583f-d965-4868-b04d-e9babde8eb2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="BumpMapping.h">
       <Filter>Bunp</Filter>
+    </ClInclude>
+    <ClInclude Include="Tessellation.h">
+      <Filter>Tesselation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +204,9 @@
     <ClCompile Include="BumpMapping.cpp">
       <Filter>Bunp</Filter>
     </ClCompile>
+    <ClCompile Include="Tessellation.cpp">
+      <Filter>Tesselation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -273,6 +282,9 @@
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="BumpMapping.hlsl">
+      <Filter>Effect\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Tessellation.hlsl">
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
   </ItemGroup>

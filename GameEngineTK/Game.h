@@ -37,12 +37,13 @@
 
 #include <d3dCompiler.h>
 #include "ToManageParticle.h"
-#include "Stage.h";
+#include "Stage.h"
 #include "HomingBullet.h"
 #include "OBJ.h"
 #include "CD3DXMESH.h"
 #include "sss.h"
 #include "BumpMapping.h"
+#include "Tessellation.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -186,4 +187,5 @@ private:
 	CD3DXMESH* m_pMesh;//D3DXMESHライブラリを使用してXファイルを描画するクラス
 	sss* pSss;
 	BumpMapping* pBumpMapping;//バンプマッピング
+	Tessellation* pTessellation;//テセレーション
 };       

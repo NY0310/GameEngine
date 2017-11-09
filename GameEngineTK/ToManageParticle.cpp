@@ -83,12 +83,12 @@ HRESULT ToManageParticle::InitD3D()
 
 
 	//深度テストを”無効”にする
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilDesc.DepthEnable = false;
+	//D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	//ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	//depthStencilDesc.DepthEnable = false;
 
-	devices.Device().Get()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
-	devices.Context().Get()->OMSetDepthStencilState(m_DepthStencilState, 1);
+	//devices.Device().Get()->CreateDepthStencilState(&depthStencilDesc, &m_DepthStencilState);
+	//devices.Context().Get()->OMSetDepthStencilState(m_DepthStencilState, 1);
 
 	//アルファブレンド用ブレンドステート作成
 	//pngファイル内にアルファ情報がある。アルファにより透過するよう指定している

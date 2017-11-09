@@ -44,8 +44,6 @@ public:
 	HRESULT InitD3D();
 	HRESULT InitPolygon();
 	HRESULT InitShader();
-	HRESULT CreateNormalMapFromHeightMap(ID3D11Texture2D** ppNormal,
-		ID3D11Texture2D* pHeight);
 	void Render(std::unique_ptr<FollowCamera>& camera);
 
 	IDXGISwapChain* m_pSwapChain;

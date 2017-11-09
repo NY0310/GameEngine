@@ -85,13 +85,12 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 
-	void const* shaderByteCode;
-	size_t byteCodeLength;
+	/*void const* shaderByteCode;
+	size_t byteCodeLength;*/
 
 
 	//	汎用ステートを生成	q
 	m_states = std::make_unique<CommonStates>(devices.Device().Get());
-
 	
 	devices.Context().Get()->RSSetState(m_states->CullClockwise());
 
@@ -153,6 +152,27 @@ void Game::Initialize(HWND window, int width, int height)
 
 	pBumpMapping = new BumpMapping();
 	pBumpMapping->InitD3D();
+
+
+	pTessellation = new Tessellation();
+	pTessellation->InitD3D();
+
+
+
+
+
+
+
+	//D3D11_RASTERIZER_DESC rdc;
+	//ZeroMemory(&rdc, sizeof(rdc));
+	//rdc.CullMode = D3D11_CULL_NONE;
+	//rdc.FillMode = D3D11_FILL_WIREFRAME;
+	//rdc.FrontCounterClockwise = TRUE;
+	//ID3D11RasterizerState* m_pRasterizerState;
+
+	//devices.Device().Get()->CreateRasterizerState(&rdc, &m_pRasterizerState);
+	//devices.Context().Get()->RSSetState(m_pRasterizerState);
+
 }
 
 
@@ -498,16 +518,20 @@ void Game::Render()
 	{
 		return;
 	}
+
+
+
+
 //#if 0
 //アルファ値を有効にする
-devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
+//devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
-	//pSss->ZTexRender(m_Camera);
+	pSss->ZTexRender(m_Camera);
 
 	Clear();
 
 
-	//pSss->Render(m_Camera);
+	pSss->Render(m_Camera);
 
 
 	//for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
@@ -564,12 +588,12 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
 
 
-
-	pBumpMapping->Render(m_Camera);
+	//pBumpMapping->Render(m_Camera);
 
 	//devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
+	//pTessellation->Render(m_Camera);
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
 	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
@@ -600,8 +624,6 @@ void Game::Clear()
 	devices.Context().Get()->RSSetViewports(1, &viewport);
 
 	devices.Viewport(viewport);
-
-
 }
 
 // Presents the back buffer contents to the screen.
