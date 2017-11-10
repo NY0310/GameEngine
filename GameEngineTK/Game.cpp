@@ -593,7 +593,7 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
-	pTessellation->Render(m_Camera);
+	//pTessellation->Render(m_Camera);
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
 	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));

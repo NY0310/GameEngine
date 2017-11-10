@@ -19,6 +19,7 @@
 
 //ƒ}ƒNƒ
 #define SAFE_RELEASE(x) if(x){x->Release(); x=NULL;}
+#define ALIGN16 _declspec(align(16))
 
 
 
