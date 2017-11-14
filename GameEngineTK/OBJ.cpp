@@ -1,6 +1,8 @@
 #include "OBJ.h"
 
 
+using namespace std;
+
 OBJ::OBJ()
 {
 
@@ -102,7 +104,11 @@ HRESULT OBJ::InitD3D()
 		return E_FAIL;
 	}
 
-
+	//インクテクスチャを作成	
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(devices.Device().Get(), "pink1.png", nullptr, nullptr, &inkTexture, nullptr)))
+	{
+		return E_FAIL;
+	}
 
 
 
@@ -350,7 +356,7 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	return S_OK;
 }
 
-void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
+void OBJ::Render(unique_ptr<FollowCamera>& camera)
 {
 	auto& devices = Devices::Get();
 	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
@@ -373,23 +379,6 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	D3DXMATRIX Tran;
 	D3DXMatrixTranslation(&Tran, x, 1, 0);
 	World = Tran;
-
-
-	//D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->m_eyepos);
-	//D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->m_refpos);
-	//D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->m_upvec);
-
-
-	//D3DXMatrixLookAtRH(&View, &vEyePt, &vLookatPt, &vUpVec);
-	//D3DXMatrixPerspectiveFovRH(&Proj, camera->m_fovY, camera->m_aspect, camera->m_NearClip, camera->m_FarClip);
-
-
-
-	//D3DXMATRIX CancelRotation = View;
-	//CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
-	//D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
-	//World = CancelRotation * World;
-
 
 	//使用するシェーダーの登録	
 	devices.Context().Get()->VSSetShader(m_pVertexShader, NULL, 0);
@@ -434,30 +423,34 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 		D3DXVECTOR3 vLightDir(-1, 0, -1);
 		cb.vLightDir = D3DXVECTOR4(vLightDir.x, vLightDir.y, vLightDir.z, 0.0f);
 
-		//ディフューズカラーを渡す
-		cb.vDiffuse = m_Material.Kd;
-		//スペキュラーを渡す
-		cb.vSpecular = m_Material.Ks;
+		////ディフューズカラーを渡す
+		//cb.vDiffuse = m_Material.Kd;
+		////スペキュラーを渡す
+		//cb.vSpecular = m_Material.Ks;
 
 		//視点位置を渡す
 		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
-
+	
+		//射影空間からテクスチャ座標空間へ変換する行列を渡す
+		ZeroMemory(&m, sizeof(D3DXMATRIX));
+		m._11 = 0.5;
+		m._22 = -0.5;
+		m._33 = 1;
+		m._41 = 0.5;
+		m._42 = 0.5;
+		m._44 = 1;
+		cb.mWVPT = World *View * Proj * m;
+		D3DXMatrixTranspose(&cb.mWVPT, &cb.mWVPT);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
 		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
 
-
-
-		//memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
-		//devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
-
 	}
 	m_pSampleLimear = nullptr;
-	//m_pTexture = NULL;
 	//テクスチャーをシェーダーに渡す
 	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLimear);
 	devices.Context().Get()->PSSetShaderResources(0, 1, &m_pTexture);
-
+	//devices.Context().Get()->PSSetShaderResources(1, 1, &inkTexture);	
 	//このコンスタントバッファーを使うシェーダーの登録
 	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
@@ -477,4 +470,127 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera)
 	devices.Context().Get()->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
 
 
+}
+
+
+void OBJ::Render(unique_ptr<FollowCamera>& camera, ID3D11ShaderResourceView* & texture,D3DXMATRIX& world)
+{
+	auto& devices = Devices::Get();
+	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+
+
+
+
+	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+
+	//auto& devices = Devices::Get();
+
+
+	D3DXMATRIX World;
+	//D3DXMATRIX View;
+	//D3DXMATRIX Proj;
+	////ワールドトランスフォーム
+	static float x = 0;
+	x += 0.00001;
+	D3DXMATRIX Tran;
+	D3DXMatrixTranslation(&Tran, x, 1, 0);
+	World = Tran;
+
+	//使用するシェーダーの登録	
+	devices.Context().Get()->VSSetShader(m_pVertexShader, NULL, 0);
+	devices.Context().Get()->PSSetShader(m_pPixelShader, NULL, 0);
+	//シェーダーのコンスタントバッファーに各種データを渡す	
+	D3D11_MAPPED_SUBRESOURCE pData;
+	SIMPLESHADER_CONSTANT_BUFFER cb;
+	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	{
+		birthcnt += 10;
+		//ワールドトランスフォームは個々で異なる
+		D3DXMATRIX Scale, Tran, Rot;
+
+		//ワールド行列計算
+		D3DXMatrixScaling(&World, 5, 5, 5);
+		//World *= Scale;
+
+
+		////ワールドトランスフォーム（絶対座標変換）
+		D3DXMatrixRotationY(&Rot, birthcnt / 1000.0f);//単純にyaw回転させる
+		World *= Rot;
+
+		D3DXMatrixTranslation(&Tran, 0, 1, 0);
+
+		World *= Tran;
+
+		//ワールド、カメラ、射影行列を渡す
+		D3DXMATRIX m = World *View * Proj;
+		D3DXMatrixTranspose(&m, &m);
+		cb.mWVP = m;
+
+		//ライトの方向を渡す
+		D3DXVECTOR3 vLightDir(-1, 0, -1);
+		cb.vLightDir = D3DXVECTOR4(vLightDir.x, vLightDir.y, vLightDir.z, 0.0f);
+
+		////ディフューズカラーを渡す
+		//cb.vDiffuse = m_Material.Kd;
+		////スペキュラーを渡す
+		//cb.vSpecular = m_Material.Ks;
+
+		//視点位置を渡す
+		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
+
+		//射影空間からテクスチャ座標空間へ変換する行列を渡す
+		ZeroMemory(&m, sizeof(D3DXMATRIX));
+		m._11 = 0.5;
+		m._22 = -0.5;
+		m._33 = 1;
+		m._41 = 0.5;
+		m._42 = 0.5;
+		m._44 = 1;
+		cb.mWVPT = world*View*Proj * m;
+		D3DXMatrixTranspose(&cb.mWVPT, &cb.mWVPT);
+
+
+
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
+		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
+
+
+	}
+	m_pSampleLimear = nullptr;
+	//m_pTexture = NULL;
+	//テクスチャーをシェーダーに渡す
+	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLimear);
+	devices.Context().Get()->PSSetShaderResources(0, 1, &texture);
+	//devices.Context().Get()->PSSetShaderResources(1, 1, &inkTexture);	
+	//このコンスタントバッファーを使うシェーダーの登録
+	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	//頂点インプットレイアウトをセット
+	devices.Context().Get()->IASetInputLayout(m_pVertexLayout);
+	//プリミティブ・トポロジーをセット
+	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//バーテックスバッファーをセット
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+	devices.Context().Get()->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
+	//インデックスバッファーをセット
+	stride = sizeof(int);
+	offset = 0;
+	devices.Context().Get()->IASetIndexBuffer(m_Mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	//プリミティブをレンダリング
+	devices.Context().Get()->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
+
+
+}
+
+
+
+
+void OBJ::Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3&& worldPosition)
+{
+	D3DXMATRIX worldMatrix;
+	D3DXMatrixTranslation(&worldMatrix, worldPosition.x, worldPosition.y, worldPosition.z);
+	this->Render(camera);
+	this->Render(camera,inkTexture, worldMatrix);
 }

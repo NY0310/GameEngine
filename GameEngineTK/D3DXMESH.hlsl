@@ -1,6 +1,9 @@
 //グローバル
 Texture2D g_texColor: register(t0);
+//exture2D g_texInk: register(t1);
+
 SamplerState g_samLinear : register(s0);
+//SamplerState g_InkLinear : register(s2);
 
 //グローバル
 cbuffer global_0:register(b0)
@@ -9,6 +12,9 @@ cbuffer global_0:register(b0)
 	matrix g_mWVP; //ワールドから射影までの変換行列
 	float4 g_vLightDir;  //ライトの方向ベクトル
 	float4 g_vEye;//カメラ位置
+	matrix g_mWPVT;
+	//bool g_ObjTexFlag;//オブジェクトのテクスチャか		
+
 };
 
 cbuffer global_1:register(b1)
@@ -16,6 +22,7 @@ cbuffer global_1:register(b1)
 	float4 g_Ambient = float4(0, 0, 0, 0);//アンビエント光
 	float4 g_Diffuse = float4(1, 0, 0, 0); //拡散反射(色）
 	float4 g_Specular = float4(1, 1, 1, 1);//鏡面反射
+
 };
 
 //バーテックスシェーダー出力構造体
@@ -26,7 +33,7 @@ struct VS_OUTPUT
 	float3 Light : TEXCOORD0;
 	float3 Normal : TEXCOORD1;
 	float3 EyeVector : TEXCOORD2;
-	float2 Tex : TEXCOORD3;
+	float4 Tex : TEXCOORD3;
 };
 //
 //バーテックスシェーダー
@@ -54,9 +61,15 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Norm : NORMAL, float2 Tex : TEXCOORD)
 
 	output.Color = g_Diffuse * NL + specular*g_Specular;
 
-	//テクスチャー座標
-	output.Tex = Tex;
-
+	////テクスチャー座標
+	//if (g_ObjTexFlag)
+	//{
+	//	output.Tex = Tex;
+	//}
+	//else
+	//{
+	output.Tex = mul(Tex, g_mWPVT);
+	//}
 	return output;
 }
 
@@ -95,8 +108,12 @@ VS_OUTPUT VS_NoTex(float4 Pos : POSITION, float4 Norm : NORMAL)
 //
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 color = g_texColor.Sample(g_samLinear, input.Tex);
-	color += input.Color / 2;
+	float4 color;
+	input.Tex.xyz /= input.Tex.z;
+	//color = g_texInk.Sample(g_samLinear, input.Tex);
+	color = g_texColor.Sample(g_samLinear, input.Tex);
+	//テクスチャが存在する場合はその色を優先する
+	//color += input.Color / 2;	
 
 	return color;
 }

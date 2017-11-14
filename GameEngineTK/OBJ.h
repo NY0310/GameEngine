@@ -28,9 +28,11 @@ public:
 		D3DXMATRIX mW;//ワールド行列
 		D3DXMATRIX mWVP;//ワールドから射影までの変換行列
 		D3DXVECTOR4 vLightDir;//ライト方向
-		D3DXVECTOR4 vDiffuse;//ディヒューズ色
-		D3DXVECTOR4 vSpecular;//鏡面反射光
 		D3DXVECTOR4 vEyes;//カメラ位置
+		D3DXMATRIX mWVPT;
+		//ALIGN16 bool ObjTexFlag;
+		//D3DXVECTOR4 vDiffuse;//ディヒューズ色
+		//D3DXVECTOR4 vSpecular;//鏡面反射光
 	};
 
 	//オリジナル　マテリアル構造体
@@ -59,9 +61,13 @@ public:
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	void Render(std::unique_ptr<FollowCamera>& camera);
+	void Render(unique_ptr<FollowCamera>& camera, ID3D11ShaderResourceView *& texture, D3DXMATRIX & world);
+	void Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3 && worldPosition);
 private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11VertexShader* m_pVertexShader;
+	ID3D11HullShader* m_pHullShader;
+	ID3D11DomainShader* m_pDomainShader;
 
 	ID3D11Buffer* m_pConstantBuffer;
 	MY_MESH m_Mesh;
@@ -79,5 +85,9 @@ private:
 	MY_MATERIAL m_Material;//マテリアル構造体
 
 	ID3D11RasterizerState* m_pRasterizerState;
+
+
+	ID3D11ShaderResourceView* inkTexture;//インクテクスチャ
+
 };
 

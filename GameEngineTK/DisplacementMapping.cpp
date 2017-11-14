@@ -322,8 +322,8 @@ HRESULT DisplacementMapping::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * 
 void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 {
 
-	WaveMove.x += 0.0002f;
-	WaveMove.y += 0.0001f;
+	WaveMove.x += 0.0004f;
+	WaveMove.y += 0.0002f;
 
 
 	D3DXMATRIX mWorld;
@@ -333,7 +333,6 @@ void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 	D3DXMatrixIdentity(&mWorld);
 	//ワールドトランスフォーム（絶対座標変換）
 	D3DXMatrixTranslation(&mWorld, 0, 0, 0);
-	//D3DXMatrixRotationX(&mWorld, XMConvertToRadians(25));//単純にyaw回転させる
 	//シェーダーの登録　	
 	pDeviceContext->VSSetShader(m_pVertexShader, nullptr, 0);
 	pDeviceContext->HSSetShader(m_pHullShader, nullptr, 0);
@@ -362,8 +361,6 @@ void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 		//最大分割数
 		cb.iMaxDevide = 64;
 		//ライトの方向
-		static float a = 0;
-		a += 0.01f;
 		cb.LightDir = D3DXVECTOR4(1, 1, 1, 0);
 		//波の位置変化量を渡す
 		cb.WaveMove = WaveMove;
@@ -398,5 +395,8 @@ void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 	//プリミティブをレンダリング
 	pDeviceContext->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
+
+
+
 
 }

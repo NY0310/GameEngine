@@ -573,7 +573,6 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//}
 
 	//tomanageparticle->Render(m_Camera);
-	//obj->Render(m_Camera);
 
 
 	////キーボードの様態を取得
@@ -601,7 +600,8 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
 
-	pDisplacementMapping->Render(m_Camera);
+	obj->Render(m_Camera, D3DXVECTOR3(3,1,0));
+	//pDisplacementMapping->Render(m_Camera);
 
 
 
