@@ -46,6 +46,11 @@ public:
 	DirectX::SimpleMath::Vector3 P2;
 	//法線ベクトル
 	DirectX::SimpleMath::Vector3 Normal;
+	//UV
+	DirectX::SimpleMath::Vector2 Uv0;
+	DirectX::SimpleMath::Vector2 Uv1;
+	DirectX::SimpleMath::Vector2 Uv2;
+
 private:
 };
 

@@ -155,7 +155,7 @@ void Player::Initialize()
 
 
 	m_hp = MAX_HP;
-	
+
 }
 //-----------------------------------------------------------------------------
 // 更新
@@ -165,7 +165,7 @@ void Player::Update()
 	Keyboard::State keystate = m_pKeyboard->GetState();
 
 
-  
+
 	//m_r++;
 	//float rot = XMConvertToRadians(m_r);
 
@@ -174,7 +174,7 @@ void Player::Update()
 	if (KeybordTracker.IsKeyPressed(Keyboard::Keys::Space))
 	{
 		//ジャンプ開始
- 		// StartJump();
+		// StartJump();
 	}
 	Vector3 inter;
 
@@ -218,24 +218,24 @@ void Player::Update()
 		float distance = 1.0e5;
 
 
-			
-			float temp_distance;
-			Vector3 temp_inter;
+
+		float temp_distance;
+		Vector3 temp_inter;
 
 
-			Stage stage;
-			// 床面との当たりを判定
-			if ((&stage.GetLandShape())->IntersectSegment(player_segment, &temp_inter))
+		Stage stage;
+		// 床面との当たりを判定
+		if ((&stage.GetLandShape())->IntersectSegment(player_segment, &temp_inter))
+		{
+			hit = true;
+			temp_distance = Vector3::Distance(player_segment.Start, temp_inter);
+			if (temp_distance < distance)
 			{
-				hit = true;
-				temp_distance = Vector3::Distance(player_segment.Start, temp_inter);
-				if (temp_distance < distance)
-				{
-					inter = temp_inter;
-					distance = temp_distance;
-				}
+				inter = temp_inter;
+				distance = temp_distance;
 			}
-		
+		}
+
 	}
 
 
@@ -251,8 +251,8 @@ void Player::Update()
 	if (KeybordTracker.IsKeyPressed(Keyboard::Keys::Space))
 	{
 		BulletDate data;
-		data.Trans  = m_Obj[0].GetTrans() + Vector3(0,1,0);
-		
+		data.Trans = m_Obj[0].GetTrans() + Vector3(0, 1, 0);
+
 		Matrix worldm = m_Obj[0].GetLocalWorld();
 
 		// 抽出した情報をしまっておく変数
@@ -285,12 +285,12 @@ void Player::Update()
 			spherenode->SetLocalRadious(0.2f);
 			m_CollisionNodeBullet.push_back(spherenode);
 		}
-	
+
 	}
 
 
 
-	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end();it++ )
+	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end(); it++)
 	{
 		(*it)->Update();
 
@@ -339,11 +339,11 @@ void Player::Update()
 	}
 	/*else
 	{
-		m_Obj[PARTS_BREAST].SetRot(
-			Vector3(0,
-				m_Obj[PARTS_BREAST].GetRot().y,
-				m_Obj[PARTS_BREAST].GetRot().z)
-		);
+	m_Obj[PARTS_BREAST].SetRot(
+	Vector3(0,
+	m_Obj[PARTS_BREAST].GetRot().y,
+	m_Obj[PARTS_BREAST].GetRot().z)
+	);
 	}*/
 
 
@@ -375,14 +375,14 @@ void Player::Update()
 		//head_pos += moveV;
 		m_Obj[0].SetTrans(pos + moveV);
 
-		
+
 	}
 
 
 
 
 
-	
+
 
 	//for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
 	//{
@@ -401,7 +401,7 @@ void Player::Update()
 void Player::Calc()
 {
 	// 全パーツ分行列更新
-	for (std::vector<Obj3d>::iterator it = m_Obj.begin();it != m_Obj.end();it++)
+	for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
 	{
 		it->Update();
 	}
@@ -422,7 +422,7 @@ void Player::Calc()
 	// 影の更新
 	m_Shadow.Update();
 
-	
+
 }
 //-----------------------------------------------------------------------------
 // 描画
@@ -436,7 +436,7 @@ void Player::Draw()
 	{
 		it->Draw();
 	}
-	
+
 
 	// 影を減算描画
 	m_Shadow.DrawSubtractive();
@@ -450,12 +450,12 @@ void Player::Draw()
 
 	float  a = static_cast<float>(m_hp) / static_cast<float>(MAX_HP);
 	const RECT rect = { 0, 0, 170 * a, 30 };
-	devices.SpriteBatch()->Draw(m_texture.Get(), Vector2(410,560), &rect, Colors::White,
+	devices.SpriteBatch()->Draw(m_texture.Get(), Vector2(410, 560), &rect, Colors::White,
 		0.0f, m_origin, Vector2(1.0f, 1.0f), SpriteEffects_None, 0.0f);
 
 
 	float  b = static_cast<float>(hitcnt) / static_cast<float>(MAX_HOMING);
-	const RECT homingrect = { 0, 0, 170 * b, 30  };
+	const RECT homingrect = { 0, 0, 170 * b, 30 };
 	Color color;
 	if (hitcnt == MAX_HOMING)
 	{
@@ -513,9 +513,9 @@ void Player::FireBullet(int parts)
 
 	m_Obj[parts].SetTrans(pos);
 
-	
+
 	//弾丸パーツに速度を設定
-	m_BulletVel[parts]= Vector3(0, 0, -0.1f);
+	m_BulletVel[parts] = Vector3(0, 0, -0.1f);
 	//パーツの向きに合わせて速度ベクトルを回転
 	m_BulletVel[parts] = Vector3::Transform(m_BulletVel[parts], rotq);
 }
@@ -555,7 +555,7 @@ void Player::StopJump()
 //落下を終了
 
 
-//ラープ
+//ラープ4
 float Player::Lerp(float startposition, float gorlpositon, float time)
 {
 	return startposition * (1 - time) + gorlpositon * time;

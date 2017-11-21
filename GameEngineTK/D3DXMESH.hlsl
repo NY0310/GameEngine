@@ -1,6 +1,6 @@
 //グローバル
 Texture2D g_texColor: register(t0);
-//exture2D g_texInk: register(t1);
+Texture2D g_texInk;
 
 SamplerState g_samLinear : register(s0);
 //SamplerState g_InkLinear : register(s2);
@@ -12,9 +12,9 @@ cbuffer global_0:register(b0)
 	matrix g_mWVP; //ワールドから射影までの変換行列
 	float4 g_vLightDir;  //ライトの方向ベクトル
 	float4 g_vEye;//カメラ位置
-	matrix g_mWPVT;
-	//bool g_ObjTexFlag;//オブジェクトのテクスチャか		
-
+	float4 g_inkColor;//インクの基本色
+	float2 g_inkUv;//インクを塗る有効範囲
+	float g_inkScale;//インクテクスチャのUV座標
 };
 
 cbuffer global_1:register(b1)
@@ -33,7 +33,7 @@ struct VS_OUTPUT
 	float3 Light : TEXCOORD0;
 	float3 Normal : TEXCOORD1;
 	float3 EyeVector : TEXCOORD2;
-	float4 Tex : TEXCOORD3;
+	float2 Tex : TEXCOORD3;
 };
 //
 //バーテックスシェーダー
@@ -61,15 +61,7 @@ VS_OUTPUT VS(float4 Pos : POSITION, float4 Norm : NORMAL, float2 Tex : TEXCOORD)
 
 	output.Color = g_Diffuse * NL + specular*g_Specular;
 
-	////テクスチャー座標
-	//if (g_ObjTexFlag)
-	//{
-	//	output.Tex = Tex;
-	//}
-	//else
-	//{
-	output.Tex = mul(Tex, g_mWPVT);
-	//}
+	output.Tex = Tex;
 	return output;
 }
 
@@ -108,14 +100,23 @@ VS_OUTPUT VS_NoTex(float4 Pos : POSITION, float4 Norm : NORMAL)
 //
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	float4 color;
-	input.Tex.xyz /= input.Tex.z;
+	//input.Tex.xyz /= input.Tex.z;
 	//color = g_texInk.Sample(g_samLinear, input.Tex);
-	color = g_texColor.Sample(g_samLinear, input.Tex);
+	//color = g_texColor.Sample(g_samLinear, input.Tex);
 	//テクスチャが存在する場合はその色を優先する
 	//color += input.Color / 2;	
+	if (g_inkUv.x - g_inkScale < input.Tex.x && input.Tex.x < g_inkUv.x + g_inkScale &&
+		g_inkUv.y - g_inkScale < input.Tex.y &&
+		input.Tex.y < g_inkUv.y + g_inkScale)
+	{
+		float4 color = g_texInk.Sample(g_samLinear,  (g_inkUv.xy - input.Tex) / g_inkScale * 0.5f + 0.5f);
+		if (color.a - 1 >= 0)
+		{
+			return g_inkColor;
+		}
+	}
+	return g_texColor.Sample(g_samLinear, input.Tex);
 
-	return color;
 }
 
 //

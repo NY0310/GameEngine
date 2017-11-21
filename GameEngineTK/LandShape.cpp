@@ -205,7 +205,7 @@ void LandShape::Draw()
 
 void LandShape::DisableLighting()
 {
-//	m_Obj.DisableLighting();
+	//	m_Obj.DisableLighting();
 }
 
 //--------------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ void LandShape::DisableLighting()
 //--------------------------------------------------------------------------------------
 bool LandShape::IntersectSphere(const Sphere& sphere, Vector3* reject)
 {
-	
+
 	if (m_pData == nullptr) return false;
 
 	// ヒットフラグを初期化
@@ -224,7 +224,7 @@ bool LandShape::IntersectSphere(const Sphere& sphere, Vector3* reject)
 	float over_length = 1.0e5;
 	Vector3 l_inter;
 	Vector3 l_normal;
-//	Vector3 l_down;
+	//	Vector3 l_down;
 	// スケールを取得
 	float scale = GetScale();
 

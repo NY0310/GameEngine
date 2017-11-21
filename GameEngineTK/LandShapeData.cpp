@@ -19,7 +19,7 @@ std::unique_ptr<LandShapeData> LandShapeData::CreateFromData(const char* meshDat
 
 	// 正しいヘッダ文字列
 	const string header_str = "LAND_SHAPE";
-	
+
 	// ヘッダ文字列が不一致なら、地形データファイルではない
 	if (strncmp(str, header_str.c_str(), header_str.length()) != 0) return nullptr;
 
@@ -27,7 +27,7 @@ std::unique_ptr<LandShapeData> LandShapeData::CreateFromData(const char* meshDat
 	head = str + header_str.length();
 
 	// ノード数を読み取る
-	const UINT* p_nNode = static_cast<const UINT*>(head);	
+	const UINT* p_nNode = static_cast<const UINT*>(head);
 
 	// ノード数取得
 	UINT nNode = *p_nNode;
@@ -170,7 +170,7 @@ std::unique_ptr<LandShapeData> LandShapeData::CreateFromData(const char* meshDat
 			landshape->m_Triangles.push_back(tri);
 		}
 	}
-	
+
 
 	return landshape;
 }

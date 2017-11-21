@@ -37,16 +37,16 @@ public:
 		PARTS_BODY,		//	体
 		PARTS_FING_L,	//  左翼
 		PARTS_FING_R,	//  右翼
-		//PARTS_HEAD1,		//	頭1
-		//PARTS_HEAD2,		//	頭2
-		//PARTS_HEAD3,		//	頭3
-		//PARTS_HEAD4,		//	頭4
-		//PARTS_HEAD5,		//	頭5
-		//PARTS_HEAD6,		//	頭6
-		PARTS_LEG_L,		//	左足
-		PARTS_LEG_R,		//	右足
+						//PARTS_HEAD1,		//	頭1
+						//PARTS_HEAD2,		//	頭2
+						//PARTS_HEAD3,		//	頭3
+						//PARTS_HEAD4,		//	頭4
+						//PARTS_HEAD5,		//	頭5
+						//PARTS_HEAD6,		//	頭6
+						PARTS_LEG_L,		//	左足
+						PARTS_LEG_R,		//	右足
 
-		PARTS_NUM
+						PARTS_NUM
 	};
 	// コンストラクタ
 	Player(DirectX::Keyboard* keyboard);
@@ -104,7 +104,7 @@ public:
 	void ResetCnt() { hitcnt = 0; }
 
 
-	int GetMAX_HOMING() { return MAX_HOMING;}
+	int GetMAX_HOMING() { return MAX_HOMING; }
 
 protected:
 

@@ -31,7 +31,7 @@ HRESULT sss::InitD3D()
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
 	tdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tdesc.CPUAccessFlags = 0;
-	pDevice->CreateTexture2D(&tdesc, NULL, &m_pDepthTexture);
+	pDevice->CreateTexture2D(&tdesc, nullptr, &m_pDepthTexture);
 
 	//深度テクスチャ用　レンダーターゲットビュー作成（レンダリング時用）
 	D3D11_RENDER_TARGET_VIEW_DESC DescRT;
