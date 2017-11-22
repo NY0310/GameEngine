@@ -527,7 +527,7 @@ void Game::Render()
 devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
 	//pSss->ZTexRender(m_Camera);
-
+	obj->ZTextureRender(m_Camera);
 	Clear();
 	//pBumpMapping->Render(m_Camera);
 

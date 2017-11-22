@@ -38,60 +38,60 @@ void OBJ::Init()
 HRESULT OBJ::InitD3D()
 {
 	auto& devices = Devices::Get();
-	//D3D11_TEXTURE2D_DESC descDepth;
+	D3D11_TEXTURE2D_DESC descDepth;
 
 
-	////深度マップテクスチャーを作成
-	//D3D11_TEXTURE2D_DESC tdesc;
-	//ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
-	//tdesc.Width = DEPTHTEX_WIDTH;
-	//tdesc.Height = DEPTHTEX_HEIGHT;
-	//tdesc.MipLevels = 1;
-	//tdesc.ArraySize = 1;
-	//tdesc.MiscFlags = 0;
-	//tdesc.Format = DXGI_FORMAT_R32_FLOAT;
-	//tdesc.SampleDesc.Count = 1;
-	//tdesc.SampleDesc.Quality = 0;
-	//tdesc.Usage = D3D11_USAGE_DEFAULT;
-	//tdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	//tdesc.CPUAccessFlags = 0;
+	//深度マップテクスチャーを作成
+	D3D11_TEXTURE2D_DESC tdesc;
+	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
+	tdesc.Width = DEPTHTEX_WIDTH;
+	tdesc.Height = DEPTHTEX_HEIGHT;
+	tdesc.MipLevels = 1;
+	tdesc.ArraySize = 1;
+	tdesc.MiscFlags = 0;
+	tdesc.Format = DXGI_FORMAT_R32_FLOAT;
+	tdesc.SampleDesc.Count = 1;
+	tdesc.SampleDesc.Quality = 0;
+	tdesc.Usage = D3D11_USAGE_DEFAULT;
+	tdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	tdesc.CPUAccessFlags = 0;
 
-	//device->CreateTexture2D(&tdesc, nullptr, &m_pDepthMap_Tex);
+	device->CreateTexture2D(&tdesc, nullptr, &m_pDepthMap_Tex);
 
-	////深度マップテクスチャー用　レンダーターゲットビュー作成
-	//D3D11_RENDER_TARGET_VIEW_DESC DescRT;
-	//DescRT.Format = tdesc.Format;
-	//DescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	//DescRT.Texture2D.MipSlice = 0;
+	//深度マップテクスチャー用　レンダーターゲットビュー作成
+	D3D11_RENDER_TARGET_VIEW_DESC DescRT;
+	DescRT.Format = tdesc.Format;
+	DescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	DescRT.Texture2D.MipSlice = 0;
 
-	//device->CreateRenderTargetView(m_pDepthMap_Tex, &DescRT, &m_pDepthMap_TexRTV);
+	device->CreateRenderTargetView(m_pDepthMap_Tex, &DescRT, &m_pDepthMap_TexRTV);
 
-	////深度マップテクスチャをレンダーターゲットにする際のデプスステンシルビュー用のテクスチャーを作成
-	//descDepth.Width = DEPTHTEX_WIDTH;
-	//descDepth.Height = DEPTHTEX_HEIGHT;
-	//descDepth.MipLevels = 1;
-	//descDepth.ArraySize = 1;
-	//descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	//descDepth.SampleDesc.Count = 1;
-	//descDepth.SampleDesc.Quality = 0;
-	//descDepth.Usage = D3D11_USAGE_DEFAULT;
-	//descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	//descDepth.CPUAccessFlags = 0;
-	//descDepth.MiscFlags = 0;
+	//深度マップテクスチャをレンダーターゲットにする際のデプスステンシルビュー用のテクスチャーを作成
+	descDepth.Width = DEPTHTEX_WIDTH;
+	descDepth.Height = DEPTHTEX_HEIGHT;
+	descDepth.MipLevels = 1;
+	descDepth.ArraySize = 1;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count = 1;
+	descDepth.SampleDesc.Quality = 0;
+	descDepth.Usage = D3D11_USAGE_DEFAULT;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	descDepth.CPUAccessFlags = 0;
+	descDepth.MiscFlags = 0;
 
-	//device->CreateTexture2D(&descDepth, nullptr, &m_pDepthMap_DSTex);
+	device->CreateTexture2D(&descDepth, nullptr, &m_pDepthMap_DSTex);
 
-	////そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	//device->CreateDepthStencilView(m_pDepthMap_DSTex, nullptr, &m_pDepthMap_DSTexDSV);
+	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
+	device->CreateDepthStencilView(m_pDepthMap_DSTex, nullptr, &m_pDepthMap_DSTexDSV);
 
-	////深度マップテクスチャ用　シェーダーリソースビュー(SRV)作成	
-	//D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
-	//ZeroMemory(&SRVDesc, sizeof(SRVDesc));
-	//SRVDesc.Format = tdesc.Format;
-	//SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	//SRVDesc.Texture2D.MipLevels = 1;
+	//深度マップテクスチャ用　シェーダーリソースビュー(SRV)作成	
+	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+	ZeroMemory(&SRVDesc, sizeof(SRVDesc));
+	SRVDesc.Format = tdesc.Format;
+	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	SRVDesc.Texture2D.MipLevels = 1;
 
-	//device->CreateShaderResourceView(m_pDepthMap_Tex, &SRVDesc, &m_pDepthMap_TexSRV);
+	device->CreateShaderResourceView(m_pDepthMap_Tex, &SRVDesc, &m_pDepthMap_TexSRV);
 
 
 
