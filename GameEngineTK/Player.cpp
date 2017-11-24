@@ -417,6 +417,7 @@ void Player::Calc()
 
 	{
 		(*Sphereit)->Update();
+		(*Sphereit)->Draw();
 	}
 
 	// ‰e‚ÌXV

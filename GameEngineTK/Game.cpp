@@ -224,6 +224,12 @@ void Game::Update(DX::StepTimer const& timer)
 		}
 	}
 
+
+
+
+
+
+
 	{//弾丸と敵のあたり判定
 		for (std::vector<SphereNode*>::iterator Sphereit = player->GetCollisionNodeBullet().begin(); Sphereit != player->GetCollisionNodeBullet().end(); )
 		{
@@ -503,6 +509,14 @@ void Game::Update(DX::StepTimer const& timer)
 	//パーティクル更新処理
 	tomanageparticle->Update();
 
+	Segment player_segment;
+	//自機のワールド座標
+	Vector3 trans = player->GetTrans();
+	player_segment.Start = trans + Vector3(0, 2, 0);
+	player_segment.End = trans + Vector3(0, -0.5f, 0);
+	obj->IntersectSegment(player_segment, m_Camera);
+
+
 }
 
 // Draws the scene.
@@ -550,9 +564,9 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::SandyBrown);
 	//VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::PaleGoldenrod);
 
-	//CommonStates states(devices.Device().Get());
+	CommonStates states(devices.Device().Get());
 
-	//devices.SpriteBatch()->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
+	devices.SpriteBatch()->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
 
 
 	//// 全パーツ分行列更新
@@ -562,7 +576,7 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//	(*it)->Draw();
 	//}
 
-	//player->Draw();
+	player->Draw();
 
 	//if (clearcnt == CLEARNUM)
 	//{
@@ -589,7 +603,7 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
 
 
-	//devices.SpriteBatch().get()->End();
+	devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//pTessellation->Render(m_Camera);

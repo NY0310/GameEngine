@@ -33,7 +33,7 @@ public:
 		D3DXVECTOR4 vEyes;//カメラ位置
 		D3DXVECTOR4 inkColor;//インクの色
 		ALIGN16 D3DXVECTOR2 inkUv;//インクテクスチャのUV座標
-		float inkScale;//インクを塗る有効範囲
+		ALIGN16 float inkScale;//インクを塗る有効範囲
 		//ALIGN16 bool ObjTexFlag;
 		//D3DXVECTOR4 vDiffuse;//ディヒューズ色
 		//D3DXVECTOR4 vSpecular;//鏡面反射光
@@ -84,9 +84,9 @@ public:
 	void ZTextureRender(unique_ptr<FollowCamera>& camera);
 	void Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3 && worldPosition);
 
-	bool IntersectSegment(const Segment & segment, DirectX::SimpleMath::Vector3 * inter, unique_ptr<FollowCamera> camera);
+	bool IntersectSegment(const Segment & segment, unique_ptr<FollowCamera>& camera);
 
-	DirectX::SimpleMath::Vector4 MatrixTimes(const DirectX::SimpleMath::Matrix & matrix, const DirectX::SimpleMath::Vector3 & vector);
+	DirectX::SimpleMath::Vector4 MatrixTimes(const DirectX::SimpleMath::Matrix & matrix, const DirectX::SimpleMath::Vector4 & vector);
 
 
 //	const D3DXMATRIX& World() { return mW; }
@@ -130,12 +130,12 @@ private:
 	InkData inkData;
 
 
-	const int DEPTHTEX_WIDTH = 800 * 2;
-	const int DEPTHTEX_HEIGHT = 600 * 2;
+	float DEPTHTEX_WIDTH = 800 * 2;
+	float DEPTHTEX_HEIGHT = 600 * 2;
 
 
-	const int WINDOW_WIDTH = 800;
-	const int WINDOW_HEIGHT = 600;
+	float WINDOW_WIDTH = 800;
+	float WINDOW_HEIGHT = 600;
 
 	ID3D11Device* device = Devices::Get().Device().Get();
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();

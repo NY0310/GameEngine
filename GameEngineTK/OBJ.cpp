@@ -455,7 +455,7 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 	////ワールドトランスフォーム
 	static float x = 0;
 	x += 0.00001;
-	localPosition = Vector3(x, 1, 0);
+	localPosition = Vector3(x, 0, 0);
 	D3DXMATRIX Tran;
 	D3DXMatrixTranslation(&Tran, localPosition.x, localPosition.y, localPosition.z);
 	World = Tran;
@@ -468,7 +468,7 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 	SIMPLESHADER_CONSTANT_BUFFER cb;
 	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		birthcnt+= 10;
+		//birthcnt+= 10;
 		//ワールドトランスフォームは個々で異なる
 		D3DXMATRIX Scale, Tran, Rot;
 
@@ -478,7 +478,7 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 		 
 
 		////ワールドトランスフォーム（絶対座標変換）
-		D3DXMatrixRotationY(&Rot, birthcnt / 1000.0f);//単純にyaw回転させる
+		D3DXMatrixRotationY(&Rot, 1 / 1000.0f);//単純にyaw回転させる
 		World *= Rot;
 
 		D3DXMatrixTranslation(&Tran, 0, 1, 0);
@@ -505,10 +505,10 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 		cb.inkColor = shadermanager.VectorToD3DXVECTOR4(color);
 
 		////インクのUV座標
-		cb.inkUv = D3DXVECTOR2(0,0);
+		cb.inkUv = inkData.Uv;
 
 		////インクのサイズ　
-		cb.inkScale = 1.0f;
+		cb.inkScale = 0.5f;
 
 
 		////ディフューズカラーを渡す
@@ -620,7 +620,7 @@ void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
 	m_pSampleLimear = nullptr;
 	//テクスチャーをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, &m_pSampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &m_pDepthMap_TexSRV);
+	deviceContext->PSSetShaderResources(2, 1, &m_pDepthMap_TexSRV);
 	//このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, &m_pZTexConstantBuffer);
 	deviceContext->PSSetConstantBuffers(0, 1, &m_pZTexConstantBuffer);
@@ -642,108 +642,6 @@ void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
 
 }
 
-
-//void OBJ::Render(unique_ptr<FollowCamera>& camera, ID3D11ShaderResourceView* & texture,D3DXMATRIX& world)
-//{
-//	auto& devices = Devices::Get();
-//	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-//	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
-//
-//
-//
-//
-//	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
-//
-//	//auto& devices = Devices::Get();
-//
-//
-//	//D3DXMATRIX View;
-//	//D3DXMATRIX Proj;
-//	////ワールドトランスフォーム
-//	static float x = 0;
-//	x += 0.00001;
-//	localPosition = Vector3(x, 1, 0);
-//	D3DXMATRIX Tran;
-//	D3DXMatrixTranslation(&Tran, localPosition.x, localPosition.y, localPosition.z);
-//	World = Tran;
-//
-//	//使用するシェーダーの登録	
-//	devices.Context().Get()->VSSetShader(m_pVertexShader, nullptr, 0);
-//	devices.Context().Get()->PSSetShader(m_pPixelShader, nullptr, 0);
-//	//シェーダーのコンスタントバッファーに各種データを渡す	
-//	D3D11_MAPPED_SUBRESOURCE pData;
-//	SIMPLESHADER_CONSTANT_BUFFER cb;
-//	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-//	{
-//		birthcnt += 10;
-//		//ワールドトランスフォームは個々で異なる
-//		D3DXMATRIX Scale, Tran, Rot;
-//
-//		//ワールド行列計算
-//		D3DXMatrixScaling(&World, 5, 5, 5);
-//		//World *= Scale;
-//
-//
-//		////ワールドトランスフォーム（絶対座標変換）
-//		D3DXMatrixRotationY(&Rot, birthcnt / 1000.0f);//単純にyaw回転させる
-//		World *= Rot;
-//
-//		D3DXMatrixTranslation(&Tran, 0, 1, 0);
-//
-//		World *= Tran;
-//
-//		//ワールド、カメラ、射影行列を渡す
-//		D3DXMATRIX m = World *View * Proj;
-//		D3DXMatrixTranspose(&m, &m);
-//		cb.mWVP = m;
-//
-//		//ライトの方向を渡す
-//		D3DXVECTOR3 vLightDir(-1, 0, -1);
-//		cb.vLightDir = D3DXVECTOR4(vLightDir.x, vLightDir.y, vLightDir.z, 0.0f);
-//
-//		////ディフューズカラーを渡す
-//		//cb.vDiffuse = m_Material.Kd;
-//		////スペキュラーを渡す
-//		//cb.vSpecular = m_Material.Ks;
-//
-//		//視点位置を渡す
-//		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
-//
-//	
-//
-//
-//
-//		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-//		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
-//
-//
-//	}
-//	m_pSampleLimear = nullptr;
-//	//m_pTexture = NULL;
-//	//テクスチャーをシェーダーに渡す
-//	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLimear);
-//	devices.Context().Get()->PSSetShaderResources(0, 1, &texture);
-//	//devices.Context().Get()->PSSetShaderResources(1, 1, &inkTexture);	
-//	//このコンスタントバッファーを使うシェーダーの登録
-//	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-//	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-//	//頂点インプットレイアウトをセット
-//	devices.Context().Get()->IASetInputLayout(m_pVertexLayout);
-//	//プリミティブ・トポロジーをセット
-//	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//	//バーテックスバッファーをセット
-//	UINT stride = sizeof(SimpleVertex);
-//	UINT offset = 0;
-//	devices.Context().Get()->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
-//	//インデックスバッファーをセット
-//	stride = sizeof(int);
-//	offset = 0;
-//	devices.Context().Get()->IASetIndexBuffer(m_Mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-//	//プリミティブをレンダリング
-//	devices.Context().Get()->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
-//
-//
-//}
 
 
 
@@ -767,7 +665,7 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3&& worldPosit
 // segment : 線分
 // （出力）inter : 交点（ポリゴンの平面上で、点との再接近点の座標を返す）
 //--------------------------------------------------------------------------------------
-bool OBJ::IntersectSegment(const Segment& segment, Vector3* inter, unique_ptr<FollowCamera> camera)
+bool OBJ::IntersectSegment(const Segment& segment, unique_ptr<FollowCamera>& camera)
 {
 
 	if (m_Mesh.pIndexBuffer == nullptr) return false;
@@ -781,11 +679,12 @@ bool OBJ::IntersectSegment(const Segment& segment, Vector3* inter, unique_ptr<Fo
 	Vector3 l_inter;
 
 
-
 	// 逆行列を計算
 	D3DXMATRIX d3dWorldLocal;
-	D3DXMatrixInverse(&d3dWorldLocal, nullptr, &d3dWorldLocal);
+	D3DXMatrixInverse(&d3dWorldLocal, nullptr, &World);
 	Matrix WorldLocal = shadermanager.D3DXMATRIXToMatrix(d3dWorldLocal);
+
+
 	// コピー
 	Segment localSegment = segment;
 	// 線分をワールド座標からモデル座標系に引き込む
@@ -843,12 +742,12 @@ bool OBJ::IntersectSegment(const Segment& segment, Vector3* inter, unique_ptr<Fo
 				
 				//塗られるオブジェクトのワールド座標をかける
 				//PerspectiveCollect(透視投影を考慮したUV補間)
-				Matrix mvp =  camera->GetProjection() * camera->GetView() * shadermanager.D3DXMATRIXToMatrix(World);
+				Matrix mvp = shadermanager.D3DXMATRIXToMatrix(World) * camera->GetView()* camera->GetProjection();
 				//各点をProjectionSpaceへの変換
-				Vector4 p1_p = MatrixTimes(mvp , p1);
-				Vector4 p2_p = MatrixTimes(mvp , p2);
-				Vector4 p3_p = MatrixTimes(mvp , p3);
-				Vector4 p_p = MatrixTimes(mvp , p);
+				Vector4 p1_p = MatrixTimes(mvp , Vector4(p1.x,p1.y,p1.z,1));
+				Vector4 p2_p = MatrixTimes(mvp , Vector4(p2.x,p2.y,p1.z,1));
+				Vector4 p3_p = MatrixTimes(mvp , Vector4(p3.x,p3.y,p1.z,1));
+				Vector4 p_p = MatrixTimes(mvp , Vector4(p.x,p.y,p.z,1));
 				
 					
 				//通常座標への変換(ProjectionSpace)
@@ -885,12 +784,12 @@ bool OBJ::IntersectSegment(const Segment& segment, Vector3* inter, unique_ptr<Fo
 }
 
 
-Vector4 OBJ::MatrixTimes(const Matrix& matrix,const Vector3& vector)
+Vector4 OBJ::MatrixTimes(const Matrix& matrix,const Vector4& vector)
 {
 	Vector4 vec;
-	vec.x = matrix._11 * vector.x + matrix._21 * vector.y + matrix._31 * vector.z + matrix._41 * 0;
-	vec.y = matrix._12 * vector.x + matrix._22 * vector.y + matrix._32 * vector.z + matrix._42 * 0;
-	vec.z = matrix._13 * vector.x + matrix._23 * vector.y + matrix._33 * vector.z + matrix._43 * 0;
-	vec.w = matrix._14 * vector.x + matrix._24 * vector.y + matrix._34 * vector.z + matrix._44 * 0;
+	vec.x = matrix._11 * vector.x + matrix._21 * vector.y + matrix._31 * vector.z + matrix._41 * vector.w;
+	vec.y = matrix._12 * vector.x + matrix._22 * vector.y + matrix._32 * vector.z + matrix._42 * vector.w;
+	vec.z = matrix._13 * vector.x + matrix._23 * vector.y + matrix._33 * vector.z + matrix._43 * vector.w;
+	vec.w = matrix._14 * vector.x + matrix._24 * vector.y + matrix._34 * vector.z + matrix._44 * vector.w;
 	return vec;
 }
