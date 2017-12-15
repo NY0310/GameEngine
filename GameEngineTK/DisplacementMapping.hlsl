@@ -1,5 +1,5 @@
 Texture2D g_NormalTexture: register(t0);
-
+Texture2D g_SnowHeightTexture: register(t1);
 SamplerState g_samPoint : register(s0);
 
 cbuffer CONSTANT : register(b0)
@@ -11,7 +11,7 @@ cbuffer CONSTANT : register(b0)
 	float g_fMaxDistance : packoffset(c10);
 	int g_iMaxDevide : packoffset(c11);
 	float4 g_LightDir : packoffset(c12);
-	float4 g_WaveMove : packoffset(c13);
+	float4 g_SnowGlow : packoffset(c13);//雪山の成長
 };
 
 struct VS_OUTPUT
@@ -47,7 +47,6 @@ VS_OUTPUT VS(float3 pos :POSITION, float2 uv : TEXCOORD0, float3 normal : NORMAL
 	VS_OUTPUT Out;
 	Out.pos = pos;
 	Out.uv = uv;
-	Out.uv += g_WaveMove.xy;
 	Out.normal = normal;
 
 	return Out;
@@ -67,7 +66,7 @@ HS_CONSTANT_OUTPUT HSConstant(InputPatch<VS_OUTPUT, 3> ip, uint pid : SV_Primiti
 	float x = (distance - g_fMinDistance) / (g_fMaxDistance - g_fMinDistance);
 	divide = (1 - x)*g_iMaxDevide + 1;
 
-	divide = 16;//つなぎ目が目立つときは分割数は固定
+	divide = 12;//つなぎ目が目立つときは分割数は固定
 
 	Out.factor[0] = divide;
 	Out.factor[1] = divide;
@@ -105,7 +104,8 @@ DS_OUTPUT DS(HS_CONSTANT_OUTPUT In, float3 UV : SV_DomaInLocation, const OutputP
 
 	Out.uv = uv;
 
-	float4 height = g_NormalTexture.SampleLevel(g_samPoint, uv, 0) / 3;
+	float4 height = g_NormalTexture.SampleLevel(g_samPoint, uv, 0) / 12;//細かいバンプのハイト
+	height += g_SnowHeightTexture.SampleLevel(g_samPoint, uv, 0)*g_SnowGlow.x / 2;//雪が積もっている部分を高くするハイト
 
 	float3 pos = patch[0].pos*UV.x + patch[1].pos*UV.y + patch[2].pos*UV.z;
 	Out.pos = float4(pos, 1);
@@ -126,8 +126,8 @@ float4 PS(DS_OUTPUT input) : SV_Target
 	float3 ViewDir = normalize(EyeVector);
 	float4 NL = saturate(dot(Normal, LightDir));
 	float3 Reflect = normalize(2 * NL * Normal - LightDir);
-	float4 Specular = pow(saturate(dot(Reflect, ViewDir)),8);
+	float4 Specular = pow(saturate(dot(Reflect, ViewDir)),32);
 
-	return float4(0,0,0.4,1)*NL + float4(1,1,1,1)*Specular;
+	return float4(0.4,0.4,0.5,1) + float4(0.8,0.85,1.0,1)*NL + float4(1,1,1,1)*Specular;
 }
 

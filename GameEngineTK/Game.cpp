@@ -18,18 +18,19 @@ using Microsoft::WRL::ComPtr;
 
 
 
-Game::Game(): 
+Game::Game() :
 	m_window(0),
 	m_outputWidth(800),
 	m_outputHeight(600),
 	m_featureLevel(D3D_FEATURE_LEVEL_9_1)
 {
+
 }
 
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
-	
+
 	auto& devices = Devices::Get();
 	devices.HWnd(window);
 	devices.Width(width);
@@ -56,7 +57,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_Camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
 	//	カメラにキーボードをセット
 	m_Camera->SetKeyboard(keyboard.get());
-	m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
+	//m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
 
 
 	{//OBj3dのシステム初期化
@@ -64,10 +65,10 @@ void Game::Initialize(HWND window, int width, int height)
 		def.pCamera = m_Camera.get();
 		def.pDevice = devices.Device().Get();
 		def.pDeviceContext = devices.Context().Get();
-	 //	3Dオブジェクトの静的メンバ変数を初期化
+		//	3Dオブジェクトの静的メンバ変数を初期化
 		Obj3d::InitializeCommon(def);
 	}
-	
+
 
 	//土地あたり判定
 	LandShapeCommonDef lscDef;
@@ -80,7 +81,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	m_LandShape.Initialize(L"Skydome2", L"Skydome2");
 	m_LandShape.SetScale(1.1);
-	
+
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(devices.Context().Get());
 
 
@@ -91,7 +92,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	//	汎用ステートを生成	q
 	m_states = std::make_unique<CommonStates>(devices.Device().Get());
-	
+
 	devices.Context().Get()->RSSetState(m_states->CullClockwise());
 
 
@@ -103,8 +104,8 @@ void Game::Initialize(HWND window, int width, int height)
 	//	テクスチャのパスを指定
 	m_factory->SetDirectory(L"Resources");
 	//	天球モデルの生成
-//	m_objSkydome.LoadModel(L"Skydome.cmo");
-	
+	//	m_objSkydome.LoadModel(L"Skydome.cmo");
+
 
 
 	player = std::make_unique<Player>(keyboard.get());
@@ -125,7 +126,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 	clearcnt = 0;
-	
+
 
 	m_str = L"CLEAR";
 
@@ -140,22 +141,22 @@ void Game::Initialize(HWND window, int width, int height)
 	shadermanager = ShaderManager::Get();
 
 
-	//D3DXMESHライブラリを使用するクラス生成
-	m_pMesh = new CD3DXMESH;
-	//初期化
-	m_pMesh->Init("RobotA_1motion_2truck.x");
+	////D3DXMESHライブラリを使用するクラス生成
+	//m_pMesh = new CD3DXMESH;
+	////初期化
+	//m_pMesh->Init("RobotA_1motion_2truck.x");
 
 
-	pSss = new sss();
-	pSss->InitD3D();
+	//pSss = new sss();
+	//pSss->InitD3D();
 
 
-	pBumpMapping = new BumpMapping();
-	pBumpMapping->InitD3D();
+	//pBumpMapping = new BumpMapping();
+	//pBumpMapping->InitD3D();
 
 
-	pTessellation = new Tessellation();
-	pTessellation->InitD3D();
+	/*pTessellation = new Tessellation();
+	pTessellation->InitD3D();*/
 
 
 
@@ -251,10 +252,10 @@ void Game::Update(DX::StepTimer const& timer)
 
 					//当たった弾を消す
 					Sphereit = player->GetCollisionNodeBullet().erase(Sphereit);
-			
 
-					if(player->Gethitcnt() != player->GetMAX_HOMING())
-					player->Sethitcnt(player->Gethitcnt() + 1);
+
+					if (player->Gethitcnt() != player->GetMAX_HOMING())
+						player->Sethitcnt(player->Gethitcnt() + 1);
 					//hpがなくなったら敵を殺す
 					if ((*it)->GetHp() <= 0)
 					{
@@ -279,14 +280,14 @@ void Game::Update(DX::StepTimer const& timer)
 						}
 
 						it = m_Enemies.erase(it);
-		
-			
-					
+
+
+
 						m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
 						clearcnt++;
 					}
 					break;
-					
+
 				}
 				else
 				{
@@ -295,8 +296,8 @@ void Game::Update(DX::StepTimer const& timer)
 					//何にも当たらなかったので消す
 					if (m_Enemies.end() == it)
 					{
-							//球を消したのでループから抜ける
-  							Sphereit++;
+						//球を消したのでループから抜ける
+						Sphereit++;
 					}
 				}
 			}
@@ -345,22 +346,28 @@ void Game::Update(DX::StepTimer const& timer)
 	//	}
 
 	//}
+	/*static int cnt = 0;
+	cnt++;
+	if (cnt > 100)
+	{
+	tomanageparticle->AddParticle(Vector3(0,0,-15));
+	cnt = 0;
+	}*/
 
 
 
 
 
 
-	
 	//
 	{//	自機に追従するカメラ
-		
+
 		m_Camera->Update();
 		m_view = m_Camera->GetView();
 		m_proj = m_Camera->GetProjection();
 	}
 
-	
+
 
 	const Vector3 vel = player->GetVelocity();
 	//if (vel.y <= 0)
@@ -488,7 +495,7 @@ void Game::Update(DX::StepTimer const& timer)
 	{
 		if ((*it)->Update())
 		{
-			
+
 			it = m_HomingBullets.erase(it);
 
 		}
@@ -497,7 +504,7 @@ void Game::Update(DX::StepTimer const& timer)
 			it++;
 		}
 	}
-	
+
 
 	// 全パーツ分行列更新
 	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
@@ -509,14 +516,30 @@ void Game::Update(DX::StepTimer const& timer)
 	//パーティクル更新処理
 	tomanageparticle->Update();
 
-	Segment player_segment;
-	//自機のワールド座標
-	Vector3 trans = player->GetTrans();
-	player_segment.Start = trans + Vector3(0, 2, 0);
-	player_segment.End = trans + Vector3(0, -0.5f, 0);
-	obj->IntersectSegment(player_segment, m_Camera);
+
+	static  int cnt = 0;
+	cnt++;
+	if (cnt == 60)
+	{
+
+		tomanageparticle->AddParticle(Vector3::Zero);
+		cnt = 0;
+	}
+
+	//Segment player_segment;
+	//////自機のワールド座標
+	//Vector3 trans = player->GetTrans();
+	//player_segment.Start = trans + Vector3(0, 2, 0);
+	//player_segment.End = trans + Vector3(0, -0.5f, 0);
+	//obj->IntersectSegment(player_segment, m_Camera);
+
+	//Sphere sphere;
+	//sphere.Center = player->GetTrans();
+	//sphere.Radius = 1.0f;
+	//obj->IntersectSphere(sphere, m_Camera);
 
 
+	obj->MouseRay(m_Camera, player);
 }
 
 // Draws the scene.
@@ -524,7 +547,7 @@ void Game::Render()
 {
 
 	auto& devices = Devices::Get();
-	
+
 
 
 	// Don't try to render anything before the first Update.
@@ -536,13 +559,16 @@ void Game::Render()
 
 
 
-//#if 0
-//アルファ値を有効にする
-devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
+	//#if 0
+	//アルファ値を有効にする
+	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 
 	//pSss->ZTexRender(m_Camera);
-	obj->ZTextureRender(m_Camera);
+
+	obj->InkRender(m_Camera);
+	//obj->ZTextureRender(m_Camera);
 	Clear();
+
 	//pBumpMapping->Render(m_Camera);
 
 
@@ -576,17 +602,17 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//	(*it)->Draw();
 	//}
 
+
 	player->Draw();
 
 	//if (clearcnt == CLEARNUM)
 	//{
 	//	m_Enemies.clear();
 	//	//スプライトフォントの描画
- // 		m_spriteFont->DrawString(devices.SpriteBatch().get(), m_str.c_str(), XMFLOAT2(200, 200));
+	// 		m_spriteFont->DrawString(devices.SpriteBatch().get(), m_str.c_str(), XMFLOAT2(200, 200));
 
 	//}
 
-	//tomanageparticle->Render(m_Camera);
 
 
 	////キーボードの様態を取得
@@ -602,11 +628,13 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 
 
 
+	//tomanageparticle->Render(m_Camera);
 
 	devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
-	devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
+	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 	//pTessellation->Render(m_Camera);
+	//pDisplacementMapping->Render(m_Camera);
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
 	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
@@ -614,8 +642,7 @@ devices.Context().Get()->OMSetBlendState(m_states->Opaque(),nullptr,0xffffffff);
 	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
 
-	obj->Render(m_Camera, D3DXVECTOR3(3,1,0));
-	//pDisplacementMapping->Render(m_Camera);
+	obj->Render(m_Camera, D3DXVECTOR3(3, 1, 0));
 
 
 

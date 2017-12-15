@@ -9,7 +9,6 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-;
 
 
 Player::Player(DirectX::Keyboard* keyboard)
@@ -433,12 +432,12 @@ void Player::Draw()
 	auto& devices = Devices::Get();
 
 
-	for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
+	/*for (std::vector<Obj3d>::iterator it = m_Obj.begin(); it != m_Obj.end(); it++)
 	{
 		it->Draw();
-	}
+	}*/
 
-
+	m_Obj[0].Draw();
 	// âeÇå∏éZï`âÊ
 	m_Shadow.DrawSubtractive();
 
@@ -447,12 +446,14 @@ void Player::Draw()
 	{
 		(*it)->Draw();
 	}
+	float s = 100;
+	m_Obj[0].SetScale(Vector3(s, s, s));
 
 
-	float  a = static_cast<float>(m_hp) / static_cast<float>(MAX_HP);
-	const RECT rect = { 0, 0, 170 * a, 30 };
-	devices.SpriteBatch()->Draw(m_texture.Get(), Vector2(410, 560), &rect, Colors::White,
-		0.0f, m_origin, Vector2(1.0f, 1.0f), SpriteEffects_None, 0.0f);
+	//float  a = static_cast<float>(m_hp) / static_cast<float>(MAX_HP);
+	//const RECT rect = { 0, 0, 170 * a, 30 };
+	//devices.SpriteBatch()->Draw(m_texture.Get(), Vector2(410, 560), &rect, Colors::White,
+	//	0.0f, m_origin, Vector2(1.0f, 1.0f), SpriteEffects_None, 0.0f);
 
 
 	float  b = static_cast<float>(hitcnt) / static_cast<float>(MAX_HOMING);
@@ -508,7 +509,7 @@ void Player::FireBullet(int parts)
 
 	//êeÉpÅ[ÉcÇ©ÇÁï™ó£ÅAì∆óßÇ≥ÇπÇÈ
 	m_Obj[parts].SetObjParent(nullptr);
-	m_Obj[parts].SetScale(scale);
+	m_Obj[parts].SetScale(scale * 1000000000000000000);
 
 	m_Obj[parts].SetRotQ(rotq);
 

@@ -13,6 +13,7 @@ struct PART
 	D3DXVECTOR3 Dir;
 	float Speed;
 	int BirthFrame;
+	float Zrot;
 
 	PART()
 	{
@@ -29,6 +30,7 @@ public:
 	~PARTICLE();
 	void Run();
 	D3DXVECTOR3 GetParticlePos(int Index);
+	float GetParticleRot(int Index);
 
 	int m_MaxParticle;
 	D3DXVECTOR3 m_EmitPos;

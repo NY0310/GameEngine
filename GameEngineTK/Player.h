@@ -19,6 +19,7 @@
 #include "Bullet.h"
 #include <SpriteBatch.h>
 #include <WICTextureLoader.h>
+
 // Ž©‹@
 class Player
 {

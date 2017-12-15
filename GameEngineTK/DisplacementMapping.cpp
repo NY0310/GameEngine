@@ -5,8 +5,8 @@
 
 DisplacementMapping::DisplacementMapping()
 {
-	WaveMove = D3DXVECTOR4(0, 0, 0, 0);
-	WaveHeight = D3DXVECTOR4(0, 0, 0, 0);
+	//WaveMove = D3DXVECTOR4(0, 0, 0, 0);
+	//WaveHeight = D3DXVECTOR4(0, 0, 0, 0);
 
 }
 
@@ -28,9 +28,14 @@ HRESULT DisplacementMapping::InitD3D()
 		return E_FAIL;
 	}
 	//ハイトマップ
-	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(pDevice, "WaterBump.bmp", nullptr, nullptr, &m_pHeightTexture, nullptr)))return E_FAIL;
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(pDevice, "WaterBump.bmp", nullptr, nullptr, &m_pNormalTexture, nullptr)))return E_FAIL;
 	////深度マップテクスチャ
 	//if (FAILED(D3DX11CreateShaderResourceViewFromFileA(pDevice, "china_DensityMap.tif", nullptr, nullptr, &m_pDensityTexture, nullptr)))return E_FAIL;
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(pDevice, "SnowHeight.bmp", nullptr, nullptr, &m_pSnowHeightTexture, nullptr)))
+	{
+		return E_FAIL;
+	}
+
 	//テクスチャー用サンプラー作成
 	D3D11_SAMPLER_DESC SamDesc;
 	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -322,8 +327,8 @@ HRESULT DisplacementMapping::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * 
 void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 {
 
-	WaveMove.x += 0.0004f;
-	WaveMove.y += 0.0002f;
+	/*WaveMove.x += 0.0004f;
+	WaveMove.y += 0.0002f;*/
 
 
 	D3DXMATRIX mWorld;
@@ -332,7 +337,16 @@ void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 	//ワールドトランスフォーム（絶対座標変換）
 	D3DXMatrixIdentity(&mWorld);
 	//ワールドトランスフォーム（絶対座標変換）
-	D3DXMatrixTranslation(&mWorld, 0, 0, 0);
+	//D3DXMatrixTranslation(&mWorld, 0, -10000, 0);
+	
+	D3DXMatrixRotationX(&mWorld, 2.9f);
+//	D3DXMatrixScaling(&mWorld, 15, 15, 15);
+
+	//ワールドトランスフォームは個々で異なる
+	D3DXMATRIX Scale, Tran, Rot;
+	D3DXMatrixScaling(&Scale, 7, 5, 5);
+	D3DXMatrixTranslation(&Tran,0, -1.3, 0);
+	mWorld *= Scale * Tran;
 	//シェーダーの登録　	
 	pDeviceContext->VSSetShader(m_pVertexShader, nullptr, 0);
 	pDeviceContext->HSSetShader(m_pHullShader, nullptr, 0);
@@ -362,18 +376,25 @@ void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 		cb.iMaxDevide = 64;
 		//ライトの方向
 		cb.LightDir = D3DXVECTOR4(1, 1, 1, 0);
-		//波の位置変化量を渡す
-		cb.WaveMove = WaveMove;
+		//雪の成長係数を渡す
+		static float Glow = 0;
+		Glow -= 0.0004;
+		if (Glow>1.0f) Glow = 0;
+		cb.Glow.x = Glow;
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		pDeviceContext->Unmap(m_pConstantBuffer, 0);
 	}
-	//テクスチャをドメインシェーダーに渡す 
+	//テクスチャーをドメインシェーダーに渡す
 	pDeviceContext->DSSetSamplers(0, 1, &m_pSamPoint);
-	pDeviceContext->DSSetShaderResources(0, 1, &m_pHeightTexture);
-	//テクスチャをピクセルシェーダに渡す
+	pDeviceContext->DSSetShaderResources(0, 1, &m_pNormalTexture);
+	//テクスチャーをピクセルシェーダーに渡す
 	pDeviceContext->PSSetSamplers(0, 1, &m_pSamPoint);
-	pDeviceContext->PSSetShaderResources(0, 1, &m_pHeightTexture);
+	pDeviceContext->PSSetShaderResources(0, 1, &m_pNormalTexture);
+	//テクスチャーをドメインシェーダーに渡す
+	pDeviceContext->DSSetSamplers(0, 1, &m_pSamPoint);
+	pDeviceContext->DSSetShaderResources(1, 1, &m_pSnowHeightTexture);
+
 	//コンスタントバッファーをシェーダに渡す
 	pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
 	pDeviceContext->DSSetConstantBuffers(0, 1, &m_pConstantBuffer);

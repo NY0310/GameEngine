@@ -16,9 +16,9 @@ DebugCamera::DebugCamera(int w, int h)
 	m_sy = 1.0f / (float)h;
 	m_view = DirectX::SimpleMath::Matrix::Identity;
 
-	// マウスの初期化
-	mouse.reset(new Mouse);
-	mouseTracker.reset(new Mouse::ButtonStateTracker);
+	//// マウスの初期化
+	//mouse.reset(new Mouse);
+	//mouseTracker.reset(new Mouse::ButtonStateTracker);
 }
 
 //--------------------------------------------------------------------------------------
@@ -26,36 +26,36 @@ DebugCamera::DebugCamera(int w, int h)
 //--------------------------------------------------------------------------------------
 void DebugCamera::Update()
 {
-	// マウス情報を取得
-	mouseState = mouse->GetState();
-	mouseTracker->Update(mouseState);
+	//// マウス情報を取得
+	//mouseState = mouse->GetState();
+	//mouseTracker->Update(mouseState);
 
-	// マウスの左ボタンが押された
-	if (mouseTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED)
-	{
-		// マウスの座標を取得
-		m_x = mouseState.x;
-		m_y = mouseState.y;
-	}
-	else if (mouseTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED)
-	{
-		// 現在の回転を保存
-		m_xAngle = m_xTmp;
-		m_yAngle = m_yTmp;
-	}
-	// マウスのボタンが押されていたらカメラを移動させる
-	if (mouseState.leftButton)
-	{
-		Motion(mouseState.x, mouseState.y);
-	}
+	//// マウスの左ボタンが押された
+	//if (mouseTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED)
+	//{
+	//	// マウスの座標を取得
+	//	m_x = mouseState.x;
+	//	m_y = mouseState.y;
+	//}
+	//else if (mouseTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED)
+	//{
+	//	// 現在の回転を保存
+	//	m_xAngle = m_xTmp;
+	//	m_yAngle = m_yTmp;
+	//}
+	//// マウスのボタンが押されていたらカメラを移動させる
+	//if (mouseState.leftButton)
+	//{
+	//	Motion(mouseState.x, mouseState.y);
+	//}
 
-	// マウスのフォイール値を取得
-	m_scrollWheelValue = mouseState.scrollWheelValue;
-	if (m_scrollWheelValue > 0)
-	{
-		m_scrollWheelValue = 0;
-		mouse->ResetScrollWheelValue();
-	}
+	//// マウスのフォイール値を取得
+	//m_scrollWheelValue = mouseState.scrollWheelValue;
+	//if (m_scrollWheelValue > 0)
+	//{
+	//	m_scrollWheelValue = 0;
+	//	mouse->ResetScrollWheelValue();
+	//}
 
 	// ビュー行列を算出する
 	Matrix rotY = Matrix::CreateRotationY(m_yTmp);

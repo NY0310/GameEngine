@@ -5,11 +5,15 @@
 /// </summary>
 
 #pragma once
+#include <Windows.h>
+#include <Mouse.h>
 #include "ShaderManager.h"
 #include "Device.h"
 #include "FollowCamera.h"
+#include "Collision.h"
+#include "Line.h"
 
-
+class Player;
 
 class OBJ
 {
@@ -21,6 +25,14 @@ public:
 		D3DXVECTOR3 Normal;//法線
 		D3DXVECTOR2 Tex; //テクスチャー座標
 	};
+
+	struct CampusVertex
+	{
+		D3DXVECTOR3 Pos; //位置
+		D3DXVECTOR2 Tex; //テクスチャー座標
+	};
+
+
 
 	//Simpleシェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
 	struct SIMPLESHADER_CONSTANT_BUFFER
@@ -34,9 +46,8 @@ public:
 		D3DXVECTOR4 inkColor;//インクの色
 		ALIGN16 D3DXVECTOR2 inkUv;//インクテクスチャのUV座標
 		ALIGN16 float inkScale;//インクを塗る有効範囲
-		//ALIGN16 bool ObjTexFlag;
-		//D3DXVECTOR4 vDiffuse;//ディヒューズ色
-		//D3DXVECTOR4 vSpecular;//鏡面反射光
+							   //D3DXVECTOR4 vDiffuse;//ディヒューズ色
+							   //D3DXVECTOR4 vSpecular;//鏡面反射光
 	};
 
 
@@ -70,8 +81,8 @@ public:
 	struct InkData
 	{
 		D3DXVECTOR4 Color;
-		D3DXVECTOR2 Uv;
-		 float Scale;
+		ALIGN16 D3DXVECTOR2 Uv;
+		ALIGN16 float Scale = 0.1f;
 	};
 
 	OBJ();
@@ -81,15 +92,28 @@ public:
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	void Render(std::unique_ptr<FollowCamera>& camera);
+	void InkRender(unique_ptr<FollowCamera>& camera);
+	void InkRender(unique_ptr<FollowCamera>& camera, InkData & uv);
 	void ZTextureRender(unique_ptr<FollowCamera>& camera);
 	void Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3 && worldPosition);
 
 	bool IntersectSegment(const Segment & segment, unique_ptr<FollowCamera>& camera);
 
+
+	bool IntersectSphere(const Sphere & sphere, unique_ptr<FollowCamera>& camera);
+
+	void MouseRay(unique_ptr<FollowCamera>& camera, unique_ptr<Player>&  player);
+
+	DirectX::SimpleMath::Vector3 * CalcScreenToXZ(DirectX::SimpleMath::Vector3 * pout, int Sx, int Sy, int Screen_w, int Screen_h, DirectX::SimpleMath::Matrix * View, DirectX::SimpleMath::Matrix * Prj);
+
+
 	DirectX::SimpleMath::Vector4 MatrixTimes(const DirectX::SimpleMath::Matrix & matrix, const DirectX::SimpleMath::Vector4 & vector);
 
+	DirectX::SimpleMath::Vector3 * CalcScreenToWorld(DirectX::SimpleMath::Vector3 * pout, float Sx, float Sy, float fZ, float Screen_w, float Screen_h, DirectX::SimpleMath::Matrix * View, DirectX::SimpleMath::Matrix * Prj);
 
-//	const D3DXMATRIX& World() { return mW; }
+
+
+	//	const D3DXMATRIX& World() { return mW; }
 private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11VertexShader* m_pVertexShader;
@@ -97,7 +121,7 @@ private:
 	ID3D11DomainShader* m_pDomainShader;
 
 	ID3D11Buffer* m_pConstantBuffer;
-	ID3D11Buffer* m_pZTexConstantBuffer;
+	ID3D11Buffer* m_pZTexConstantBuffer;//zテクスチャ用コンスタントバッファ
 
 
 
@@ -121,13 +145,12 @@ private:
 
 
 
-	D3DXMATRIX World;
+	D3DXMATRIX worldmat;
 	DirectX::SimpleMath::Vector3 localPosition;
 	std::vector<Triangle> triangles;
 
 
-
-	InkData inkData;
+	std::vector<InkData> inkData;//インクデータ配列
 
 
 	float DEPTHTEX_WIDTH = 800 * 2;
@@ -151,10 +174,44 @@ private:
 
 	ID3D11VertexShader* m_pDepthVertexShader;//深度テクスチャーレンダリング用
 	ID3D11PixelShader* m_pDepthPixelShader;//深度テクスチャーレンダリング用
-	D3DXMATRIX m_mClipToUV;
 
-	D3DXVECTOR3 m_vLightPos;
-	D3DXMATRIX mLight;
-	;
+
+
+
+
+
+										   /// <summary>
+										   /// 全てのインクをレンダリング
+										   /// </summary>
+
+	ID3D11InputLayout* inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
+	ID3D11Buffer* inkConstantBuffer;//インクテクスチャ用コンスタントバッファ
+	ID3D11Texture2D* inkTex;				//インクを塗るテクスチャ
+	ID3D11Texture2D* inkTexDS;				//インクを塗るテクスチャ
+	ID3D11RenderTargetView* inkTexRTV;//インクを塗るテクスチャTRV
+	ID3D11ShaderResourceView* inkTexSRV;   //インクを塗るテクスチャのSRV
+	ID3D11DepthStencilView* inkDSTexDSV;//深度マップテクスチャー用DSのDSV	
+	ID3D11VertexShader* inkVertexShader;//インクテクスチャ用バーテックスシェーダー
+	ID3D11PixelShader* inkPixelShader;//インクテクスチャ用ピクセルシェーダー
+	ID3D11Buffer* canvasVertexBuffer;//キャンバスバーテックスバッファー
+
+
+	D3DXMATRIX m_mClipToUV;//テクスチャ行列
+
+	D3DXVECTOR3 m_vLightPos;//ライド座標
+	D3DXMATRIX mLight;//ライト行列
+	D3DXVECTOR3 ObjScale;//オブジェクトの座標
+
+
+	std::unique_ptr<DirectX::Mouse> mouse;
+	Mouse::ButtonStateTracker tracker;
+
+	Line* line;
+
+
+	D3DXMATRIX WVP;
 };
+
+
+
 

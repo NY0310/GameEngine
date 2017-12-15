@@ -167,7 +167,7 @@ HRESULT ToManageParticle::InitModel()
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	devices.Device().Get()->CreateSamplerState(&SamDesc, &m_pSampler);
 	//テクスチャー読み込み
-	if (FAILED(D3DX11CreateShaderResourceViewFromFile(devices.Device().Get(), L"particle.png", NULL, NULL, &m_pTexture, NULL)))
+	if (FAILED(D3DX11CreateShaderResourceViewFromFile(devices.Device().Get(), L"Snow.png", NULL, NULL, &m_pTexture, NULL)))
 	{
 		MessageBoxA(0, "テクスチャーを読み込めません", "", MB_OK);
 		return E_FAIL;
@@ -194,7 +194,7 @@ void ToManageParticle::Update()
 		(*it)++;
 		(*partecle)->Run();
 
-		if ((*it) == 90)
+		if ((*it) == 1000)
 		{
 			partecle = m_pParticle.erase(partecle);
 			it = m_Particlecnt.erase(it);
@@ -253,7 +253,7 @@ void ToManageParticle::Render(std::unique_ptr<FollowCamera>& camera)
 	D3DXMATRIX CancelRotation = View;
 	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
 	D3DXMatrixInverse(&CancelRotation, NULL, &CancelRotation);
-	World = CancelRotation * World;
+	//World = CancelRotation * World;
 
 
 	//パーティクル１粒を１枚ポイントスプライトとして５００枚描画
@@ -264,11 +264,13 @@ void ToManageParticle::Render(std::unique_ptr<FollowCamera>& camera)
 			for (int i = 0; i < MAX_PARTICLE; i++)
 			{
 				//ワールドトランスフォームは個々で異なる
-				D3DXMATRIX Scale, Tran;
+				D3DXMATRIX Scale, Tran,Rot;
 				D3DXMatrixScaling(&Scale, 5, 5, 5);
 				D3DXVECTOR3 ParticlePos = (*iterator)->GetParticlePos(i);
 				D3DXMatrixTranslation(&Tran, ParticlePos.x, ParticlePos.y, ParticlePos.z);
-				World = Scale*CancelRotation*Tran;
+				float ParticleRot = (*iterator)->GetParticleRot(i);
+				D3DXMatrixRotationZ(&Rot, ParticleRot);
+				World = Scale*Rot * CancelRotation*Tran;
 				RenderSprite(World * View * Proj);
 			}
 		}
@@ -320,14 +322,13 @@ void ToManageParticle::RenderSprite(D3DXMATRIX& WVP)
 	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampler);
 	devices.Context().Get()->PSSetShaderResources(0, 1, &m_pTexture);	//プリミティブをレンダリング
 
-																		//devices.Context().Get()->RSSetState(m_states->CullNone());
 
 	devices.Context().Get()->Draw(1, 0);
 
 
-	devices.Context().Get()->VSSetShader(NULL, NULL, 0);
+	/*devices.Context().Get()->VSSetShader(NULL, NULL, 0);
 	devices.Context().Get()->GSSetShader(NULL, NULL, 0);
-	devices.Context().Get()->PSSetShader(NULL, NULL, 0);
+	devices.Context().Get()->PSSetShader(NULL, NULL, 0);*/
 
 }
 
@@ -336,6 +337,6 @@ void ToManageParticle::RenderSprite(D3DXMATRIX& WVP)
 /// </summary>
 void ToManageParticle::AddParticle(Vector3 pos)
 {
-   	m_pParticle.push_back(new PARTICLE(MAX_PARTICLE, shadermanager.VectorToD3DXVECTOR3(pos)));
+	m_pParticle.push_back(new PARTICLE(MAX_PARTICLE, shadermanager.VectorToD3DXVECTOR3(pos)));
  	m_Particlecnt.push_back(0);
 }

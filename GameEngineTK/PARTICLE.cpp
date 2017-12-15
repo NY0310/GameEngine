@@ -12,11 +12,17 @@ PARTICLE::PARTICLE(int MaxParticle,D3DXVECTOR3& EmitPos)
 
 	for(int i=0;i<m_MaxParticle;i++)
 	{
-		pPartArray[i].Pos=EmitPos;
-		pPartArray[i].Dir=D3DXVECTOR3(2*((float)rand()/(float)RAND_MAX)-1,(float)rand()/(float)RAND_MAX,2*((float)rand()/(float)RAND_MAX)-1);
+		float x = (rand() % 100 - 50) / (float)6;
+		if (rand() % 1)
+		{
+			x += -1.0f;
+		}
+		pPartArray[i].Pos= D3DXVECTOR3(x,4,0 - rand()% 4);
+		pPartArray[i].Dir=D3DXVECTOR3(/*2*((float)rand()/(float)RAND_MAX)-1*/1,(float)rand()/(float)-1,/*2*((float)rand()/(float)1)-1*/1);
 		D3DXVec3Normalize(&pPartArray[i].Dir,&pPartArray[i].Dir);
-		pPartArray[i].Speed=(5+((float)rand()/(float)RAND_MAX))*0.1;
+		pPartArray[i].Speed= (float)rand()/5 / 1000000;
 		pPartArray[i].BirthFrame=rand();
+		pPartArray[i].Zrot = 0.0f;
 	}
 }
 //
@@ -36,14 +42,15 @@ void PARTICLE::Run()
 	{
 		if(m_Frame>0)
 		{
-			pPartArray[i].Pos+=pPartArray[i].Dir*pPartArray[i].Speed;
+			pPartArray[i].Pos.y += pPartArray[i].Dir.y * pPartArray[i].Speed;
 			//重力
-			pPartArray[i].Dir+=D3DXVECTOR3(0,-0.0000098,0);
-			//地面でのバウンド
-			if(pPartArray[i].Pos.y<0)
-			{
-				pPartArray[i].Dir.y=-pPartArray[i].Dir.y;
-			}
+			//pPartArray[i].Dir+=D3DXVECTOR3(0,-0.0000098,0);
+			//////地面でのバウンド
+			//if(pPartArray[i].Pos.y<0)
+			//{
+			//	pPartArray[i].Dir.y=-pPartArray[i].Dir.y;
+			//}
+			pPartArray[i].Zrot += 0.001f;
 		}
 	}
 }
@@ -53,4 +60,9 @@ void PARTICLE::Run()
 D3DXVECTOR3 PARTICLE::GetParticlePos(int Index)
 {
 	return pPartArray[Index].Pos;
+}
+
+float PARTICLE::GetParticleRot(int Index)
+{
+	return pPartArray[Index].Zrot;
 }

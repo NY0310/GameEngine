@@ -44,6 +44,7 @@ struct VS_OUTPUT
 	float2 Tex : TEXCOORD3;
 	float4 LightTexCoord : TEXCOORD4;
 	float4 LighViewPos : TEXCOORD5;
+	//	float4 LTexCoord : TEXCOORD4;
 
 };
 
@@ -71,7 +72,7 @@ VS_OUTPUT_DEPTH VS_Depth(float4 Pos : POSITION)
 /// <summary>
 /// 深度テクスチャ用ピクセルシェーダ
 /// </summary>
-float4 PS_Depth(VS_OUTPUT_DEPTH input):SV_Target
+float4 PS_Depth(VS_OUTPUT_DEPTH input) :SV_Target
 {
 	float4 color = input.Depth.z / input.Depth.w;
 	return color;
@@ -150,41 +151,54 @@ VS_OUTPUT VS_NoTex(float4 Pos : POSITION, float4 Norm : NORMAL)
 //
 float4 PS(VS_OUTPUT input) : SV_Target
 {
-	//input.Tex.xyz /= input.Tex.z;
-	//color = g_texInk.Sample(g_samLinear, input.Tex);
-	//color = g_texColor.Sample(g_samLinear, input.Tex);
-	//テクスチャが存在する場合はその色を優先する
-	//color += input.Color / 2;	
 	float4 color;
-	if (g_inkUv.x - g_inkScale < input.Tex.x && input.Tex.x < g_inkUv.x + g_inkScale &&
-	g_inkUv.y - g_inkScale < input.Tex.y &&
-		input.Tex.y < g_inkUv.y + g_inkScale)
-	{
-		color = g_texInk.Sample(g_samLinear,  (g_inkUv.xy - input.Tex) / g_inkScale * 0.5f + 0.5f);
-		if (color.a - 1 >= 0)
-		{
-			color =  g_inkColor;
-		}
-		else
-		{
-			color = g_texColor.Sample(g_samLinear, input.Tex);
-		}
-	}
-	else
-	{
-		color = g_texColor.Sample(g_samLinear, input.Tex);
-	}
+//if (g_inkUv.x - g_inkScale < input.Tex.x && input.Tex.x < g_inkUv.x + g_inkScale &&
+//	g_inkUv.y - g_inkScale < input.Tex.y &&
+//	input.Tex.y < g_inkUv.y + g_inkScale)
+//{
+//	color = g_texInk.Sample(g_samLinear,  (g_inkUv.xy - input.Tex) / g_inkScale * 0.5f + 0.5f);
+//	if (color.a - 1 >= 0)
+//	{
+//		color = g_inkColor;
+//	}
+//	else
+//	{
+//		color = g_texColor.Sample(g_samLinear, input.Tex);
+//	}
+//}
+//else
+//{
+//	color = g_texColor.Sample(g_samLinear, input.Tex);
+//}
 
-	//影の処理
-	input.LightTexCoord /= input.LightTexCoord.w;
-	float TexValue = g_texDepth.Sample(g_samLinear, input.LightTexCoord).r;
-	float LightLength = input.LighViewPos.z / input.LighViewPos.w;
-	if (TexValue + 0.0001<LightLength)//ライトビューでの長さが短い（ライトビューでは遮蔽物がある）
-	{
-		color /= 3;//影
-	}
+//正規デバイス座標系に変換しUV値に対応する
+//	pos.xyz /= (pos.w + 1) * 0.2f;
+//input.Tex = (input.Tex - 1;
+//input.Tex.y *= -1;
+color = g_texInk.Sample(g_samLinear, input.Tex);
+return color;
 
-	return color;
+
+//input.Tex.xyz /= input.Tex.w;
+//color = g_texColor.Sample(g_samLinear, input.Tex);
+//テクスチャが存在する場合はその色を優先する
+//color += input.Color / 2;	
+
+//インクをレンダリングしたテクスチャ
+//color = g_texInk.Sample(g_samLinear, input.Tex);
+///インクテクスチャに色がない場合はモデルテクスチャ
+//if (color.a - 1 >= 0)
+//	color = g_texColor.Sample(g_samLinear, input.Tex);
+
+////影の処理
+//input.LightTexCoord /= input.LightTexCoord.w;
+//float TexValue = g_texDepth.Sample(g_samLinear, input.LightTexCoord).r;
+//float LightLength = input.LighViewPos.z / input.LighViewPos.w;
+//if (TexValue + 0.0001<LightLength)//ライトビューでの長さが短い（ライトビューでは遮蔽物がある）
+//{
+//	color /= 3;//影
+//}
+
 
 }
 

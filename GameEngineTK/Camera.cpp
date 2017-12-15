@@ -156,12 +156,14 @@ const Matrix& Camera::GetProjection()
 void Camera::SetEyePos(const Vector3& eyepos)
 {
 	m_eyepos = eyepos;
+	//m_eyepos = Vector3(0, 0, -5);
 }
 
 //	参照点のセット
 void Camera::SetRefPos(const Vector3& refpos)
 {
 	m_refpos = refpos;
+	//m_refpos = Vector3(0, 0, 0);
 }
 
 //	上方向ベクトルのセット

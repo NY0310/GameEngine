@@ -160,7 +160,7 @@ private:
 
 
 	//スプライトフォント
-	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
+	//std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 
 
 	//文字列

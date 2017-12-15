@@ -131,6 +131,7 @@
     <ClInclude Include="DisplacementMapping.h">
       <Filter>Tesselation</Filter>
     </ClInclude>
+    <ClInclude Include="Line.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -213,6 +214,7 @@
     <ClCompile Include="DisplacementMapping.cpp">
       <Filter>Tesselation</Filter>
     </ClCompile>
+    <ClCompile Include="Line.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -294,6 +296,12 @@
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
     <FxCompile Include="DisplacementMapping.hlsl">
+      <Filter>Effect\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Line.hlsl">
+      <Filter>Effect\hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Campus.hlsl">
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
   </ItemGroup>

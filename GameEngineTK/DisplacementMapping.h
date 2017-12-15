@@ -26,7 +26,7 @@ private:
 		ALIGN16 float fMaxDistance;
 		ALIGN16 int iMaxDevide;
 		ALIGN16 D3DXVECTOR4 LightDir;
-		ALIGN16 D3DXVECTOR4 WaveMove;
+		ALIGN16 D3DXVECTOR4 Glow;
 	};
 
 	//オリジナル　マテリアル構造体
@@ -64,15 +64,17 @@ private:
 	//↓モデルごと
 	ID3D11Buffer* m_pVertexBuffer;
 	ID3D11SamplerState* m_pSamPoint;//テクスチャーのサンプラー
-	ID3D11ShaderResourceView* m_pHeightTexture;//テクスチャー
-	ID3D11ShaderResourceView* m_pDensityTexture;//テクスチャー
+	//ID3D11ShaderResourceView* m_pHeightTexture;//テクスチャー
+	//ID3D11ShaderResourceView* m_pDensityTexture;//テクスチャー
 	ID3D11ShaderResourceView* m_pTexture;//テクスチャー
+	ID3D11ShaderResourceView* m_pSnowHeightTexture;//雪高さテクスチャー
+	ID3D11ShaderResourceView* m_pNormalTexture;//ノーマルテクスチャー
 
 	MY_MESH m_Mesh;
 	MY_MATERIAL m_Material;
 
-	D3DXVECTOR4 WaveMove;
-	D3DXVECTOR4 WaveHeight;
+	//D3DXVECTOR4 WaveMove;
+	//D3DXVECTOR4 WaveHeight;
 
 public:
 	DisplacementMapping();
