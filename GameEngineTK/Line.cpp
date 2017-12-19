@@ -115,7 +115,7 @@ void Line::SetVertex(D3DXVECTOR3 pos, D3DXVECTOR3 pos1)
 	//バーテックスバッファー作成
 	SimpleVertex vertices[] =
 	{
-		D3DXVECTOR3(pos.x,pos.y,0),D3DXVECTOR3(pos1.x,pos1.y,0),
+		D3DXVECTOR3(pos.x,pos.y,pos.z - 1),D3DXVECTOR3(pos1.x,pos1.y,pos1.z),
 	};
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;

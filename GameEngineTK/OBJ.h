@@ -6,12 +6,14 @@
 
 #pragma once
 #include <Windows.h>
-#include <Mouse.h>
 #include "ShaderManager.h"
 #include "Device.h"
 #include "FollowCamera.h"
 #include "Collision.h"
 #include "Line.h"
+#include "Input/MouseUtil.h"
+#include "Geometry.h"
+
 
 class Player;
 
@@ -43,11 +45,8 @@ public:
 		D3DXMATRIX mWLPT;//ワールド・”ライトビュー”・プロジェクション・テクスチャ座標行列の合成
 		D3DXVECTOR4 vLightDir;//ライト方向
 		D3DXVECTOR4 vEyes;//カメラ位置
-		D3DXVECTOR4 inkColor;//インクの色
-		ALIGN16 D3DXVECTOR2 inkUv;//インクテクスチャのUV座標
-		ALIGN16 float inkScale;//インクを塗る有効範囲
-							   //D3DXVECTOR4 vDiffuse;//ディヒューズ色
-							   //D3DXVECTOR4 vSpecular;//鏡面反射光
+		 //D3DXVECTOR4 vDiffuse;//ディヒューズ色
+		 //D3DXVECTOR4 vSpecular;//鏡面反射光
 	};
 
 
@@ -83,12 +82,22 @@ public:
 		D3DXVECTOR4 Color;
 		ALIGN16 D3DXVECTOR2 Uv;
 		ALIGN16 float Scale = 0.1f;
+		ID3D11Buffer* vertexBuffer;
 	};
+
+	struct InkDataBuffer
+	{
+		D3DXVECTOR4 Color;
+		ALIGN16 D3DXVECTOR2 Uv;
+		ALIGN16 float Scale = 0.1f;
+	};
+
 
 	OBJ();
 	~OBJ();
 	void Init();
 	HRESULT InitD3D();
+	void CreateInkVertexBuffer(InkData & inkdata);
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	void Render(std::unique_ptr<FollowCamera>& camera);
@@ -111,9 +120,8 @@ public:
 
 	DirectX::SimpleMath::Vector3 * CalcScreenToWorld(DirectX::SimpleMath::Vector3 * pout, float Sx, float Sy, float fZ, float Screen_w, float Screen_h, DirectX::SimpleMath::Matrix * View, DirectX::SimpleMath::Matrix * Prj);
 
-
-
-	//	const D3DXMATRIX& World() { return mW; }
+	void SetPosition(const D3DXVECTOR3& position);
+//	const D3DXMATRIX& World() { return mW; }
 private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11VertexShader* m_pVertexShader;
@@ -180,10 +188,9 @@ private:
 
 
 
-										   /// <summary>
-										   /// 全てのインクをレンダリング
-										   /// </summary>
-
+	/// <summary>
+	/// 全てのインクをレンダリング
+	/// </summary>
 	ID3D11InputLayout* inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
 	ID3D11Buffer* inkConstantBuffer;//インクテクスチャ用コンスタントバッファ
 	ID3D11Texture2D* inkTex;				//インクを塗るテクスチャ
@@ -193,7 +200,6 @@ private:
 	ID3D11DepthStencilView* inkDSTexDSV;//深度マップテクスチャー用DSのDSV	
 	ID3D11VertexShader* inkVertexShader;//インクテクスチャ用バーテックスシェーダー
 	ID3D11PixelShader* inkPixelShader;//インクテクスチャ用ピクセルシェーダー
-	ID3D11Buffer* canvasVertexBuffer;//キャンバスバーテックスバッファー
 
 
 	D3DXMATRIX m_mClipToUV;//テクスチャ行列
@@ -210,6 +216,12 @@ private:
 
 
 	D3DXMATRIX WVP;
+
+
+	D3DXVECTOR3 world;
+
+
+	const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position) { return D3DXVECTOR3(position.x * 2 - 1,(position.y* 2 - 1) * -1, 0) ; }
 };
 
 

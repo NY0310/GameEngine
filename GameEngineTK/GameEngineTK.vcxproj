@@ -176,7 +176,10 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Geometry.h" />
     <ClInclude Include="HomingBullet.h" />
+    <ClInclude Include="Input\KeyboardUtil.h" />
+    <ClInclude Include="Input\MouseUtil.h" />
     <ClInclude Include="LandShape.h" />
     <ClInclude Include="LandShapeData.h" />
     <ClInclude Include="Line.h" />
@@ -208,7 +211,10 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="HomingBullet.cpp" />
+    <ClCompile Include="Input\KeyboardUtil.cpp" />
+    <ClCompile Include="Input\MouseUtil.cpp" />
     <ClCompile Include="LandShape.cpp" />
     <ClCompile Include="LandShapeData.cpp" />
     <ClCompile Include="Line.cpp" />

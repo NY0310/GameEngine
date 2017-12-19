@@ -7,6 +7,7 @@
 
 #include "Game.h"
 #include <ctime>
+#include <d3d11.h>
 
 extern void ExitGame();
 
@@ -14,7 +15,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace std;
 using Microsoft::WRL::ComPtr;
-
+using namespace MyLibrary;
 
 
 
@@ -24,7 +25,6 @@ Game::Game() :
 	m_outputHeight(600),
 	m_featureLevel(D3D_FEATURE_LEVEL_9_1)
 {
-
 }
 
 // Initialize the Direct3D resources required to run.
@@ -35,6 +35,10 @@ void Game::Initialize(HWND window, int width, int height)
 	devices.HWnd(window);
 	devices.Width(width);
 	devices.Height(height);
+
+
+	// マウスライブラリにウィンドウハンドルを渡す
+	MouseUtil::GetInstance()->SetWindow(devices.HWnd());
 
 	// デバイスを生成する Create Device
 	devices.CreateDevice();
@@ -135,9 +139,24 @@ void Game::Initialize(HWND window, int width, int height)
 	tomanageparticle = new ToManageParticle();
 	tomanageparticle->Init();
 
-	obj = new OBJ();
-	obj->Init();
+	const int objnum = 5;
+	D3DXVECTOR3 position[objnum] = {
+		D3DXVECTOR3(0,3,0),
+		D3DXVECTOR3(1,2,0),
+		D3DXVECTOR3(0,1,1),
+		D3DXVECTOR3(2,2,2),
+		D3DXVECTOR3(-2,1,0)
 
+	};
+	obj.resize(objnum);
+	static int cnt = 0;
+	for (auto& data : obj)
+	{
+		data = new OBJ();
+		data->Init();
+		data->SetPosition(position[cnt]);
+		cnt++;
+	}
 	shadermanager = ShaderManager::Get();
 
 
@@ -161,18 +180,11 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 
-	pDisplacementMapping = new DisplacementMapping();
-	pDisplacementMapping->InitD3D();
+	//pDisplacementMapping = new DisplacementMapping();
+	//pDisplacementMapping->InitD3D();
 
-	//D3D11_RASTERIZER_DESC rdc;
-	//ZeroMemory(&rdc, sizeof(rdc));
-	//rdc.CullMode = D3D11_CULL_NONE;
-	//rdc.FillMode = D3D11_FILL_WIREFRAME;
-	//rdc.FrontCounterClockwise = TRUE;
-	//ID3D11RasterizerState* m_pRasterizerState;
+		
 
-	//devices.Device().Get()->CreateRasterizerState(&rdc, &m_pRasterizerState);
-	//devices.Context().Get()->RSSetState(m_pRasterizerState);
 
 }
 
@@ -194,6 +206,7 @@ void Game::Update(DX::StepTimer const& timer)
 {
 
 	// TODO: Add your game logic here.
+	MouseUtil::GetInstance()->Update();
 
 
 	//	毎フレーム処理を書く
@@ -538,8 +551,10 @@ void Game::Update(DX::StepTimer const& timer)
 	//sphere.Radius = 1.0f;
 	//obj->IntersectSphere(sphere, m_Camera);
 
-
-	obj->MouseRay(m_Camera, player);
+	for (auto& data : obj)
+	{
+		data->MouseRay(m_Camera, player);
+	}
 }
 
 // Draws the scene.
@@ -556,6 +571,11 @@ void Game::Render()
 		return;
 	}
 
+	D3D11_RASTERIZER_DESC rdc;
+	ZeroMemory(&rdc, sizeof(rdc));
+	rdc.CullMode = D3D11_CULL_NONE;
+	ID3D11RasterizerState* m_pRasterizerState;
+	devices.Context().Get()->RSSetState(m_states->CullNone());
 
 
 
@@ -564,8 +584,8 @@ void Game::Render()
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 
 	//pSss->ZTexRender(m_Camera);
-
-	obj->InkRender(m_Camera);
+	for (auto& data : obj)
+	data->InkRender(m_Camera);
 	//obj->ZTextureRender(m_Camera);
 	Clear();
 
@@ -603,7 +623,7 @@ void Game::Render()
 	//}
 
 
-	player->Draw();
+	//player->Draw();
 
 	//if (clearcnt == CLEARNUM)
 	//{
@@ -641,8 +661,9 @@ void Game::Render()
 	//m_pMesh->GetfYaw() += 0.0002;
 	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
+	for (auto& data : obj)
 
-	obj->Render(m_Camera, D3DXVECTOR3(3, 1, 0));
+	data->Render(m_Camera, D3DXVECTOR3(3, 1, 0));
 
 
 

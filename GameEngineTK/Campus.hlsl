@@ -13,9 +13,6 @@ SamplerState g_samLinear : register(s0);
 cbuffer global_0:register(b0)
 {
 	float4 inkColor;//インクの基本色
-	float4 inkUv;//インクのUV
-	float inkScale;//インクテクスチャのUV座標
-
 };
 
 
@@ -33,10 +30,7 @@ VS_OUTPUT VS(float4 Pos : POSITION ,float2 Tex : TEXCOORD)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.Tex = Tex;
-	output.Pos =  Pos;
-	//正規デバイス座標系に変換しUV値に対応する
-//	pos.xyz /= (pos.w + 1) * 0.2f;
-	
+	output.Pos =  Pos;	
 	return output;
 }
 
@@ -47,25 +41,17 @@ VS_OUTPUT VS(float4 Pos : POSITION ,float2 Tex : TEXCOORD)
 float4 PS(VS_OUTPUT input) : SV_Target
 {
 	float4 color;
-	if (inkUv.x - inkScale < input.Tex.x && input.Tex.x < inkUv.x + inkScale &&
-		inkUv.y - inkScale < input.Tex.y &&
-		input.Tex.y < inkUv.y + inkScale)
+	color = g_texInk.Sample(g_samLinear,input.Tex);
+	if (color.a - 1 >= 0)
 	{
-		color = g_texInk.Sample(g_samLinear, (inkUv.xy - input.Tex) / inkScale * 0.5f + 0.5f);
-		if (color.a - 1 >= 0)
-		{
-			color = inkColor;
-		}
-		else
-		{
-			discard;
-		}
-	
+		color = inkColor;
 	}
 	else
 	{
 		discard;
 	}
+	
+
 	return color;
 }
 

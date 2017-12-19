@@ -37,10 +37,10 @@ public:
 	const DirectX::SimpleMath::Vector3& GetEyePos() { return m_eyepos; }
 
 	//	カメラの見ている先(注視点/参照点)の取得
-	const DirectX::SimpleMath::Vector3& GetRefPos() { return m_eyepos; }
+	const DirectX::SimpleMath::Vector3& GetRefPos() { return m_refpos; }
 
 	//カメラの上方向ベクトルの取得
-	const DirectX::SimpleMath::Vector3& GetUpVec() { return m_refpos; }
+	const DirectX::SimpleMath::Vector3& GetUpVec() { return m_upvec; }
 
 	//	ビュー行列の取得
 	const DirectX::SimpleMath::Matrix& GetView();

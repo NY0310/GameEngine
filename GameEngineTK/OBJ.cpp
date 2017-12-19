@@ -4,6 +4,14 @@
 using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace MyLibrary;
+
+float RabdomRange(float min_value, float max_value)
+{
+	return min_value + (max_value - min_value) * rand() / RAND_MAX;
+}
+
+
 OBJ::OBJ()
 {
 	m_vLightPos = D3DXVECTOR3(0.0f, -5.0f, 0.0f);
@@ -19,6 +27,20 @@ OBJ::OBJ()
 
 	line = new Line();
 	line->InitD3D();
+
+
+	// メンバ変数初期化
+	world = D3DXVECTOR3(0, 0, 0);
+
+	//地面上のランダムな位置に配置
+	world.x = RabdomRange(-1, 1);
+	world.y += 1.0f;
+	world.z = RabdomRange(-1, 1);
+
+}
+
+void OBJ::SetPosition(const D3DXVECTOR3& position) {
+	world = position;
 }
 
 
@@ -36,11 +58,6 @@ void OBJ::Init()
 	D3DXVec3Normalize(&m_vLight, &m_vLight);
 
 	birthcnt = 0;
-	mouse = make_unique<Mouse>();
-
-	InkData inkdata;
-
-	inkData.emplace_back(inkdata);
 
 }
 
@@ -282,31 +299,6 @@ HRESULT OBJ::InitD3D()
 	device->CreateSamplerState(&SamDesc, &m_pSampleLimear);
 
 
-	//CampusVertex定義
-	CampusVertex vertices[] =
-	{
-		{D3DXVECTOR3(-1,-1,0),D3DXVECTOR2(0,1)},//頂点1	
-		{D3DXVECTOR3(-1,1,0),D3DXVECTOR2(0,0)}, //頂点2
-		{D3DXVECTOR3(1,-1,0),D3DXVECTOR2(1,1) },  //頂点3
-		{D3DXVECTOR3(1, 1, 0),D3DXVECTOR2(1,0)} //頂点4	
-	};
-	//上の頂点でバーテックスバッファー作成
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(CampusVertex) * 4;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = vertices;
-	if (FAILED(device->CreateBuffer(&bd, &InitData, &canvasVertexBuffer)))
-	{
-		return E_FAIL;
-	}
-
-
-
 	//ポリゴン作成
 	if (FAILED(InitStaticMesh("Circle.obj", &m_Mesh)))
 	{
@@ -335,6 +327,58 @@ HRESULT OBJ::InitD3D()
 
 	return S_OK;
 }
+
+
+void OBJ::CreateInkVertexBuffer(InkData& inkdata)
+{
+
+
+
+	//インクサイズを正規デバイス座標系にする
+	float uvSize = inkdata.Scale;
+	D3DXVECTOR2 Uv = inkdata.Uv;
+	//
+	//Square*  square = new Square(Geometry::VertexElement::Uv);
+	//D3DXVECTOR3 position[] = {
+	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),
+	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize, 0)),
+	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y - uvSize,0)),
+	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)),
+	//};
+
+	//D3DXVECTOR2 tex[] = {
+	//	D3DXVECTOR2(0,0),
+	//	D3DXVECTOR2(1,1),
+	//	D3DXVECTOR2(1,1),
+	//	D3DXVECTOR2(1,0),
+	//};
+
+	CampusVertex vertex[] = {
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),D3DXVECTOR2(0,1) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize, 0)),	D3DXVECTOR2(0,0) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y - uvSize,0)),	D3DXVECTOR2(1,1) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)), 	D3DXVECTOR2(1,0) },
+	};
+
+
+
+	//上の頂点でバーテックスバッファー作成
+	D3D11_BUFFER_DESC bd;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(CampusVertex) * 4;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = vertex;
+	ID3D11Buffer*  canvasVertexBuffer;
+	device->CreateBuffer(&bd, &InitData, &canvasVertexBuffer);
+	inkdata.vertexBuffer = canvasVertexBuffer;
+
+}
+
+
 
 HRESULT OBJ::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL* pMarial)
 {
@@ -602,18 +646,19 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 		//birthcnt+= 10;
 		//ワールドトランスフォームは個々で異なる
 		D3DXMATRIX Scale, Tran, Rot;
-
 		//ワールド行列計算
 		ObjScale = D3DXVECTOR3(0.1, 0.1, 0.1);
 		D3DXMatrixScaling(&World, ObjScale.x, ObjScale.y, ObjScale.z);
 		//World *= Scale;
 
+		static float rotY = 0;
+		rotY += 0.001f;
 		////ワールドトランスフォーム（絶対座標変換）
-		D3DXMatrixRotationY(&Rot, 1 / 1000.0f);//単純にyaw回転させる
+		D3DXMatrixRotationY(&Rot, rotY);//単純にyaw回転させる
 		World *= Rot;
 
 		localPosition = Vector3(1, 1, 1);
-		D3DXMatrixTranslation(&Tran, localPosition.x, localPosition.y, localPosition.z);
+		D3DXMatrixTranslation(&Tran, world.x, world.y, world.z);
 
 		World *= Tran;
 		worldmat = World;
@@ -632,17 +677,6 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 		//ライトの方向を渡す
 		D3DXVECTOR3 vLightDir(-1, 0, -1);
 		cb.vLightDir = D3DXVECTOR4(vLightDir.x, vLightDir.y, vLightDir.z, 0.0f);
-
-		//インクの色を渡す
-		Vector4 color = Colors::Green;
-		cb.inkColor = shadermanager.VectorToD3DXVECTOR4(color);
-
-		//インクのUV座標
-		cb.inkUv = inkData[0].Uv;
-
-		//インクのサイズ　
-		cb.inkScale = 0.1f;
-
 
 		////ディフューズカラーを渡す
 		//cb.vDiffuse = m_Material.Kd;
@@ -679,7 +713,7 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 	//プリミティブをレンダリング
 	devices.Context().Get()->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
 
-	//line->Render(camera);
+	line->Render(camera);
 }
 
 
@@ -720,16 +754,12 @@ void OBJ::InkRender(unique_ptr<FollowCamera>& camera)
 	deviceContext->IASetInputLayout(inkVertexLayout);
 	//プリミティブ・トポロジーをセット
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	//バーテックスバッファーをセット
-	UINT stride = sizeof(CampusVertex);
-	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &canvasVertexBuffer, &stride, &offset);
 
 
 
-	for (auto ink : inkData) 
+	for (auto ink : inkData)
 	{
-		
+
 		//インクの色を渡す
 		D3DXVECTOR4 color = Colors::Green;
 		//ink.Color = color;
@@ -752,16 +782,22 @@ void OBJ::InkRender(unique_ptr<FollowCamera>& camera, InkData& ink)
 
 
 	D3D11_MAPPED_SUBRESOURCE pData;
-	InkData cb;
+	InkDataBuffer cb;
 	if (SUCCEEDED(deviceContext->Map(inkConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		cb.Uv = ink.Uv;
+		//cb.Uv = ink.Uv;
+		D3DXVECTOR4 color = Colors::Blue;
 		cb.Color = ink.Color;
-		cb.Scale = ink.Scale;
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(InkData));
+		//cb.Scale = ink.Scale;
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(InkDataBuffer));
 		deviceContext->Unmap(inkConstantBuffer, 0);
 
 	}
+	//バーテックスバッファーをセット
+	UINT stride = sizeof(CampusVertex);
+	UINT offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &ink.vertexBuffer, &stride, &offset);
+
 	//プリミティブをレンダリング
 	deviceContext->Draw(4, 0);
 
@@ -976,7 +1012,8 @@ bool OBJ::IntersectSegment(const Segment& segment, unique_ptr<FollowCamera>& cam
 				InkData inkdata;
 				inkdata.Uv = shadermanager.VectorToD3DXVECTOR2(uv);
 
-				
+				CreateInkVertexBuffer(inkdata);
+
 				inkData.emplace_back(inkdata);
 				return true;
 			}
@@ -1086,14 +1123,12 @@ bool OBJ::IntersectSphere(const Sphere& sphere, unique_ptr<FollowCamera>& camera
 
 void OBJ::MouseRay(unique_ptr<FollowCamera>& camera, unique_ptr<Player>&  player)
 {
-
-	Mouse::State state = mouse->GetState();
-	tracker.Update(state);
-	if (tracker.leftButton == Mouse::ButtonStateTracker::RELEASED)
+	MouseUtil* mouse = MouseUtil::GetInstance();
+	if (mouse->IsTriggered(MouseUtil::Button::Left))
 	{
 		Vector3 pos;
-		int x = mouse->GetState().x;
-		int y = mouse->GetState().y;
+		int x = mouse->GetPos().x;
+		int y = mouse->GetPos().y;
 		Matrix view = camera->GetView();
 		Matrix proj = camera->GetProjection();
 		CalcScreenToXZ(&pos, x, y, 800, 600, &view, &proj);
@@ -1103,6 +1138,7 @@ void OBJ::MouseRay(unique_ptr<FollowCamera>& camera, unique_ptr<Player>&  player
 		line->SetVertex(shadermanager.VectorToD3DXVECTOR3(segment.End), shadermanager.VectorToD3DXVECTOR3(segment.Start));
 		IntersectSegment(segment, camera);
 	}
+	mouse = nullptr;
 }
 
 

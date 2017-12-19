@@ -50,6 +50,9 @@
     <Filter Include="Tesselation">
       <UniqueIdentifier>{c6a4583f-d965-4868-b04d-e9babde8eb2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{e62c3388-0c6e-473f-b881-bfdfe52f3c64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -132,6 +135,13 @@
       <Filter>Tesselation</Filter>
     </ClInclude>
     <ClInclude Include="Line.h" />
+    <ClInclude Include="Input\KeyboardUtil.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\MouseUtil.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -215,6 +225,13 @@
       <Filter>Tesselation</Filter>
     </ClCompile>
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="Input\KeyboardUtil.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\MouseUtil.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

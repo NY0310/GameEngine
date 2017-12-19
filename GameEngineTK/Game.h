@@ -45,6 +45,7 @@
 #include "BumpMapping.h"
 #include "Tessellation.h"
 #include "DisplacementMapping.h"
+#include "Input/MouseUtil.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -183,7 +184,7 @@ private:
 	int CLEARNUM = 15;
 
 	ToManageParticle* tomanageparticle;
-	OBJ* obj;
+	std::vector<OBJ*> obj;
 	ShaderManager shadermanager;//シェーダー関連
 	CD3DXMESH* m_pMesh;//D3DXMESHライブラリを使用してXファイルを描画するクラス
 	sss* pSss;
