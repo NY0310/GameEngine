@@ -34,7 +34,7 @@ HRESULT ToManageParticle::InitD3D()
 	ID3DBlob *pCompiledShader = NULL;
 	D3D11_BLEND_DESC bd;
 	//バーテックスシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Shader.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader))) return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Shader.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader))) return E_FAIL;
 
 
 	//頂点インプットレイアウトを定義	
@@ -55,13 +55,13 @@ HRESULT ToManageParticle::InitD3D()
 
 
 	////ジオメトリシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Shader.hlsl", "GS_Point", "gs_5_0", (void**)&m_pGeometryShader, &pCompiledShader))) return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Shader.hlsl", "GS_Point", "gs_5_0", (void**)&m_pGeometryShader, &pCompiledShader))) return E_FAIL;
 	SAFE_RELEASE(pCompiledShader);
 
 
 
 	//ピクセルシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Shader.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader))) return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Shader.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader))) return E_FAIL;
 	SAFE_RELEASE(pCompiledShader);
 
 
@@ -167,7 +167,7 @@ HRESULT ToManageParticle::InitModel()
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	devices.Device().Get()->CreateSamplerState(&SamDesc, &m_pSampler);
 	//テクスチャー読み込み
-	if (FAILED(D3DX11CreateShaderResourceViewFromFile(devices.Device().Get(), L"Snow.png", NULL, NULL, &m_pTexture, NULL)))
+	if (FAILED(D3DX11CreateShaderResourceViewFromFile(devices.Device().Get(), L"Resources/PNG/Snow.png", NULL, NULL, &m_pTexture, NULL)))
 	{
 		MessageBoxA(0, "テクスチャーを読み込めません", "", MB_OK);
 		return E_FAIL;

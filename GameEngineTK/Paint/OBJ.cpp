@@ -6,10 +6,6 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace MyLibrary;
 
-float RabdomRange(float min_value, float max_value)
-{
-	return min_value + (max_value - min_value) * rand() / RAND_MAX;
-}
 
 
 OBJ::OBJ()
@@ -31,12 +27,6 @@ OBJ::OBJ()
 
 	// メンバ変数初期化
 	world = D3DXVECTOR3(0, 0, 0);
-
-	//地面上のランダムな位置に配置
-	world.x = RabdomRange(-1, 1);
-	world.y += 1.0f;
-	world.z = RabdomRange(-1, 1);
-
 }
 
 void OBJ::SetPosition(const D3DXVECTOR3& position) {
@@ -56,15 +46,10 @@ void OBJ::Init()
 
 	m_vLight = D3DXVECTOR3(-1, 0, -1);
 	D3DXVec3Normalize(&m_vLight, &m_vLight);
-
-	birthcnt = 0;
-
 }
 
 HRESULT OBJ::InitD3D()
 {
-	auto& devices = Devices::Get();
-
 
 	//深度マップテクスチャーを作成
 	D3D11_TEXTURE2D_DESC tdesc;
@@ -80,7 +65,7 @@ HRESULT OBJ::InitD3D()
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
 	tdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tdesc.CPUAccessFlags = 0;
-	device->CreateTexture2D(&tdesc, nullptr, &m_pDepthMap_Tex);
+	device->CreateTexture2D(&tdesc, nullptr, &depthMapTex);
 
 	//深度マップテクスチャー用　レンダーターゲットビュー作成
 	D3D11_RENDER_TARGET_VIEW_DESC DescRT;
@@ -88,7 +73,7 @@ HRESULT OBJ::InitD3D()
 	DescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	DescRT.Texture2D.MipSlice = 0;
 
-	device->CreateRenderTargetView(m_pDepthMap_Tex, &DescRT, &m_pDepthMap_TexRTV);
+	device->CreateRenderTargetView(depthMapTex, &DescRT, &depthMapTexRTV);
 
 
 
@@ -101,7 +86,7 @@ HRESULT OBJ::InitD3D()
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	device->CreateShaderResourceView(m_pDepthMap_Tex, &SRVDesc, &m_pDepthMap_TexSRV);
+	device->CreateShaderResourceView(depthMapTex, &SRVDesc, &depthMapTexSRV);
 
 	//深度マップテクスチャをレンダーターゲットにする際のデプスステンシルビュー用のテクスチャーを作成
 	D3D11_TEXTURE2D_DESC descDepth;
@@ -118,11 +103,11 @@ HRESULT OBJ::InitD3D()
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 
-	device->CreateTexture2D(&descDepth, nullptr, &m_pDepthMap_DSTex);
+	device->CreateTexture2D(&descDepth, nullptr, &depthMapDSTex);
 
 
 	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	device->CreateDepthStencilView(m_pDepthMap_DSTex, nullptr, &m_pDepthMap_DSTexDSV);
+	device->CreateDepthStencilView(depthMapDSTex, nullptr, &depthMapDSTexDSV);
 
 
 
@@ -185,22 +170,10 @@ HRESULT OBJ::InitD3D()
 
 
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
-	ID3DBlob *pCompiledShader = NULL;
-	ID3DBlob *pErrors = NULL;
+	ID3DBlob *pCompiledShader = nullptr;
+	ID3DBlob *pErrors = nullptr;
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "VS", "vs_5_0", D3D10_SHADER_DEBUG, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	{
-		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pErrors);
-
-	if (FAILED(devices.Device().Get()->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pVertexShader)))
-	{
-		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "VS", "vs_5_0", (void**)&vertexShader, &pCompiledShader)))return E_FAIL;
 
 	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -213,32 +186,21 @@ HRESULT OBJ::InitD3D()
 
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 	//頂点インプットレイアウトを作成
-	if (FAILED(devices.Device().Get()->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
+	if (FAILED(device->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &vertexLayout)))
 	{
 		return FALSE;
 	}
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"Geometry.hlsl", NULL, NULL, "PS", "ps_5_0", D3D10_SHADER_DEBUG, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	{
-		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pErrors);
-	if (FAILED(devices.Device().Get()->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pPixelShader)))
-	{
-		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "PS", "ps_5_0", (void**)&pixelShader, &pCompiledShader)))return E_FAIL;
 	//深度テクスチャ用バーテックスシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Geometry.hlsl", "VS_Depth", "vs_5_0", (void**)&m_pDepthVertexShader, &pCompiledShader)))return E_FAIL;
-	if (FAILED(shadermanager.MakeShader("Geometry.hlsl", "PS_Depth", "ps_5_0", (void**)&m_pDepthPixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "VS_Depth", "vs_5_0", (void**)&depthVertexShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "PS_Depth", "ps_5_0", (void**)&depthPixelShader, &pCompiledShader)))return E_FAIL;
 
 	SAFE_RELEASE(pCompiledShader);
 
 
 	//インクテクスチャ用バーテックスシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Campus.hlsl", "VS", "vs_5_0", (void**)&inkVertexShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)&inkVertexShader, &pCompiledShader)))return E_FAIL;
 	//インクテクスチャ用頂点インプットレイアウトをセット
 	D3D11_INPUT_ELEMENT_DESC inkInputLayout[]
 	{
@@ -247,9 +209,9 @@ HRESULT OBJ::InitD3D()
 	};
 	numElements = sizeof(inkInputLayout) / sizeof(inkInputLayout[0]);
 	//頂点インプットレイアウトを作成
-	if (FAILED(devices.Device().Get()->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &inkVertexLayout)))return E_FAIL;
+	if (FAILED(device->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &inkVertexLayout)))return E_FAIL;
 	//インクテクスチャ用ピクセルシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Campus.hlsl", "PS", "ps_5_0", (void**)&inkPixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)&inkPixelShader, &pCompiledShader)))return E_FAIL;
 
 
 
@@ -260,7 +222,7 @@ HRESULT OBJ::InitD3D()
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(devices.Device().Get()->CreateBuffer(&cb, nullptr, &m_pConstantBuffer)))
+	if (FAILED(device->CreateBuffer(&cb, nullptr, &constantBuffer)))
 	{
 		return E_FAIL;
 	}
@@ -271,7 +233,7 @@ HRESULT OBJ::InitD3D()
 	Zcb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	Zcb.MiscFlags = 0;
 	Zcb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(devices.Device().Get()->CreateBuffer(&Zcb, nullptr, &m_pZTexConstantBuffer)))
+	if (FAILED(device->CreateBuffer(&Zcb, nullptr, &zTexConstantBuffer)))
 	{
 		return E_FAIL;
 	}
@@ -284,7 +246,7 @@ HRESULT OBJ::InitD3D()
 	Inkcb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	Inkcb.MiscFlags = 0;
 	Inkcb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(devices.Device().Get()->CreateBuffer(&Inkcb, nullptr, &inkConstantBuffer)))
+	if (FAILED(device->CreateBuffer(&Inkcb, nullptr, &inkConstantBuffer)))
 	{
 		return E_FAIL;
 	}
@@ -296,22 +258,22 @@ HRESULT OBJ::InitD3D()
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	device->CreateSamplerState(&SamDesc, &m_pSampleLimear);
+	device->CreateSamplerState(&SamDesc, &sampleLimear);
 
 
 	//ポリゴン作成
-	if (FAILED(InitStaticMesh("Circle.obj", &m_Mesh)))
+	if (FAILED(InitStaticMesh("Resources/OBJ/Geometry+Normal+UV.obj", &mesh)))
 	{
 		return E_FAIL;
 	}
 	//テクスチャー作成
-	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(devices.Device().Get(), "Hand_ColorMap.bmp", NULL, NULL, &m_pTexture, NULL)))
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, "Resources/BMP/Hand_ColorMap.bmp", nullptr, nullptr, &texture, nullptr)))
 	{
 		return E_FAIL;
 	}
 
 	//インクテクスチャを作成	
-	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(devices.Device().Get(), "pink1.png", nullptr, nullptr, &inkTexture, nullptr)))
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, "Resources/PNG/pink1.png", nullptr, nullptr, &inkTexture, nullptr)))
 	{
 		return E_FAIL;
 	}
@@ -320,7 +282,7 @@ HRESULT OBJ::InitD3D()
 
 
 	////メッシュ作成
-	//if (FAILED(InitStaticMesh("Geometry.obj", &m_Mesh)))
+	//if (FAILED(InitStaticMesh("Geometry.obj", &mesh)))
 	//{
 	//	return E_FAIL;
 	//}
@@ -382,11 +344,8 @@ void OBJ::CreateInkVertexBuffer(InkData& inkdata)
 
 HRESULT OBJ::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL* pMarial)
 {
-	auto& devices = Devices::Get();
-
-
 	//マテリアルファイルを開いて内容を読み込む
-	FILE* fp = NULL;
+	FILE* fp = nullptr;
 	fopen_s(&fp, FileName, "rt");
 
 	char key[110] = { 0 };
@@ -399,32 +358,32 @@ HRESULT OBJ::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL* pMarial)
 		if (strcmp(key, "newmtl") == 0)
 		{
 			fscanf_s(fp, "%s", key, sizeof(key));
-			strcpy_s(m_Material.szName, key);
+			strcpy_s(material.szName, key);
 		}
 		//Ka アンビエント
 		if (strcmp(key, "Ka") == 0)
 		{
 			fscanf_s(fp, "%f %f %f", &v.x, &v.y, &v.z);
-			m_Material.Ka = v;
+			material.Ka = v;
 		}
 		//Kb ディヒューズ
 		if (strcmp(key, "Kd") == 0)
 		{
 			fscanf_s(fp, "%f %f %f", &v.x, &v.y, &v.z);
-			m_Material.Kd = v;
+			material.Kd = v;
 		}
 		//Ks スペキュラー
 		if (strcmp(key, "Ks") == 0)
 		{
 			fscanf_s(fp, "%f %f %f", &v.x, &v.y, &v.z);
-			m_Material.Ks = v;
+			material.Ks = v;
 		}
 		//map_Kd　テクスチャー
 		if (strcmp(key, "map_Kd") == 0)
 		{
-			fscanf_s(fp, "%s", &m_Material.szTextureName, sizeof(m_Material.szTextureName));
+			fscanf_s(fp, "%s", &material.szTextureName, sizeof(material.szTextureName));
 			//テクスチャー作成
-			if (FAILED(D3DX11CreateShaderResourceViewFromFileA(devices.Device().Get(), m_Material.szTextureName, NULL, NULL, &m_pTexture, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, material.szTextureName, nullptr, nullptr, &texture, nullptr)))
 			{
 				return E_FAIL;
 			}
@@ -440,9 +399,6 @@ HRESULT OBJ::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL* pMarial)
 HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 {
 
-	auto& devices = Devices::Get();
-
-
 	float x = 0, y = 0, z = 0;
 	int v1 = 0, v2 = 0, v3 = 0;
 	int vn1 = 0, vn2 = 0, vn3 = 0;
@@ -457,7 +413,7 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 
 	char key[200] = { 0 };
 	//OBJファイルを開いて内容を読み込む
-	FILE* fp = NULL;
+	FILE* fp = nullptr;
 	fopen_s(&fp, FileName, "rt");
 
 	//事前に頂点数、ポリゴン数を調べる
@@ -469,7 +425,7 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 		if (strcmp(key, "mtllib") == 0)
 		{
 			fscanf_s(fp, "%s ", key, sizeof(key));
-			LoadMaterialFromFile(key, &m_Material);
+			LoadMaterialFromFile(key, &material);
 		}
 		//頂点
 		if (strcmp(key, "v") == 0)
@@ -585,7 +541,7 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	bd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = pvVertexBuffer;
-	if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pVertexBuffer)))
+	if (FAILED(device->CreateBuffer(&bd, &InitData, &pMesh->pVertexBuffer)))
 		return FALSE;
 
 	//インデックスバッファーを作成
@@ -595,7 +551,7 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	InitData.pSysMem = piFaceBuffer;
-	if (FAILED(devices.Device().Get()->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
+	if (FAILED(device->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
 		return FALSE;
 
 
@@ -610,13 +566,8 @@ HRESULT OBJ::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	return S_OK;
 }
 
-void OBJ::Render(unique_ptr<FollowCamera>& camera)
+void OBJ::Render()
 {
-	auto& devices = Devices::Get();
-
-
-
-
 
 	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
 	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
@@ -626,30 +577,23 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 
 	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
 
-	//auto& devices = Devices::Get();
-
-
-	//D3DXMATRIX View;
-	//D3DXMATRIX Proj;
 	////ワールドトランスフォーム
 	static float x = 0;
 	x += 0.00001;
 	D3DXMATRIX World;
 	//使用するシェーダーの登録	
-	devices.Context().Get()->VSSetShader(m_pVertexShader, nullptr, 0);
-	devices.Context().Get()->PSSetShader(m_pPixelShader, nullptr, 0);
+	deviceContext->VSSetShader(vertexShader, nullptr, 0);
+	deviceContext->PSSetShader(pixelShader, nullptr, 0);
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
 	SIMPLESHADER_CONSTANT_BUFFER cb;
-	if (SUCCEEDED(devices.Context().Get()->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(deviceContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		//birthcnt+= 10;
 		//ワールドトランスフォームは個々で異なる
 		D3DXMATRIX Scale, Tran, Rot;
 		//ワールド行列計算
-		ObjScale = D3DXVECTOR3(0.1, 0.1, 0.1);
+		ObjScale = D3DXVECTOR3(10, 10, 10);
 		D3DXMatrixScaling(&World, ObjScale.x, ObjScale.y, ObjScale.z);
-		//World *= Scale;
 
 		static float rotY = 0;
 		rotY += 0.001f;
@@ -657,17 +601,16 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 		D3DXMatrixRotationY(&Rot, rotY);//単純にyaw回転させる
 		World *= Rot;
 
-		localPosition = Vector3(1, 1, 1);
+		localPosition = Vector3(2,2,2);
 		D3DXMatrixTranslation(&Tran, world.x, world.y, world.z);
 
 		World *= Tran;
-		worldmat = World;
+		worldMatrix = World;
 
 		//ワールド、カメラ、射影行列を渡す
 		D3DXMATRIX m = World  *View * Proj;
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWVP = m;
-		WVP = m;
 		//ワールド、ライトビュー、射影行列を渡す
 		cb.mWLP = World * mLight * Proj;
 
@@ -679,45 +622,45 @@ void OBJ::Render(unique_ptr<FollowCamera>& camera)
 		cb.vLightDir = D3DXVECTOR4(vLightDir.x, vLightDir.y, vLightDir.z, 0.0f);
 
 		////ディフューズカラーを渡す
-		//cb.vDiffuse = m_Material.Kd;
+		//cb.vDiffuse = material.Kd;
 		////スペキュラーを渡す
-		//cb.vSpecular = m_Material.Ks;
+		//cb.vSpecular = material.Ks;
 
 		//視点位置を渡す
 		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-		devices.Context().Get()->Unmap(m_pConstantBuffer, 0);
+		deviceContext->Unmap(constantBuffer, 0);
 
 	}
 	//テクスチャーをシェーダーに渡す
-	devices.Context().Get()->PSSetSamplers(0, 1, &m_pSampleLimear);
-	devices.Context().Get()->PSSetShaderResources(0, 1, &m_pTexture);
-	devices.Context().Get()->PSSetShaderResources(1, 1, &inkTexSRV);//全インクをレンダリングしたテクスチャ
-	devices.Context().Get()->PSSetShaderResources(2, 1, &m_pDepthMap_TexSRV);//ライトビューでの深度テクスチャ作成
+	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
+	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(1, 1, &inkTexSRV);//全インクをレンダリングしたテクスチャ
+	deviceContext->PSSetShaderResources(2, 1, &depthMapTexSRV);//ライトビューでの深度テクスチャ作成
 																			 //このコンスタントバッファーを使うシェーダーの登録
-	devices.Context().Get()->VSSetConstantBuffers(0, 1, &m_pConstantBuffer);
-	devices.Context().Get()->PSSetConstantBuffers(0, 1, &m_pConstantBuffer);
+	deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
+	deviceContext->PSSetConstantBuffers(0, 1, &constantBuffer);
 	//頂点インプットレイアウトをセット
-	devices.Context().Get()->IASetInputLayout(m_pVertexLayout);
+	deviceContext->IASetInputLayout(vertexLayout);
 	//プリミティブ・トポロジーをセット
-	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(SimpleVertex);
 	UINT offset = 0;
-	devices.Context().Get()->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, &mesh.pVertexBuffer, &stride, &offset);
 	//インデックスバッファーをセット
 	stride = sizeof(int);
 	offset = 0;
-	devices.Context().Get()->IASetIndexBuffer(m_Mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	//プリミティブをレンダリング
-	devices.Context().Get()->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
+	deviceContext->DrawIndexed(mesh.dwNumFace * 3, 0, 0);
 
-	line->Render(camera);
+	line->Render();
 }
 
 
-void OBJ::InkRender(unique_ptr<FollowCamera>& camera)
+void OBJ::InkRender()
 {
 	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
 	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
@@ -744,7 +687,7 @@ void OBJ::InkRender(unique_ptr<FollowCamera>& camera)
 
 
 	//テクスチャーをシェーダーに渡す
-	deviceContext->PSSetSamplers(0, 1, &m_pSampleLimear);
+	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
 	deviceContext->PSSetShaderResources(0, 1, &inkTexture);
 
 	//このコンスタントバッファーを使うシェーダーの登録
@@ -763,7 +706,7 @@ void OBJ::InkRender(unique_ptr<FollowCamera>& camera)
 		//インクの色を渡す
 		D3DXVECTOR4 color = Colors::Green;
 		//ink.Color = color;
-		this->InkRender(camera, ink);
+		this->InkRender(ink);
 	}
 
 
@@ -772,7 +715,7 @@ void OBJ::InkRender(unique_ptr<FollowCamera>& camera)
 }
 
 
-void OBJ::InkRender(unique_ptr<FollowCamera>& camera, InkData& ink)
+void OBJ::InkRender(InkData& ink)
 {
 	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
 	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
@@ -805,7 +748,7 @@ void OBJ::InkRender(unique_ptr<FollowCamera>& camera, InkData& ink)
 }
 
 
-void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
+void OBJ::ZTextureRender()
 {
 	////////ビューポートの設定
 	D3D11_VIEWPORT vp;
@@ -816,11 +759,11 @@ void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	deviceContext->RSSetViewports(1, &vp);
-	deviceContext->OMSetRenderTargets(1, &m_pDepthMap_TexRTV, m_pDepthMap_DSTexDSV);
+	deviceContext->OMSetRenderTargets(1, &depthMapTexRTV, depthMapDSTexDSV);
 
 	float ClearColor[4] = { 0,0,1,1 };
-	deviceContext->ClearRenderTargetView(m_pDepthMap_TexRTV, ClearColor);
-	deviceContext->ClearDepthStencilView(m_pDepthMap_DSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
+	deviceContext->ClearRenderTargetView(depthMapTexRTV, ClearColor);
+	deviceContext->ClearDepthStencilView(depthMapDSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
 
 
 
@@ -831,10 +774,10 @@ void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
 
 
 	//このパスで使用するシェーダーの登録
-	deviceContext->VSSetShader(m_pDepthVertexShader, nullptr, 0);
-	deviceContext->PSSetShader(m_pDepthPixelShader, nullptr, 0);
+	deviceContext->VSSetShader(depthVertexShader, nullptr, 0);
+	deviceContext->PSSetShader(depthPixelShader, nullptr, 0);
 	//レンダリングターゲットを深度テクスチャに変更
-	deviceContext->OMSetRenderTargets(1, &m_pDepthMap_TexRTV, m_pDepthMap_DSTexDSV);
+	deviceContext->OMSetRenderTargets(1, &depthMapTexRTV, depthMapDSTexDSV);
 
 
 	//// ビュートランスフォーム ここではライトからの視界
@@ -850,40 +793,40 @@ void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
 	ZTEXTURE_CONSTANT_BUFFER cb;
-	if (SUCCEEDED(deviceContext->Map(m_pZTexConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(deviceContext->Map(zTexConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 
 		//ワールド、ライト、射影行列を渡す
-		D3DXMATRIX m = worldmat * mLight * Proj;
+		D3DXMATRIX m = worldMatrix * mLight * Proj;
 
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWLP = m;
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(ZTEXTURE_CONSTANT_BUFFER));
-		deviceContext->Unmap(m_pZTexConstantBuffer, 0);
+		deviceContext->Unmap(zTexConstantBuffer, 0);
 
 	}
-	m_pSampleLimear = nullptr;
+	sampleLimear = nullptr;
 	//テクスチャーをシェーダーに渡す
-	deviceContext->PSSetSamplers(0, 1, &m_pSampleLimear);
-	deviceContext->PSSetShaderResources(2, 1, &m_pDepthMap_TexSRV);
+	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
+	deviceContext->PSSetShaderResources(2, 1, &depthMapTexSRV);
 	//このコンスタントバッファーを使うシェーダーの登録
-	deviceContext->VSSetConstantBuffers(0, 1, &m_pZTexConstantBuffer);
-	deviceContext->PSSetConstantBuffers(0, 1, &m_pZTexConstantBuffer);
+	deviceContext->VSSetConstantBuffers(0, 1, &zTexConstantBuffer);
+	deviceContext->PSSetConstantBuffers(0, 1, &zTexConstantBuffer);
 	//頂点インプットレイアウトをセット
-	deviceContext->IASetInputLayout(m_pVertexLayout);
+	deviceContext->IASetInputLayout(vertexLayout);
 	//プリミティブ・トポロジーをセット
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(SimpleVertex);
 	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &m_Mesh.pVertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, &mesh.pVertexBuffer, &stride, &offset);
 	//インデックスバッファーをセット
 	stride = sizeof(int);
 	offset = 0;
-	deviceContext->IASetIndexBuffer(m_Mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	//プリミティブをレンダリング
-	deviceContext->DrawIndexed(m_Mesh.dwNumFace * 3, 0, 0);
+	deviceContext->DrawIndexed(mesh.dwNumFace * 3, 0, 0);
 
 
 
@@ -893,11 +836,11 @@ void OBJ::ZTextureRender(unique_ptr<FollowCamera>& camera)
 
 
 
-void OBJ::Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3&& worldPosition)
+void OBJ::Render(D3DXVECTOR3&& worldPosition)
 {
 	D3DXMATRIX worldMatrix;
 	D3DXMatrixTranslation(&worldMatrix, worldPosition.x, worldPosition.y, worldPosition.z);
-	this->Render(camera);
+	this->Render();
 	//this->Render(camera,inkTexture, worldMatrix);
 
 	Matrix m;
@@ -910,10 +853,10 @@ void OBJ::Render(std::unique_ptr<FollowCamera>& camera, D3DXVECTOR3&& worldPosit
 // segment : 線分
 // （出力）inter : 交点（ポリゴンの平面上で、点との再接近点の座標を返す）
 //--------------------------------------------------------------------------------------
-bool OBJ::IntersectSegment(const Segment& segment, unique_ptr<FollowCamera>& camera)
+bool OBJ::IntersectSegment(const Segment& segment)
 {
 
-	if (m_Mesh.pIndexBuffer == nullptr) return false;
+	if (mesh.pIndexBuffer == nullptr) return false;
 
 	// ヒットフラグを初期化
 	bool hit = false;
@@ -926,7 +869,7 @@ bool OBJ::IntersectSegment(const Segment& segment, unique_ptr<FollowCamera>& cam
 
 	// 逆行列を計算
 	D3DXMATRIX d3dWorldLocal;
-	D3DXMatrixInverse(&d3dWorldLocal, nullptr, &worldmat);
+	D3DXMatrixInverse(&d3dWorldLocal, nullptr, &worldMatrix);
 	Matrix WorldLocal = shadermanager.D3DXMATRIXToMatrix(d3dWorldLocal);
 
 
@@ -984,7 +927,7 @@ bool OBJ::IntersectSegment(const Segment& segment, unique_ptr<FollowCamera>& cam
 
 				//塗られるオブジェクトのワールド座標をかける
 				//PerspectiveCollect(透視投影を考慮したUV補間)
-				Matrix mvp = shadermanager.D3DXMATRIXToMatrix(worldmat) * camera->GetView()* camera->GetProjection();
+				Matrix mvp = shadermanager.D3DXMATRIXToMatrix(worldMatrix) * camera->GetView()* camera->GetProjection();
 				//各点をProjectionSpaceへの変換
 				Vector4 p1_p = MatrixTimes(mvp, Vector4(p1.x, p1.y, p1.z, 0));
 				Vector4 p2_p = MatrixTimes(mvp, Vector4(p2.x, p2.y, p1.z, 0));
@@ -1028,17 +971,17 @@ bool OBJ::IntersectSegment(const Segment& segment, unique_ptr<FollowCamera>& cam
 
 
 ////--------------------------------------------------------------------------------------
-//// 地形と円の交差判定
+//// 三角形と円の交差判定
 //// segment : 線分
 //// （出力）inter : 交点（ポリゴンの平面上で、点との再接近点の座標を返す）
 ////--------------------------------------------------------------------------------------
-bool OBJ::IntersectSphere(const Sphere& sphere, unique_ptr<FollowCamera>& camera)
+bool OBJ::IntersectSphere(const Sphere& sphere)
 {
 
-	if (m_Mesh.pIndexBuffer == nullptr) return false;
+	if (mesh.pIndexBuffer == nullptr) return false;
 	// 逆行列を計算
 	D3DXMATRIX d3dWorldLocal;
-	D3DXMatrixInverse(&d3dWorldLocal, nullptr, &worldmat);
+	D3DXMatrixInverse(&d3dWorldLocal, nullptr, &worldMatrix);
 	Matrix WorldLocal = shadermanager.D3DXMATRIXToMatrix(d3dWorldLocal);
 
 	// ヒットフラグを初期化
@@ -1062,7 +1005,7 @@ bool OBJ::IntersectSphere(const Sphere& sphere, unique_ptr<FollowCamera>& camera
 	// 半径をワールドをワールド座標系からモデル座標系に変換
 	localsphere.Radius = sphere.Radius / scale;
 	// 三角形の数
-	int nTri = m_Mesh.dwNumFace;
+	int nTri = mesh.dwNumFace;
 	// 全ての三角形について
 	for (int i = 0; i < nTri; i++)
 	{
@@ -1086,7 +1029,7 @@ bool OBJ::IntersectSphere(const Sphere& sphere, unique_ptr<FollowCamera>& camera
 
 			//塗られるオブジェクトのワールド座標をかける
 			//PerspectiveCollect(透視投影を考慮したUV補間)
-			Matrix mvp = shadermanager.D3DXMATRIXToMatrix(worldmat) * camera->GetView()* camera->GetProjection();
+			Matrix mvp = shadermanager.D3DXMATRIXToMatrix(worldMatrix) * camera->GetView()* camera->GetProjection();
 			//各点をProjectionSpaceへの変換
 			Vector4 p1_p = MatrixTimes(mvp, Vector4(p1.x, p1.y, p1.z, 1));
 			Vector4 p2_p = MatrixTimes(mvp, Vector4(p2.x, p2.y, p1.z, 1));
@@ -1121,7 +1064,7 @@ bool OBJ::IntersectSphere(const Sphere& sphere, unique_ptr<FollowCamera>& camera
 	return hit;
 }
 
-void OBJ::MouseRay(unique_ptr<FollowCamera>& camera, unique_ptr<Player>&  player)
+void OBJ::MouseRay( unique_ptr<Player>&  player)
 {
 	MouseUtil* mouse = MouseUtil::GetInstance();
 	if (mouse->IsTriggered(MouseUtil::Button::Left))
@@ -1131,12 +1074,12 @@ void OBJ::MouseRay(unique_ptr<FollowCamera>& camera, unique_ptr<Player>&  player
 		int y = mouse->GetPos().y;
 		Matrix view = camera->GetView();
 		Matrix proj = camera->GetProjection();
-		CalcScreenToXZ(&pos, x, y, 800, 600, &view, &proj);
+		CalcScreenToXZ(&pos, x, y, Devices::Get().Width(), Devices::Get().Height(), &view, &proj);
 		Segment segment;
 		segment.End = camera->GetEyePos();
 		segment.Start = pos;
 		line->SetVertex(shadermanager.VectorToD3DXVECTOR3(segment.End), shadermanager.VectorToD3DXVECTOR3(segment.Start));
-		IntersectSegment(segment, camera);
+		IntersectSegment(segment);
 	}
 	mouse = nullptr;
 }
@@ -1215,7 +1158,7 @@ Vector3* OBJ::CalcScreenToWorld(
 	XMMATRIX XMview = XMLoadFloat4x4(View);
 	InvView = XMMatrixInverse(nullptr, XMview);
 
-	//D3DXMatrixInverse(&InvPrj, NULL, Prj);
+	//D3DXMatrixInverse(&InvPrj, nullptr, Prj);
 	//	↑の代わり
 	XMMATRIX XMprj = XMLoadFloat4x4(Prj);
 	InvPrj = XMMatrixInverse(nullptr, XMprj);
@@ -1226,7 +1169,7 @@ Vector3* OBJ::CalcScreenToWorld(
 
 	VP._11 = Screen_w / 2.0f; VP._22 = -Screen_h / 2.0f;
 	VP._41 = Screen_w / 2.0f; VP._42 = Screen_h / 2.0f;
-	//D3DXMatrixInverse(&InvViewport, NULL, &VP);
+	//D3DXMatrixInverse(&InvViewport, nullptr, &VP);
 	XMMATRIX XMvp = XMLoadFloat4x4(&VP);
 	InvViewport = XMMatrixInverse(nullptr, XMvp);
 

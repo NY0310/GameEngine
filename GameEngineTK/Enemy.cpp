@@ -32,136 +32,136 @@ Enemy::~Enemy()
 void Enemy::Initialize()
 {
 
-	auto& devices = Devices::Get();
+	//auto& devices = Devices::Get();
 
 
-	//	自機パーツの読み込み
-	m_Obj.resize(PARTS_NUM);
-	Load();
-	m_Obj[PARTS_BODY].LoadModel(L"Resources\\Body2.cmo");
-	m_Obj[PARTS_BREAST].LoadModel(L"Resources\\Body.cmo");
+	////	自機パーツの読み込み
+	//m_Obj.resize(PARTS_NUM);
+	//Load();
+	//m_Obj[PARTS_BODY].LoadModel(L"Resources\\Body2.cmo");
+	//m_Obj[PARTS_BREAST].LoadModel(L"Resources\\Body.cmo");
 
-	m_Obj[PARTS_FING_L].LoadModel(L"Resources\\Fing.cmo");
-	m_Obj[PARTS_FING_R].LoadModel(L"Resources\\Fing.cmo");
+	//m_Obj[PARTS_FING_L].LoadModel(L"Resources\\Fing.cmo");
+	//m_Obj[PARTS_FING_R].LoadModel(L"Resources\\Fing.cmo");
 
-	for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
-	{
-		m_Obj[i].LoadModel(L"Resources\\head.cmo");
-	}
-
-
-	m_Obj[PARTS_LEG_L].LoadModel(L"Resources\\Leg.cmo");
-	m_Obj[PARTS_LEG_R].LoadModel(L"Resources\\Leg.cmo");
-
-
-
-
-	//	親子関係の構築(子パーツに親を設定)
-	m_Obj[PARTS_FING_L].SetObjParent(&m_Obj[PARTS_BREAST]);
-	m_Obj[PARTS_FING_R].SetObjParent(&m_Obj[PARTS_BREAST]);
-	m_Obj[PARTS_BODY].SetObjParent(&m_Obj[PARTS_BREAST]);
-	m_Obj[PARTS_LEG_L].SetObjParent(&m_Obj[PARTS_BODY]);
-	m_Obj[PARTS_LEG_R].SetObjParent(&m_Obj[PARTS_BODY]);
-
-
-	for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
-	{
-		m_Obj[i].SetObjParent(&m_Obj[PARTS_BREAST]);
-	}
-
-
-
-
-
-	m_Obj[PARTS_BREAST].SetTrans(Vector3(10.0f, 0.0f, 10.0f));
-
-	//	子パーツの親からのオフセット(座標のずれ)をセット
-	m_Obj[PARTS_BODY].SetTrans(Vector3(0, 0.5f, 0));
-	m_Obj[PARTS_LEG_L].SetTrans(Vector3(-0.5f, -1.7f, 0));
-	m_Obj[PARTS_LEG_R].SetTrans(Vector3(0.5f, -1.7f, 0.0));
-	m_Obj[PARTS_FING_L].SetTrans(Vector3(-0.5f, 1.0f, 0));
-	m_Obj[PARTS_FING_R].SetTrans(Vector3(0.5f, 1.0f, 0.0));
-
-	m_Obj[PARTS_LEG_L].SetRot(Vector3(-0.5f, 0, 0));
-	m_Obj[PARTS_LEG_R].SetRot(Vector3(-0.5f, 0, 0));
-
-	m_Obj[PARTS_FING_L].SetRot(Vector3(0, -0.5f, 0));
-	m_Obj[PARTS_FING_R].SetRot(Vector3(0, 0.5f, 0));
-
-
-	for (int i = 0; i < MAX_HEAD; i++)
-	{
-		Start_head_rotate[i] = 60 * i + 1;
-
-		m_Obj[PARTS_HEAD1 + i].ChangeOrder(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT);
-		m_Obj[PARTS_HEAD1 + i].SetTrans(Vector3(2.0f, 2.0f, 0));
-
-		m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(0, XMConvertToRadians(Start_head_rotate[i]), 0));
-	}
-
-
-	FingRotX = 0.0f;
-	head_rotate = 0;
-	FiringCnt = 0;
-	//flag = true;
-	//for (int i = 0; i < MAX_HEAD; i++)
+	//for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
 	//{
-	//	Flag[i] = false;
+	//	m_Obj[i].LoadModel(L"Resources\\head.cmo");
 	//}
 
-	m_time = 0;
 
-	head_reset = false;
-
-	head_rotate = 1.0;
-
-	//初期位置の設定
-	Vector3 pos;
-	/*pos.x = rand() % 10;
-	pos.z = rand() % 10;*/
-	//pos.x = 1;
-	//pos.z = 1;
-	//pos.y = 4;
-
-	//SetTrans(pos);
-
-	m_timer = 0;
-	m_DistAngle = 0;
-
-	m_cycle = 0;
+	//m_Obj[PARTS_LEG_L].LoadModel(L"Resources\\Leg.cmo");
+	//m_Obj[PARTS_LEG_R].LoadModel(L"Resources\\Leg.cmo");
 
 
 
 
+	////	親子関係の構築(子パーツに親を設定)
+	//m_Obj[PARTS_FING_L].SetObjParent(&m_Obj[PARTS_BREAST]);
+	//m_Obj[PARTS_FING_R].SetObjParent(&m_Obj[PARTS_BREAST]);
+	//m_Obj[PARTS_BODY].SetObjParent(&m_Obj[PARTS_BREAST]);
+	//m_Obj[PARTS_LEG_L].SetObjParent(&m_Obj[PARTS_BODY]);
+	//m_Obj[PARTS_LEG_R].SetObjParent(&m_Obj[PARTS_BODY]);
 
-	{// 全体用の当たり判定ノードの設定
-		m_CollisionNodeBody.Initialize();
-		// 親パーツを設定
-		m_CollisionNodeBody.SetParant(&m_Obj[0]);
-		m_CollisionNodeBody.SetTrans(Vector3(0, 2, 0));
-		m_CollisionNodeBody.SetLocalRadious(2.0f);
-	}
 
-	Microsoft::WRL::ComPtr<ID3D11Resource> resTexture;
-	// テクスチャのロード
-	CreateWICTextureFromFile(devices.Device().Get(), L"HP.png", resTexture.GetAddressOf(),
-		m_texture.ReleaseAndGetAddressOf());
+	//for (int i = PARTS_HEAD1; i <= PARTS_HEAD6; i++)
+	//{
+	//	m_Obj[i].SetObjParent(&m_Obj[PARTS_BREAST]);
+	//}
 
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-	resTexture.As(&texture);
 
-	// テクスチャの中心を割り出す
-	CD3D11_TEXTURE2D_DESC textureDesc;
-	texture->GetDesc(&textureDesc);
 
-	m_origin.x = float(textureDesc.Width / 2);
-	m_origin.y = float(textureDesc.Height / 2);
 
-	m_InScreen = false;
 
-	m_hp = MAX_HP;
+	//m_Obj[PARTS_BREAST].SetTrans(Vector3(10.0f, 0.0f, 10.0f));
 
-	MoveFlag = false;
+	////	子パーツの親からのオフセット(座標のずれ)をセット
+	//m_Obj[PARTS_BODY].SetTrans(Vector3(0, 0.5f, 0));
+	//m_Obj[PARTS_LEG_L].SetTrans(Vector3(-0.5f, -1.7f, 0));
+	//m_Obj[PARTS_LEG_R].SetTrans(Vector3(0.5f, -1.7f, 0.0));
+	//m_Obj[PARTS_FING_L].SetTrans(Vector3(-0.5f, 1.0f, 0));
+	//m_Obj[PARTS_FING_R].SetTrans(Vector3(0.5f, 1.0f, 0.0));
+
+	//m_Obj[PARTS_LEG_L].SetRot(Vector3(-0.5f, 0, 0));
+	//m_Obj[PARTS_LEG_R].SetRot(Vector3(-0.5f, 0, 0));
+
+	//m_Obj[PARTS_FING_L].SetRot(Vector3(0, -0.5f, 0));
+	//m_Obj[PARTS_FING_R].SetRot(Vector3(0, 0.5f, 0));
+
+
+	//for (int i = 0; i < MAX_HEAD; i++)
+	//{
+	//	Start_head_rotate[i] = 60 * i + 1;
+
+	//	m_Obj[PARTS_HEAD1 + i].ChangeOrder(WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT);
+	//	m_Obj[PARTS_HEAD1 + i].SetTrans(Vector3(2.0f, 2.0f, 0));
+
+	//	m_Obj[PARTS_HEAD1 + i].SetRot(Vector3(0, XMConvertToRadians(Start_head_rotate[i]), 0));
+	//}
+
+
+	//FingRotX = 0.0f;
+	//head_rotate = 0;
+	//FiringCnt = 0;
+	////flag = true;
+	////for (int i = 0; i < MAX_HEAD; i++)
+	////{
+	////	Flag[i] = false;
+	////}
+
+	//m_time = 0;
+
+	//head_reset = false;
+
+	//head_rotate = 1.0;
+
+	////初期位置の設定
+	//Vector3 pos;
+	///*pos.x = rand() % 10;
+	//pos.z = rand() % 10;*/
+	////pos.x = 1;
+	////pos.z = 1;
+	////pos.y = 4;
+
+	////SetTrans(pos);
+
+	//m_timer = 0;
+	//m_DistAngle = 0;
+
+	//m_cycle = 0;
+
+
+
+
+
+	//{// 全体用の当たり判定ノードの設定
+	//	m_CollisionNodeBody.Initialize();
+	//	// 親パーツを設定
+	//	m_CollisionNodeBody.SetParant(&m_Obj[0]);
+	//	m_CollisionNodeBody.SetTrans(Vector3(0, 2, 0));
+	//	m_CollisionNodeBody.SetLocalRadious(2.0f);
+	//}
+
+	//Microsoft::WRL::ComPtr<ID3D11Resource> resTexture;
+	//// テクスチャのロード
+	//CreateWICTextureFromFile(devices.Device().Get(), L"HP.png", resTexture.GetAddressOf(),
+	//	m_texture.ReleaseAndGetAddressOf());
+
+	//Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+	//resTexture.As(&texture);
+
+	//// テクスチャの中心を割り出す
+	//CD3D11_TEXTURE2D_DESC textureDesc;
+	//texture->GetDesc(&textureDesc);
+
+	//m_origin.x = float(textureDesc.Width / 2);
+	//m_origin.y = float(textureDesc.Height / 2);
+
+	//m_InScreen = false;
+
+	//m_hp = MAX_HP;
+
+	//MoveFlag = false;
 }
 
 
@@ -232,24 +232,24 @@ void Enemy::Load()
 		parent_names.push_back(parent_name);
 	}
 
-	//// 親子関係の組み立て
-	for (int i = 0; i < m_Obj.size(); i++)
-	{
-		// 親の指定あり
-		if (parent_names[i].length() > 0)
-		{
-			for (int j = 0; j < m_Obj.size(); j++)
-			{
-				if (j == i) continue;
+	////// 親子関係の組み立て
+	//for (int i = 0; i < m_Obj.size(); i++)
+	//{
+	//	// 親の指定あり
+	//	if (parent_names[i].length() > 0)
+	//	{
+	//		for (int j = 0; j < m_Obj.size(); j++)
+	//		{
+	//			if (j == i) continue;
 
-				// 指定の親発見
-				if (part_names[j] == parent_names[i])
-				{
-					m_Obj[i].SetObjParent(&m_Obj[j]);
-				}
-			}
-		}
-	}
+	//			// 指定の親発見
+	//			if (part_names[j] == parent_names[i])
+	//			{
+	//				m_Obj[i].SetObjParent(&m_Obj[j]);
+	//			}
+	//		}
+	//	}
+	//}
 
 
 }
@@ -515,17 +515,17 @@ void Enemy::Draw()
 	//}
 
 
-	// アイコン描画
-	if (m_InScreen)
-	{
-		float  a  = static_cast<float>( m_hp) /static_cast<float>( MAX_HP);
-		const RECT rect ={0, 0, 170 * a, 30};
-		devices.SpriteBatch()->Draw(m_texture.Get(), m_screenPos ,&rect, Colors::White,
-			0.0f, m_origin, Vector2(0.2f,0.2f), SpriteEffects_None, 0.0f);
-		//devices.SpriteBatch()->Draw(m_texture.Get(), m_screenPos, &rect, Colors::White,
-		//	0.0f, m_origin, Vector2(1,1), SpriteEffects_None, 0);
+	//// アイコン描画
+	//if (m_InScreen)
+	//{
+	//	float  a  = static_cast<float>( m_hp) /static_cast<float>( MAX_HP);
+	//	const RECT rect ={0, 0, 170 * a, 30};
+	//	devices.SpriteBatch()->Draw(m_texture.Get(), m_screenPos ,&rect, Colors::White,
+	//		0.0f, m_origin, Vector2(0.2f,0.2f), SpriteEffects_None, 0.0f);
+	//	//devices.SpriteBatch()->Draw(m_texture.Get(), m_screenPos, &rect, Colors::White,
+	//	//	0.0f, m_origin, Vector2(1,1), SpriteEffects_None, 0);
 
-	}
+	//}
 
 
 	for (vector<Bullet*>::iterator it = m_bullet.begin(); it != m_bullet.end(); it++)

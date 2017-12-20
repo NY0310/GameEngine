@@ -58,7 +58,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//	キーボードの生成
 	keyboard = std::make_unique<Keyboard>();
 	//	カメラの生成
-	m_Camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
+	m_Camera = std::make_unique<FollowCamera>();
 	//	カメラにキーボードをセット
 	m_Camera->SetKeyboard(keyboard.get());
 	//m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
@@ -115,18 +115,18 @@ void Game::Initialize(HWND window, int width, int height)
 	player = std::make_unique<Player>(keyboard.get());
 	player->Initialize();
 	//追従カメラにプレイヤーをセット
-	m_Camera->SetPlayer(player.get());
+	m_Camera->SetPlayer(player.get()); 
 
-	//敵の生成
-	int enemyNum = 5;
+	////敵の生成
+	//int enemyNum = 5;
 
-	m_Enemies.resize(enemyNum);
+	//m_Enemies.resize(enemyNum);
 
-	for (int i = 0; i < enemyNum; i++)
-	{
-		m_Enemies[i] = std::make_unique<Enemy>(keyboard.get());
-		//m_Enemies[i]->Initialize();
-	}
+	//for (int i = 0; i < enemyNum; i++)
+	//{
+	//	m_Enemies[i] = std::make_unique<Enemy>(keyboard.get());
+	//	//m_Enemies[i]->Initialize();
+	//}
 
 
 	clearcnt = 0;
@@ -136,15 +136,15 @@ void Game::Initialize(HWND window, int width, int height)
 
 	stage.Initialize();
 
-	tomanageparticle = new ToManageParticle();
-	tomanageparticle->Init();
+/*	tomanageparticle = new ToManageParticle();
+	tomanageparticle->Init()*/;
 
 	const int objnum = 5;
 	D3DXVECTOR3 position[objnum] = {
-		D3DXVECTOR3(0,3,0),
-		D3DXVECTOR3(1,2,0),
-		D3DXVECTOR3(0,1,1),
-		D3DXVECTOR3(2,2,2),
+		D3DXVECTOR3(0,-3,0),
+		D3DXVECTOR3(1,2,-1),
+		D3DXVECTOR3(0,1,-1),
+		D3DXVECTOR3(2,-2,-1),
 		D3DXVECTOR3(-2,1,0)
 
 	};
@@ -526,18 +526,18 @@ void Game::Update(DX::StepTimer const& timer)
 	//	(*it)->Update();
 	//}
 
-	//パーティクル更新処理
-	tomanageparticle->Update();
+	////パーティクル更新処理
+	//tomanageparticle->Update();
 
 
-	static  int cnt = 0;
-	cnt++;
-	if (cnt == 60)
-	{
+	//static  int cnt = 0;
+	//cnt++;
+	//if (cnt == 60)
+	//{
 
-		tomanageparticle->AddParticle(Vector3::Zero);
-		cnt = 0;
-	}
+	//	tomanageparticle->AddParticle(Vector3::Zero);
+	//	cnt = 0;
+	//}
 
 	//Segment player_segment;
 	//////自機のワールド座標
@@ -553,7 +553,7 @@ void Game::Update(DX::StepTimer const& timer)
 
 	for (auto& data : obj)
 	{
-		data->MouseRay(m_Camera, player);
+		data->MouseRay(player);
 	}
 }
 
@@ -574,7 +574,6 @@ void Game::Render()
 	D3D11_RASTERIZER_DESC rdc;
 	ZeroMemory(&rdc, sizeof(rdc));
 	rdc.CullMode = D3D11_CULL_NONE;
-	ID3D11RasterizerState* m_pRasterizerState;
 	devices.Context().Get()->RSSetState(m_states->CullNone());
 
 
@@ -585,7 +584,7 @@ void Game::Render()
 
 	//pSss->ZTexRender(m_Camera);
 	for (auto& data : obj)
-	data->InkRender(m_Camera);
+	data->InkRender();
 	//obj->ZTextureRender(m_Camera);
 	Clear();
 
@@ -663,7 +662,7 @@ void Game::Render()
 
 	for (auto& data : obj)
 
-	data->Render(m_Camera, D3DXVECTOR3(3, 1, 0));
+	data->Render(D3DXVECTOR3(3, 1, 0));
 
 
 

@@ -3,13 +3,20 @@
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-
+using namespace std;
 //	静的メンバ変数の初期化
 const float FollowCamera::CAMERA_DISTANCE = 5.0f;
+unique_ptr<FollowCamera> FollowCamera::camera ;
+
+FollowCamera* FollowCamera::GetInstance()
+{
+	if (!camera)
+		camera =  make_unique<FollowCamera>();
+	return camera.get();
+}
 
 //	コンストラクタ
-FollowCamera::FollowCamera(int width, int height)
-	:Camera(width, height)
+FollowCamera::FollowCamera()
 {
 	//	初期化処理
 	m_tarGetTrans = Vector3::Zero;

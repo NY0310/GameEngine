@@ -15,7 +15,7 @@ class Camera
 {
 public:
 	//	コンストラクタ
-	Camera(int width, int height);
+	Camera();
 	//	デストラクタ
 	virtual ~Camera();
 

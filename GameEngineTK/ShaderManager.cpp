@@ -21,7 +21,8 @@ HRESULT ShaderManager::MakeShader(LPSTR szFileName,LPSTR szFuncName,LPSTR szProf
 
 
 		ID3DBlob *pErrors = NULL;
-		if (FAILED(D3DX11CompileFromFileA(szFileName, NULL, NULL, szFuncName, szProfileName, D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION, 0, NULL, ppBlob, &pErrors, NULL)))
+		HRESULT res = D3DX11CompileFromFileA(szFileName, NULL, NULL, szFuncName, szProfileName, D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION, 0, NULL, ppBlob, &pErrors, NULL);
+		if (FAILED(res))
 		{
 			char*p = (char*)pErrors->GetBufferPointer();
 			MessageBoxA(0, p, 0, MB_OK);

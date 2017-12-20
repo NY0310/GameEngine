@@ -21,7 +21,7 @@ public:
 	~Line();
 	HRESULT InitD3D();
 	HRESULT InitModel();
-	void Render(std::unique_ptr<FollowCamera>& camera);
+	void Render();
 	void SetVertex(D3DXVECTOR3 pos, D3DXVECTOR3 po1);
 private:
 	ID3D11Device* device = Devices::Get().Device().Get();
@@ -33,6 +33,7 @@ private:
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11Buffer* m_pConstantBuffer;
 	ID3D11Buffer* m_pVertexBuffer;
+	FollowCamera* camera = FollowCamera::GetInstance();
 
 };
 

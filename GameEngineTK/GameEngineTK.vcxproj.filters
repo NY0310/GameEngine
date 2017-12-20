@@ -53,6 +53,9 @@
     <Filter Include="Input">
       <UniqueIdentifier>{e62c3388-0c6e-473f-b881-bfdfe52f3c64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Paint">
+      <UniqueIdentifier>{dbb51dd8-26bb-48e0-ad80-8e8f69d8cddf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -113,9 +116,6 @@
       <Filter>PARTICLE</Filter>
     </ClInclude>
     <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="OBJ.h">
-      <Filter>Mesh\OBJ</Filter>
-    </ClInclude>
     <ClInclude Include="CD3DXMESH.h">
       <Filter>Mesh\D3DX</Filter>
     </ClInclude>
@@ -142,6 +142,12 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Paint\OBJ.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\Ink.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -209,9 +215,6 @@
     <ClCompile Include="sss.cpp">
       <Filter>Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="OBJ.cpp">
-      <Filter>Mesh\OBJ</Filter>
-    </ClCompile>
     <ClCompile Include="ObjAbstract.cpp">
       <Filter>Mesh\OBJ</Filter>
     </ClCompile>
@@ -232,6 +235,12 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Paint\OBJ.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\Ink.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -294,9 +303,6 @@
     </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Geometry.hlsl">
-      <Filter>Effect\hlsl</Filter>
-    </FxCompile>
     <FxCompile Include="Shader.hlsl">
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
@@ -318,8 +324,11 @@
     <FxCompile Include="Line.hlsl">
       <Filter>Effect\hlsl</Filter>
     </FxCompile>
-    <FxCompile Include="Campus.hlsl">
-      <Filter>Effect\hlsl</Filter>
+    <FxCompile Include="Resources\HLSL\Campus.hlsl">
+      <Filter>Paint</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\OBJ.hlsl">
+      <Filter>Paint</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

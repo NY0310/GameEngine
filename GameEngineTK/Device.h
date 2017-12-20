@@ -64,19 +64,19 @@ public:
 		this->hWnd = hWnd;
 	}
 	// ウィンドウ幅を取得する Get width
-	int Width() {
+	UINT Width() {
 		return width;
 	}
 	// ウィンドウ幅を設定する Set width
-	void Width(int width) {
+	void Width(UINT width) {
 		this->width = width;
 	}
 	// ウィンドウ高を取得する Get height
-	int Height() {
+	UINT Height() {
 		return height;
 	}
 	// ウィンドウ高を設定する Set height
-	void Height(int height) {
+	void Height(UINT height) {
 		this->height = height;
 	}
 	// デバイスを取得する Get device object
@@ -159,8 +159,8 @@ public:
 private:
 	static std::unique_ptr<Devices> devices;
 	HWND hWnd;
-	int  width;
-	int  height;
+	UINT  width;
+	UINT  height;
 	ComPtr<ID3D11Device> device;
 	ComPtr<ID3D11Device1> device1;
 	ComPtr<ID3D11DeviceContext>	context;

@@ -111,7 +111,7 @@ void Player::Initialize()
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> resTexture;
 	// テクスチャのロード
-	CreateWICTextureFromFile(devices.Device().Get(), L"HP.png", resTexture.GetAddressOf(),
+	CreateWICTextureFromFile(devices.Device().Get(), L"Resources/PNG/HP.png", resTexture.GetAddressOf(),
 		m_texture.ReleaseAndGetAddressOf());
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
@@ -128,7 +128,7 @@ void Player::Initialize()
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> hitresTexture;
 	// テクスチャのロード
-	CreateWICTextureFromFile(devices.Device().Get(), L"homing.png", hitresTexture.GetAddressOf(),
+	CreateWICTextureFromFile(devices.Device().Get(), L"Resources/PNG/homing.png", hitresTexture.GetAddressOf(),
 		m_hittexture.ReleaseAndGetAddressOf());
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> hittexture;

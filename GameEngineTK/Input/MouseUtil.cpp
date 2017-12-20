@@ -8,6 +8,7 @@ using namespace MyLibrary;
 // static member variable
 std::unique_ptr<MouseUtil> MouseUtil::m_Instance;
 
+
 MouseUtil * MouseUtil::GetInstance()
 {
 	if (!m_Instance)

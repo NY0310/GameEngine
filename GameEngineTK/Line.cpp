@@ -13,7 +13,7 @@ Line::~Line()
 HRESULT Line::InitD3D()
 {
 	ID3DBlob *pCompiledShader = nullptr;
-	if (FAILED(shadermanager.MakeShader("Line.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Line.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader)))return E_FAIL;
 	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
@@ -25,7 +25,7 @@ HRESULT Line::InitD3D()
 	{
 		return FALSE;
 	}
-	if (FAILED(shadermanager.MakeShader("Line.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Line.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader)))return E_FAIL;
 
 	//コンスタントバッファー作成　ここでは変換行列渡し用
 	D3D11_BUFFER_DESC cb;
@@ -71,7 +71,7 @@ HRESULT Line::InitModel()
 	return S_OK;
 }
 
-void Line::Render(std::unique_ptr<FollowCamera>& camera)
+void Line::Render()
 {
 	//使用するシェーダーのセット
 	deviceContext->VSSetShader(m_pVertexShader, NULL, 0);

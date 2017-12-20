@@ -13,10 +13,14 @@
 class FollowCamera : public Camera
 {
 public:
+	static FollowCamera* GetInstance();
+
 	//	自機とカメラの距離
 	static const float CAMERA_DISTANCE;
 	//	コンストラクタ
-	FollowCamera(int width, int height);
+	FollowCamera();
+	FollowCamera& operator= (const FollowCamera&) = delete;
+	FollowCamera(const FollowCamera&) = delete;
 	//	更新
 	void Update() override;
 
@@ -32,6 +36,9 @@ public:
 	void SetKeyboard(DirectX::Keyboard* keyboard);
 	//プレイヤをセット
 	void SetPlayer(Player* player) { m_player = player; }
+private:
+	//自クラスインスタンス
+	static  std::unique_ptr<FollowCamera> camera;
 protected:
 	//	自機の座標
 	DirectX::SimpleMath::Vector3 m_tarGetTrans;

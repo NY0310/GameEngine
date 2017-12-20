@@ -39,7 +39,7 @@
 #include "ToManageParticle.h"
 #include "Stage.h"
 #include "HomingBullet.h"
-#include "OBJ.h"
+#include "Paint/OBJ.h"
 #include "CD3DXMESH.h"
 #include "sss.h"
 #include "BumpMapping.h"

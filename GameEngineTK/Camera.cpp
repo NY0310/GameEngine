@@ -6,7 +6,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 //	コンストラクタ
-Camera::Camera(int width, int height)
+Camera::Camera()
 {
 	//	メンバ変数の初期化
 	m_eyepos = Vector3(0, 0, 5);
@@ -14,7 +14,7 @@ Camera::Camera(int width, int height)
 	m_upvec = Vector3(0, 1, 0);
 
 	m_fovY = XMConvertToRadians(60.0f);
-	m_aspect = (float)width / height;
+	m_aspect = Devices::Get().Width() / Devices::Get().Height();
 	m_NearClip = 0.1f;
 	m_FarClip = 1000.0f;
 	m_zoom = 1.0f;
@@ -156,7 +156,6 @@ const Matrix& Camera::GetProjection()
 void Camera::SetEyePos(const Vector3& eyepos)
 {
 	m_eyepos = eyepos;
-	//m_eyepos = Vector3(0, 0, -5);
 }
 
 //	参照点のセット
