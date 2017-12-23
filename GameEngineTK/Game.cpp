@@ -141,10 +141,10 @@ void Game::Initialize(HWND window, int width, int height)
 
 	const int objnum = 5;
 	D3DXVECTOR3 position[objnum] = {
-		D3DXVECTOR3(0,-3,0),
-		D3DXVECTOR3(1,2,-1),
-		D3DXVECTOR3(0,1,-1),
-		D3DXVECTOR3(2,-2,-1),
+		D3DXVECTOR3(0,-3,-2),
+		D3DXVECTOR3(1,2,-2),
+		D3DXVECTOR3(0,1,-2),
+		D3DXVECTOR3(2,-2,-2),
 		D3DXVECTOR3(-2,1,0)
 
 	};
@@ -161,9 +161,9 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 	////D3DXMESHライブラリを使用するクラス生成
-	//m_pMesh = new CD3DXMESH;
+	m_pMesh = new CD3DXMESH;
 	////初期化
-	//m_pMesh->Init("RobotA_1motion_2truck.x");
+	m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
 
 
 	//pSss = new sss();
@@ -634,15 +634,15 @@ void Game::Render()
 
 
 
-	////キーボードの様態を取得
-	//Keyboard::State kb = keyboard->GetState();
-	////キーボードトラッカーの更新
-	//KeybordTracker.Update(kb);
+	//キーボードの様態を取得
+	Keyboard::State kb = keyboard->GetState();
+	//キーボードトラッカーの更新
+	KeybordTracker.Update(kb);
 
-	//if (kb.D)
-	//{
-	//	m_pMesh->ChangeAnimSet(1);
-	//}
+	if (kb.D)
+	{
+		m_pMesh->ChangeAnimSet(1);
+	}
 
 
 
@@ -656,9 +656,9 @@ void Game::Render()
 	//pDisplacementMapping->Render(m_Camera);
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
-	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
-	//m_pMesh->GetfYaw() += 0.0002;
-	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
+	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
+	m_pMesh->GetfYaw() += 0.0002;
+	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
 	for (auto& data : obj)
 

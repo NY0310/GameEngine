@@ -13,6 +13,7 @@
 #include "../Line.h"
 #include "../Input/MouseUtil.h"
 #include "../Geometry.h"
+#include "Ink.h"
 
 
 class Player;
@@ -25,12 +26,6 @@ public:
 	{
 		D3DXVECTOR3 Pos; //位置
 		D3DXVECTOR3 Normal;//法線
-		D3DXVECTOR2 Tex; //テクスチャー座標
-	};
-
-	struct CampusVertex
-	{
-		D3DXVECTOR3 Pos; //位置
 		D3DXVECTOR2 Tex; //テクスチャー座標
 	};
 
@@ -77,36 +72,21 @@ public:
 	};
 
 
-	struct InkData
-	{
-		D3DXVECTOR4 Color;
-		ALIGN16 D3DXVECTOR2 Uv;
-		ALIGN16 float Scale = 0.15f;
-		ID3D11Buffer* vertexBuffer;
-	};
 
-	struct InkDataBuffer
-	{
-		D3DXVECTOR4 Color;
-		ALIGN16 D3DXVECTOR2 Uv;
-		ALIGN16 float Scale = 0.15f;
-	};
 
 
 	OBJ();
 	~OBJ();
 	void Init();
 	HRESULT InitD3D();
-	void CreateInkVertexBuffer(InkData & inkdata);
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	void Render();
 	void InkRender();
-	void InkRender(InkData & uv);
 	void ZTextureRender();
 	void Render(D3DXVECTOR3 && worldPosition);
 
-	bool IntersectSegment(const Segment & segment);
+	bool IntersectSegment(const Segment & segment,D3DXVECTOR2& uv);
 	bool IntersectSphere(const Sphere & sphere);
 
 	void MouseRay(unique_ptr<Player>&  player);
@@ -120,9 +100,6 @@ public:
 
 	void SetPosition(const D3DXVECTOR3& position);
 //	const D3DXMATRIX& World() { return mW; }
-	private:
-		const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position) { return D3DXVECTOR3(position.x * 2 - 1, (position.y * 2 - 1) * -1, 0); }
-
 private:
 	/// <summary>
 	/// メッシュ
@@ -151,21 +128,7 @@ private:
 	ID3D11ShaderResourceView* depthMapTexSRV;//深度マップテクスチャーのSRV
 	ID3D11Texture2D* depthMapDSTex;//深度マップテクスチャー用DS
 	ID3D11DepthStencilView* depthMapDSTexDSV;//深度マップテクスチャー用DSのDSV	
-	ID3D11ShaderResourceView* inkTexture;//インクテクスチャ
 
-	/// <summary>
-	/// 全てのインクをレンダリングするキャンパス
-	/// </summary>
-	ID3D11InputLayout* inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
-	ID3D11Buffer* inkConstantBuffer;//インクテクスチャ用コンスタントバッファ
-	ID3D11Texture2D* inkTex;				//インクを塗るテクスチャ
-	ID3D11Texture2D* inkTexDS;				//インクを塗るテクスチャ
-	ID3D11RenderTargetView* inkTexRTV;//インクを塗るテクスチャTRV
-	ID3D11ShaderResourceView* inkTexSRV;   //インクを塗るテクスチャのSRV
-	ID3D11DepthStencilView* inkDSTexDSV;//深度マップテクスチャー用DSのDSV	
-	ID3D11VertexShader* inkVertexShader;//インクテクスチャ用バーテックスシェーダー
-	ID3D11PixelShader* inkPixelShader;//インクテクスチャ用ピクセルシェーダー
-	std::vector<InkData> inkData;//インクデータ配列
 
 
 	/// <summary>
@@ -176,7 +139,7 @@ private:
 	ShaderManager shadermanager;//シェーダー関連
 	Line* line;//線
 	FollowCamera* camera = FollowCamera::GetInstance();
-
+	std::unique_ptr<Campus>campus;
 
 	//ビューポートサイズ
 	const UINT DEPTHTEX_WIDTH = Devices::Get().Width() * 2;

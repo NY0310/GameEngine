@@ -27,10 +27,18 @@ OBJ::OBJ()
 
 	// メンバ変数初期化
 	world = D3DXVECTOR3(0, 0, 0);
+
+
+	campus = make_unique<Campus>();
 }
 
 void OBJ::SetPosition(const D3DXVECTOR3& position) {
 	world = position;
+}
+
+void OBJ::InkRender()
+{
+	campus->InkRender();
 }
 
 
@@ -46,6 +54,8 @@ void OBJ::Init()
 
 	m_vLight = D3DXVECTOR3(-1, 0, -1);
 	D3DXVec3Normalize(&m_vLight, &m_vLight);
+	campus->InitD3D();
+
 }
 
 HRESULT OBJ::InitD3D()
@@ -112,61 +122,6 @@ HRESULT OBJ::InitD3D()
 
 
 
-	//インク用テクスチャを作成
-	D3D11_TEXTURE2D_DESC inkdesc;
-	ZeroMemory(&inkdesc, sizeof(D3D11_TEXTURE2D_DESC));
-	inkdesc.Width = DEPTHTEX_WIDTH;
-	inkdesc.Height = DEPTHTEX_HEIGHT;
-	inkdesc.MipLevels = 1;
-	inkdesc.ArraySize = 1;
-	inkdesc.MiscFlags = 0;
-	inkdesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	inkdesc.SampleDesc.Count = 1;
-	inkdesc.SampleDesc.Quality = 0;
-	inkdesc.Usage = D3D11_USAGE_DEFAULT;
-	inkdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	inkdesc.CPUAccessFlags = 0;
-
-	device->CreateTexture2D(&inkdesc, nullptr, &inkTex);
-
-	//インクテクスチャー用　レンダーターゲットビュー作成
-	D3D11_RENDER_TARGET_VIEW_DESC inkDescRT;
-	inkDescRT.Format = inkdesc.Format;
-	inkDescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-	inkDescRT.Texture2D.MipSlice = 0;
-
-	device->CreateRenderTargetView(inkTex, &inkDescRT, &inkTexRTV);
-
-
-	//深度テクスチャ用　深度ステンシルビューテクスチャー作成
-	descDepth;
-	descDepth.Width = DEPTHTEX_WIDTH;
-	descDepth.Height = DEPTHTEX_HEIGHT;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	device->CreateTexture2D(&descDepth, nullptr, &inkTexDS);
-
-	////インク用テクスチャ　シェーダーリソースビュー作成（テクスチャー確認時用）	
-	D3D11_SHADER_RESOURCE_VIEW_DESC inkSRVDesc;
-	ZeroMemory(&inkSRVDesc, sizeof(inkSRVDesc));
-	inkSRVDesc.Format = inkdesc.Format;
-	inkSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	inkSRVDesc.Texture2D.MipLevels = 1;
-
-	device->CreateShaderResourceView(inkTex, &inkSRVDesc, &inkTexSRV);
-
-
-
-	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	device->CreateDepthStencilView(inkTexDS, nullptr, &inkDSTexDSV);
-
 
 
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
@@ -199,19 +154,6 @@ HRESULT OBJ::InitD3D()
 	SAFE_RELEASE(pCompiledShader);
 
 
-	//インクテクスチャ用バーテックスシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)&inkVertexShader, &pCompiledShader)))return E_FAIL;
-	//インクテクスチャ用頂点インプットレイアウトをセット
-	D3D11_INPUT_ELEMENT_DESC inkInputLayout[]
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	numElements = sizeof(inkInputLayout) / sizeof(inkInputLayout[0]);
-	//頂点インプットレイアウトを作成
-	if (FAILED(device->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &inkVertexLayout)))return E_FAIL;
-	//インクテクスチャ用ピクセルシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)&inkPixelShader, &pCompiledShader)))return E_FAIL;
 
 
 
@@ -239,18 +181,6 @@ HRESULT OBJ::InitD3D()
 	}
 
 
-	//インク用テクスチャ用コンスタントバッファ
-	D3D11_BUFFER_DESC Inkcb;
-	Inkcb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	Inkcb.ByteWidth = sizeof(InkData);
-	Inkcb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	Inkcb.MiscFlags = 0;
-	Inkcb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(device->CreateBuffer(&Inkcb, nullptr, &inkConstantBuffer)))
-	{
-		return E_FAIL;
-	}
-
 
 	D3D11_SAMPLER_DESC SamDesc;
 	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -272,11 +202,7 @@ HRESULT OBJ::InitD3D()
 		return E_FAIL;
 	}
 
-	//インクテクスチャを作成	
-	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, "Resources/PNG/pink1.png", nullptr, nullptr, &inkTexture, nullptr)))
-	{
-		return E_FAIL;
-	}
+
 
 
 
@@ -288,56 +214,6 @@ HRESULT OBJ::InitD3D()
 	//}
 
 	return S_OK;
-}
-
-
-void OBJ::CreateInkVertexBuffer(InkData& inkdata)
-{
-
-
-
-	//インクサイズを正規デバイス座標系にする
-	float uvSize = inkdata.Scale;
-	D3DXVECTOR2 Uv = inkdata.Uv;
-	//
-	//Square*  square = new Square(Geometry::VertexElement::Uv);
-	//D3DXVECTOR3 position[] = {
-	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),
-	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize, 0)),
-	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y - uvSize,0)),
-	//	ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)),
-	//};
-
-	//D3DXVECTOR2 tex[] = {
-	//	D3DXVECTOR2(0,0),
-	//	D3DXVECTOR2(1,1),
-	//	D3DXVECTOR2(1,1),
-	//	D3DXVECTOR2(1,0),
-	//};
-
-	CampusVertex vertex[] = {
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),D3DXVECTOR2(0,1) },
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize, 0)),	D3DXVECTOR2(0,0) },
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y - uvSize,0)),	D3DXVECTOR2(1,1) },
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)), 	D3DXVECTOR2(1,0) },
-	};
-
-
-
-	//上の頂点でバーテックスバッファー作成
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(CampusVertex) * 4;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = vertex;
-	ID3D11Buffer*  canvasVertexBuffer;
-	device->CreateBuffer(&bd, &InitData, &canvasVertexBuffer);
-	inkdata.vertexBuffer = canvasVertexBuffer;
-
 }
 
 
@@ -595,10 +471,10 @@ void OBJ::Render()
 		ObjScale = D3DXVECTOR3(10, 10, 10);
 		D3DXMatrixScaling(&World, ObjScale.x, ObjScale.y, ObjScale.z);
 
-		static float rotY = 0;
-		rotY += 0.001f;
+		static float rotY = 3.7f;
+		//rotY += 0.001f;
 		////ワールドトランスフォーム（絶対座標変換）
-		D3DXMatrixRotationY(&Rot, rotY);//単純にyaw回転させる
+		D3DXMatrixRotationZ(&Rot, rotY);//単純にyaw回転させる
 		World *= Rot;
 
 		localPosition = Vector3(2,2,2);
@@ -635,8 +511,9 @@ void OBJ::Render()
 	}
 	//テクスチャーをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &texture);
-	deviceContext->PSSetShaderResources(1, 1, &inkTexSRV);//全インクをレンダリングしたテクスチャ
+	deviceContext->PSSetShaderResources(0, 1, &texture); 
+	ID3D11ShaderResourceView* inktex = campus->inkTexSRV;
+	deviceContext->PSSetShaderResources(1, 1,&campus->inkTexSRV);//全インクをレンダリングしたテクスチャ
 	deviceContext->PSSetShaderResources(2, 1, &depthMapTexSRV);//ライトビューでの深度テクスチャ作成
 																			 //このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
@@ -660,92 +537,7 @@ void OBJ::Render()
 }
 
 
-void OBJ::InkRender()
-{
-	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
 
-	//////ビューポートの設定
-	D3D11_VIEWPORT vp;
-	vp.Width = DEPTHTEX_WIDTH;
-	vp.Height = DEPTHTEX_HEIGHT;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	deviceContext->RSSetViewports(1, &vp);
-	deviceContext->OMSetRenderTargets(1, &inkTexRTV, inkDSTexDSV);
-
-	float ClearColor[4] = { 0,0,1,1 };
-	deviceContext->ClearRenderTargetView(inkTexRTV, ClearColor);
-	deviceContext->ClearDepthStencilView(inkDSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
-
-																				  //このパスで使用するシェーダーの登録
-	deviceContext->VSSetShader(inkVertexShader, nullptr, 0);
-	deviceContext->PSSetShader(inkPixelShader, nullptr, 0);
-
-
-
-	//テクスチャーをシェーダーに渡す
-	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &inkTexture);
-
-	//このコンスタントバッファーを使うシェーダーの登録
-	deviceContext->VSSetConstantBuffers(0, 1, &inkConstantBuffer);
-	deviceContext->PSSetConstantBuffers(0, 1, &inkConstantBuffer);
-	//頂点インプットレイアウトをセット
-	deviceContext->IASetInputLayout(inkVertexLayout);
-	//プリミティブ・トポロジーをセット
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-
-
-	for (auto ink : inkData)
-	{
-
-		//インクの色を渡す
-		D3DXVECTOR4 color = Colors::Green;
-		//ink.Color = color;
-		this->InkRender(ink);
-	}
-
-
-
-
-}
-
-
-void OBJ::InkRender(InkData& ink)
-{
-	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
-
-
-
-
-
-	D3D11_MAPPED_SUBRESOURCE pData;
-	InkDataBuffer cb;
-	if (SUCCEEDED(deviceContext->Map(inkConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
-	{
-		//cb.Uv = ink.Uv;
-		D3DXVECTOR4 color = Colors::Blue;
-		cb.Color = ink.Color;
-		//cb.Scale = ink.Scale;
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(InkDataBuffer));
-		deviceContext->Unmap(inkConstantBuffer, 0);
-
-	}
-	//バーテックスバッファーをセット
-	UINT stride = sizeof(CampusVertex);
-	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &ink.vertexBuffer, &stride, &offset);
-
-	//プリミティブをレンダリング
-	deviceContext->Draw(4, 0);
-
-
-}
 
 
 void OBJ::ZTextureRender()
@@ -853,13 +645,11 @@ void OBJ::Render(D3DXVECTOR3&& worldPosition)
 // segment : 線分
 // （出力）inter : 交点（ポリゴンの平面上で、点との再接近点の座標を返す）
 //--------------------------------------------------------------------------------------
-bool OBJ::IntersectSegment(const Segment& segment)
+bool OBJ::IntersectSegment(const Segment& segment, D3DXVECTOR2& uv)
 {
 
 	if (mesh.pIndexBuffer == nullptr) return false;
 
-	// ヒットフラグを初期化
-	bool hit = false;
 	// 大きい数字で初期化
 	float distance = 1.0e5;
 	// 角度判定用に地面とみなす角度の限界値<度>
@@ -906,7 +696,6 @@ bool OBJ::IntersectSegment(const Segment& segment)
 		// 線分と三角形（ポリゴン）の交差判定
 		if (CheckSegment2Triangle(localSegment, triangle, &temp_inter))
 		{
-			//hit = true;
 			// 線分の始点と衝突点の距離を計算（めりこみ距離）
 			temp_distance = Vector3::Distance(localSegment.Start, temp_inter);
 			// めりこみ具合がここまでで最小なら
@@ -950,14 +739,8 @@ bool OBJ::IntersectSegment(const Segment& segment)
 				float u = s1 / s;
 				float v = s2 / s;
 				float w = 1 / ((1 - u - v) * 1 / p1_p.w + u * 1 / p2_p.w + v * 1 / p3_p.w);
-				Vector2 uv = w * ((1 - u - v) * uv1 / p1_p.w + u * uv2 / p2_p.w + v * uv3 / p3_p.w);
-
-				InkData inkdata;
-				inkdata.Uv = shadermanager.VectorToD3DXVECTOR2(uv);
-
-				CreateInkVertexBuffer(inkdata);
-
-				inkData.emplace_back(inkdata);
+				Vector2 _uv = w * ((1 - u - v) * uv1 / p1_p.w + u * uv2 / p2_p.w + v * uv3 / p3_p.w);
+				uv =  shadermanager.VectorToD3DXVECTOR2(_uv);
 				return true;
 			}
 		}
@@ -965,7 +748,7 @@ bool OBJ::IntersectSegment(const Segment& segment)
 
 
 
-	return hit;
+	return false;
 }
 
 
@@ -1054,7 +837,7 @@ bool OBJ::IntersectSphere(const Sphere& sphere)
 			float w = 1 / ((1 - u - v) * 1 / p1_p.w + u * 1 / p2_p.w + v * 1 / p3_p.w);
 			Vector2 uv = w * ((1 - u - v) * uv1 / p1_p.w + u * uv2 / p2_p.w + v * uv3 / p3_p.w);
 
-			InkData inkdata;
+		//	InkData inkdata;
 			//	inkdata.Uv = shadermanager.VectorToD3DXVECTOR2(uv);
 
 			//	inkData.emplace_back(inkdata);
@@ -1079,7 +862,10 @@ void OBJ::MouseRay( unique_ptr<Player>&  player)
 		segment.End = camera->GetEyePos();
 		segment.Start = pos;
 		line->SetVertex(shadermanager.VectorToD3DXVECTOR3(segment.End), shadermanager.VectorToD3DXVECTOR3(segment.Start));
-		IntersectSegment(segment);
+		D3DXVECTOR4 color = Colors::Green;
+		D3DXVECTOR2 uv;
+		if(IntersectSegment(segment, uv))
+		campus->CreateInk(color,uv,0.1f);
 	}
 	mouse = nullptr;
 }
@@ -1117,13 +903,6 @@ Vector3* OBJ::CalcScreenToXZ(
 
 	return pout;
 }
-
-
-
-
-
-
-
 
 
 

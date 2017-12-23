@@ -576,7 +576,7 @@ HRESULT CD3DXMESH::InitShader()
 	ID3D10Blob *pCompiledShader = NULL;
 	ID3D10Blob *pErrors = NULL;
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"D3DXMESH.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(L"Resources/HLSL/D3DXMESH.hlsl", NULL, NULL, "VS", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 		return E_FAIL;
@@ -605,7 +605,7 @@ HRESULT CD3DXMESH::InitShader()
 	//テクスチャーなしシェーダー
 	SAFE_RELEASE(pErrors);
 	SAFE_RELEASE(pCompiledShader);
-	if (FAILED(D3DX11CompileFromFile(L"D3DXMESH.hlsl", NULL, NULL, "VS_NoTex", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(L"Resources/HLSL/D3DXMESH.hlsl", NULL, NULL, "VS_NoTex", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 		return E_FAIL;
@@ -629,7 +629,7 @@ HRESULT CD3DXMESH::InitShader()
 		return FALSE;
 	}
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"D3DXMESH.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(L"Resources/HLSL/D3DXMESH.hlsl", NULL, NULL, "PS", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 		return E_FAIL;
@@ -644,7 +644,7 @@ HRESULT CD3DXMESH::InitShader()
 	SAFE_RELEASE(pCompiledShader);
 
 	//テクスチャーなし
-	if (FAILED(D3DX11CompileFromFile(L"D3DXMESH.hlsl", NULL, NULL, "PS_NoTex", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
+	if (FAILED(D3DX11CompileFromFile(L"Resources/HLSL/D3DXMESH.hlsl", NULL, NULL, "PS_NoTex", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
 	{
 		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
 		return E_FAIL;

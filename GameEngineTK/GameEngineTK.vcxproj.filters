@@ -44,9 +44,6 @@
     <Filter Include="Bunp">
       <UniqueIdentifier>{43741387-380b-4d6d-bdfe-808261f3c135}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Effect\hlsl">
-      <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tesselation">
       <UniqueIdentifier>{c6a4583f-d965-4868-b04d-e9babde8eb2b}</UniqueIdentifier>
     </Filter>
@@ -55,6 +52,9 @@
     </Filter>
     <Filter Include="Paint">
       <UniqueIdentifier>{dbb51dd8-26bb-48e0-ad80-8e8f69d8cddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +249,9 @@
     <Image Include="directx.ico">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="images.ico">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -304,31 +307,31 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader.hlsl">
-      <Filter>Effect\hlsl</Filter>
+      <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="D3DXMESH.hlsl">
-      <Filter>Effect\hlsl</Filter>
+      <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="sss.hlsl">
-      <Filter>Effect\hlsl</Filter>
+      <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="BumpMapping.hlsl">
-      <Filter>Effect\hlsl</Filter>
+      <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Tessellation.hlsl">
-      <Filter>Effect\hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementMapping.hlsl">
-      <Filter>Effect\hlsl</Filter>
+      <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Line.hlsl">
-      <Filter>Effect\hlsl</Filter>
+      <Filter>hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\Campus.hlsl">
       <Filter>Paint</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\OBJ.hlsl">
       <Filter>Paint</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\DisplacementMapping.hlsl">
+      <Filter>hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
