@@ -75,6 +75,16 @@ HRESULT Campus::InitD3D()
 	//インクテクスチャ用ピクセルシェーダー作成
 	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)&inkPixelShader, &pCompiledShader)))return E_FAIL;
 
+
+	//垂らすシェーダー
+	//バーテックスシェーダー
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)&DripVertexShader, &pCompiledShader)))return E_FAIL;
+	//ピクセルシェーダー
+	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)&DripPixelShader, &pCompiledShader)))return E_FAIL;
+
+
+
+
 	//インク用テクスチャ用コンスタントバッファ
 	D3D11_BUFFER_DESC Inkcb;
 	Inkcb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -101,8 +111,23 @@ HRESULT Campus::InitD3D()
 		return E_FAIL;
 	}
 
+	//テクスチャー作成
+	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, "Resources/HeightMap/BrushNormal.jpg", nullptr, nullptr, &inkNormalMap, nullptr)))
+	{
+		return E_FAIL;
+	}
+
+	SetViewPort();
+	ClearViewPort();
+	CreateVertexBuffer();
 	return S_OK;
 
+}
+
+void Campus::Render()
+{
+	InkRender();
+	DripRender();
 }
 
 
@@ -115,6 +140,31 @@ void Campus::CreateInk(D3DXVECTOR4& Color, D3DXVECTOR2& uv, float sclae)
 	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }
+
+//バーテックスバッファー作成
+void Campus::CreateVertexBuffer()
+{
+	//頂点を定義
+	CampusVertex vertices[] =
+	{
+		{D3DXVECTOR3(-1,-1,0),D3DXVECTOR2(0,1)},//頂点1	
+		{D3DXVECTOR3(-1, 1, 0), D3DXVECTOR2(0, 0)}, //頂点2
+		{D3DXVECTOR3(1, -1, 0), D3DXVECTOR2(1, 1)},  //頂点3
+		{D3DXVECTOR3(1, 1, 0), D3DXVECTOR2(1, 0)},//頂点4	
+	};
+	//上の頂点でバーテックスバッファー作成
+	D3D11_BUFFER_DESC bd;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(CampusVertex) * 4;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = vertices;
+	device->CreateBuffer(&bd, &InitData, &oldVertexBuffer);
+}
+
 
 ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 {
@@ -141,9 +191,38 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertex;
-	
+
+
+	ID3D11Buffer*  canvasVertexBuffer;
 	device->CreateBuffer(&bd, &InitData, &canvasVertexBuffer);
 	return canvasVertexBuffer;
+}
+
+
+
+
+void Campus::DripRender()
+{
+
+	//サンプラーとテクスチャをシェーダーに渡す
+	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
+	deviceContext->PSSetShaderResources(0, 1, &inkTexSRV);//インクのレクスチャ
+
+	//頂点インプットレイアウトをセット
+	deviceContext->IASetInputLayout(inkVertexLayout);
+	//プリミティブ・トポロジーをセット
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//バーテックスバッファーをセット
+	UINT stride = sizeof(CampusVertex);
+	UINT offset = 0;
+	deviceContext->IASetVertexBuffers(0, 1, &oldVertexBuffer, &stride, &offset);
+
+
+	//プリミティブをレンダリング
+	deviceContext->Draw(4, 0);
+
+
 }
 
 
@@ -154,31 +233,20 @@ void Campus::InkRender()
 	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
 	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
 
-	//////ビューポートの設定
-	D3D11_VIEWPORT vp;
-	vp.Width = Devices::Get().Width() * 2;
-	vp.Height = Devices::Get().Height() * 2;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	deviceContext->RSSetViewports(1, &vp);
-	deviceContext->OMSetRenderTargets(1, &inkTexRTV, inkDSTexDSV);
 
-	float ClearColor[4] = { 1,1,1,0 };
-	deviceContext->ClearRenderTargetView(inkTexRTV, ClearColor);
-	deviceContext->ClearDepthStencilView(inkDSTexDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
-
-																				  //このパスで使用するシェーダーの登録
 	deviceContext->VSSetShader(inkVertexShader, nullptr, 0);
 	deviceContext->PSSetShader(inkPixelShader, nullptr, 0);
 
+	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
+	deviceContext->PSSetShaderResources(0, 1, &inkTexture);//インクのレクスチャ
+	deviceContext->PSSetShaderResources(1, 1, &inkTexSRV);//インクのレクスチャ
+	deviceContext->PSSetShaderResources(2, 1, &inkNormalMap);//インクのノーマルマップ	
 
+	SetViewPort();
 
 	//テクスチャーをシェーダーに渡す
-	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &inkTexture);
 
+	//このパスで使用するシェーダーの登録
 	//このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, &inkConstantBuffer);
 	deviceContext->PSSetConstantBuffers(0, 1, &inkConstantBuffer);
@@ -194,9 +262,11 @@ void Campus::InkRender()
 
 		//インクの色を渡す
 		D3DXVECTOR4 color = Colors::Green;
-		//ink.Color = color;
 		this->InkRender(ink);
 	}
+
+	//インクデータを初期化
+	inkData.clear();
 }
 
 
@@ -207,30 +277,54 @@ void Campus::InkRender(InkData& ink)
 	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
 
 
-
-
-
 	D3D11_MAPPED_SUBRESOURCE pData;
-	InkDataBuffer cb;
+	InkData cb;
 	if (SUCCEEDED(deviceContext->Map(inkConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		//cb.Uv = ink.Uv;
+		cb.Uv = ChangeRegularDevice(ink.Uv);
 		D3DXVECTOR4 color = Colors::Blue;
 		cb.Color = ink.Color;
-		//cb.Scale = ink.Scale;
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(InkDataBuffer));
+		cb.Scale = ink.Scale;
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(InkData));
 		deviceContext->Unmap(inkConstantBuffer, 0);
 
 	}
+
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(CampusVertex);
 	UINT offset = 0;
 	deviceContext->IASetVertexBuffers(0, 1, &ink.vertexBuffer, &stride, &offset);
 
-	//プリミティブをレンダリング
-	deviceContext->Draw(4, 0);
 
+	deviceContext->Draw(4, 0);
 
 }
 
 
+/// <summary>
+/// ビューポート設定	
+/// </summary>
+void Campus::SetViewPort()
+{
+
+	//////ビューポートの設定
+	D3D11_VIEWPORT vp;
+	vp.Width = Devices::Get().Width() * 2;
+	vp.Height = Devices::Get().Height() * 2;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	deviceContext->RSSetViewports(1, &vp);
+	deviceContext->OMSetRenderTargets(1, &inkTexRTV, inkDSTexDSV);
+}
+
+
+/// <summary>
+/// レンダーターゲットをクリア
+/// </summary>
+void Campus::ClearViewPort()
+{
+	float ClearColor[4] = { 1,1,1,0 };
+	deviceContext->ClearRenderTargetView(inkTexRTV, ClearColor);
+}

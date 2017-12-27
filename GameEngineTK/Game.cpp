@@ -141,10 +141,10 @@ void Game::Initialize(HWND window, int width, int height)
 
 	const int objnum = 5;
 	D3DXVECTOR3 position[objnum] = {
-		D3DXVECTOR3(0,-3,-2),
+		D3DXVECTOR3(0,2,-2),
 		D3DXVECTOR3(1,2,-2),
 		D3DXVECTOR3(0,1,-2),
-		D3DXVECTOR3(2,-2,-2),
+		D3DXVECTOR3(2,3,-2),
 		D3DXVECTOR3(-2,1,0)
 
 	};
@@ -587,7 +587,6 @@ void Game::Render()
 	data->InkRender();
 	//obj->ZTextureRender(m_Camera);
 	Clear();
-
 	//pBumpMapping->Render(m_Camera);
 
 
@@ -667,6 +666,7 @@ void Game::Render()
 
 
 	Present();
+
 }
 //
 //// Helper method to clear the back buffers.

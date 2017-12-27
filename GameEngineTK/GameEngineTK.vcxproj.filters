@@ -315,9 +315,6 @@
     <FxCompile Include="sss.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
-    <FxCompile Include="BumpMapping.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
     <FxCompile Include="Tessellation.hlsl">
       <Filter>hlsl</Filter>
     </FxCompile>
@@ -332,6 +329,12 @@
     </FxCompile>
     <FxCompile Include="Resources\HLSL\DisplacementMapping.hlsl">
       <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\BumpMapping.hlsl">
+      <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Drip.hlsl">
+      <Filter>Paint</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace MyLibrary;
 
-
+#include <vector>
 
 OBJ::OBJ()
 {
@@ -38,7 +38,7 @@ void OBJ::SetPosition(const D3DXVECTOR3& position) {
 
 void OBJ::InkRender()
 {
-	campus->InkRender();
+	campus->Render();
 }
 
 
@@ -201,7 +201,6 @@ HRESULT OBJ::InitD3D()
 	{
 		return E_FAIL;
 	}
-
 
 
 
@@ -512,8 +511,8 @@ void OBJ::Render()
 	//テクスチャーをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
 	deviceContext->PSSetShaderResources(0, 1, &texture); 
-	ID3D11ShaderResourceView* inktex = campus->inkTexSRV;
-	deviceContext->PSSetShaderResources(1, 1,&campus->inkTexSRV);//全インクをレンダリングしたテクスチャ
+	deviceContext->PSSetShaderResources(1, 1,&campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
+	//deviceContext->PSSetShaderResources(2, 1, &campus->GetInkNormalMap());
 	deviceContext->PSSetShaderResources(2, 1, &depthMapTexSRV);//ライトビューでの深度テクスチャ作成
 																			 //このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
@@ -621,6 +620,8 @@ void OBJ::ZTextureRender()
 	deviceContext->DrawIndexed(mesh.dwNumFace * 3, 0, 0);
 
 
+
+	
 
 }
 
