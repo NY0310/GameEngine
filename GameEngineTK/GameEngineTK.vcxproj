@@ -179,6 +179,7 @@
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="HomingBullet.h" />
     <ClInclude Include="Input\KeyboardUtil.h" />
+    <ClInclude Include="Input\MouseRay.h" />
     <ClInclude Include="Input\MouseUtil.h" />
     <ClInclude Include="LandShape.h" />
     <ClInclude Include="LandShapeData.h" />
@@ -186,9 +187,10 @@
     <ClInclude Include="ModelEffect.h" />
     <ClInclude Include="ModelExpansionEffect.h" />
     <ClInclude Include="Obj3d.h" />
-    <ClInclude Include="ObjAbstract.h" />
     <ClInclude Include="Paint\Ink.h" />
     <ClInclude Include="Paint\OBJ.h" />
+    <ClInclude Include="Paint\OBJAbstract.h" />
+    <ClInclude Include="Paint\PaintCollision.h" />
     <ClInclude Include="PARTICLE.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
@@ -215,6 +217,7 @@
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="HomingBullet.cpp" />
     <ClCompile Include="Input\KeyboardUtil.cpp" />
+    <ClCompile Include="Input\MouseRay.cpp" />
     <ClCompile Include="Input\MouseUtil.cpp" />
     <ClCompile Include="LandShape.cpp" />
     <ClCompile Include="LandShapeData.cpp" />
@@ -223,9 +226,10 @@
     <ClCompile Include="ModelEffect.cpp" />
     <ClCompile Include="ModelExpansionEffect.cpp" />
     <ClCompile Include="Obj3d.cpp" />
-    <ClCompile Include="ObjAbstract.cpp" />
     <ClCompile Include="Paint\Ink.cpp" />
     <ClCompile Include="Paint\OBJ.cpp" />
+    <ClCompile Include="Paint\OBJAbstract.cpp" />
+    <ClCompile Include="Paint\PaintCollision.cpp" />
     <ClCompile Include="PARTICLE.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderManager.cpp" />

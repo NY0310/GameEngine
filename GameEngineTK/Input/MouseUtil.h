@@ -4,8 +4,6 @@
 #include <Mouse.h>
 #include <DirectXMath.h>
 
-namespace MyLibrary
-{
 	// マウスユーティリティクラス
 	class MouseUtil
 	{
@@ -67,4 +65,3 @@ namespace MyLibrary
 		// ボタントリガー状態
 		DirectX::Mouse::ButtonStateTracker::ButtonState* m_ButtonTrackerStates[Button::Num];
 	};
-}

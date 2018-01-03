@@ -15,7 +15,6 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace std;
 using Microsoft::WRL::ComPtr;
-using namespace MyLibrary;
 
 
 
@@ -58,7 +57,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//	キーボードの生成
 	keyboard = std::make_unique<Keyboard>();
 	//	カメラの生成
-	m_Camera = std::make_unique<FollowCamera>();
+	m_Camera = FollowCamera::GetInstance();
 	//	カメラにキーボードをセット
 	m_Camera->SetKeyboard(keyboard.get());
 	//m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
@@ -66,7 +65,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	{//OBj3dのシステム初期化
 		Obj3d::CommonDef def;
-		def.pCamera = m_Camera.get();
+		def.pCamera = m_Camera;
 		def.pDevice = devices.Device().Get();
 		def.pDeviceContext = devices.Context().Get();
 		//	3Dオブジェクトの静的メンバ変数を初期化
@@ -78,7 +77,7 @@ void Game::Initialize(HWND window, int width, int height)
 	LandShapeCommonDef lscDef;
 	lscDef.pDevice = devices.Device().Get();
 	lscDef.pDeviceContext = devices.Context().Get();
-	lscDef.pCamera = m_Camera.get();
+	lscDef.pCamera = m_Camera;
 	//土地のあたり判定共通初期化
 	LandShape::InitializeCommon(lscDef);
 
@@ -139,13 +138,13 @@ void Game::Initialize(HWND window, int width, int height)
 /*	tomanageparticle = new ToManageParticle();
 	tomanageparticle->Init()*/;
 
-	const int objnum = 5;
+	const int objnum = 1;
 	D3DXVECTOR3 position[objnum] = {
 		D3DXVECTOR3(0,2,-2),
-		D3DXVECTOR3(1,2,-2),
+	/*	D3DXVECTOR3(1,2,-2),
 		D3DXVECTOR3(0,1,-2),
 		D3DXVECTOR3(2,3,-2),
-		D3DXVECTOR3(-2,1,0)
+		D3DXVECTOR3(-2,1,0)*/
 
 	};
 	obj.resize(objnum);
@@ -154,6 +153,8 @@ void Game::Initialize(HWND window, int width, int height)
 	{
 		data = new OBJ();
 		data->Init();
+		data->LoadOBJFile("Resources/OBJ/Panel.obj");
+		data->LoadTextuerFile("Resources/PNG/GoalPanel.png");
 		data->SetPosition(position[cnt]);
 		cnt++;
 	}
@@ -164,7 +165,6 @@ void Game::Initialize(HWND window, int width, int height)
 	m_pMesh = new CD3DXMESH;
 	////初期化
 	m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
-
 
 	//pSss = new sss();
 	//pSss->InitD3D();
@@ -551,10 +551,13 @@ void Game::Update(DX::StepTimer const& timer)
 	//sphere.Radius = 1.0f;
 	//obj->IntersectSphere(sphere, m_Camera);
 
+	//for (auto& data : obj)
+	//{
+	//	data->MouseRay();
+	//}
+
 	for (auto& data : obj)
-	{
-		data->MouseRay(player);
-	}
+		data->UpDate();
 }
 
 // Draws the scene.
@@ -621,7 +624,7 @@ void Game::Render()
 	//}
 
 
-	//player->Draw();
+	player->Draw();
 
 	//if (clearcnt == CLEARNUM)
 	//{
@@ -655,13 +658,12 @@ void Game::Render()
 	//pDisplacementMapping->Render(m_Camera);
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
-	m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
-	m_pMesh->GetfYaw() += 0.0002;
-	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
+	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
+	//m_pMesh->GetfYaw() += 0.0002;
+	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
 	for (auto& data : obj)
-
-	data->Render(D3DXVECTOR3(3, 1, 0));
+	data->Render();
 
 
 

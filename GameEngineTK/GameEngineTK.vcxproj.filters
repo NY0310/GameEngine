@@ -122,9 +122,6 @@
     <ClInclude Include="sss.h">
       <Filter>Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="ObjAbstract.h">
-      <Filter>Mesh\OBJ</Filter>
-    </ClInclude>
     <ClInclude Include="BumpMapping.h">
       <Filter>Bunp</Filter>
     </ClInclude>
@@ -147,6 +144,15 @@
     </ClInclude>
     <ClInclude Include="Paint\Ink.h">
       <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\OBJAbstract.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\PaintCollision.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\MouseRay.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +221,6 @@
     <ClCompile Include="sss.cpp">
       <Filter>Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="ObjAbstract.cpp">
-      <Filter>Mesh\OBJ</Filter>
-    </ClCompile>
     <ClCompile Include="BumpMapping.cpp">
       <Filter>Bunp</Filter>
     </ClCompile>
@@ -240,6 +243,15 @@
     </ClCompile>
     <ClCompile Include="Paint\Ink.cpp">
       <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\OBJAbstract.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\PaintCollision.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\MouseRay.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

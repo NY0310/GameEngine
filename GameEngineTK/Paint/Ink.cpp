@@ -31,21 +31,6 @@ HRESULT Campus::InitD3D()
 	device->CreateRenderTargetView(inkTex, &inkDescRT, &inkTexRTV);
 
 
-	//深度テクスチャ用　深度ステンシルビューテクスチャー作成
-	D3D11_TEXTURE2D_DESC descDepth;
-	descDepth.Width = Devices::Get().Width() * 2;
-	descDepth.Height = Devices::Get().Height() * 2;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	device->CreateTexture2D(&descDepth, nullptr, &inkTexDS);
-
 	////インク用テクスチャ　シェーダーリソースビュー作成（テクスチャー確認時用）	
 	D3D11_SHADER_RESOURCE_VIEW_DESC inkSRVDesc;
 	ZeroMemory(&inkSRVDesc, sizeof(inkSRVDesc));
@@ -57,8 +42,45 @@ HRESULT Campus::InitD3D()
 
 
 
-	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	device->CreateDepthStencilView(inkTexDS, nullptr, &inkDSTexDSV);
+
+	//インク用テクスチャを作成
+	inkdesc;
+	ZeroMemory(&inkdesc, sizeof(D3D11_TEXTURE2D_DESC));
+	inkdesc.Width = Devices::Get().Width() * 2;
+	inkdesc.Height = Devices::Get().Height() * 2;
+	inkdesc.MipLevels = 1;
+	inkdesc.ArraySize = 1;
+	inkdesc.MiscFlags = 0;
+	inkdesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	inkdesc.SampleDesc.Count = 1;
+	inkdesc.SampleDesc.Quality = 0;
+	inkdesc.Usage = D3D11_USAGE_DEFAULT;
+	inkdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	inkdesc.CPUAccessFlags = 0;
+
+	device->CreateTexture2D(&inkdesc, nullptr, &inkTex2);
+
+	//インクテクスチャー用　レンダーターゲットビュー作成
+	inkDescRT;
+	inkDescRT.Format = inkdesc.Format;
+	inkDescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	inkDescRT.Texture2D.MipSlice = 0;
+
+	device->CreateRenderTargetView(inkTex2, &inkDescRT, &inkTexRTV2);
+
+
+	////インク用テクスチャ　シェーダーリソースビュー作成（テクスチャー確認時用）	
+	inkSRVDesc;
+	ZeroMemory(&inkSRVDesc, sizeof(inkSRVDesc));
+	inkSRVDesc.Format = inkdesc.Format;
+	inkSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	inkSRVDesc.Texture2D.MipLevels = 1;
+
+	device->CreateShaderResourceView(inkTex2, &inkSRVDesc, &inkTexSRV2);
+
+
+
+
 
 	ID3DBlob *pCompiledShader = nullptr;
 	//インクテクスチャ用バーテックスシェーダー作成
@@ -117,18 +139,15 @@ HRESULT Campus::InitD3D()
 		return E_FAIL;
 	}
 
-	SetViewPort();
-	ClearViewPort();
+	SetViewPort(inkTexRTV);
+	ClearViewPort(inkTexRTV);
+	ClearViewPort(inkTexRTV2);
 	CreateVertexBuffer();
 	return S_OK;
 
 }
 
-void Campus::Render()
-{
-	InkRender();
-	DripRender();
-}
+
 
 
 void Campus::CreateInk(D3DXVECTOR4& Color, D3DXVECTOR2& uv, float sclae)
@@ -137,7 +156,7 @@ void Campus::CreateInk(D3DXVECTOR4& Color, D3DXVECTOR2& uv, float sclae)
 	inkdata.Color = Color;
 	inkdata.Uv = uv;
 	inkdata.Scale  = 0.1f;
-	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
+	//inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }
 
@@ -199,14 +218,25 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 }
 
 
-
+void Campus::Render()
+{
+	ClearViewPort(inkTexRTV);
+	SetViewPort(inkTexRTV);
+	InkRender();
+	/*ClearViewPort(inkTexRTV);
+	SetViewPort(inkTexRTV);
+	DripRender();*/
+}
 
 void Campus::DripRender()
 {
+	deviceContext->VSSetShader(DripVertexShader, nullptr, 0);
+	deviceContext->PSSetShader(DripPixelShader, nullptr, 0);
+
 
 	//サンプラーとテクスチャをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &inkTexSRV);//インクのレクスチャ
+	deviceContext->PSSetShaderResources(0, 1, &inkTexSRV2);//インクのレクスチャ
 
 	//頂点インプットレイアウトをセット
 	deviceContext->IASetInputLayout(inkVertexLayout);
@@ -242,10 +272,7 @@ void Campus::InkRender()
 	deviceContext->PSSetShaderResources(1, 1, &inkTexSRV);//インクのレクスチャ
 	deviceContext->PSSetShaderResources(2, 1, &inkNormalMap);//インクのノーマルマップ	
 
-	SetViewPort();
-
 	//テクスチャーをシェーダーに渡す
-
 	//このパスで使用するシェーダーの登録
 	//このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, &inkConstantBuffer);
@@ -293,7 +320,7 @@ void Campus::InkRender(InkData& ink)
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(CampusVertex);
 	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &ink.vertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, &oldVertexBuffer, &stride, &offset);
 
 
 	deviceContext->Draw(4, 0);
@@ -304,7 +331,7 @@ void Campus::InkRender(InkData& ink)
 /// <summary>
 /// ビューポート設定	
 /// </summary>
-void Campus::SetViewPort()
+void Campus::SetViewPort(ID3D11RenderTargetView* rtv)
 {
 
 	//////ビューポートの設定
@@ -316,15 +343,15 @@ void Campus::SetViewPort()
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	deviceContext->RSSetViewports(1, &vp);
-	deviceContext->OMSetRenderTargets(1, &inkTexRTV, inkDSTexDSV);
+	deviceContext->OMSetRenderTargets(1, &rtv, nullptr);
 }
 
 
 /// <summary>
 /// レンダーターゲットをクリア
 /// </summary>
-void Campus::ClearViewPort()
+void Campus::ClearViewPort(ID3D11RenderTargetView* rtv)
 {
 	float ClearColor[4] = { 1,1,1,0 };
-	deviceContext->ClearRenderTargetView(inkTexRTV, ClearColor);
+	deviceContext->ClearRenderTargetView(rtv, ClearColor);
 }

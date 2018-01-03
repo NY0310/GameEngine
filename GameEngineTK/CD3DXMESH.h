@@ -138,12 +138,6 @@ public:
 
 
 
-	
-
-
-
-
-
 public:
 	CD3DXMESH();
 	~CD3DXMESH();

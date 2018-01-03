@@ -144,6 +144,24 @@ Matrix ShaderManager::D3DXMATRIXToMatrix(D3DXMATRIX d3dxmatrix)
 	return matrix;
 }
 
+D3DXQUATERNION ShaderManager::QuaterniontoD3DXQUATERNION(Quaternion quaternion)
+{
+	D3DXQUATERNION q;
+	q.x = quaternion.x;
+	q.y = quaternion.y;
+	q.z = quaternion.z;
+	return q;
+}
+
+Quaternion ShaderManager::D3DXQUATERNIONtoQuaternion(D3DXQUATERNION d3dxquaternion)
+{
+	Quaternion q;
+	q.x = d3dxquaternion.x;
+	q.y = d3dxquaternion.y;
+	q.z = d3dxquaternion.z;
+	return q;
+}
+
 D3DXMATRIX ShaderManager::MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix matrix)
 {
 	const int MATRIX_NUM_QUARTER = 4;

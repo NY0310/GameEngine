@@ -10,8 +10,8 @@ private:
 	{
 		D3DXVECTOR4 Color;
 		ALIGN16 D3DXVECTOR2 Uv;
-		float Scale = 5.0f;
-		ID3D11Buffer* vertexBuffer;
+		ALIGN16 float Scale = 5.0f;
+	//	ID3D11Buffer* vertexBuffer;
 	};
 
 
@@ -38,8 +38,8 @@ private:
 	void InkRender();
 	void DripRender();
 	void InkRender(InkData& inkdata);
-	void SetViewPort();
-	void ClearViewPort();
+	void SetViewPort(ID3D11RenderTargetView * rtv);
+	void ClearViewPort(ID3D11RenderTargetView * rtv);
 	const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position) { return D3DXVECTOR3(position.x * 2 - 1, (position.y * 2 - 1) * -1, 0); }
 	const D3DXVECTOR2& ChangeRegularDevice(const D3DXVECTOR2& position) { return D3DXVECTOR2(position.x * 2 - 1, (position.y * 2 - 1) * -1); }
 
@@ -49,7 +49,7 @@ private:
 	ID3D11InputLayout* inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
 	ID3D11Buffer* inkConstantBuffer;//インクテクスチャ用コンスタントバッファ
 	ID3D11Texture2D* inkTex;				//インクを塗るテクスチャ
-	ID3D11Texture2D* inkTexDS;				//インクを塗るテクスチャ
+//	ID3D11Texture2D* inkTexDS;				//インクを塗るテクスチャ
 	ID3D11RenderTargetView* inkTexRTV;//インクを塗るテクスチャTRV
 	ID3D11DepthStencilView* inkDSTexDSV;//深度マップテクスチャー用DSのDSV	
 	ID3D11VertexShader* inkVertexShader;//インクテクスチャ用バーテックスシェーダー
@@ -70,4 +70,9 @@ private:
 
 
 	ID3D11Buffer* oldVertexBuffer;
+	ID3D11Texture2D* inkTex2;				//インクを塗るテクスチャ
+	ID3D11RenderTargetView* inkTexRTV2;//インクを塗るテクスチャTRV
+	ID3D11DepthStencilView* inkDSTexDSV2;//深度マップテクスチャー用DSのDSV	
+	ID3D11ShaderResourceView* inkTexSRV2;   //インクを塗るテクスチャのSRV
+
 };

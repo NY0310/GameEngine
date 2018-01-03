@@ -3,7 +3,6 @@
 #include "MouseUtil.h"
 
 using namespace DirectX;
-using namespace MyLibrary;
 
 // static member variable
 std::unique_ptr<MouseUtil> MouseUtil::m_Instance;

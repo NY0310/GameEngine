@@ -46,6 +46,7 @@
 #include "Tessellation.h"
 #include "DisplacementMapping.h"
 #include "Input/MouseUtil.h"
+#include "Paint/OBJ.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -146,7 +147,7 @@ private:
 
 
 	//	ƒJƒƒ‰
-	std::unique_ptr<FollowCamera> m_Camera;
+	FollowCamera* m_Camera;
 
 	// Œ»İ‚ÌƒJƒƒ‰
 	Camera* m_CurrentCamera;
