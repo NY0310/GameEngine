@@ -164,6 +164,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AStar\AStar.h" />
+    <ClInclude Include="AStar\AttributeMap.h" />
+    <ClInclude Include="AStar\Map.h" />
+    <ClInclude Include="AStar\Math.h" />
+    <ClInclude Include="AStar\Node.h" />
     <ClInclude Include="BumpMapping.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
@@ -188,9 +193,9 @@
     <ClInclude Include="ModelExpansionEffect.h" />
     <ClInclude Include="Obj3d.h" />
     <ClInclude Include="Paint\Ink.h" />
-    <ClInclude Include="Paint\OBJ.h" />
-    <ClInclude Include="Paint\OBJAbstract.h" />
+    <ClInclude Include="Paint\Obj.h" />
     <ClInclude Include="Paint\PaintCollision.h" />
+    <ClInclude Include="Paint\PaintObj.h" />
     <ClInclude Include="PARTICLE.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
@@ -202,6 +207,10 @@
     <ClInclude Include="ToManageParticle.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AStar\AStar.cpp" />
+    <ClCompile Include="AStar\AttributeMap.cpp" />
+    <ClCompile Include="AStar\Map.cpp" />
+    <ClCompile Include="AStar\Math.cpp" />
     <ClCompile Include="BumpMapping.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -227,9 +236,9 @@
     <ClCompile Include="ModelExpansionEffect.cpp" />
     <ClCompile Include="Obj3d.cpp" />
     <ClCompile Include="Paint\Ink.cpp" />
-    <ClCompile Include="Paint\OBJ.cpp" />
-    <ClCompile Include="Paint\OBJAbstract.cpp" />
+    <ClCompile Include="Paint\Obj.cpp" />
     <ClCompile Include="Paint\PaintCollision.cpp" />
+    <ClCompile Include="Paint\PaintObj.cpp" />
     <ClCompile Include="PARTICLE.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderManager.cpp" />

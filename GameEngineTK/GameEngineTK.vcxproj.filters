@@ -56,6 +56,9 @@
     <Filter Include="hlsl">
       <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Astar">
+      <UniqueIdentifier>{53a1497a-aea5-4aae-a590-7b32f1068628}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h" />
@@ -139,13 +142,7 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Paint\OBJ.h">
-      <Filter>Paint</Filter>
-    </ClInclude>
     <ClInclude Include="Paint\Ink.h">
-      <Filter>Paint</Filter>
-    </ClInclude>
-    <ClInclude Include="Paint\OBJAbstract.h">
       <Filter>Paint</Filter>
     </ClInclude>
     <ClInclude Include="Paint\PaintCollision.h">
@@ -153,6 +150,27 @@
     </ClInclude>
     <ClInclude Include="Input\MouseRay.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\PaintObj.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\Obj.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar\AStar.h">
+      <Filter>Astar</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar\AttributeMap.h">
+      <Filter>Astar</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar\Math.h">
+      <Filter>Astar</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar\Node.h">
+      <Filter>Astar</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar\Map.h">
+      <Filter>Astar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -238,13 +256,7 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Paint\OBJ.cpp">
-      <Filter>Paint</Filter>
-    </ClCompile>
     <ClCompile Include="Paint\Ink.cpp">
-      <Filter>Paint</Filter>
-    </ClCompile>
-    <ClCompile Include="Paint\OBJAbstract.cpp">
       <Filter>Paint</Filter>
     </ClCompile>
     <ClCompile Include="Paint\PaintCollision.cpp">
@@ -252,6 +264,24 @@
     </ClCompile>
     <ClCompile Include="Input\MouseRay.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\PaintObj.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\Obj.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="AStar\AStar.cpp">
+      <Filter>Astar</Filter>
+    </ClCompile>
+    <ClCompile Include="AStar\AttributeMap.cpp">
+      <Filter>Astar</Filter>
+    </ClCompile>
+    <ClCompile Include="AStar\Math.cpp">
+      <Filter>Astar</Filter>
+    </ClCompile>
+    <ClCompile Include="AStar\Map.cpp">
+      <Filter>Astar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

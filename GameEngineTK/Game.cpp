@@ -62,6 +62,16 @@ void Game::Initialize(HWND window, int width, int height)
 	m_Camera->SetKeyboard(keyboard.get());
 	//m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
 
+	//D3D11_RASTERIZER_DESC rdc;
+	//ZeroMemory(&rdc, sizeof(rdc));
+	//rdc.CullMode = D3D11_CULL_NONE;
+	//rdc.FillMode = D3D11_FILL_WIREFRAME;
+	//rdc.FrontCounterClockwise = TRUE;
+	//ID3D11RasterizerState* m_pRasterizerState;
+
+	//devices.Device().Get()->CreateRasterizerState(&rdc, &m_pRasterizerState);
+	//devices.Context().Get()->RSSetState(m_pRasterizerState);
+
 
 	{//OBj3d‚ÌƒVƒXƒeƒ€‰Šú‰»
 		Obj3d::CommonDef def;
@@ -135,23 +145,17 @@ void Game::Initialize(HWND window, int width, int height)
 
 	stage.Initialize();
 
-/*	tomanageparticle = new ToManageParticle();
-	tomanageparticle->Init()*/;
 
 	const int objnum = 1;
 	D3DXVECTOR3 position[objnum] = {
 		D3DXVECTOR3(0,2,-2),
-	/*	D3DXVECTOR3(1,2,-2),
-		D3DXVECTOR3(0,1,-2),
-		D3DXVECTOR3(2,3,-2),
-		D3DXVECTOR3(-2,1,0)*/
 
 	};
 	obj.resize(objnum);
 	static int cnt = 0;
 	for (auto& data : obj)
 	{
-		data = new OBJ();
+		data = new PaintObj();
 		data->Init();
 		data->LoadOBJFile("Resources/OBJ/Panel.obj");
 		data->LoadTextuerFile("Resources/PNG/GoalPanel.png");
@@ -166,26 +170,10 @@ void Game::Initialize(HWND window, int width, int height)
 	////‰Šú‰»
 	m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
 
-	//pSss = new sss();
-	//pSss->InitD3D();
-
-
-	//pBumpMapping = new BumpMapping();
-	//pBumpMapping->InitD3D();
-
-
-	/*pTessellation = new Tessellation();
-	pTessellation->InitD3D();*/
-
-
-
-
-	//pDisplacementMapping = new DisplacementMapping();
-	//pDisplacementMapping->InitD3D();
 
 		
-
-
+	map = make_unique<Map>();
+	map->Inisialize();
 }
 
 
@@ -647,6 +635,7 @@ void Game::Render()
 	}
 
 
+	map->Render();
 
 
 	//tomanageparticle->Render(m_Camera);
@@ -664,7 +653,6 @@ void Game::Render()
 
 	for (auto& data : obj)
 	data->Render();
-
 
 
 	Present();

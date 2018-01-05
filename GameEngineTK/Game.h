@@ -39,14 +39,15 @@
 #include "ToManageParticle.h"
 #include "Stage.h"
 #include "HomingBullet.h"
-#include "Paint/OBJ.h"
 #include "CD3DXMESH.h"
 #include "sss.h"
 #include "BumpMapping.h"
 #include "Tessellation.h"
 #include "DisplacementMapping.h"
 #include "Input/MouseUtil.h"
-#include "Paint/OBJ.h"
+#include "Paint/PaintObj.h"
+#include "AStar/AStar.h"
+#include "AStar/Map.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -185,11 +186,16 @@ private:
 	int CLEARNUM = 15;
 
 	ToManageParticle* tomanageparticle;
-	std::vector<OBJ*> obj;
+	std::vector<PaintObj*> obj;
 	ShaderManager shadermanager;//シェーダー関連
 	CD3DXMESH* m_pMesh;//D3DXMESHライブラリを使用してXファイルを描画するクラス
 	sss* pSss;
 	BumpMapping* pBumpMapping;//バンプマッピング
 	Tessellation* pTessellation;//テセレーション
 	DisplacementMapping* pDisplacementMapping;//ディスプレイスマッピング
+
+
+
+	std::unique_ptr<AStar> aStar;
+	std::unique_ptr<Map> map;
 };       
