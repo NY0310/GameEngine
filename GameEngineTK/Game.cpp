@@ -152,28 +152,29 @@ void Game::Initialize(HWND window, int width, int height)
 
 	};
 	obj.resize(objnum);
+
 	static int cnt = 0;
-	for (auto& data : obj)
+for (auto& data : obj)
 	{
 		data = new PaintObj();
-		data->Init();
-		data->LoadOBJFile("Resources/OBJ/Panel.obj");
+		data->Initialze();
+		data->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
 		data->LoadTextuerFile("Resources/PNG/GoalPanel.png");
-		data->SetPosition(position[cnt]);
+		//data->SetPosition(position[cnt]);
 		cnt++;
-	}
+		}
 	shadermanager = ShaderManager::Get();
 
 
 	////D3DXMESHライブラリを使用するクラス生成
-	m_pMesh = new CD3DXMESH;
+	//m_pMesh = new CD3DXMESH;
 	////初期化
-	m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
-
+	//m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
+	skinmesh = new CD3DXSKINMESH();
+	skinmesh->Initialize();
+	skinmesh->CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
 
 		
-	map = make_unique<Map>();
-	map->Inisialize();
 }
 
 
@@ -539,10 +540,6 @@ void Game::Update(DX::StepTimer const& timer)
 	//sphere.Radius = 1.0f;
 	//obj->IntersectSphere(sphere, m_Camera);
 
-	//for (auto& data : obj)
-	//{
-	//	data->MouseRay();
-	//}
 
 	for (auto& data : obj)
 		data->UpDate();
@@ -564,8 +561,9 @@ void Game::Render()
 
 	D3D11_RASTERIZER_DESC rdc;
 	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.CullMode = D3D11_CULL_NONE;
-	devices.Context().Get()->RSSetState(m_states->CullNone());
+
+	devices.Context().Get()->RSSetState(m_states->CullCounterClockwise());
+
 
 
 
@@ -579,8 +577,6 @@ void Game::Render()
 	//obj->ZTextureRender(m_Camera);
 	Clear();
 	//pBumpMapping->Render(m_Camera);
-
-
 	//pSss->Render(m_Camera);
 
 
@@ -612,7 +608,7 @@ void Game::Render()
 	//}
 
 
-	player->Draw();
+	//player->Draw();
 
 	//if (clearcnt == CLEARNUM)
 	//{
@@ -624,18 +620,17 @@ void Game::Render()
 
 
 
-	//キーボードの様態を取得
-	Keyboard::State kb = keyboard->GetState();
-	//キーボードトラッカーの更新
-	KeybordTracker.Update(kb);
+	////キーボードの様態を取得
+	//Keyboard::State kb = keyboard->GetState();
+	////キーボードトラッカーの更新
+	//KeybordTracker.Update(kb);
 
-	if (kb.D)
-	{
-		m_pMesh->ChangeAnimSet(1);
-	}
+	//if (kb.D)
+	//{
+	//	m_pMesh->ChangeAnimSet(1);
+	//}
 
 
-	map->Render();
 
 
 	//tomanageparticle->Render(m_Camera);
@@ -645,11 +640,25 @@ void Game::Render()
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 	//pTessellation->Render(m_Camera);
 	//pDisplacementMapping->Render(m_Camera);
+	skinmesh->m_View = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetView());
+	skinmesh->m_Eye = shaderManader.VectorToD3DXVECTOR3(m_Camera->GetEyePos());
+	skinmesh->m_Proj = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetProjection());
+	//再生開始箇所を変えることによりモーションを切り替える
+	if (GetKeyState(VK_F1) & 0x80)//握る
+	{
+		skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 0);
+	}
+	if (GetKeyState(VK_F2) & 0x80)//振る
+	{
+		skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 1.3);
+	}
+
+	//	skinmesh->Render();
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
-	//m_pMesh->Render(m_Camera, D3DXVECTOR3(1, 1, -1));
-	//m_pMesh->GetfYaw() += 0.0002;
-	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
+//	m_pMesh->Render( D3DXVECTOR3(1, 1, -1));
+	/*m_pMesh->GetfYaw() += 0.0002;
+	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);*/
 
 	for (auto& data : obj)
 	data->Render();

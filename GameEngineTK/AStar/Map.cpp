@@ -44,9 +44,9 @@ void Map::CreateMap()
 		for (int j = 0; j < attributeMap->GetMapWidth(); j++)
 		{
 			Obj* obj = new Obj();
-			obj->Init();
+			obj->Initialze();
 			Vector3 pos = Vector3(i, 0, j);
-			obj->SetPosition(pos);
+			//obj->SetPosition(pos);
 			obj->LoadOBJFile("Resources/OBJ/Panel.obj");
 			int a = attributeMap->GetAttributeMap(i, j);
 			obj->LoadTextuerFile(FileNames[attributeMap->GetAttributeMap(i, j) + 3]);

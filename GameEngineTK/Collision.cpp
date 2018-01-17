@@ -37,7 +37,7 @@ void ComputeTriangle(const Vector3& _p0, const Vector3& _p1, const Vector3& _p2,
 	Vector3 P1_P2 = _p2 - _p1;
 
 	//2ベクトルに垂直なベクトルを得る
-    _Triangle->Normal = P0_P1.Cross(P1_P2);
+	_Triangle->Normal = P0_P1.Cross(P1_P2);
 	//ベクトルを長さを1に調整する
 	_Triangle->Normal.Normalize();
 }

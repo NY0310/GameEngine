@@ -181,6 +181,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject\GameObjectInterface.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="HomingBullet.h" />
     <ClInclude Include="Input\KeyboardUtil.h" />
@@ -188,10 +189,20 @@
     <ClInclude Include="Input\MouseUtil.h" />
     <ClInclude Include="LandShape.h" />
     <ClInclude Include="LandShapeData.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Line.h" />
+    <ClInclude Include="MatrixObject.h" />
     <ClInclude Include="ModelEffect.h" />
     <ClInclude Include="ModelExpansionEffect.h" />
+    <ClInclude Include="Node\GameObjectNode.h" />
+    <ClInclude Include="Node\Leaf.h" />
+    <ClInclude Include="Node\Node.h" />
+    <ClInclude Include="Node\NodeAbstract.h" />
     <ClInclude Include="Obj3d.h" />
+    <ClInclude Include="ObjState\Run.h" />
+    <ClInclude Include="ObjState\Walk.h" />
+    <ClInclude Include="ObjState\ObjState.h" />
+    <ClInclude Include="ObjState\Stop.h" />
     <ClInclude Include="Paint\Ink.h" />
     <ClInclude Include="Paint\Obj.h" />
     <ClInclude Include="Paint\PaintCollision.h" />
@@ -199,12 +210,15 @@
     <ClInclude Include="PARTICLE.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="SkinMesh.h" />
     <ClInclude Include="sss.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Tessellation.h" />
     <ClInclude Include="ToManageParticle.h" />
+    <ClInclude Include="Visitor\SearchUpdateVisitor.h" />
+    <ClInclude Include="Visitor\VisitorInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AStar\AStar.cpp" />
@@ -230,11 +244,19 @@
     <ClCompile Include="Input\MouseUtil.cpp" />
     <ClCompile Include="LandShape.cpp" />
     <ClCompile Include="LandShapeData.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MatrixObject.cpp" />
     <ClCompile Include="ModelEffect.cpp" />
     <ClCompile Include="ModelExpansionEffect.cpp" />
+    <ClCompile Include="Node\GameObjectNode.cpp" />
+    <ClCompile Include="Node\Node.cpp" />
+    <ClCompile Include="Node\NodeAbstract.cpp" />
     <ClCompile Include="Obj3d.cpp" />
+    <ClCompile Include="ObjState\Run.cpp" />
+    <ClCompile Include="ObjState\Walk.cpp" />
+    <ClCompile Include="ObjState\Stop.cpp" />
     <ClCompile Include="Paint\Ink.cpp" />
     <ClCompile Include="Paint\Obj.cpp" />
     <ClCompile Include="Paint\PaintCollision.cpp" />
@@ -242,12 +264,14 @@
     <ClCompile Include="PARTICLE.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="SkinMesh.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="sss.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Tessellation.cpp" />
     <ClCompile Include="ToManageParticle.cpp" />
+    <ClCompile Include="Visitor\SearchUpdateVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -317,6 +341,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\OBJ.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

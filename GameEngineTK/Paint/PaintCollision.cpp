@@ -27,12 +27,12 @@ bool PaintCollision::IntersectSegment(Segment* segment, D3DXVECTOR2& uv)
 
 
 	// コピー
-	Segment* localSegment = segment;
+	Segment localSegment = *segment;
 	// 線分をワールド座標からモデル座標系に引き込む
-	localSegment->Start = Vector3::Transform(localSegment->Start, WorldLocal);
-	localSegment->End = Vector3::Transform(localSegment->End, WorldLocal);
+	localSegment.Start = Vector3::Transform(localSegment.Start, WorldLocal);
+	localSegment.End = Vector3::Transform(localSegment.End, WorldLocal);
 	// 線分の方向ベクトルを取得
-	Vector3 segmentNormal = localSegment->End - localSegment->Start;
+	Vector3 segmentNormal = localSegment.End - localSegment.Start;
 	segmentNormal.Normalize();
 
 	// 全ての三角形について
@@ -57,10 +57,10 @@ bool PaintCollision::IntersectSegment(Segment* segment, D3DXVECTOR2& uv)
 		//if (cosine < limit_cosine) continue;
 		//--高速版ここまで--
 		// 線分と三角形（ポリゴン）の交差判定
-		if (CheckSegment2Triangle(*localSegment, triangle, &temp_inter))
+		if (CheckSegment2Triangle(localSegment, triangle, &temp_inter))
 		{
 			// 線分の始点と衝突点の距離を計算（めりこみ距離）
-			temp_distance = Vector3::Distance(localSegment->Start, temp_inter);
+			temp_distance = Vector3::Distance(localSegment.Start, temp_inter);
 			// めりこみ具合がここまでで最小なら
 			{
 				// 衝突点の座標、めりこみ距離を記録

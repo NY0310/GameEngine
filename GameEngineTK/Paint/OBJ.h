@@ -5,6 +5,7 @@
 /// </summary>
 
 #pragma once
+#include "../MatrixObject.h"
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"
 
@@ -67,50 +68,18 @@ public:
 	Obj();
 	virtual ~Obj();
 	//初期化処理
-	void Init();
+	void Initialze();
 	HRESULT InitD3D();
+	//更新
+	virtual  void Update();
 	//OBJファイル読み込み
 	void LoadOBJFile(LPSTR filename) { InitStaticMesh(filename, &mesh); }
 	//テクスチャ読み込み
 	void LoadTextuerFile(LPSTR filename) { D3DX11CreateShaderResourceViewFromFileA(device, filename, nullptr, nullptr, &texture, nullptr); }
 	//描画
-	virtual void Render();
-	//Zテクスチャ描画
-	virtual void ZTextureRender();
-	//ワールド座標設定
-	void SetPosition(const D3DXVECTOR3& position) { world = position; }
-	//ワールド座標取得
-	const D3DXVECTOR3& GetPosition() { return world; }
-	//スケール設定
-	void SetScale(const D3DXVECTOR3& scale) { this->scale = scale; }
-	//スケール取得
-	const D3DXVECTOR3& GetScale() { return  this->scale; }
-	//スケール設定
-	void SetRotation(const D3DXVECTOR3& rotation) { this->rotation = rotation; IsUseQuternion = false; }
-	//スケール取得
-	const D3DXVECTOR3& GetRotation() { return  this->rotation; }
-	//クォータニオン設定
-	void SetQuaternion(const D3DXQUATERNION& quaternion) { this->quaternion = quaternion; IsUseQuternion = true; }
-	//クォータニオン取得
-	const D3DXQUATERNION& GetQuaternion() { return  this->quaternion; }
-	//ワールド座標設定
-	void SetPosition(const Vector3& position) { world = shadermanager.VectorToD3DXVECTOR3(position); }
-	//ワールド座標取得
-	const Vector3& GetPositionMath() { return shadermanager.D3DXVECTOR3ToVector(world); }
-	//スケール設定
-	void SetScale(const Vector3& scale) { this->scale = shadermanager.VectorToD3DXVECTOR3(scale); }
-	//スケール取得
-	const Vector3& GetScaleMath() { return shadermanager.D3DXVECTOR3ToVector(this->scale); }
-	//回転設定
-	void SetRotation(const Vector3& rotation) { this->rotation = shadermanager.VectorToD3DXVECTOR3(rotation); }
-	//回転取得
-	const Vector3& GetRotationMath() { return shadermanager.D3DXVECTOR3ToVector(this->rotation); IsUseQuternion = false; }
-	//クォータニオン設定
-	void SetQuaternion(const DirectX::SimpleMath::Quaternion& quaternion) { this->quaternion = shadermanager.QuaterniontoD3DXQUATERNION(quaternion); IsUseQuternion = true; }
-	//クォータニオン取得
-	const DirectX::SimpleMath::Quaternion& GetQuaternionMath() { return  shadermanager.D3DXQUATERNIONtoQuaternion(this->quaternion); }
-
-
+	void Render();
+	//Zテクスチャに書き込み
+	void ZTextureRender();
 private:
 	//シェーダー作成
 	HRESULT CreateShader();
@@ -129,8 +98,6 @@ private:
 	//マテリアルファイル読み込み
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
 protected:
-	//行列作成
-	void AllMatrixCreate();
 
 protected:
 	/// <summary>
@@ -138,14 +105,6 @@ protected:
 	/// </summary>
 	MY_MESH mesh;//メッシュ情報
 	MY_MATERIAL material;//マテリアル構造体
-	D3DXVECTOR3 world;//ワールド座標
-	D3DXVECTOR3 scale;//サイズ
-	D3DXVECTOR3 rotation;//回転
-	D3DXQUATERNION quaternion;//クォータニオン
-	bool IsUseQuternion;//クォータニオンを使用するか
-	D3DXMATRIX worldMatrix;//ワールド行列
-	D3DXMATRIX scaleMatrix;//スケール行列
-	D3DXMATRIX rotationMatrix;//回転行列
 	ID3D11VertexShader* vertexShader;//バッテックスシェーダー
 	ID3D11PixelShader* pixelShader;//ピクセルシェーダー
 	ID3D11Buffer* constantBuffer;//コンスタントバッファ
@@ -168,8 +127,6 @@ protected:
 	ID3D11DepthStencilView* depthMapDSTexDSV;//深度マップテクスチャー用DSのDSV	
 
 
-	D3DXVECTOR3 m_vLight;
-
 
 
 	/// <summary>
@@ -177,17 +134,12 @@ protected:
 	/// </summary>
 	ID3D11Device* device = Devices::Get().Device().Get();//デバイス
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
-	ShaderManager shadermanager = ShaderManager::Get();//シェーダー関連
 	FollowCamera* camera = FollowCamera::GetInstance();
-
-	//ビューポートサイズ
-	const UINT DEPTHTEX_WIDTH = Devices::Get().Width() * 2;
-	const UINT DEPTHTEX_HEIGHT = Devices::Get().Height() * 2;
+	std::unique_ptr<MatrixObject> matrixObject = std::make_unique<MatrixObject>();//行列
 
 
 
 	D3DXMATRIX m_mClipToUV;//テクスチャ行列
-	D3DXVECTOR3 m_vLightPos;//ライド座標
 	D3DXMATRIX mLight;//ライト行列
 };
 

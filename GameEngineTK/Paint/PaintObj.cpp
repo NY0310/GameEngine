@@ -12,13 +12,15 @@ PaintObj::PaintObj()
 	campus->InitD3D();
 	paintCollision = make_unique<PaintCollision>();
 	mouseRay = MouseRay::GetInstance();
+	matrixObject->SetPosition(D3DXVECTOR3(0, 1.5, 0));
 }
 
 
 void PaintObj::UpDate()
 {
+	matrixObject->WorldMatrixCreate();
 	paintCollision->SetTriangles(triangles);
-	paintCollision->SetWorldMatrix(worldMatrix);
+	paintCollision->SetWorldMatrix(matrixObject->GetWorldMatrix());
 
 	Segment* segment;
 	D3DXVECTOR2 uv = D3DXVECTOR2(0,0);
@@ -42,18 +44,12 @@ void PaintObj::Render()
 {
 
 
+	D3DXMATRIX View = Math::MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX Proj = Math::MatrixToD3DXMATRIX(camera->GetProjection());
 
 
 
-
-
-
-	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
-
-
-
-	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXVECTOR3 vEyePt = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
 
 	////ワールドトランスフォーム
 	static float x = 0;
@@ -67,11 +63,11 @@ void PaintObj::Render()
 	SIMPLESHADER_CONSTANT_BUFFER cb;
 	if (SUCCEEDED(deviceContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		AllMatrixCreate();
+		
 		D3DXMATRIX world;
 		D3DXMatrixIdentity(&world);
 
-		world = scaleMatrix * rotationMatrix *  worldMatrix;
+		world = matrixObject->GetWorldMatrix();
 		//ワールド、カメラ、射影行列を渡す
 		D3DXMATRIX m = world  *View * Proj;
 		D3DXMatrixTranspose(&m, &m);

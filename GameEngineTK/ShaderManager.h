@@ -41,7 +41,7 @@ public:
 		return *shadermanager.get();
 	}
 
-	HRESULT MakeShader(LPSTR, LPSTR, LPSTR, void**, ID3DBlob**);
+	static HRESULT MakeShader(LPSTR, LPSTR, LPSTR, void**, ID3DBlob**);
 
 	D3DXVECTOR4 VectorToD3DXVECTOR4(DirectX::SimpleMath::Vector4 vector4);
 

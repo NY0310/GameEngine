@@ -139,9 +139,9 @@ HRESULT Campus::InitD3D()
 		return E_FAIL;
 	}
 
-	SetViewPort(inkTexRTV);
 	ClearViewPort(inkTexRTV);
 	ClearViewPort(inkTexRTV2);
+
 	CreateVertexBuffer();
 	return S_OK;
 
@@ -156,7 +156,7 @@ void Campus::CreateInk(D3DXVECTOR4& Color, D3DXVECTOR2& uv, float sclae)
 	inkdata.Color = Color;
 	inkdata.Uv = uv;
 	inkdata.Scale  = 0.1f;
-	//inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
+	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }
 
@@ -192,12 +192,11 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 	D3DXVECTOR2 Uv = inkdata.Uv;
 
 	CampusVertex vertex[] = {
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),D3DXVECTOR2(0,1) },
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize, 0)),	D3DXVECTOR2(0,0) },
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y - uvSize,0)),	D3DXVECTOR2(1,1) },
-		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)), 	D3DXVECTOR2(1,0) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize,0)),D3DXVECTOR2(0,1) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),D3DXVECTOR2(0,0) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)),D3DXVECTOR2(1,1) },
+		{ ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y - uvSize,0)),D3DXVECTOR2(1,0) },
 	};
-
 
 
 	//上の頂点でバーテックスバッファー作成
@@ -210,9 +209,7 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertex;
-
-
-	ID3D11Buffer*  canvasVertexBuffer;
+	static ID3D11Buffer*  canvasVertexBuffer = nullptr;
 	device->CreateBuffer(&bd, &InitData, &canvasVertexBuffer);
 	return canvasVertexBuffer;
 }
@@ -220,12 +217,11 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 
 void Campus::Render()
 {
-	ClearViewPort(inkTexRTV);
+	//ClearViewPort(inkTexRTV);
 	SetViewPort(inkTexRTV);
 	InkRender();
-	/*ClearViewPort(inkTexRTV);
-	SetViewPort(inkTexRTV);
-	DripRender();*/
+	SetViewPort(inkTexRTV2);
+	DripRender();
 }
 
 void Campus::DripRender()
@@ -236,7 +232,7 @@ void Campus::DripRender()
 
 	//サンプラーとテクスチャをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &inkTexSRV2);//インクのレクスチャ
+	deviceContext->PSSetShaderResources(0, 1, &inkTexSRV);//インクのレクスチャ
 
 	//頂点インプットレイアウトをセット
 	deviceContext->IASetInputLayout(inkVertexLayout);
@@ -269,7 +265,7 @@ void Campus::InkRender()
 
 	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
 	deviceContext->PSSetShaderResources(0, 1, &inkTexture);//インクのレクスチャ
-	deviceContext->PSSetShaderResources(1, 1, &inkTexSRV);//インクのレクスチャ
+	deviceContext->PSSetShaderResources(1, 1, &inkTexSRV2);//インクのレクスチャ
 	deviceContext->PSSetShaderResources(2, 1, &inkNormalMap);//インクのノーマルマップ	
 
 	//テクスチャーをシェーダーに渡す
@@ -288,7 +284,6 @@ void Campus::InkRender()
 	{
 
 		//インクの色を渡す
-		D3DXVECTOR4 color = Colors::Green;
 		this->InkRender(ink);
 	}
 
@@ -305,13 +300,12 @@ void Campus::InkRender(InkData& ink)
 
 
 	D3D11_MAPPED_SUBRESOURCE pData;
-	InkData cb;
+	D3DXVECTOR4 cb;
 	if (SUCCEEDED(deviceContext->Map(inkConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		cb.Uv = ChangeRegularDevice(ink.Uv);
-		D3DXVECTOR4 color = Colors::Blue;
-		cb.Color = ink.Color;
-		cb.Scale = ink.Scale;
+		//cb.Uv = ChangeRegularDevice(ink.Uv);
+		cb  = ink.Color;
+		//cb.Scale = ink.Scale;
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(InkData));
 		deviceContext->Unmap(inkConstantBuffer, 0);
 
@@ -320,7 +314,7 @@ void Campus::InkRender(InkData& ink)
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(CampusVertex);
 	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &oldVertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, &ink.vertexBuffer, &stride, &offset);
 
 
 	deviceContext->Draw(4, 0);

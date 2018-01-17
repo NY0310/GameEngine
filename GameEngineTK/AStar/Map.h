@@ -18,7 +18,7 @@ public:
 	//描画
 	void Render();
 	//最短経路取得
-	const std::vector<DirectX::SimpleMath::Vector2>& GetShortestPath() { aStar->SearchRoute(); return aStar->GetResultPath(); }
+	std::vector<DirectX::SimpleMath::Vector2> GetShortestPath() { aStar->SearchRoute(); return aStar->GetResultPath(); }
 private:
 	//マップのリストサイズ変更
 	void MapObjResize(const int Hight, const int windth);

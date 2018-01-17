@@ -5,7 +5,6 @@ using namespace std;
 
 Obj::Obj()
 {
-	m_vLightPos = D3DXVECTOR3(0.0f, -5.0f, 0.0f);
 	ZeroMemory(&m_mClipToUV, sizeof(D3DXMATRIX));
 	m_mClipToUV._11 = 0.5;
 	m_mClipToUV._22 = -0.5;
@@ -15,10 +14,9 @@ Obj::Obj()
 	m_mClipToUV._44 = 1;
 
 	// メンバ変数初期化
-	world = D3DXVECTOR3(0, 0, 0);
-	scale = D3DXVECTOR3(1, 1, 1);
-	rotation = D3DXVECTOR3(0, 0, 0);
-	IsUseQuternion = false;
+	matrixObject->SetPosition(D3DXVECTOR3(0, 0, 0));
+	matrixObject->SetScale(D3DXVECTOR3(1, 1, 1));
+	matrixObject->SetRotation(D3DXVECTOR3(0, 0, 0));
 }
 
 
@@ -26,30 +24,12 @@ Obj::~Obj()
 {
 }
 
-void Obj::Init()
+void Obj::Initialze()
 {
 	InitD3D();
-
-	m_vLight = D3DXVECTOR3(-1, 0, -1);
-	D3DXVec3Normalize(&m_vLight, &m_vLight);
 }
 
-/// <summary>
-/// 全行列作成
-/// </summary>
-void Obj::AllMatrixCreate()
-{
-	D3DXMatrixTranslation(&worldMatrix, this->world.x, this->world.y, this->world.z);
-	D3DXMatrixScaling(&scaleMatrix, scale.x, scale.y, scale.z);
-	if (IsUseQuternion)
-	{
-		D3DXMatrixRotationQuaternion(&rotationMatrix, &quaternion);
-	}
-	else
-	{
-		D3DXMatrixRotationYawPitchRoll(&rotationMatrix, rotation.x, rotation.y, rotation.z);
-	}
-}
+
 
 HRESULT Obj::CreateShader()
 {
@@ -57,10 +37,10 @@ HRESULT Obj::CreateShader()
 	ID3DBlob *pCompiledShader = nullptr;
 	ID3DBlob *pErrors = nullptr;
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "VS", "vs_5_0", (void**)&vertexShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "VS", "vs_5_0", (void**)&vertexShader, &pCompiledShader)))return E_FAIL;
 	CreateVertexInputLayout(pCompiledShader);
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "PS", "ps_5_0", (void**)&pixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "PS", "ps_5_0", (void**)&pixelShader, &pCompiledShader)))return E_FAIL;
 
 	return S_OK;
 }
@@ -71,8 +51,8 @@ HRESULT Obj::CreateDepthTextureShader()
 	ID3DBlob *pCompiledShader = nullptr;
 	ID3DBlob *pErrors = nullptr;
 	//深度テクスチャ用バーテックスシェーダー作成
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "VS_Depth", "vs_5_0", (void**)&depthVertexShader, &pCompiledShader)))return E_FAIL;
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/OBJ.hlsl", "PS_Depth", "ps_5_0", (void**)&depthPixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "VS_Depth", "vs_5_0", (void**)&depthVertexShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "PS_Depth", "ps_5_0", (void**)&depthPixelShader, &pCompiledShader)))return E_FAIL;
 	return S_OK;
 }
 
@@ -119,8 +99,8 @@ HRESULT Obj::CreateDepthTexture()
 	//深度マップテクスチャーを作成
 	D3D11_TEXTURE2D_DESC tdesc;
 	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
-	tdesc.Width = DEPTHTEX_WIDTH;
-	tdesc.Height = DEPTHTEX_HEIGHT;
+	tdesc.Width = Devices::Get().Width() * 2;
+	tdesc.Height = Devices::Get().Height() * 2;
 	tdesc.MipLevels = 1;
 	tdesc.ArraySize = 1;
 	tdesc.MiscFlags = 0;
@@ -156,8 +136,8 @@ HRESULT Obj::CreateDepthTexture()
 	//深度マップテクスチャをレンダーターゲットにする際のデプスステンシルビュー用のテクスチャーを作成
 	D3D11_TEXTURE2D_DESC descDepth;
 	ZeroMemory(&tdesc, sizeof(D3D11_TEXTURE2D_DESC));
-	descDepth.Width = DEPTHTEX_WIDTH;
-	descDepth.Height = DEPTHTEX_HEIGHT;
+	descDepth.Width = Devices::Get().Width() * 2;
+	descDepth.Height = Devices::Get().Height() * 2;
 	descDepth.MipLevels = 1;
 	descDepth.ArraySize = 1;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -211,6 +191,11 @@ HRESULT Obj::InitD3D()
 	zTexConstantBuffer = CreateConstantBuffer(sizeof(ZTEXTURE_CONSTANT_BUFFER));
 
 	return S_OK;
+}
+
+void Obj::Update()
+{
+	matrixObject->WorldMatrixCreate();
 }
 
 
@@ -381,7 +366,6 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 			piFaceBuffer[dwFCount * 3] = dwFCount * 3;
 			piFaceBuffer[dwFCount * 3 + 1] = dwFCount * 3 + 1;
 			piFaceBuffer[dwFCount * 3 + 2] = dwFCount * 3 + 2;
-			//頂点構造体に代入
 			pvVertexBuffer[dwFCount * 3].Pos = pvCoord[v1 - 1];
 			pvVertexBuffer[dwFCount * 3].Normal = pvNormal[vn1 - 1];
 			pvVertexBuffer[dwFCount * 3].Tex = pvTexture[vt1 - 1];
@@ -393,13 +377,16 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 			pvVertexBuffer[dwFCount * 3 + 2].Tex = pvTexture[vt3 - 1];
 
 			Triangle tri;
-			ComputeTriangle(shadermanager.D3DXVECTOR3ToVector(pvVertexBuffer[dwFCount * 3].Pos), shadermanager.D3DXVECTOR3ToVector(pvVertexBuffer[dwFCount * 3 + 1].Pos), shadermanager.D3DXVECTOR3ToVector(pvVertexBuffer[dwFCount * 3 + 2].Pos), &tri);
-			tri.Uv0 = shadermanager.D3DXVECTOR2ToVector(pvTexture[vt1 - 1]);
-			tri.Uv1 = shadermanager.D3DXVECTOR2ToVector(pvTexture[vt2 - 1]);
-			tri.Uv2 = shadermanager.D3DXVECTOR2ToVector(pvTexture[vt3 - 1]);
+			ComputeTriangle(Math::D3DXVECTOR3ToVector(pvVertexBuffer[dwFCount * 3].Pos), Math::D3DXVECTOR3ToVector(pvVertexBuffer[dwFCount * 3 + 1].Pos), Math::D3DXVECTOR3ToVector(pvVertexBuffer[dwFCount * 3 + 2].Pos), &tri);
+			tri.Uv0 = Math::D3DXVECTOR2ToVector(pvTexture[vt1 - 1]);
+			tri.Uv1 = Math::D3DXVECTOR2ToVector(pvTexture[vt2 - 1]);
+			tri.Uv2 = Math::D3DXVECTOR2ToVector(pvTexture[vt3 - 1]);
 
 
 			triangles.emplace_back(tri);
+
+
+
 			dwFCount++;
 		}
 	}
@@ -445,12 +432,12 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 
 void Obj::Render()
 {
-	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX View = Math::MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX Proj = Math::MatrixToD3DXMATRIX(camera->GetProjection());
 
 
 
-	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXVECTOR3 vEyePt = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
 
 	////ワールドトランスフォーム
 	static float x = 0;
@@ -464,11 +451,10 @@ void Obj::Render()
 	SIMPLESHADER_CONSTANT_BUFFER cb;
 	if (SUCCEEDED(deviceContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		AllMatrixCreate();
 		D3DXMATRIX world;
 		D3DXMatrixIdentity(&world);
 
-		world = scaleMatrix * rotationMatrix *  worldMatrix;
+		world = matrixObject->GetWorldMatrix();
 		//ワールド、カメラ、射影行列を渡す
 		cb.mWVP = world  *View * Proj;
 		D3DXMatrixTranspose(&cb.mWVP, &cb.mWVP);
@@ -519,8 +505,8 @@ void Obj::ZTextureRender()
 
 	//////////ビューポートの設定
 	//D3D11_VIEWPORT vp;
-	//vp.Width = DEPTHTEX_WIDTH;
-	//vp.Height = DEPTHTEX_HEIGHT;
+	//vp.Width = Devices::Get().Width() * 2;
+	//vp.Height = Devices::Get().Height() * 2;
 	//vp.MinDepth = 0.0f;
 	//vp.MaxDepth = 1.0f;
 	//vp.TopLeftX = 0;

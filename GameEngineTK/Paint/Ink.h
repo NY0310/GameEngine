@@ -1,7 +1,7 @@
 #include <vector>
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"
-
+#include "../AStar/Math.h"
 class Campus
 {
 public:
@@ -11,7 +11,7 @@ private:
 		D3DXVECTOR4 Color;
 		ALIGN16 D3DXVECTOR2 Uv;
 		ALIGN16 float Scale = 5.0f;
-	//	ID3D11Buffer* vertexBuffer;
+		ID3D11Buffer* vertexBuffer;
 	};
 
 
@@ -40,8 +40,8 @@ private:
 	void InkRender(InkData& inkdata);
 	void SetViewPort(ID3D11RenderTargetView * rtv);
 	void ClearViewPort(ID3D11RenderTargetView * rtv);
-	const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position) { return D3DXVECTOR3(position.x * 2 - 1, (position.y * 2 - 1) * -1, 0); }
-	const D3DXVECTOR2& ChangeRegularDevice(const D3DXVECTOR2& position) { return D3DXVECTOR2(position.x * 2 - 1, (position.y * 2 - 1) * -1); }
+	const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position) { return D3DXVECTOR3(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1), 0); }
+	const D3DXVECTOR2& ChangeRegularDevice(const D3DXVECTOR2& position) { return D3DXVECTOR2(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1)); }
 
 	/// <summary>
 	/// 全てのインクをレンダリングするキャンパス

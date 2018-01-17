@@ -48,6 +48,8 @@
 #include "Paint/PaintObj.h"
 #include "AStar/AStar.h"
 #include "AStar/Map.h"
+#include "SkinMesh.h"
+#include "ShaderManager.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -194,8 +196,6 @@ private:
 	Tessellation* pTessellation;//テセレーション
 	DisplacementMapping* pDisplacementMapping;//ディスプレイスマッピング
 
-
-
-	std::unique_ptr<AStar> aStar;
-	std::unique_ptr<Map> map;
+	CD3DXSKINMESH* skinmesh;
+	ShaderManager shaderManader = ShaderManager::Get();
 };       

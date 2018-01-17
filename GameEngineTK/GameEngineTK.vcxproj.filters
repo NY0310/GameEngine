@@ -23,15 +23,6 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{a8dde476-e2a9-4ad1-808c-aec5656e44b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Player">
-      <UniqueIdentifier>{1dd6822a-9f99-4476-91bb-81c8894fd63e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Player\HomingBullet">
-      <UniqueIdentifier>{47f7593f-b24b-44ee-9916-fd9024e839b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Player\Bullet">
-      <UniqueIdentifier>{9a6bd89c-c67e-4a33-8a76-080a9f8a7ef1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Mesh">
       <UniqueIdentifier>{9b430cb5-d219-4f11-8eb7-607e22b8ad82}</UniqueIdentifier>
     </Filter>
@@ -58,6 +49,33 @@
     </Filter>
     <Filter Include="Astar">
       <UniqueIdentifier>{53a1497a-aea5-4aae-a590-7b32f1068628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ObjState">
+      <UniqueIdentifier>{7ae23fad-8159-42d1-81c9-94f02b71d6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneGraph">
+      <UniqueIdentifier>{e4d127ca-34e5-4e71-97d5-c3fb21fa94a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneGraph\GameObject">
+      <UniqueIdentifier>{21e6359b-4419-4d35-a7b9-957126443443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneGraph\Node">
+      <UniqueIdentifier>{622dc828-869a-44ca-9c0e-8257930090e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneGraph\Visitor">
+      <UniqueIdentifier>{771f378b-a19a-4444-9021-54ee44422442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SkinnedMesh">
+      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PARTICLE\Player">
+      <UniqueIdentifier>{1dd6822a-9f99-4476-91bb-81c8894fd63e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PARTICLE\Player\HomingBullet">
+      <UniqueIdentifier>{47f7593f-b24b-44ee-9916-fd9024e839b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PARTICLE\Player\Bullet">
+      <UniqueIdentifier>{9a6bd89c-c67e-4a33-8a76-080a9f8a7ef1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -107,13 +125,13 @@
     </ClInclude>
     <ClInclude Include="Stage.h" />
     <ClInclude Include="HomingBullet.h">
-      <Filter>Player\HomingBullet</Filter>
+      <Filter>PARTICLE\Player\HomingBullet</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Player</Filter>
+      <Filter>PARTICLE\Player</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>Player\Bullet</Filter>
+      <Filter>PARTICLE\Player\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="ToManageParticle.h">
       <Filter>PARTICLE</Filter>
@@ -172,6 +190,44 @@
     <ClInclude Include="AStar\Map.h">
       <Filter>Astar</Filter>
     </ClInclude>
+    <ClInclude Include="ObjState\ObjState.h">
+      <Filter>ObjState</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjState\Stop.h">
+      <Filter>ObjState</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjState\Walk.h">
+      <Filter>ObjState</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjState\Run.h">
+      <Filter>ObjState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectInterface.h">
+      <Filter>SceneGraph\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitor\SearchUpdateVisitor.h">
+      <Filter>SceneGraph\Visitor</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitor\VisitorInterface.h">
+      <Filter>SceneGraph\Visitor</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\GameObjectNode.h">
+      <Filter>SceneGraph\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Leaf.h">
+      <Filter>SceneGraph\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Node.h">
+      <Filter>SceneGraph\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\NodeAbstract.h">
+      <Filter>SceneGraph\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinMesh.h">
+      <Filter>SkinnedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixObject.h" />
+    <ClInclude Include="Light.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -221,13 +277,13 @@
     </ClCompile>
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="HomingBullet.cpp">
-      <Filter>Player\HomingBullet</Filter>
+      <Filter>PARTICLE\Player\HomingBullet</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Player</Filter>
+      <Filter>PARTICLE\Player</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>Player\Bullet</Filter>
+      <Filter>PARTICLE\Player\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="ToManageParticle.cpp">
       <Filter>PARTICLE</Filter>
@@ -283,6 +339,32 @@
     <ClCompile Include="AStar\Map.cpp">
       <Filter>Astar</Filter>
     </ClCompile>
+    <ClCompile Include="ObjState\Stop.cpp">
+      <Filter>ObjState</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjState\Walk.cpp">
+      <Filter>ObjState</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjState\Run.cpp">
+      <Filter>ObjState</Filter>
+    </ClCompile>
+    <ClCompile Include="Visitor\SearchUpdateVisitor.cpp">
+      <Filter>SceneGraph\Visitor</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\GameObjectNode.cpp">
+      <Filter>SceneGraph\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\Node.cpp">
+      <Filter>SceneGraph\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\NodeAbstract.cpp">
+      <Filter>SceneGraph\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinMesh.cpp">
+      <Filter>SkinnedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrixObject.cpp" />
+    <ClCompile Include="Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -377,6 +459,9 @@
     </FxCompile>
     <FxCompile Include="Resources\HLSL\Drip.hlsl">
       <Filter>Paint</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
+      <Filter>hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
