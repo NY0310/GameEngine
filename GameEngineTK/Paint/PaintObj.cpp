@@ -13,6 +13,7 @@ PaintObj::PaintObj()
 	paintCollision = make_unique<PaintCollision>();
 	mouseRay = MouseRay::GetInstance();
 	matrixObject->SetPosition(D3DXVECTOR3(0, 1.5, 0));
+	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));
 }
 
 
@@ -25,18 +26,28 @@ void PaintObj::UpDate()
 	Segment* segment;
 	D3DXVECTOR2 uv = D3DXVECTOR2(0,0);
 	segment = mouseRay->RayCreate();
+
 	if (segment)
 	{
 		if (paintCollision->IntersectSegment(segment, uv))
 		{
-			D3DXVECTOR4 color = Colors::Blue;
-			campus->CreateInk(color, uv, 1);
+			D3DXVECTOR4 color = Colors::Gold;
+			static int a = 0;
+			a++;
+
+			if (a % 2 == 1)
+			{
+				D3DXVECTOR4 color = Colors::Red;
+				campus->CreateInk(color, uv, 1);
+			}
+			else
+			{
+				D3DXVECTOR4 colora = Colors::Green;
+				campus->CreateInk(colora, uv, 1);
+			}
 		}
 		delete segment;
-
 	}
-
-
 
 }
 
@@ -56,12 +67,12 @@ void PaintObj::Render()
 	x += 0.00001;
 	D3DXMATRIX World;
 	//使用するシェーダーの登録	
-	deviceContext->VSSetShader(vertexShader, nullptr, 0);
-	deviceContext->PSSetShader(pixelShader, nullptr, 0);
+	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+	deviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
 	SIMPLESHADER_CONSTANT_BUFFER cb;
-	if (SUCCEEDED(deviceContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(deviceContext->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		
 		D3DXMATRIX world;
@@ -86,20 +97,19 @@ void PaintObj::Render()
 		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-		deviceContext->Unmap(constantBuffer, 0);
+		deviceContext->Unmap(constantBuffer.Get(), 0);
 
 	}
 	//テクスチャーをシェーダーに渡す
-	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &texture);
-	deviceContext->PSSetShaderResources(1, 1, &campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
-	deviceContext->PSSetShaderResources(2, 1, &campus->GetInkNormalMap());
-	deviceContext->PSSetShaderResources(3, 1, &depthMapTexSRV);//ライトビューでの深度テクスチャ作成
+	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
+	deviceContext->PSSetShaderResources(0, 1, texture.GetAddressOf());
+	deviceContext->PSSetShaderResources(1, 1, campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
+	deviceContext->PSSetShaderResources(2, 1, depthMapTexSRV.GetAddressOf());//ライトビューでの深度テクスチャ作成
 															   //このコンスタントバッファーを使うシェーダーの登録
-	deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
-	deviceContext->PSSetConstantBuffers(0, 1, &constantBuffer);
+	deviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+	deviceContext->PSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 	//頂点インプットレイアウトをセット
-	deviceContext->IASetInputLayout(vertexLayout);
+	deviceContext->IASetInputLayout(vertexLayout.Get());
 	//プリミティブ・トポロジーをセット
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//バーテックスバッファーをセット

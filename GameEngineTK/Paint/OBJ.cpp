@@ -2,6 +2,7 @@
 
 
 using namespace std;
+std::map < LPSTR, Obj::MeshAndTriangles> Obj::modelDatas;
 
 Obj::Obj()
 {
@@ -37,10 +38,10 @@ HRESULT Obj::CreateShader()
 	ID3DBlob *pCompiledShader = nullptr;
 	ID3DBlob *pErrors = nullptr;
 	//ブロブからバーテックスシェーダー作成
-	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "VS", "vs_5_0", (void**)&vertexShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "VS", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 	CreateVertexInputLayout(pCompiledShader);
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "PS", "ps_5_0", (void**)&pixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "PS", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 
 	return S_OK;
 }
@@ -51,8 +52,8 @@ HRESULT Obj::CreateDepthTextureShader()
 	ID3DBlob *pCompiledShader = nullptr;
 	ID3DBlob *pErrors = nullptr;
 	//深度テクスチャ用バーテックスシェーダー作成
-	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "VS_Depth", "vs_5_0", (void**)&depthVertexShader, &pCompiledShader)))return E_FAIL;
-	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "PS_Depth", "ps_5_0", (void**)&depthPixelShader, &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "VS_Depth", "vs_5_0", (void**)depthVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/OBJ.hlsl", "PS_Depth", "ps_5_0", (void**)depthPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 	return S_OK;
 }
 
@@ -110,7 +111,7 @@ HRESULT Obj::CreateDepthTexture()
 	tdesc.Usage = D3D11_USAGE_DEFAULT;
 	tdesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	tdesc.CPUAccessFlags = 0;
-	device->CreateTexture2D(&tdesc, nullptr, &depthMapTex);
+	device->CreateTexture2D(&tdesc, nullptr, depthMapTex.ReleaseAndGetAddressOf());
 
 	//深度マップテクスチャー用　レンダーターゲットビュー作成
 	D3D11_RENDER_TARGET_VIEW_DESC DescRT;
@@ -118,7 +119,7 @@ HRESULT Obj::CreateDepthTexture()
 	DescRT.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	DescRT.Texture2D.MipSlice = 0;
 
-	device->CreateRenderTargetView(depthMapTex, &DescRT, &depthMapTexRTV);
+	device->CreateRenderTargetView(depthMapTex.Get(), &DescRT, depthMapTexRTV.ReleaseAndGetAddressOf());
 
 
 
@@ -131,7 +132,7 @@ HRESULT Obj::CreateDepthTexture()
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	device->CreateShaderResourceView(depthMapTex, &SRVDesc, &depthMapTexSRV);
+	device->CreateShaderResourceView(depthMapTex.Get(), &SRVDesc, depthMapTexSRV.ReleaseAndGetAddressOf());
 
 	//深度マップテクスチャをレンダーターゲットにする際のデプスステンシルビュー用のテクスチャーを作成
 	D3D11_TEXTURE2D_DESC descDepth;
@@ -148,11 +149,11 @@ HRESULT Obj::CreateDepthTexture()
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 
-	device->CreateTexture2D(&descDepth, nullptr, &depthMapDSTex);
+	device->CreateTexture2D(&descDepth, nullptr, depthMapDSTex.ReleaseAndGetAddressOf());
 
 
 	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	device->CreateDepthStencilView(depthMapDSTex, nullptr, &depthMapDSTexDSV);
+	device->CreateDepthStencilView(depthMapDSTex.Get(), nullptr, &depthMapDSTexDSV);
 
 	return S_OK;
 
@@ -251,12 +252,19 @@ HRESULT Obj::LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL* pMarial)
 	}
 	fclose(fp);
 
+
 	return S_OK;
 }
 
 
 HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 {
+	//既に読み込んでいるか
+	if (modelDatas.count(FileName) != 0)
+	{
+		triangles = modelDatas[FileName].triangles;
+		mesh = modelDatas[FileName].mesh;
+	}
 
 	float x = 0, y = 0, z = 0;
 	int v1 = 0, v2 = 0, v3 = 0;
@@ -415,7 +423,11 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	if (FAILED(device->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
 		return FALSE;
 
-
+	struct MeshAndTriangles data;
+	data.mesh = mesh;
+	data.triangles = triangles;
+	//リストにモデル情報を格納する
+	modelDatas[FileName] = data;
 
 	//一時的な入れ物は、もはや不要
 	delete pvCoord;
@@ -444,12 +456,12 @@ void Obj::Render()
 	x += 0.00001;
 	D3DXMATRIX World;
 	//使用するシェーダーの登録	
-	deviceContext->VSSetShader(vertexShader, nullptr, 0);
-	deviceContext->PSSetShader(pixelShader, nullptr, 0);
+	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+	deviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
 	SIMPLESHADER_CONSTANT_BUFFER cb;
-	if (SUCCEEDED(deviceContext->Map(constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(deviceContext->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		D3DXMATRIX world;
 		D3DXMatrixIdentity(&world);
@@ -472,18 +484,18 @@ void Obj::Render()
 		cb.vEyes = D3DXVECTOR4(vEyePt.x, vEyePt.y, vEyePt.z, 0);
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-		deviceContext->Unmap(constantBuffer, 0);
+		deviceContext->Unmap(constantBuffer.Get(), 0);
 
 	}
 	//テクスチャーをシェーダーに渡す
-	deviceContext->PSSetSamplers(0, 1, &sampleLimear);
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
+	deviceContext->PSSetShaderResources(0, 1, texture.GetAddressOf());
 	//deviceContext->PSSetShaderResources(2, 1, &depthMapTexSRV);//ライトビューでの深度テクスチャ作成
 	//このコンスタントバッファーを使うシェーダーの登録
-	deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
-	deviceContext->PSSetConstantBuffers(0, 1, &constantBuffer);
+	deviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf() );
+	deviceContext->PSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf() );
 	//頂点インプットレイアウトをセット
-	deviceContext->IASetInputLayout(vertexLayout);
+	deviceContext->IASetInputLayout(vertexLayout.Get());
 	//プリミティブ・トポロジーをセット
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	//バーテックスバッファーをセット

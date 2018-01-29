@@ -41,6 +41,11 @@ public:
 			return hight;
 		return x;
 	}
+
+	//Uv座標系から正規デバイス座標系に変換する
+	static const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position);
+	static const D3DXVECTOR2& ChangeRegularDevice(const D3DXVECTOR2& position);
+
 private:
 	//2つの値とも0
 	static bool Both0(int num1, int num2);

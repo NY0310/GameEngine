@@ -228,6 +228,7 @@
     </ClInclude>
     <ClInclude Include="MatrixObject.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="SimpleTextures.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -365,6 +366,7 @@
     </ClCompile>
     <ClCompile Include="MatrixObject.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="SimpleTextures.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -462,6 +464,9 @@
     </FxCompile>
     <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
       <Filter>hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Paint\PaintUpdate.hlsl">
+      <Filter>Paint</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

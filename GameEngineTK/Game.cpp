@@ -126,16 +126,6 @@ void Game::Initialize(HWND window, int width, int height)
 	//追従カメラにプレイヤーをセット
 	m_Camera->SetPlayer(player.get()); 
 
-	////敵の生成
-	//int enemyNum = 5;
-
-	//m_Enemies.resize(enemyNum);
-
-	//for (int i = 0; i < enemyNum; i++)
-	//{
-	//	m_Enemies[i] = std::make_unique<Enemy>(keyboard.get());
-	//	//m_Enemies[i]->Initialize();
-	//}
 
 
 	clearcnt = 0;
@@ -146,10 +136,19 @@ void Game::Initialize(HWND window, int width, int height)
 	stage.Initialize();
 
 
-	const int objnum = 1;
+	const int objnum =4;
 	D3DXVECTOR3 position[objnum] = {
-		D3DXVECTOR3(0,2,-2),
+		D3DXVECTOR3(0,1,-2),
+		D3DXVECTOR3(2,2,-2),
+		D3DXVECTOR3(-2,0,-2),
+		D3DXVECTOR3(-2,2,-2),
+	};
 
+	D3DXVECTOR3 rot[objnum] = {
+		D3DXVECTOR3(0,0,0),
+		D3DXVECTOR3(1,0.6,0.3),
+		D3DXVECTOR3(0.5,0,1),
+		D3DXVECTOR3(1.4,0,1),
 	};
 	obj.resize(objnum);
 
@@ -159,8 +158,9 @@ for (auto& data : obj)
 		data = new PaintObj();
 		data->Initialze();
 		data->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
-		data->LoadTextuerFile("Resources/PNG/GoalPanel.png");
-		//data->SetPosition(position[cnt]);
+		data->LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
+		data->matrixObject->SetPosition(position[cnt]);
+		data->matrixObject->SetRotation(rot[cnt]);
 		cnt++;
 		}
 	shadermanager = ShaderManager::Get();
@@ -233,312 +233,14 @@ void Game::Update(DX::StepTimer const& timer)
 
 
 
-	{//弾丸と敵のあたり判定
-		for (std::vector<SphereNode*>::iterator Sphereit = player->GetCollisionNodeBullet().begin(); Sphereit != player->GetCollisionNodeBullet().end(); )
-		{
-			if (m_Enemies.size() == 0)
-			{
-				break;
-			}
-			for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); )
-			{
-
-				Enemy* enemy = it->get();
-				//敵の判定球を取得
-				const Sphere& enemySphere = enemy->GetCollisionNodeBody();
-
-				//二つの球が当たっていたら
-				if (CheckSpere2Sphere(*(*Sphereit), enemySphere))
-				{
-					(*it)->SetHp((*it)->GetHp() - 10);
-
-					//当たった弾を消す
-					Sphereit = player->GetCollisionNodeBullet().erase(Sphereit);
-
-
-					if (player->Gethitcnt() != player->GetMAX_HOMING())
-						player->Sethitcnt(player->Gethitcnt() + 1);
-					//hpがなくなったら敵を殺す
-					if ((*it)->GetHp() <= 0)
-					{
-						//パーティクル
-						Vector3 enemypos = (*it)->GetTrans();
-						enemypos.y += 1;
-						tomanageparticle->AddParticle(enemypos);
-
-
-						//削除する敵をターゲットにしているホーミング弾を削除	
-						for (std::vector<std::unique_ptr<HomingBullet>>::iterator ithoming = m_HomingBullets.begin();
-							ithoming != m_HomingBullets.end();)
-						{
-							if ((*it).get() == (*ithoming)->GetEnemy())
-							{
-								ithoming = m_HomingBullets.erase(ithoming);
-							}
-							else
-							{
-								ithoming++;
-							}
-						}
-
-						it = m_Enemies.erase(it);
-
-
-
-						m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
-						clearcnt++;
-					}
-					break;
-
-				}
-				else
-				{
-					//消さなかったので
-					it++;
-					//何にも当たらなかったので消す
-					if (m_Enemies.end() == it)
-					{
-						//球を消したのでループから抜ける
-						Sphereit++;
-					}
-				}
-			}
-		}
-
-	}
-
-
-
-
-	//{//敵弾丸とプレイヤのあたり判定
-	//	for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end();it++)
-	//	{
-	//		for (std::vector<SphereNode*>::iterator Sphereit = (*it)->GetCollisionNodeBullet().begin(); Sphereit != (*it)->GetCollisionNodeBullet().end(); )
-	//		{
-	//				//敵の判定球を取得
-	//				const Sphere& playerSphere = player->GetCollisionNodeBody();
-
-	//				//二つの球が当たっていたら
-	//				if (CheckSpere2Sphere(*(*Sphereit), playerSphere))
-
-	//				{
-	//					player->SetHp(player->GetHp() - 10);
-
-	//					//当たった弾を消す
-	//					Sphereit = (*it)->GetCollisionNodeBullet().erase(Sphereit);
-	//			
-	//					//hpがなくなったら敵を殺す
-	//					if (player->GetHp() <= 0)
-	//					{
-	//						//パーティクル
-	//						Vector3 playerpos = player->GetTrans();
-	//						playerpos.y += 1;
-	//						tomanageparticle->AddParticle(playerpos);
-	//					}
-
-	//				}
-	//				else
-	//				{
-	//						//球を消したのでループから抜ける
-	//						Sphereit++;
-	//				}
-
-	//		}
-
-	//	}
-
-	//}
-	/*static int cnt = 0;
-	cnt++;
-	if (cnt > 100)
-	{
-	tomanageparticle->AddParticle(Vector3(0,0,-15));
-	cnt = 0;
-	}*/
-
-
-
-
 
 
 	//
 	{//	自機に追従するカメラ
 
 		m_Camera->Update();
-		m_view = m_Camera->GetView();
-		m_proj = m_Camera->GetProjection();
 	}
 
-
-
-	const Vector3 vel = player->GetVelocity();
-	//if (vel.y <= 0)
-	//{//自機が地面に乗る処理
-	// //自機の頭から足元への線分
-	//	Segment player_segment;
-	//	//自機のワールド座標
-	//	Vector3 trans = player->GetTrans();
-	//	player_segment.Start = trans + Vector3(0, 1, 0);
-	//	player_segment.End = trans + Vector3(0, -0.5f, 0);
-
-	//	//交点座標
-	//	Vector3 inter;
-
-	//	//地形と線分のあたり判定(レイキャスト Ray)
-	//	if (stage.GetLandShape().IntersectSegment(player_segment, &inter))
-	//	{
-	//		trans.y = inter.y;
-	//		//落下を終了
-	//		player->StopJump();
-	//	}
-	//	else
-	//	{
-	//		player->StartFall();
-	//	}
-
-	//	//自機を移動
-	//	player->SetTrans(trans);
-	//	//ワールド行列の更新
-	////	player->Calc();
-	//}
-
-
-
-	////自機の天球へのめりこみを解消する
-	//{
-	//	Sphere sphere = player->GetCollisionNodeBody();
-
-	//	//自機のワールド座標
-	//	Vector3 trans = player->GetTrans();
-
-	//	Vector3 sphere2player = trans - sphere.Center;
-	//	//めりこみ排斥ベクトル
-	//	Vector3 reject;
-
-	//	if (m_LandShape.IntersectSphere(sphere, &reject))
-	//	{
-	//		sphere.Center += reject;
-
-	//	}
-	//	
-	//		player->SetTrans(sphere.Center + sphere2player);
-
-
-
-	//}
-
-
-	//敵の天球へのめりこみを解消する
-
-	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
-
-	//{
-	//	Vector3 pos = (*it)->GetTrans();
-	//	pos.x = abs(pos.x);
-	//	pos.y = abs(pos.y);
-	//	pos.z = abs(pos.z);
-
-	//	if ((pos.x >= 75) || (pos.z >= 75))
-	//	{
-
-	//		//自機の天球へのめりこみを解消する
-	//		{
-	//			Sphere sphere = (*it)->GetCollisionNodeBody();
-
-	//			//自機のワールド座標
-	//			Vector3 trans = (*it)->GetTrans();
-
-	//			Vector3 sphere2player = trans - sphere.Center;
-	//			//めりこみ排斥ベクトル
-	//			Vector3 reject;
-
-	//			if (m_LandShape.IntersectSphere(sphere, &reject))
-	//			{
-	//				
-	//				
-	//				//削除する敵をターゲットにしているホーミング弾を削除	
-	//				for (std::vector<std::unique_ptr<HomingBullet>>::iterator ithoming = m_HomingBullets.begin();
-	//					ithoming != m_HomingBullets.end();)
-	//				{
-	//					if ((*it).get() == (*ithoming)->GetEnemy())
-	//					{
-	//						ithoming = m_HomingBullets.erase(ithoming);
-	//					}
-	//					else
-	//					{
-	//						ithoming++;
-	//					}
-	//				}
-	//				it = m_Enemies.erase(it);
-	//				m_Enemies.push_back(move(std::make_unique<Enemy>(keyboard.get())));
-
-	//			}
-	//			else
-	//			{
-	//				//it++;
-	//			}
-
-
-	//		}
-
-
-	//	}
-	//	else
-	//	{
-	//	//	it++;
-	//	}
-	//}
-
-
-
-	for (std::vector<std::unique_ptr<HomingBullet>>::iterator it = m_HomingBullets.begin();
-		it != m_HomingBullets.end();
-		)
-	{
-		if ((*it)->Update())
-		{
-
-			it = m_HomingBullets.erase(it);
-
-		}
-		else
-		{
-			it++;
-		}
-	}
-
-
-	// 全パーツ分行列更新
-	//for (std::vector<std::unique_ptr<Enemy>>::iterator it = m_Enemies.begin(); it != m_Enemies.end(); it++)
-	//{
-	//	Enemy* enemy = it->get();
-	//	(*it)->Update();
-	//}
-
-	////パーティクル更新処理
-	//tomanageparticle->Update();
-
-
-	//static  int cnt = 0;
-	//cnt++;
-	//if (cnt == 60)
-	//{
-
-	//	tomanageparticle->AddParticle(Vector3::Zero);
-	//	cnt = 0;
-	//}
-
-	//Segment player_segment;
-	//////自機のワールド座標
-	//Vector3 trans = player->GetTrans();
-	//player_segment.Start = trans + Vector3(0, 2, 0);
-	//player_segment.End = trans + Vector3(0, -0.5f, 0);
-	//obj->IntersectSegment(player_segment, m_Camera);
-
-	//Sphere sphere;
-	//sphere.Center = player->GetTrans();
-	//sphere.Radius = 1.0f;
-	//obj->IntersectSphere(sphere, m_Camera);
 
 
 	for (auto& data : obj)
@@ -562,9 +264,9 @@ void Game::Render()
 	D3D11_RASTERIZER_DESC rdc;
 	ZeroMemory(&rdc, sizeof(rdc));
 
-	devices.Context().Get()->RSSetState(m_states->CullCounterClockwise());
+	//devices.Context().Get()->RSSetState(m_states->CullCounterClockwise());
 
-
+	devices.Context().Get()->RSSetState(m_states->CullNone());
 
 
 	//#if 0
@@ -640,18 +342,18 @@ void Game::Render()
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 	//pTessellation->Render(m_Camera);
 	//pDisplacementMapping->Render(m_Camera);
-	skinmesh->m_View = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetView());
-	skinmesh->m_Eye = shaderManader.VectorToD3DXVECTOR3(m_Camera->GetEyePos());
-	skinmesh->m_Proj = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetProjection());
-	//再生開始箇所を変えることによりモーションを切り替える
-	if (GetKeyState(VK_F1) & 0x80)//握る
-	{
-		skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 0);
-	}
-	if (GetKeyState(VK_F2) & 0x80)//振る
-	{
-		skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 1.3);
-	}
+	//skinmesh->m_View = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetView());
+	//skinmesh->m_Eye = shaderManader.VectorToD3DXVECTOR3(m_Camera->GetEyePos());
+	//skinmesh->m_Proj = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetProjection());
+	////再生開始箇所を変えることによりモーションを切り替える
+	//if (GetKeyState(VK_F1) & 0x80)//握る
+	//{
+	//	skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 0);
+	//}
+	//if (GetKeyState(VK_F2) & 0x80)//振る
+	//{
+	//	skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 1.3);
+	//}
 
 	//	skinmesh->Render();
 

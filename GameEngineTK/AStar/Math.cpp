@@ -167,3 +167,14 @@ D3DXMATRIX Math::MatrixToD3DXMATRIX(DirectX::SimpleMath::Matrix matrix)
 
 	return d3dxmatrix;
 }
+
+const D3DXVECTOR3& Math::ChangeRegularDevice(const D3DXVECTOR3& position)
+{ 
+	return D3DXVECTOR3(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1), 0); 
+}
+
+
+const D3DXVECTOR2& Math::ChangeRegularDevice(const D3DXVECTOR2& position)
+{ 
+	return D3DXVECTOR2(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1)); 
+}

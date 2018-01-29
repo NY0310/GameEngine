@@ -9,6 +9,7 @@
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"
 
+using namespace Microsoft::WRL;
 
 class Obj
 {
@@ -62,6 +63,12 @@ protected:
 		ID3D11Buffer* pIndexBuffer;
 	};
 
+	struct MeshAndTriangles
+	{
+		std::vector<Triangle> triangles;
+		MY_MESH mesh;
+	};
+
 	using Vector3 = DirectX::SimpleMath::Vector3;
 public:
 
@@ -80,6 +87,8 @@ public:
 	void Render();
 	//Zテクスチャに書き込み
 	void ZTextureRender();
+	std::unique_ptr<MatrixObject> matrixObject = std::make_unique<MatrixObject>();//行列
+
 private:
 	//シェーダー作成
 	HRESULT CreateShader();
@@ -97,7 +106,8 @@ private:
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	//マテリアルファイル読み込み
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
-protected:
+	//重複チェック
+	//bool IsOverlap();
 
 protected:
 	/// <summary>
@@ -105,26 +115,31 @@ protected:
 	/// </summary>
 	MY_MESH mesh;//メッシュ情報
 	MY_MATERIAL material;//マテリアル構造体
-	ID3D11VertexShader* vertexShader;//バッテックスシェーダー
-	ID3D11PixelShader* pixelShader;//ピクセルシェーダー
-	ID3D11Buffer* constantBuffer;//コンスタントバッファ
-	ID3D11InputLayout* vertexLayout;//頂点インプットレイアウト
-	ID3D11SamplerState* sampleLimear;//テクスチャサンプラ
-	ID3D11ShaderResourceView* texture;//テクスチャ
-	std::vector<Triangle> triangles;//三角形ポリゴン
+	ComPtr<ID3D11VertexShader> vertexShader;//バッテックスシェーダー
+	ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダー
+	ComPtr<ID3D11Buffer> constantBuffer;//コンスタントバッファ
+	ComPtr<ID3D11InputLayout> vertexLayout;//頂点インプットレイアウト
+	ComPtr<ID3D11SamplerState> sampleLimear;//テクスチャサンプラ
+	ComPtr<ID3D11ShaderResourceView> texture;//テクスチャ
 
 
-									/// <summary>
-									/// Zテクスチャ
-									/// </summary>
-	ID3D11Buffer* zTexConstantBuffer;//zテクスチャ用コンスタントバッファ
-	ID3D11VertexShader* depthVertexShader;//深度テクスチャーレンダリング用
-	ID3D11PixelShader* depthPixelShader;//深度テクスチャーレンダリング用
-	ID3D11Texture2D* depthMapTex;//深度マップテクスチャー
-	ID3D11RenderTargetView* depthMapTexRTV;//深度マップテクスチャーのRTV
-	ID3D11ShaderResourceView* depthMapTexSRV;//深度マップテクスチャーのSRV
-	ID3D11Texture2D* depthMapDSTex;//深度マップテクスチャー用DS
-	ID3D11DepthStencilView* depthMapDSTexDSV;//深度マップテクスチャー用DSのDSV	
+	
+
+	static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
+	std::vector<Triangle> triangles;
+
+
+	/// <summary>
+	/// Zテクスチャ
+	/// </summary>
+	ComPtr<ID3D11Buffer> zTexConstantBuffer;//zテクスチャ用コンスタントバッファ
+	ComPtr<ID3D11VertexShader> depthVertexShader;//深度テクスチャーレンダリング用
+	ComPtr<ID3D11PixelShader> depthPixelShader;//深度テクスチャーレンダリング用
+	ComPtr<ID3D11Texture2D> depthMapTex;//深度マップテクスチャー
+	ComPtr<ID3D11RenderTargetView> depthMapTexRTV;//深度マップテクスチャーのRTV
+	ComPtr<ID3D11ShaderResourceView> depthMapTexSRV;//深度マップテクスチャーのSRV
+	ComPtr<ID3D11Texture2D> depthMapDSTex;//深度マップテクスチャー用DS
+	ComPtr<ID3D11DepthStencilView> depthMapDSTexDSV;//深度マップテクスチャー用DSのDSV	
 
 
 
@@ -135,7 +150,6 @@ protected:
 	ID3D11Device* device = Devices::Get().Device().Get();//デバイス
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 	FollowCamera* camera = FollowCamera::GetInstance();
-	std::unique_ptr<MatrixObject> matrixObject = std::make_unique<MatrixObject>();//行列
 
 
 
