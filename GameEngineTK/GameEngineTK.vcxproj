@@ -172,6 +172,13 @@
     <ClInclude Include="BumpMapping.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Charactor\Charactor.h" />
+    <ClInclude Include="Charactor\Player\MainPlayer.h" />
+    <ClInclude Include="Charactor\Player\MainPlayer.cpp" />
+    <ClInclude Include="Charactor\Player\State\PlayerRun.h" />
+    <ClInclude Include="Charactor\Player\State\PlayerState.h" />
+    <ClInclude Include="Charactor\Player\State\PlayerStop.h" />
+    <ClInclude Include="Charactor\Player\State\PlayerWalk.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionNode.h" />
     <ClInclude Include="CD3DXMESH.h" />
@@ -184,6 +191,7 @@
     <ClInclude Include="GameObject\GameObjectInterface.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="HomingBullet.h" />
+    <ClInclude Include="InkObj2.h" />
     <ClInclude Include="Input\KeyboardUtil.h" />
     <ClInclude Include="Input\MouseRay.h" />
     <ClInclude Include="Input\MouseUtil.h" />
@@ -203,21 +211,26 @@
     <ClInclude Include="ObjState\Walk.h" />
     <ClInclude Include="ObjState\ObjState.h" />
     <ClInclude Include="ObjState\Stop.h" />
-    <ClInclude Include="Paint\Ink.h" />
+    <ClInclude Include="PaintSkinMesh.h" />
+    <ClInclude Include="Paint\InkObj.h" />
+    <ClInclude Include="Paint\Paint.h" />
     <ClInclude Include="Paint\Obj.h" />
     <ClInclude Include="Paint\PaintCollision.h" />
+    <ClInclude Include="Paint\PaintCreator.h" />
     <ClInclude Include="Paint\PaintObj.h" />
-    <ClInclude Include="PARTICLE.h" />
+    <ClInclude Include="InkParticle.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SkinMesh.h" />
+    <ClInclude Include="Sprite\Sprite.h" />
     <ClInclude Include="sss.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Tessellation.h" />
     <ClInclude Include="SimpleTextures.h" />
-    <ClInclude Include="ToManageParticle.h" />
+    <ClInclude Include="InkParticleRenderer.h" />
+    <ClInclude Include="UsingDirectSimpleMath.h" />
     <ClInclude Include="Visitor\SearchUpdateVisitor.h" />
     <ClInclude Include="Visitor\VisitorInterface.h" />
   </ItemGroup>
@@ -230,6 +243,10 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CD3DXMESH.cpp" />
+    <ClCompile Include="Charactor\Charactor.cpp" />
+    <ClCompile Include="Charactor\Player\State\PlayerRun.cpp" />
+    <ClCompile Include="Charactor\Player\State\PlayerStop.cpp" />
+    <ClCompile Include="Charactor\Player\State\PlayerWalk.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionNode.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
@@ -240,6 +257,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="HomingBullet.cpp" />
+    <ClCompile Include="InkObj2.cpp" />
     <ClCompile Include="Input\KeyboardUtil.cpp" />
     <ClCompile Include="Input\MouseRay.cpp" />
     <ClCompile Include="Input\MouseUtil.cpp" />
@@ -258,21 +276,26 @@
     <ClCompile Include="ObjState\Run.cpp" />
     <ClCompile Include="ObjState\Walk.cpp" />
     <ClCompile Include="ObjState\Stop.cpp" />
-    <ClCompile Include="Paint\Ink.cpp" />
+    <ClCompile Include="PaintSkinMesh.cpp" />
+    <ClCompile Include="Paint\InkObj.cpp" />
+    <ClCompile Include="Paint\Paint.cpp" />
     <ClCompile Include="Paint\Obj.cpp" />
     <ClCompile Include="Paint\PaintCollision.cpp" />
+    <ClCompile Include="Paint\PaintCreator.cpp" />
     <ClCompile Include="Paint\PaintObj.cpp" />
-    <ClCompile Include="PARTICLE.cpp" />
+    <ClCompile Include="Paint\PaintShoot.cpp" />
+    <ClCompile Include="InkParticle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SkinMesh.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Sprite\Sprite.cpp" />
     <ClCompile Include="sss.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Tessellation.cpp" />
     <ClCompile Include="SimpleTextures.cpp" />
-    <ClCompile Include="ToManageParticle.cpp" />
+    <ClCompile Include="InkParticleRenderer.cpp" />
     <ClCompile Include="Visitor\SearchUpdateVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -320,18 +343,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Paint\PaintUpdate.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="Resources\HLSL\BumpMapping.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -362,11 +373,57 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Resources\HLSL\InkObj.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\HLSL\OBJ.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PaintSkinMesh.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PaintUpdate.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PlaneDrip.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PointSprite.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Sprite.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shader.hlsl">
       <FileType>Document</FileType>

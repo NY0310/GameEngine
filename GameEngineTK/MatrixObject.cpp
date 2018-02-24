@@ -3,15 +3,23 @@
 /// </summary>
 #include "MatrixObject.h"
 
+MatrixObject::MatrixObject()
+{
+	scale = D3DXVECTOR3(1,1,1);
+}
+
 /// <summary>
 /// ワールド行列作成
 /// </summary>
 void MatrixObject::WorldMatrixCreate()
 {
+	FollowCamera* camera = FollowCamera::GetInstance();
 	//全ての行列を作成
 	CreateAllMatrix();
 	//スケール・回転・移動行列からワールド行列作成
 	worldMatrix = scaleMatrix * rotationMatrix * transferMatrix;
+	//ワールド行列・ビュー行列・プロジェクション行列を作成
+	wvp = worldMatrix * Math::MatrixToD3DXMATRIX(camera->GetView()) * Math::MatrixToD3DXMATRIX(camera->GetProjection());
 }
 
 /// <summary>
@@ -32,7 +40,7 @@ void MatrixObject::CreateAllMatrix()
 /// </summary>
 void MatrixObject::CreateTransferMatrix()
 {
-	D3DXMatrixTranslation(&transferMatrix, this->transfer.x, this->transfer.y, this->transfer.z);
+	D3DXMatrixTranslation(&transferMatrix, this->transfer.x, this->transfer.y, this->transfer.y);
 }
 
 /// <summary>

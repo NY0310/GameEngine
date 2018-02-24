@@ -1,29 +1,38 @@
 #include <stdlib.h>
 #include "SkinMesh.h"
 
-//
-//HRESULT MY_HIERARCHY::CreateFrame(LPCSTR Name, LPD3DXFRAME *ppNewFrame)
-//フレームを作成する
+using namespace std;
+
+/// <summary>
+/// フレーム作成
+/// </summary>
+/// <param name="Name">フレーム名</param>
+/// <param name="ppNewFrame">フレーム</param>
+/// <returns></returns>
 HRESULT MY_HIERARCHY::CreateFrame(LPCSTR Name, LPD3DXFRAME *ppNewFrame)
 {
 	HRESULT hr = S_OK;
-	MYFRAME *pFrame;
+	DerivedFrame *pFrame;
 
-	*ppNewFrame = NULL;
+	*ppNewFrame = nullptr;
 
-	pFrame = new MYFRAME;
-	if (pFrame == NULL)
+	pFrame = new DerivedFrame;
+	if (pFrame == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
+	//フレーム名のメモリ確保(ナル文字の為に+1する)
 	pFrame->Name = new CHAR[strlen(Name) + 1];
 	if (!pFrame->Name)
 	{
 		return E_FAIL;
 	}
+	//フレーム名をコピー
 	strcpy(pFrame->Name, Name);
 
+	//トランスフォーム行列を単位行列として初期化する
 	D3DXMatrixIdentity(&pFrame->TransformationMatrix);
+	//ワールド行列を単位行列として初期化する
 	D3DXMatrixIdentity(&pFrame->CombinedTransformationMatrix);
 
 	*ppNewFrame = pFrame;
@@ -31,73 +40,113 @@ HRESULT MY_HIERARCHY::CreateFrame(LPCSTR Name, LPD3DXFRAME *ppNewFrame)
 	return S_OK;
 }
 
-//
-//HRESULT MY_HIERARCHY::CreateMeshContainer
-//メッシュコンテナーを作成する
+
+/// <summary>
+/// メッシュコンテナ作成
+/// </summary>
+/// <param name="Name">メッシュ名</param>
+/// <param name="pMeshData">メッシュデータ</param>
+/// <param name="pMaterials">マテリアルデータ</param>
+/// <param name="pEffectInstances">エフェクトデータ</param>
+/// <param name="NumMaterials">マテリアル数</param>
+/// <param name="pAdjacency">隣接ポリゴンインデックス</param>
+/// <param name="pSkinInfo">スキン情報</param>
+/// <param name="ppMeshContainer">メッシュコンテナ</param>
+/// <returns>実行結果</returns>
 HRESULT MY_HIERARCHY::CreateMeshContainer(LPCSTR Name, CONST D3DXMESHDATA* pMeshData,
 	CONST D3DXMATERIAL* pMaterials, CONST D3DXEFFECTINSTANCE* pEffectInstances,
 	DWORD NumMaterials, CONST DWORD *pAdjacency, LPD3DXSKININFO pSkinInfo,
 	LPD3DXMESHCONTAINER *ppMeshContainer)
 {
-	*ppMeshContainer = NULL;
+	*ppMeshContainer = nullptr;
 	DWORD dwBoneNum = 0;
 
+	//メッシュコンテナの情報を入れるためのポインタ(最終的に引数にアドレスを渡す)
 	MYMESHCONTAINER *pMeshContainer = new MYMESHCONTAINER;
 	ZeroMemory(pMeshContainer, sizeof(MYMESHCONTAINER));
+	//メッシュ名+ナル文字(1)分のメモリを確保する
 	pMeshContainer->Name = new CHAR[strlen(Name) + 1];
+	//メッシュ名をコピー
 	strcpy(pMeshContainer->Name, Name);
 
+	//メッシュデータのメモリをコピー
 	memcpy(&pMeshContainer->MeshData, pMeshData, sizeof(pMeshContainer->MeshData));
+	//データの種類をメッシュと指定する
 	pMeshContainer->MeshData.Type = D3DXMESHTYPE_MESH;
-
+	//メッシュのポリゴン数を取得
 	int NumPoly = pMeshContainer->MeshData.pMesh->GetNumFaces();
 	//メッシュを複製する。　なぜかスキンメッシュだと、この関数を抜けた直後にD3DX内部でメッシュポインターがおかしくなってしまうので。
-	LPDIRECT3DDEVICE9 pDevice = NULL;
-	pMeshContainer->MeshData.pMesh->GetDevice(&pDevice);
-	LPD3DXMESH pMesh = NULL;
-	pMeshContainer->MeshData.pMesh->CloneMesh(NULL, NULL, pDevice, &pMesh);
-	//SAFE_RELEASE(pMeshContainer->MeshData.pMesh);
-	pMeshContainer->MeshData.pMesh = pMesh;
+	{
+		LPDIRECT3DDEVICE9 pDevice = nullptr;
+		//メッシュに関連つけられているデバイスを取得
+		pMeshContainer->MeshData.pMesh->GetDevice(&pDevice);
+		LPD3DXMESH pMesh = nullptr;
+		//頂点宣言を使って、メッシュのコピーを作成する
+		pMeshContainer->MeshData.pMesh->CloneMesh(NULL, nullptr, pDevice, &pMesh);
+		//SAFE_RELEASE(pMeshContainer->MeshData.pMesh);
+		pMeshContainer->MeshData.pMesh = pMesh;
+	}
 
 	//メッシュのマテリアル設定
 	pMeshContainer->NumMaterials = max(1, NumMaterials);
+	//全てのマテリアル分のメモリを確保
 	pMeshContainer->pMaterials = new D3DXMATERIAL[pMeshContainer->NumMaterials];
-	pMeshContainer->pAdjacency = new DWORD[pMeshContainer->MeshData.pMesh->GetNumFaces() * 3];
-	if ((pMeshContainer->pAdjacency == NULL) || (pMeshContainer->pMaterials == NULL))
+	
+	
+	//pAdjacencyとは
+	//ポリゴンに隣接するポリゴンのインデックス
+	//DWORDの3つの塊を1つとしてポリゴン数だけ存在する配列
+	//をコピーする
 	{
-		return E_FAIL;
-	}
-	memcpy(pMeshContainer->pAdjacency, pAdjacency, sizeof(DWORD) * NumPoly * 3);
-
-	if (NumMaterials > 0)
-	{
-		for (int i = 0; i<NumMaterials; i++)
+		//隣接ポリゴンインデックス(メッシュ内のポリゴンの数 *　3)の
+		pMeshContainer->pAdjacency = new DWORD[NumPoly * 3];
+		//隣接するポリゴンが存在しないまたはマテリアル情報がない
+		if ((pMeshContainer->pAdjacency == nullptr) || (pMeshContainer->pMaterials == nullptr))
 		{
-			memcpy(&pMeshContainer->pMaterials[i], &pMaterials[i], sizeof(D3DXMATERIAL));
-			if (pMaterials[i].pTextureFilename != NULL)
+			return E_FAIL;
+		}
+		//メッシュコンテナに隣接ポリゴンインデックスをコピーする
+		memcpy(pMeshContainer->pAdjacency, pAdjacency, sizeof(DWORD) * NumPoly * 3);
+	}
+
+	//マテリアル情報をコピーする
+	{
+		if (NumMaterials > 0)
+		{
+			for (int i = 0; i < NumMaterials; i++)
 			{
-				pMeshContainer->pMaterials[i].pTextureFilename = new CHAR[512];
-				strcpy(pMeshContainer->pMaterials[i].pTextureFilename, pMaterials[i].pTextureFilename);
+				//メッシュコンテナにマテリアルのメモリをコピーする
+				memcpy(&pMeshContainer->pMaterials[i], &pMaterials[i], sizeof(D3DXMATERIAL));
+				if (pMaterials[i].pTextureFilename != nullptr)
+				{
+					pMeshContainer->pMaterials[i].pTextureFilename = new CHAR[512];
+					strcpy(pMeshContainer->pMaterials[i].pTextureFilename, pMaterials[i].pTextureFilename);
+				}
 			}
 		}
-	}
-	else
-	{
-		pMeshContainer->pMaterials[0].pTextureFilename = NULL;
-		memset(&pMeshContainer->pMaterials[0].MatD3D, 0, sizeof(D3DMATERIAL9));
-		pMeshContainer->pMaterials[0].MatD3D.Diffuse.r = 0.5f;
-		pMeshContainer->pMaterials[0].MatD3D.Diffuse.g = 0.5f;
-		pMeshContainer->pMaterials[0].MatD3D.Diffuse.b = 0.5f;
-		pMeshContainer->pMaterials[0].MatD3D.Specular = pMeshContainer->pMaterials[0].MatD3D.Diffuse;
+		else
+		{
+			//マテリアル情報がない場合は決め打ちする
+			pMeshContainer->pMaterials[0].pTextureFilename = nullptr;
+			memset(&pMeshContainer->pMaterials[0].MatD3D, 0, sizeof(D3DMATERIAL9));
+			pMeshContainer->pMaterials[0].MatD3D.Diffuse.r = 0.5f;
+			pMeshContainer->pMaterials[0].MatD3D.Diffuse.g = 0.5f;
+			pMeshContainer->pMaterials[0].MatD3D.Diffuse.b = 0.5f;
+			pMeshContainer->pMaterials[0].MatD3D.Specular = pMeshContainer->pMaterials[0].MatD3D.Diffuse;
+		}
 	}
 	//当該メッシュがスキン情報を持っている場合（スキンメッシュ固有の処理）
-	if (pSkinInfo != NULL)
+	if (pSkinInfo != nullptr)
 	{
 		pMeshContainer->pSkinInfo = pSkinInfo;
+		//D3DXLoadHierarchyFromXA関数を呼び出したときに参照カウンタがデクリメントされるのでインクリメント
 		pSkinInfo->AddRef();
+		//ボーンの数を取得
 		dwBoneNum = pSkinInfo->GetNumBones();
+		//フレームとしてのボーンのワールド行列のポインター	
 		pMeshContainer->pBoneOffsetMatrices = new D3DXMATRIX[dwBoneNum];
 
+		//全てのフレームのボーンのワールド行列のメモリをコピー
 		for (DWORD i = 0; i < dwBoneNum; i++)
 		{
 			memcpy(&pMeshContainer->pBoneOffsetMatrices[i],
@@ -109,9 +158,12 @@ HRESULT MY_HIERARCHY::CreateMeshContainer(LPCSTR Name, CONST D3DXMESHDATA* pMesh
 
 	return S_OK;
 }
-//
-//HRESULT MY_HIERARCHY::DestroyFrame(LPD3DXFRAME pFrameToFree) 
-//フレームを破棄する
+
+/// <summary>
+/// フレームを削除
+/// </summary>
+/// <param name="pFrameToFree">フレーム</param>
+/// <returns>実行結果</returns>
 HRESULT MY_HIERARCHY::DestroyFrame(LPD3DXFRAME pFrameToFree)
 {
 	SAFE_DELETE_ARRAY(pFrameToFree->Name);
@@ -129,9 +181,13 @@ HRESULT MY_HIERARCHY::DestroyFrame(LPD3DXFRAME pFrameToFree)
 
 	return S_OK;
 }
-//
-//HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase)
-//メッシュコンテナーを破棄する
+
+
+/// <summary>
+/// メッシュコンテナ削除
+/// </summary>
+/// <param name="pMeshContainerBase">メッシュコンテナ</param>
+/// <returns>実行結果</returns>
 HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBase)
 {
 	int iMaterial;
@@ -144,7 +200,7 @@ HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBas
 
 	SAFE_DELETE_ARRAY(pMeshContainer->ppBoneMatrix);
 
-	if (pMeshContainer->ppTextures != NULL)
+	if (pMeshContainer->ppTextures != nullptr)
 	{
 		for (iMaterial = 0; iMaterial < pMeshContainer->NumMaterials; iMaterial++)
 		{
@@ -155,9 +211,9 @@ HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBas
 
 	SAFE_RELEASE(pMeshContainer->MeshData.pMesh);
 
-	if (pMeshContainer->pBoneBuffer != NULL)
+	if (pMeshContainer->boneBuffer != nullptr)
 	{
-		SAFE_RELEASE(pMeshContainer->pBoneBuffer);
+		SAFE_RELEASE(pMeshContainer->boneBuffer);
 		SAFE_DELETE_ARRAY(pMeshContainer->pBoneOffsetMatrices);
 	}
 
@@ -166,54 +222,71 @@ HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBas
 	return S_OK;
 }
 
-//
-//
-//
+
+/// <summary>
+/// メッシュコンテナの全ボーンの行列を格納	
+/// </summary>
+/// <param name="pMeshContainerBase"></param>
+/// <returns></returns>
 HRESULT D3DXPARSER::AllocateBoneMatrix(LPD3DXMESHCONTAINER pMeshContainerBase)
 {
-	MYFRAME *pFrame = NULL;
+	DerivedFrame *pFrame = nullptr;
 	DWORD dwBoneNum = 0;
 
 	MYMESHCONTAINER *pMeshContainer = (MYMESHCONTAINER*)pMeshContainerBase;
-	if (pMeshContainer->pSkinInfo == NULL)
+	//スキン情報インターフェイスへのポインタがnull
+	if (pMeshContainer->pSkinInfo == nullptr)
 	{
 		return S_OK;
 	}
+
+	//ボーンの数を取得
 	dwBoneNum = pMeshContainer->pSkinInfo->GetNumBones();
+	//マトリックスのアドレスのアドレスを格納
 	pMeshContainer->ppBoneMatrix = new D3DXMATRIX*[dwBoneNum];
 
 	for (DWORD i = 0; i<dwBoneNum; i++)
 	{
-		pFrame = (MYFRAME*)D3DXFrameFind(m_pFrameRoot, pMeshContainer->pSkinInfo->GetBoneName(i));
-		if (pFrame == NULL)
+		//ルートフレームの子フレームを検索する
+		//D3DXFrameFind(ルートフレームのポインタ、検索する子フレームの名前)
+		pFrame = (DerivedFrame*)D3DXFrameFind(m_pFrameRoot, pMeshContainer->pSkinInfo->GetBoneName(i));
+
+		//子フレームが見つからない
+		if (pFrame == nullptr)
 		{
 			return E_FAIL;
 		}
+		//ボーンのマトリックスに子フレームのマトリックスを格納する
 		pMeshContainer->ppBoneMatrix[i] = &pFrame->CombinedTransformationMatrix;
 
 	}
 	return S_OK;
 }
-//
-//
-//
+
+/// <summary>
+/// ルートフレームから再帰で兄弟、子のボーン情報を検索
+/// </summary>
+/// <param name="pFrame"></param>
+/// <returns></returns>
 HRESULT D3DXPARSER::AllocateAllBoneMatrices(LPD3DXFRAME pFrame)
 {
-	if (pFrame->pMeshContainer != NULL)
+	if (pFrame->pMeshContainer != nullptr)
 	{
 		if (FAILED(AllocateBoneMatrix(pFrame->pMeshContainer)))
 		{
 			return E_FAIL;
 		}
 	}
-	if (pFrame->pFrameSibling != NULL)
+	//兄弟がいるか
+	if (pFrame->pFrameSibling != nullptr)
 	{
 		if (FAILED(AllocateAllBoneMatrices(pFrame->pFrameSibling)))
 		{
 			return E_FAIL;
 		}
 	}
-	if (pFrame->pFrameFirstChild != NULL)
+	//子がいるか
+	if (pFrame->pFrameFirstChild != nullptr)
 	{
 		if (FAILED(AllocateAllBoneMatrices(pFrame->pFrameFirstChild)))
 		{
@@ -231,9 +304,9 @@ HRESULT D3DXPARSER::LoadMeshFromX(LPDIRECT3DDEVICE9 pDevice9, LPSTR FileName)
 	m_pHierarchy = new MY_HIERARCHY;
 	if (FAILED(
 		D3DXLoadMeshHierarchyFromXA(FileName, D3DXMESH_MANAGED, pDevice9, m_pHierarchy,
-			NULL, &m_pFrameRoot, &m_pAnimController)))
+			nullptr, &m_pFrameRoot, &m_pAnimController)))
 	{
-		MessageBoxA(NULL, "Xファイルの読み込みに失敗しました", FileName, MB_OK);
+		MessageBoxA(nullptr, "Xファイルの読み込みに失敗しました", FileName, MB_OK);
 		return E_FAIL;
 	}
 	//ボーンメモリ割りあて
@@ -257,30 +330,36 @@ HRESULT D3DXPARSER::LoadMeshFromX(LPDIRECT3DDEVICE9 pDevice9, LPSTR FileName)
 //
 //VOID UpdateFrameMatrices(LPD3DXFRAME pFrameBase, LPD3DXMATRIX pParentMatrix)
 //フレーム内のメッシュ毎にワールド変換行列を更新する
-VOID D3DXPARSER::UpdateFrameMatrices(LPD3DXFRAME pFrameBase, LPD3DXMATRIX pParentMatrix)
+void D3DXPARSER::UpdateFrameMatrices(LPD3DXFRAME pFrameBase, LPD3DXMATRIX pParentMatrix)
 {
-	MYFRAME *pFrame = (MYFRAME*)pFrameBase;
+	DerivedFrame *pFrame = (DerivedFrame*)pFrameBase;
 
-	if (pParentMatrix != NULL)
+	if (pParentMatrix != nullptr)
 	{
+		//ワールド行列にトランスフォーム行列を掛ける
 		D3DXMatrixMultiply(&pFrame->CombinedTransformationMatrix, &pFrame->TransformationMatrix, pParentMatrix);
 	}
 	else
 	{
 		pFrame->CombinedTransformationMatrix = pFrame->TransformationMatrix;
 	}
-	if (pFrame->pFrameSibling != NULL)
+	//兄弟フレームの行列をワールド行列に
+	if (pFrame->pFrameSibling != nullptr)
 	{
 		UpdateFrameMatrices(pFrame->pFrameSibling, pParentMatrix);
 	}
-	if (pFrame->pFrameFirstChild != NULL)
+	//子フレームの行列をワールド行列に
+	if (pFrame->pFrameFirstChild != nullptr)
 	{
 		UpdateFrameMatrices(pFrame->pFrameFirstChild, &pFrame->CombinedTransformationMatrix);
 	}
 }
-//
-//
-//
+
+
+/// <summary>
+/// 頂点の数を取得
+/// </summary>
+/// <returns>頂点の数</returns>
 int D3DXPARSER::GetNumVertices()
 {
 	return m_pContainer->MeshData.pMesh->GetNumVertices();
@@ -309,6 +388,11 @@ int D3DXPARSER::GetNumUVs()
 //
 //
 //指定されたボーンが影響を及ぼす頂点数を返す
+/// <summary>
+/// 
+/// </summary>
+/// <param name="iBoneIndex"></param>
+/// <returns></returns>
 int D3DXPARSER::GetNumBoneVertices(int iBoneIndex)
 {
 	return m_pContainer->pSkinInfo->GetNumBoneInfluences(iBoneIndex);
@@ -350,11 +434,11 @@ double D3DXPARSER::GetBoneVerticesWeights(int iBoneIndex, int iIndexInGroup)
 //座標
 D3DXVECTOR3 D3DXPARSER::GetVertexCoord(DWORD Index)
 {
-	LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
+	LPDIRECT3DVERTEXBUFFER9 pVB = nullptr;
 	m_pContainer->MeshData.pMesh->GetVertexBuffer(&pVB);
 	DWORD Stride = m_pContainer->MeshData.pMesh->GetNumBytesPerVertex();
-	BYTE *pVertices = NULL;
-	D3DXVECTOR3* pCoord = NULL;
+	BYTE *pVertices = nullptr;
+	D3DXVECTOR3* pCoord = nullptr;
 
 	if (SUCCEEDED(pVB->Lock(0, 0, (VOID**)&pVertices, 0)))
 	{
@@ -371,11 +455,11 @@ D3DXVECTOR3 D3DXPARSER::GetVertexCoord(DWORD Index)
 //法線
 D3DXVECTOR3 D3DXPARSER::GetNormal(DWORD Index)
 {
-	LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
+	LPDIRECT3DVERTEXBUFFER9 pVB = nullptr;
 	m_pContainer->MeshData.pMesh->GetVertexBuffer(&pVB);
 	DWORD Stride = m_pContainer->MeshData.pMesh->GetNumBytesPerVertex();
-	BYTE *pVertices = NULL;
-	D3DXVECTOR3* pNormal = NULL;
+	BYTE *pVertices = nullptr;
+	D3DXVECTOR3* pNormal = nullptr;
 
 	if (SUCCEEDED(pVB->Lock(0, 0, (VOID**)&pVertices, 0)))
 	{
@@ -388,16 +472,21 @@ D3DXVECTOR3 D3DXPARSER::GetNormal(DWORD Index)
 
 	return *pNormal;
 }
-//
-//
-//テクスチャー座標
+
+/// <summary>
+/// UV座標を取得
+/// </summary>
+/// <param name="Index"></param>
+/// <returns></returns>
 D3DXVECTOR2 D3DXPARSER::GetUV(DWORD Index)
 {
-	LPDIRECT3DVERTEXBUFFER9 pVB = NULL;
+	LPDIRECT3DVERTEXBUFFER9 pVB = nullptr;
+	//バーテックスバッファー取得
 	m_pContainer->MeshData.pMesh->GetVertexBuffer(&pVB);
+	//頂点
 	DWORD Stride = m_pContainer->MeshData.pMesh->GetNumBytesPerVertex();
-	BYTE *pVertices = NULL;
-	D3DXVECTOR2* pUV = NULL;
+	BYTE *pVertices = nullptr;
+	D3DXVECTOR2* pUV = nullptr;
 
 	if (SUCCEEDED(pVB->Lock(0, 0, (VOID**)&pVertices, 0)))
 	{
@@ -417,7 +506,7 @@ D3DXVECTOR2 D3DXPARSER::GetUV(DWORD Index)
 int D3DXPARSER::GetIndex(DWORD Index)
 {
 	WORD VertIndex = 0;
-	WORD* pIndex = NULL;
+	WORD* pIndex = nullptr;
 	m_pContainer->MeshData.pMesh->LockIndexBuffer(D3DLOCK_READONLY, (VOID**)&pIndex);
 
 	VertIndex = pIndex[Index];
@@ -426,27 +515,36 @@ int D3DXPARSER::GetIndex(DWORD Index)
 
 	return VertIndex;
 }
-//
-//
-//
+
+/// <summary>
+/// 環境光を取得する
+/// </summary>
+/// <param name="iIndex">マテリアルのインデックス</param>
+/// <returns>環境光</returns>
 D3DXVECTOR4 D3DXPARSER::GetAmbient(int iIndex)
 {
 	D3DXCOLOR color;
 	color = m_pContainer->pMaterials[iIndex].MatD3D.Ambient;
 	return D3DXVECTOR4(color.a, color.r, color.g, color.b);
 }
-//
-//
-//
+
+/// <summary>
+/// 拡散反射光
+/// </summary>
+/// <param name="iIndex">マテリアルのインデックス</param>
+/// <returns></returns>
 D3DXVECTOR4 D3DXPARSER::GetDiffuse(int iIndex)
 {
 	D3DXCOLOR color;
 	color = m_pContainer->pMaterials[iIndex].MatD3D.Diffuse;
 	return D3DXVECTOR4(color.a, color.r, color.g, color.b);
 }
-//
-//
-//
+
+/// <summary>
+/// 鏡面反射光
+/// </summary>
+/// <param name="iIndex">マテリアルのインデックス</param>
+/// <returns>鏡面反射光</returns>
 D3DXVECTOR4 D3DXPARSER::GetSpecular(int iIndex)
 {
 	D3DXCOLOR color;
@@ -454,12 +552,16 @@ D3DXVECTOR4 D3DXPARSER::GetSpecular(int iIndex)
 	color = m_pContainer->pMaterials[iIndex].MatD3D.Specular;
 	return D3DXVECTOR4(color.a, color.r, color.g, color.b);
 }
-//
-//
-//
+
+
+/// <summary>
+/// マテリアルのテクスチャ名を取得
+/// </summary>
+/// <param name="index">マテリアルのインデックス</param>
+/// <returns>テクスチャファイル名</returns>
 CHAR* D3DXPARSER::GetTexturePath(int index)
 {
-	CHAR* p = NULL;
+	CHAR* p = nullptr;
 	p = m_pContainer->pMaterials[index].pTextureFilename;
 	return p;
 }
@@ -476,10 +578,10 @@ float D3DXPARSER::GetSpecularPower(int iIndex)
 //
 //
 //そのポリゴンが、どのマテリアルであるかを返す 
-int D3DXPARSER::GeFaceMaterialIndex(int iFaceIndex)
+int D3DXPARSER::GetFaceMaterialIndex(int iFaceIndex)
 {
 	int MaterialIndex = 0;
-	DWORD* pBuf = NULL;
+	DWORD* pBuf = nullptr;
 	if (SUCCEEDED(m_pContainer->MeshData.pMesh->LockAttributeBuffer(D3DLOCK_READONLY, &pBuf)))
 	{
 		MaterialIndex = pBuf[iFaceIndex];
@@ -497,7 +599,7 @@ int D3DXPARSER::GetFaceVertexIndex(int iFaceIndex, int iIndexInFace)
 {
 	//インデックスバッファーを調べれば分かる
 	WORD VertIndex = 0;
-	WORD* pIndex = NULL;
+	WORD* pIndex = nullptr;
 	m_pContainer->MeshData.pMesh->LockIndexBuffer(D3DLOCK_READONLY, (VOID**)&pIndex);
 
 	VertIndex = pIndex[iFaceIndex * 3 + iIndexInFace];
@@ -537,94 +639,53 @@ int D3DXPARSER::GetNumBones()
 {
 	return m_pContainer->pSkinInfo->GetNumBones();
 }
-//
-//CD3DXSKINMESH::CD3DXSKINMESH()
-//コンストラクター
-CD3DXSKINMESH::CD3DXSKINMESH()
+
+
+/// <summary>
+/// コンストラクタ
+/// </summary>
+SkinMesh::SkinMesh()
 {
-	///	ZeroMemory(this, sizeof(CD3DXSKINMESH));
-	m_Scale = D3DXVECTOR3(1, 1, 1);
+	///	ZeroMemory(this, sizeof(SkinMesh));
 }
-//
-//CD3DXSKINMESH::~CD3DXSKINMESH()
-//デストラクター
-CD3DXSKINMESH::~CD3DXSKINMESH()
+
+
+/// <summary>
+/// デストラクタ
+/// </summary>
+SkinMesh::~SkinMesh()
 {
-	delete[] m_BoneArray;
-	delete[] m_pMaterial;
-	SAFE_RELEASE(m_pVertexBuffer);
-	for (int i = 0; i<m_dwNumMaterial; i++)
+	delete[] boneArray;
+	delete[] material;
+	vertexBuffer.Reset();
+	for (int i = 0; i<numMaterial; i++)
 	{
 		//SAFE_RELEASE(m_ppIndexBuffer[i]);
 	}
-	delete[] m_ppIndexBuffer;
+	delete[] pIndexBuffer;
 }
-//
-//
-//初期化
-HRESULT CD3DXSKINMESH::Initialize()
-{
 
-	//D3d"9"のデバイスを作る、全てはD3DXMESHの引数に必要だから
-	// Direct3D"9"オブジェクトの作成
-	if (NULL == (m_pD3d9 = Direct3DCreate9(D3D_SDK_VERSION)))
-	{
-		MessageBoxA(0, "Direct3D9の作成に失敗しました", "", MB_OK);
-		return E_FAIL;
-	}
-	// DIRECT3D"9"デバイスオブジェクトの作成
-	D3DPRESENT_PARAMETERS d3dpp;
-	ZeroMemory(&d3dpp, sizeof(d3dpp));
-	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-	d3dpp.BackBufferCount = 1;
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.Windowed = true;
-	d3dpp.EnableAutoDepthStencil = true;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-	m_hWnd = Devices::Get().HWnd();
-	if (FAILED(m_pD3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd,
-		D3DCREATE_HARDWARE_VERTEXPROCESSING,
-		&d3dpp, &m_pDevice9)))
-	{
-		if (FAILED(m_pD3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd,
-			D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-			&d3dpp, &m_pDevice9)))
-		{
-			MessageBoxA(0, "HALモードでDIRECT3Dデバイスを作成できません\nREFモードで再試行します", NULL, MB_OK);
-			if (FAILED(m_pD3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, m_hWnd,
-				D3DCREATE_HARDWARE_VERTEXPROCESSING,
-				&d3dpp, &m_pDevice9)))
-			{
-				if (FAILED(m_pD3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, m_hWnd,
-					D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-					&d3dpp, &m_pDevice9)))
-				{
-					MessageBoxA(0, "DIRECT3Dデバイスの作成に失敗しました", NULL, MB_OK);
-					return E_FAIL;
-				}
-			}
-		}
-	}
+/// <summary>
+/// //初期化
+/// </summary>
+/// <returns>実行結果</returns>
+HRESULT SkinMesh::Initialize()
+{
+	ID3D11Device* device = Devices::Get().Device().Get();
+	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();
+
+	matrixObject = make_unique<MatrixObject>();
+	matrixObject->SetScale(D3DXVECTOR3(5, 5, 5));
+	matrixObject->SetPosition(D3DXVECTOR3(1, 1, 1));
+	matrixObject->SetRotation(D3DXVECTOR3(1, 1, 1));
 
 	//D3D11関連の初期化
-	ID3DBlob *pCompiledShader = NULL;
-	ID3DBlob *pErrors = NULL;
-	//ブロブからバーテックスシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", NULL, NULL, "VSSkin", "vs_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	{
-		int size = pErrors->GetBufferSize();
-		char* ch = (char*)pErrors->GetBufferPointer();
-		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pErrors);
+	ID3DBlob *pCompiledShader = nullptr;
+	ID3DBlob *pErrors = nullptr;
 
-	if (FAILED(m_pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pVertexShader)))
-	{
-		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"バーテックスシェーダー作成失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
+	//ブロブからバーテックスシェーダー作成
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", "VSSkin", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+
 	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
@@ -637,60 +698,49 @@ HRESULT CD3DXSKINMESH::Initialize()
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 
 	//頂点インプットレイアウトを作成
-	if (FAILED(m_pDevice->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &m_pVertexLayout)))
+	if (FAILED(device->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), vertexLayout.ReleaseAndGetAddressOf())))
 		return FALSE;
 	//頂点インプットレイアウトをセット
-	m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	deviceContext->IASetInputLayout(vertexLayout.Get());
 
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(D3DX11CompileFromFile(L"Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", NULL, NULL, "PSSkin", "ps_5_0", 0, 0, NULL, &pCompiledShader, &pErrors, NULL)))
-	{
-		MessageBox(0, L"hlsl読み込み失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pErrors);
-	if (FAILED(m_pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), NULL, &m_pPixelShader)))
-	{
-		SAFE_RELEASE(pCompiledShader);
-		MessageBox(0, L"ピクセルシェーダー作成失敗", NULL, MB_OK);
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pCompiledShader);
+	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", "PSSkin", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+
 
 	D3D11_BUFFER_DESC cb;
 	//コンスタントバッファー0作成
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(SHADER_SKIN_GLOBAL0);
+	cb.ByteWidth = sizeof(LightAndEyeGlobal);
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	if (FAILED(m_pDevice->CreateBuffer(&cb, NULL, &m_pConstantBuffer0)))
+	if (FAILED(device->CreateBuffer(&cb, nullptr, lightAndEyeBuffer.ReleaseAndGetAddressOf())))
 	{
 		return E_FAIL;
 	}
 	//コンスタントバッファー1作成  
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(SHADER_SKIN_GLOBAL1);
+	cb.ByteWidth = sizeof(SkinMeshGlobal);
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	if (FAILED(m_pDevice->CreateBuffer(&cb, NULL, &m_pConstantBuffer1)))
+	if (FAILED(device->CreateBuffer(&cb, nullptr, skinMeshBuffer.ReleaseAndGetAddressOf())))
 	{
 		return E_FAIL;
 	}
 	//コンスタントバッファーボーン用　作成  
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(SHADER_GLOBAL_BONES);
+	cb.ByteWidth = sizeof(BoneGlobal);
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
-	if (FAILED(m_pDevice->CreateBuffer(&cb, NULL, &m_pConstantBufferBone)))
+	if (FAILED(device->CreateBuffer(&cb, nullptr, boneBuffer.ReleaseAndGetAddressOf())))
 	{
 		return E_FAIL;
 	}
@@ -702,32 +752,33 @@ HRESULT CD3DXSKINMESH::Initialize()
 	SamDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	m_pDevice->CreateSamplerState(&SamDesc, &m_pSampleLinear);
+	device->CreateSamplerState(&SamDesc, sampleLinear.ReleaseAndGetAddressOf());
 
 	return S_OK;
 }
 //
-//HRESULT CD3DXSKINMESH::ReadSkinInfo(KFbxMesh* pFbxMesh,MY_SKINVERTEX* pvVB)
+//HRESULT SkinMesh::ReadSkinInfo(KFbxMesh* pFbxMesh,SkinVertex* pvVB)
 //Xからスキン関連の情報を読み出す　
-HRESULT CD3DXSKINMESH::ReadSkinInfo(MY_SKINVERTEX* pvVB)
+HRESULT SkinMesh::ReadSkinInfo(SkinVertex* pvVB)
 {
 	//Xから抽出すべき情報は、頂点ごとのボーンインデックス、頂点ごとのボーンウェイト、バインド行列、ポーズ行列　の4項目
 
 	int i, k, m, n;
-	int iNumVertex = m_pD3dxMesh->GetNumVertices();//頂点数
+	int iNumVertex = d3dxMesh->GetNumVertices();//頂点数
 	int iNumBone = 0;//ボーン数
 
 
-					 //ボーン	の個数を得る
-	iNumBone = m_pD3dxMesh->GetNumBones();
+	//ボーンの個数を得る
+	iNumBone = d3dxMesh->GetNumBones();
 	//それぞれのボーンに影響を受ける頂点を調べる　そこから逆に、頂点ベースでボーンインデックス・重みを整頓する
 	for (i = 0; i<iNumBone; i++)
 	{
-		int iNumIndex = m_pD3dxMesh->GetNumBoneVertices(i);//このボーンに影響を受ける頂点数
+		//このボーンに影響を受ける頂点数
+		int iNumIndex = d3dxMesh->GetNumBoneVertices(i);
 		int* piIndex = new int[iNumIndex];
-		for (k = 0; k<iNumIndex; k++) piIndex[k] = m_pD3dxMesh->GetBoneVerticesIndices(i, k);
+		for (k = 0; k<iNumIndex; k++) piIndex[k] = d3dxMesh->GetBoneVerticesIndices(i, k);
 		double* pdWeight = new double[iNumIndex];
-		for (k = 0; k<iNumIndex; k++) pdWeight[k] = m_pD3dxMesh->GetBoneVerticesWeights(i, k);
+		for (k = 0; k<iNumIndex; k++) pdWeight[k] = d3dxMesh->GetBoneVerticesWeights(i, k);
 		//頂点側からインデックスをたどって、頂点サイドで整理する
 		for (k = 0; k<iNumIndex; k++)
 		{
@@ -738,14 +789,14 @@ HRESULT CD3DXSKINMESH::ReadSkinInfo(MY_SKINVERTEX* pvVB)
 			{
 				for (n = 1; n<m; n++)
 				{
-					if (pvVB[piIndex[k]].bBoneWeight[n - 1] < pvVB[piIndex[k]].bBoneWeight[n])
+					if (pvVB[piIndex[k]].boneWeight[n - 1] < pvVB[piIndex[k]].boneWeight[n])
 					{
-						float tmp = pvVB[piIndex[k]].bBoneWeight[n - 1];
-						pvVB[piIndex[k]].bBoneWeight[n - 1] = pvVB[piIndex[k]].bBoneWeight[n];
-						pvVB[piIndex[k]].bBoneWeight[n] = tmp;
-						int itmp = pvVB[piIndex[k]].bBoneIndex[n - 1];
-						pvVB[piIndex[k]].bBoneIndex[n - 1] = pvVB[piIndex[k]].bBoneIndex[n];
-						pvVB[piIndex[k]].bBoneIndex[n] = itmp;
+						float tmp = pvVB[piIndex[k]].boneWeight[n - 1];
+						pvVB[piIndex[k]].boneWeight[n - 1] = pvVB[piIndex[k]].boneWeight[n];
+						pvVB[piIndex[k]].boneWeight[n] = tmp;
+						int itmp = pvVB[piIndex[k]].boneIndex[n - 1];
+						pvVB[piIndex[k]].boneIndex[n - 1] = pvVB[piIndex[k]].boneIndex[n];
+						pvVB[piIndex[k]].boneIndex[n] = itmp;
 					}
 				}
 			}
@@ -753,18 +804,18 @@ HRESULT CD3DXSKINMESH::ReadSkinInfo(MY_SKINVERTEX* pvVB)
 			bool flag = false;
 			for (m = 0; m<4; m++)
 			{
-				if (pvVB[piIndex[k]].bBoneWeight[m] == 0)
-				{
-					flag = true;
-					pvVB[piIndex[k]].bBoneIndex[m] = i;
-					pvVB[piIndex[k]].bBoneWeight[m] = pdWeight[k];
+				if (pvVB[piIndex[k]].boneWeight[m] == 0)
+				{					 
+					flag = true;	 
+					pvVB[piIndex[k]].boneIndex[m] = i;
+					pvVB[piIndex[k]].boneWeight[m] = pdWeight[k];
 					break;
 				}
 			}
 			if (flag == false)
 			{
-				pvVB[piIndex[k]].bBoneIndex[3] = i;
-				pvVB[piIndex[k]].bBoneWeight[3] = pdWeight[k];
+				pvVB[piIndex[k]].boneIndex[3] = i;
+				pvVB[piIndex[k]].boneWeight[3] = pdWeight[k];
 				break;
 			}
 
@@ -774,121 +825,156 @@ HRESULT CD3DXSKINMESH::ReadSkinInfo(MY_SKINVERTEX* pvVB)
 	}
 	//
 	//ボーンを生成
-	m_iNumBone = iNumBone;
-	m_BoneArray = new BONE[iNumBone];
+	numBone = iNumBone;
+	boneArray = new Bone[iNumBone];
 	//ポーズ行列を得る 初期ポーズ
-	for (i = 0; i<m_iNumBone; i++)
+	for (i = 0; i<numBone; i++)
 	{
-		m_BoneArray[i].mBindPose = m_pD3dxMesh->GetBindPose(i);
+		boneArray[i].bindPose = d3dxMesh->GetBindPose(i);
 	}
 
 	return S_OK;
 }
 //
-//HRESULT CD3DXSKINMESH::CreateFromX(CHAR* szFileName)
+//HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 //Xからスキンメッシュを作成する　　注意）素材（X)のほうは、三角ポリゴンにすること
-HRESULT CD3DXSKINMESH::CreateFromX(CHAR* szFileName)
+HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 {
+	ID3D11Device* device = Devices::Get().Device().Get();
+	
 	//Xファイル読み込み
-	m_pD3dxMesh = new D3DXPARSER;
-	m_pD3dxMesh->LoadMeshFromX(m_pDevice9, szFileName);
+	d3dxMesh = new D3DXPARSER;
+	d3dxMesh->LoadMeshFromX(Devices::Get().Device9(), szFileName);
 
 	//事前に頂点数、ポリゴン数等を調べる
-	m_dwNumVert = m_pD3dxMesh->GetNumVertices();
-	m_dwNumFace = m_pD3dxMesh->GetNumFaces();
-	m_dwNumUV = m_pD3dxMesh->GetNumUVs();
-	if (m_dwNumVert<m_dwNumUV)//Direct3DではUVの数だけ頂点が必要
+	//頂点数
+	numVert = d3dxMesh->GetNumVertices();
+	//ポリゴン数
+	numFace = d3dxMesh->GetNumFaces();
+	//Uv数
+	numUV = d3dxMesh->GetNumUVs();
+
+	
+	//Direct3DではUVの数だけ頂点が必要
+	if (numVert<numUV)
 	{
 		//共有頂点等で、頂点数が足りない時
-		MessageBox(0, L"Direct3Dは、UVの数だけ頂点が必要です（UVを置く場所が必要です）テクスチャーは正しく貼られないと思われます", NULL, MB_OK);
+		MessageBox(0, L"Direct3Dは、UVの数だけ頂点が必要です（UVを置く場所が必要です）テクスチャーは正しく貼られないと思われます", nullptr, MB_OK);
 		return E_FAIL;
 	}
-	//一時的なメモリ確保（頂点バッファとインデックスバッファ）
-	MY_SKINVERTEX* pvVB = new MY_SKINVERTEX[m_dwNumVert];
-	int* piFaceBuffer = new int[m_dwNumFace * 3];//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
 
-												 //頂点読み込み
-	for (int i = 0; i<m_dwNumVert; i++)
+
+	//一時的なメモリ確保（頂点バッファとインデックスバッファ）
+	SkinVertex* pvVB = new SkinVertex[numVert];
+	//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
+	int* piFaceBuffer = new int[numFace * 3];
+
+
+	D3DXVECTOR3 verPos[3];
+	D3DXVECTOR2* verUv = new D3DXVECTOR2[3];
+
+	Triangle tri;
+	//頂点読み込み											
+	for (int i = 0; i<numVert; i++)
 	{
-		D3DXVECTOR3 v = m_pD3dxMesh->GetVertexCoord(i);
-		pvVB[i].vPos.x = v.x;
-		pvVB[i].vPos.y = v.y;
-		pvVB[i].vPos.z = v.z;
+		D3DXVECTOR3 v = d3dxMesh->GetVertexCoord(i);
+
+		pvVB[i].pos.x = v.x;
+		pvVB[i].pos.y = v.y;
+		pvVB[i].pos.z = v.z;
+		verPos[i % 3] = v;
+	
+			;
+
+
+		D3DXVECTOR2 uv = d3dxMesh->GetUV(i);
+		pvVB[i].uv.x = uv.x;
+		pvVB[i].uv.y = uv.y;
+		verUv[i % 3] = uv;
+
+
+		if (i % 3 == 2)
+		{
+			ComputeTriangle(Math::D3DXVECTOR3ToVector(verPos[0]), Math::D3DXVECTOR3ToVector(verPos[1]), Math::D3DXVECTOR3ToVector(verPos[2]), &tri);
+			tri.Uv0 = Math::D3DXVECTOR2ToVector(verUv[0]);
+			tri.Uv1 = Math::D3DXVECTOR2ToVector(verUv[1]);
+			tri.Uv2 = Math::D3DXVECTOR2ToVector(verUv[2]);
+			triangles.emplace_back(tri);
+		}
 	}
 	//ポリゴン情報（頂点インデックス）読み込み
-	for (int i = 0; i<m_dwNumFace * 3; i++)
+	for (int i = 0; i<numFace * 3; i++)
 	{
-		piFaceBuffer[i] = m_pD3dxMesh->GetIndex(i);
+		piFaceBuffer[i] = d3dxMesh->GetIndex(i);
 	}
 	//法線読み込み
-	for (int i = 0; i<m_dwNumVert; i++)
+	for (int i = 0; i<numVert; i++)
 	{
-		D3DXVECTOR3 v = m_pD3dxMesh->GetNormal(i);
-		pvVB[i].vNorm.x = v.x;
-		pvVB[i].vNorm.y = v.y;
-		pvVB[i].vNorm.z = v.z;
+		D3DXVECTOR3 v = d3dxMesh->GetNormal(i);
+		pvVB[i].norm.x = v.x;
+		pvVB[i].norm.y = v.y;
+		pvVB[i].norm.z = v.z;
 	}
-	//テクスチャー座標読み込み
-	for (int i = 0; i<m_dwNumVert; i++)
-	{
-		D3DXVECTOR3 v = m_pD3dxMesh->GetUV(i);
-		pvVB[i].vTex.x = v.x;
-		pvVB[i].vTex.y = v.y;
-	}
+
 	//マテリアル読み込み
-	m_dwNumMaterial = m_pD3dxMesh->GetNumMaterials();
-	m_pMaterial = new MY_SKINMATERIAL[m_dwNumMaterial];
+	//マテリアル数
+	numMaterial = d3dxMesh->GetNumMaterials();
+	material = new SkinMaterial[numMaterial];
 
 	//マテリアルの数だけインデックスバッファーを作成
-	m_ppIndexBuffer = new ID3D11Buffer*[m_dwNumMaterial];
-	for (int i = 0; i<m_dwNumMaterial; i++)
+	pIndexBuffer = new ComPtr<ID3D11Buffer>[numMaterial];
+	for (int i = 0; i<numMaterial; i++)
 	{
 		//環境光	
-		m_pMaterial[i].Ka.x = m_pD3dxMesh->GetAmbient(i).y;
-		m_pMaterial[i].Ka.y = m_pD3dxMesh->GetAmbient(i).z;
-		m_pMaterial[i].Ka.z = m_pD3dxMesh->GetAmbient(i).w;
-		m_pMaterial[i].Ka.w = m_pD3dxMesh->GetAmbient(i).x;
+		material[i].Ka.x = d3dxMesh->GetAmbient(i).y;
+		material[i].Ka.y = d3dxMesh->GetAmbient(i).z;
+		material[i].Ka.z = d3dxMesh->GetAmbient(i).w;
+		material[i].Ka.w = d3dxMesh->GetAmbient(i).x;
 		//拡散反射光	
-		m_pMaterial[i].Kd.x = m_pD3dxMesh->GetDiffuse(i).y;
-		m_pMaterial[i].Kd.y = m_pD3dxMesh->GetDiffuse(i).z;
-		m_pMaterial[i].Kd.z = m_pD3dxMesh->GetDiffuse(i).w;
-		m_pMaterial[i].Kd.w = m_pD3dxMesh->GetDiffuse(i).x;
+		material[i].Kd.x = d3dxMesh->GetDiffuse(i).y;
+		material[i].Kd.y = d3dxMesh->GetDiffuse(i).z;
+		material[i].Kd.z = d3dxMesh->GetDiffuse(i).w;
+		material[i].Kd.w = d3dxMesh->GetDiffuse(i).x;
 		//鏡面反射光
-		m_pMaterial[i].Ks.x = m_pD3dxMesh->GetSpecular(i).y;
-		m_pMaterial[i].Ks.y = m_pD3dxMesh->GetSpecular(i).z;
-		m_pMaterial[i].Ks.z = m_pD3dxMesh->GetSpecular(i).w;
-		m_pMaterial[i].Ks.w = m_pD3dxMesh->GetSpecular(i).x;
+		material[i].Ks.x = d3dxMesh->GetSpecular(i).y;
+		material[i].Ks.y = d3dxMesh->GetSpecular(i).z;
+		material[i].Ks.z = d3dxMesh->GetSpecular(i).w;
+		material[i].Ks.w = d3dxMesh->GetSpecular(i).x;
 
 		//テクスチャー（ディフューズテクスチャーのみ）
-		char* name = m_pD3dxMesh->GetTexturePath(i);
+		char* name = d3dxMesh->GetTexturePath(i);
 		if (name)
 		{
-			strcpy(m_pMaterial[i].szTextureName, name);
+			strcpy(material[i].textureName, name);
 		}
-		//テクスチャーを作成
-		if (m_pMaterial[i].szTextureName[0] != 0 && FAILED(D3DX11CreateShaderResourceViewFromFileA(m_pDevice, m_pMaterial[i].szTextureName, NULL, NULL, &m_pMaterial[i].pTexture, NULL)))//絶対パスファイル名は、まず失敗すると思うが、、、
+		//読み込んだテクスチャーを作成
+		if (material[i].textureName[0] != 0 && FAILED(D3DX11CreateShaderResourceViewFromFileA(device, material[i].textureName, nullptr, nullptr, material[i].texture.ReleaseAndGetAddressOf(), nullptr)))//絶対パスファイル名は、まず失敗すると思うが、、、
 		{
-			MessageBox(0, L"テクスチャー読み込み失敗", NULL, MB_OK);
+			MessageBox(0, L"テクスチャー読み込み失敗", nullptr, MB_OK);
 			return E_FAIL;
 		}
 
 		//そのマテリアルであるインデックス配列内の開始インデックスを調べる　さらにインデックスの個数も調べる
 		int iCount = 0;
-		int* pIndex = new int[m_dwNumFace * 3];//とりあえず、メッシュ内のポリゴン数でメモリ確保（個々のポリゴングループはかならずこれ以下になるが）
+		//メッシュ内のポリゴン数でメモリ確保
+		int* pIndex = new int[numFace * 3];
 
-		for (int k = 0; k<m_dwNumFace; k++)
+		for (int k = 0; k<numFace; k++)
 		{
-			if (i == m_pD3dxMesh->GeFaceMaterialIndex(k))//もし i == k番目のポリゴンのマテリアル番号 なら
+			if (i == d3dxMesh->GetFaceMaterialIndex(k))//もし i == k番目のポリゴンのマテリアル番号 なら
 			{
-				pIndex[iCount] = m_pD3dxMesh->GetFaceVertexIndex(k, 0);//k番目のポリゴンを作る頂点のインデックス　1個目
-				pIndex[iCount + 1] = m_pD3dxMesh->GetFaceVertexIndex(k, 1);//2個目
-				pIndex[iCount + 2] = m_pD3dxMesh->GetFaceVertexIndex(k, 2);//3個目
+				pIndex[iCount] = d3dxMesh->GetFaceVertexIndex(k, 0);//k番目のポリゴンを作る頂点のインデックス　1個目
+				pIndex[iCount + 1] = d3dxMesh->GetFaceVertexIndex(k, 1);//2個目
+				pIndex[iCount + 2] = d3dxMesh->GetFaceVertexIndex(k, 2);//3個目
 				iCount += 3;
+
 			}
 		}
-		if (iCount>0) CreateIndexBuffer(iCount * sizeof(int), pIndex, &m_ppIndexBuffer[i]);
+
+		//インデックスバッファ作成
+		if (iCount>0) CreateIndexBuffer(iCount * sizeof(int), pIndex, pIndexBuffer[i].ReleaseAndGetAddressOf());
 		delete pIndex;
-		m_pMaterial[i].dwNumFace = iCount / 3;//そのマテリアル内のポリゴン数
+		material[i].numFace = iCount / 3;//そのマテリアル内のポリゴン数
 
 	}
 	//スキン情報（ジョイント、ウェイト　）読み込み
@@ -896,26 +982,31 @@ HRESULT CD3DXSKINMESH::CreateFromX(CHAR* szFileName)
 	//バーテックスバッファーを作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(MY_SKINVERTEX) *m_dwNumVert;
+	bd.ByteWidth = sizeof(SkinVertex) *numVert;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = pvVB;
-	if (FAILED(m_pDevice->CreateBuffer(&bd, &InitData, &m_pVertexBuffer)))
+	if (FAILED(device->CreateBuffer(&bd, &InitData, vertexBuffer.ReleaseAndGetAddressOf())))
 		return FALSE;
 
 	//一時的な入れ物は、もはや不要
 	delete piFaceBuffer;
 	if (pvVB) delete pvVB;
+	/*if (verPos) delete verPos;
+	if (verUv) delete verUv;*/
 
 	return S_OK;
 }
 //
-//HRESULT CD3DXSKINMESH::CreateIndexBuffer(DWORD dwSize,int* pIndex,ID3D11Buffer** ppIndexBuffer)
+//HRESULT SkinMesh::CreateIndexBuffer(DWORD dwSize,int* pIndex,ID3D11Buffer** ppIndexBuffer)
 //Direct3Dのインデックスバッファー作成
-HRESULT CD3DXSKINMESH::CreateIndexBuffer(DWORD dwSize, int* pIndex, ID3D11Buffer** ppIndexBuffer)
+HRESULT SkinMesh::CreateIndexBuffer(DWORD dwSize, int* pIndex, ID3D11Buffer** ppIndexBuffer)
 {
+	ID3D11Device* device = Devices::Get().Device().Get();
+
+
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = dwSize;
@@ -926,7 +1017,7 @@ HRESULT CD3DXSKINMESH::CreateIndexBuffer(DWORD dwSize, int* pIndex, ID3D11Buffer
 	InitData.pSysMem = pIndex;
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
-	if (FAILED(m_pDevice->CreateBuffer(&bd, &InitData, ppIndexBuffer)))
+	if (FAILED(device->CreateBuffer(&bd, &InitData, ppIndexBuffer)))
 	{
 		return FALSE;
 	}
@@ -935,65 +1026,130 @@ HRESULT CD3DXSKINMESH::CreateIndexBuffer(DWORD dwSize, int* pIndex, ID3D11Buffer
 }
 
 //
-//void CD3DXSKINMESH::SetNewPoseMatrices(int frame)
+//void SkinMesh::SetNewPoseMatrices(int frame)
 //ボーンを次のポーズ位置にセットする
-void CD3DXSKINMESH::SetNewPoseMatrices(int iFrame)
+void SkinMesh::SetNewPoseMatrices(int iFrame)
 {
 	//望むフレームでUpdateすること。しないと行列が更新されない
-	//m_pD3dxMesh->UpdateFrameMatrices(m_pD3dxMesh->m_pFrameRoot)をレンダリング時に実行すること
+	//d3dxMesh->UpdateFrameMatrices(d3dxMesh->m_pFrameRoot)をレンダリング時に実行すること
 
 	//また、アニメーション時間に見合った行列を更新するのはD3DXMESHでは
 	//アニメーションコントローラーが（裏で）やってくれるものなので、アニメーションコントローラー
 	//を使ってアニメを進行させることも必要
-	//	m_pD3dxMesh->m_pAnimController->AdvanceTime(....)をレンダリング時に実行すること
+	//	d3dxMesh->m_pAnimController->AdvanceTime(....)をレンダリング時に実行すること
 
-	for (int i = 0; i<m_iNumBone; i++)
+	for (int i = 0; i<numBone; i++)
 	{
-		m_BoneArray[i].mNewPose = m_pD3dxMesh->GetNewPose(i);
+		boneArray[i].newPose = d3dxMesh->GetNewPose(i);
 	}
 }
 //
-//D3DXMATRIX CD3DXSKINMESH::GetCurrentPoseMatrix(int index)
+//D3DXMATRIX SkinMesh::GetCurrentPoseMatrix(int index)
 //次の（現在の）ポーズ行列を返す
-D3DXMATRIX CD3DXSKINMESH::GetCurrentPoseMatrix(int index)
+D3DXMATRIX SkinMesh::GetCurrentPoseMatrix(int index)
 {
-	D3DXMATRIX ret = m_BoneArray[index].mBindPose*m_BoneArray[index].mNewPose;
+	D3DXMATRIX ret = boneArray[index].bindPose*boneArray[index].newPose;
 	return ret;
 }
 //
-//D3DXMATRIX CD3DXSKINMESH::GetBindPoseMatrix(int index)
+//D3DXMATRIX SkinMesh::GetBindPoseMatrix(int index)
 //バインドポーズ行列を返す
-D3DXMATRIX CD3DXSKINMESH::GetBindPoseMatrix(int index)
+D3DXMATRIX SkinMesh::GetBindPoseMatrix(int index)
 {
-	return m_BoneArray[index].mBindPose;
+	return boneArray[index].bindPose;
 }
-//
-//
-//
-CHAR* CD3DXSKINMESH::GetBoneNames(int iBoneIndex)
+
+/// <summary>
+/// ボーンの数を取得
+/// </summary>
+/// <param name="iBoneIndex">ボーンインデックス</param>
+/// <returns>引数のインデックスの名前を取得</returns>
+CHAR* SkinMesh::GetBoneNames(int iBoneIndex)
 {
-	return m_pD3dxMesh->GetBoneName(iBoneIndex);
+	return d3dxMesh->GetBoneName(iBoneIndex);
 }
-//
-//void CD3DXSKINMESH::Render()
-//レンダリング
-void CD3DXSKINMESH::Render()
+
+void SkinMesh::UpDateTriangles()
 {
+	//頂点数
+	numVert = d3dxMesh->GetNumVertices();
+
+	//ポリゴン数
+	numFace = d3dxMesh->GetNumFaces();
+	//Uv数
+	numUV = d3dxMesh->GetNumUVs();
+
+
+	//Direct3DではUVの数だけ頂点が必要
+	if (numVert<numUV)
+	{
+		//共有頂点等で、頂点数が足りない時
+		MessageBox(0, L"Direct3Dは、UVの数だけ頂点が必要です（UVを置く場所が必要です）テクスチャーは正しく貼られないと思われます", nullptr, MB_OK);
+	//	return E_FAIL;
+	}
+
+
+	//一時的なメモリ確保（頂点バッファとインデックスバッファ）
+	SkinVertex* pvVB = new SkinVertex[numVert];
+	//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
+	int* piFaceBuffer = new int[numFace * 3];
+
+
+	D3DXVECTOR3 verPos[3];
+	D3DXVECTOR2* verUv = new D3DXVECTOR2[3];
+
+	Triangle tri;
+	//頂点読み込み											
+	for (int i = 0; i<numVert; i++)
+	{
+		D3DXVECTOR3 v = d3dxMesh->GetVertexCoord(i);
+
+		pvVB[i].pos.x = v.x;
+		pvVB[i].pos.y = v.y;
+		pvVB[i].pos.z = v.z;
+		verPos[i % 3] = v;
+
+		;
+
+
+		D3DXVECTOR2 uv = d3dxMesh->GetUV(i);
+		pvVB[i].uv.x = uv.x;
+		pvVB[i].uv.y = uv.y;
+		verUv[i % 3] = uv;
+
+
+		if (i % 3 == 2)
+		{
+			ComputeTriangle(Math::D3DXVECTOR3ToVector(verPos[0]), Math::D3DXVECTOR3ToVector(verPos[1]), Math::D3DXVECTOR3ToVector(verPos[2]), &tri);
+			tri.Uv0 = Math::D3DXVECTOR2ToVector(verUv[0]);
+			tri.Uv1 = Math::D3DXVECTOR2ToVector(verUv[1]);
+			tri.Uv2 = Math::D3DXVECTOR2ToVector(verUv[2]);
+			triangles.emplace_back(tri);
+		}
+	}
+
+
+}
+
+
+/// <summary>
+/// 描画
+/// </summary>
+void SkinMesh::Render()
+{
+	matrixObject->WorldMatrixCreate();
+	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();
 	D3D11_MAPPED_SUBRESOURCE pData;
+	FollowCamera* camera = FollowCamera::GetInstance();
+	D3DXVECTOR3 eye = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXMATRIX view = Math::MatrixToD3DXMATRIX(camera->GetView());
+	D3DXMATRIX proj = Math::MatrixToD3DXMATRIX(camera->GetProjection());
 
 	//使用するシェーダーのセット
-	m_pDeviceContext->VSSetShader(m_pVertexShader, NULL, 0);
-	m_pDeviceContext->PSSetShader(m_pPixelShader, NULL, 0);
+	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+	deviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-	//ワールド行列
-	D3DXMATRIX Scale, Yaw, Pitch, Roll, Tran;
-	D3DXMatrixScaling(&Scale, m_Scale.x, m_Scale.y, m_Scale.z);
-	D3DXMatrixRotationY(&Yaw, m_Yaw);
-	D3DXMatrixRotationX(&Pitch, m_Pitch);
-	D3DXMatrixRotationZ(&Roll, m_Roll);
-	m_Rotation = Yaw*Pitch*Roll;
-	D3DXMatrixTranslation(&Tran, 1, 1, 1);
-	m_World = Scale*m_Rotation*Tran;
+
 
 	//アニメーションフレームを進める　スキンを更新
 	static int iFrame = 0;
@@ -1003,94 +1159,94 @@ void CD3DXSKINMESH::Render()
 		iFrame = 0;
 	}
 	SetNewPoseMatrices(iFrame);
-	if (SUCCEEDED(m_pDeviceContext->Map(m_pConstantBufferBone, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(deviceContext->Map(boneBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		SHADER_GLOBAL_BONES sg;
-		for (int i = 0; i<m_iNumBone; i++)
+		BoneGlobal sg;
+		for (int i = 0; i<numBone; i++)
 		{
 			D3DXMATRIX mat = GetCurrentPoseMatrix(i);
 			D3DXMatrixTranspose(&mat, &mat);
-			sg.mBone[i] = mat;
+			sg.boneMatrix[i] = mat;
 		}
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(SHADER_GLOBAL_BONES));
-		m_pDeviceContext->Unmap(m_pConstantBufferBone, 0);
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(BoneGlobal));
+		deviceContext->Unmap(boneBuffer.Get(), 0);
 	}
-	m_pDeviceContext->VSSetConstantBuffers(2, 1, &m_pConstantBufferBone);
-	m_pDeviceContext->PSSetConstantBuffers(2, 1, &m_pConstantBufferBone);
+	deviceContext->VSSetConstantBuffers(2, 1, boneBuffer.GetAddressOf());
+	deviceContext->PSSetConstantBuffers(2, 1, boneBuffer.GetAddressOf());
 
 	//バーテックスバッファーをセット（バーテックスバッファーは一つでいい）
-	UINT stride = sizeof(MY_SKINVERTEX);
+	UINT stride = sizeof(SkinVertex);
 	UINT offset = 0;
-	m_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1,vertexBuffer.GetAddressOf(), &stride, &offset);
 
 	//頂点インプットレイアウトをセット
-	m_pDeviceContext->IASetInputLayout(m_pVertexLayout);
+	deviceContext->IASetInputLayout(vertexLayout.Get());
 
 	//プリミティブ・トポロジーをセット
-	m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//カメラ位置をシェーダーに渡す
-	if (SUCCEEDED(m_pDeviceContext->Map(m_pConstantBuffer0, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	if (SUCCEEDED(deviceContext->Map(lightAndEyeBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
-		SHADER_SKIN_GLOBAL0 sg;
+		LightAndEyeGlobal sg;
 		sg.vLightDir = D3DXVECTOR4(1, 1, -1, 0.0f);
-		sg.vEye = D3DXVECTOR4(m_Eye.x, m_Eye.y, m_Eye.z, 0);
-		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(SHADER_SKIN_GLOBAL0));
-		m_pDeviceContext->Unmap(m_pConstantBuffer0, 0);
+		sg.vEye = D3DXVECTOR4(eye.x, eye.y, eye.z, 0);
+		memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(LightAndEyeGlobal));
+		deviceContext->Unmap(lightAndEyeBuffer.Get(), 0);
 	}
-	m_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
-	m_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pConstantBuffer0);
+	deviceContext->VSSetConstantBuffers(0, 1, lightAndEyeBuffer.GetAddressOf());
+	deviceContext->PSSetConstantBuffers(0, 1, lightAndEyeBuffer.GetAddressOf());
 
 	//マテリアルの数だけ、それぞれのマテリアルのインデックスバッファ－を描画
-	for (int i = 0; i<m_dwNumMaterial; i++)
+	for (int i = 0; i<numMaterial; i++)
 	{
 		//使用されていないマテリアル対策
-		if (m_pMaterial[i].dwNumFace == 0)
+		if (material[i].numFace == 0)
 		{
 			continue;
 		}
 		//インデックスバッファーをセット
 		stride = sizeof(int);
 		offset = 0;
-		m_pDeviceContext->IASetIndexBuffer(m_ppIndexBuffer[i], DXGI_FORMAT_R32_UINT, 0);
+		deviceContext->IASetIndexBuffer(pIndexBuffer[i].Get(), DXGI_FORMAT_R32_UINT, 0);
 
 		//マテリアルの各要素と変換行列をシェーダーに渡す			
 		D3D11_MAPPED_SUBRESOURCE pData;
-		if (SUCCEEDED(m_pDeviceContext->Map(m_pConstantBuffer1, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+		if (SUCCEEDED(deviceContext->Map(skinMeshBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 		{
-			SHADER_SKIN_GLOBAL1 sg;
-			sg.mW = m_World;
+			SkinMeshGlobal sg;
+			sg.mW = matrixObject->GetWorldMatrix();
 			D3DXMatrixTranspose(&sg.mW, &sg.mW);
-			sg.mWVP = m_World*m_View*m_Proj;
+			sg.mWVP = matrixObject->GetWorldMatrix()*view*proj;
 			D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
-			sg.vAmbient = m_pMaterial[i].Ka;
-			sg.vDiffuse = m_pMaterial[i].Kd;
-			sg.vSpecular = m_pMaterial[i].Ks;
-			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(SHADER_SKIN_GLOBAL1));
-			m_pDeviceContext->Unmap(m_pConstantBuffer1, 0);
+			sg.vAmbient = material[i].Ka;
+			sg.vDiffuse = material[i].Kd;
+			sg.vSpecular = material[i].Ks;
+			memcpy_s(pData.pData, pData.RowPitch, (void*)&sg, sizeof(SkinMeshGlobal));
+			deviceContext->Unmap(skinMeshBuffer.Get(), 0);
 		}
-		m_pDeviceContext->VSSetConstantBuffers(1, 1, &m_pConstantBuffer1);
-		m_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pConstantBuffer1);
+		deviceContext->VSSetConstantBuffers(1, 1, skinMeshBuffer.GetAddressOf());
+		deviceContext->PSSetConstantBuffers(1, 1, skinMeshBuffer.GetAddressOf());
 		//テクスチャーをシェーダーに渡す
-		if (m_pMaterial[i].szTextureName[0] != NULL)
+		if (material[i].textureName[0] != NULL)
 		{
-			m_pDeviceContext->PSSetSamplers(0, 1, &m_pSampleLinear);
-			m_pDeviceContext->PSSetShaderResources(0, 1, &m_pMaterial[i].pTexture);
+			deviceContext->PSSetSamplers(0, 1, sampleLinear.GetAddressOf());
+			deviceContext->PSSetShaderResources(0, 1, material[i].texture.GetAddressOf());
 		}
 		else
 		{
 			ID3D11ShaderResourceView* Nothing[1] = { 0 };
-			m_pDeviceContext->PSSetShaderResources(0, 1, Nothing);
+			deviceContext->PSSetShaderResources(0, 1, Nothing);
 		}
 		//Draw
-		m_pDeviceContext->DrawIndexed(m_pMaterial[i].dwNumFace * 3, 0, 0);
+		deviceContext->DrawIndexed(material[i].numFace * 3, 0, 0);
 	}
 	//アニメ進行
-	if (m_pD3dxMesh->m_pAnimController)
+	if (d3dxMesh->m_pAnimController)
 	{
-		m_pD3dxMesh->m_pAnimController->AdvanceTime(0.001666, NULL);
+		d3dxMesh->m_pAnimController->AdvanceTime(0.001666, nullptr);
 	}
 	D3DXMATRIX m;
 	D3DXMatrixIdentity(&m);
-	m_pD3dxMesh->UpdateFrameMatrices(m_pD3dxMesh->m_pFrameRoot, &m);
+	d3dxMesh->UpdateFrameMatrices(d3dxMesh->m_pFrameRoot, &m);
 }

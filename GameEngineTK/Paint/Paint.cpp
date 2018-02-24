@@ -1,14 +1,14 @@
-#include "Ink.h"
+#include "Paint.h"
 
 using namespace std;
 
-ID3D11ShaderResourceView** Campus::GetInkTexSRV()
+ID3D11ShaderResourceView** Paint::GetInkTexSRV()
 { 
 	return dripTextures->GetShaderResourceView().GetAddressOf();
 }
 
 
-HRESULT Campus::InitD3D()
+HRESULT Paint::InitD3D(bool isplane)
 {
 	textures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2, Devices::Get().Height() * 2));
 	textures->Initialize();
@@ -34,9 +34,20 @@ HRESULT Campus::InitD3D()
 
 	//垂らすシェーダー
 	//バーテックスシェーダー
-	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
-	//ピクセルシェーダー
-	if (FAILED(ShaderManager::MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+	if (isplane)
+	{
+		if (FAILED(ShaderManager::MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		//ピクセルシェーダー
+		if (FAILED(ShaderManager::MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+
+	}
+	else
+	{
+		if (FAILED(ShaderManager::MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		//ピクセルシェーダー
+		if (FAILED(ShaderManager::MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+
+	}
 
 	//更新するシェーダー
 	//バーテックスシェーダー
@@ -89,7 +100,7 @@ HRESULT Campus::InitD3D()
 
 
 
-void Campus::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae)
+void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae)
 {
 	InkData inkdata;
 	inkdata.Color = Color;
@@ -100,10 +111,10 @@ void Campus::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae)
 }
 
 //バーテックスバッファー作成
-void Campus::CreateVertexBuffer()
+void Paint::CreateVertexBuffer()
 {
 	//頂点を定義
-	CampusVertex vertices[] =
+	PaintVertex vertices[] =
 	{
 		{D3DXVECTOR3(-1,-1,0),D3DXVECTOR2(0,1)},//頂点1	
 		{D3DXVECTOR3(-1, 1, 0), D3DXVECTOR2(0, 0)}, //頂点2
@@ -113,7 +124,7 @@ void Campus::CreateVertexBuffer()
 	//上の頂点でバーテックスバッファー作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(CampusVertex) * 4;
+	bd.ByteWidth = sizeof(PaintVertex) * 4;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
@@ -124,13 +135,13 @@ void Campus::CreateVertexBuffer()
 }
 
 
-ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
+ID3D11Buffer* Paint::CreateVertexBuffer(InkData & inkdata)
 {
 	//インクサイズを正規デバイス座標系にする
 	float uvSize = inkdata.Scale;
 	D3DXVECTOR2 Uv = inkdata.Uv;
 
-	CampusVertex vertex[] = {
+	PaintVertex vertex[] = {
 		{ Math::ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y + uvSize,0)),D3DXVECTOR2(0,1) },
 		{ Math::ChangeRegularDevice(D3DXVECTOR3(Uv.x - uvSize,Uv.y - uvSize,0)),D3DXVECTOR2(0,0) },
 		{ Math::ChangeRegularDevice(D3DXVECTOR3(Uv.x + uvSize,Uv.y + uvSize,0)),D3DXVECTOR2(1,1) },
@@ -141,7 +152,7 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 	//上の頂点でバーテックスバッファー作成
 	D3D11_BUFFER_DESC bd;
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(CampusVertex) * 4;
+	bd.ByteWidth = sizeof(PaintVertex) * 4;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
@@ -154,7 +165,7 @@ ID3D11Buffer* Campus::CreateVertexBuffer(InkData & inkdata)
 }
 
 
-void Campus::Render()
+void Paint::Render()
 {
 	textures->SetRenderTargets();
 	InkRender();
@@ -168,7 +179,7 @@ void Campus::Render()
 	inkData.clear();
 }
 
-void Campus::InkRender()
+void Paint::InkRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
@@ -204,7 +215,7 @@ void Campus::InkRender()
 
 
 
-void Campus::InkRender(InkData& ink)
+void Paint::InkRender(InkData& ink)
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
@@ -222,7 +233,7 @@ void Campus::InkRender(InkData& ink)
 	}
 
 	//バーテックスバッファーをセット
-	UINT stride = sizeof(CampusVertex);
+	UINT stride = sizeof(PaintVertex);
 	UINT offset = 0;
 	deviceContext->IASetVertexBuffers(0, 1, &ink.vertexBuffer, &stride, &offset);
 
@@ -232,7 +243,7 @@ void Campus::InkRender(InkData& ink)
 }
 
 
-void Campus::DripRender()
+void Paint::DripRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
@@ -258,7 +269,7 @@ void Campus::DripRender()
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//バーテックスバッファーをセット
-	UINT stride = sizeof(CampusVertex);
+	UINT stride = sizeof(PaintVertex);
 	UINT offset = 0;
 	deviceContext->IASetVertexBuffers(0, 1, dripVertexBuffer.GetAddressOf(), &stride, &offset);
 
@@ -267,7 +278,7 @@ void Campus::DripRender()
 	deviceContext->Draw(4, 0);
 }
 
-void Campus::UpDateRender()
+void Paint::UpDateRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
@@ -288,7 +299,7 @@ void Campus::UpDateRender()
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//バーテックスバッファーをセット
-	UINT stride = sizeof(CampusVertex);
+	UINT stride = sizeof(PaintVertex);
 	UINT offset = 0;
 	deviceContext->IASetVertexBuffers(0, 1, dripVertexBuffer.GetAddressOf(), &stride, &offset);
 

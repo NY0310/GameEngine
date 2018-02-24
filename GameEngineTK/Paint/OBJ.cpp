@@ -16,7 +16,7 @@ Obj::Obj()
 
 	// ƒƒ“ƒo•Ï”‰Šú‰»
 	matrixObject->SetPosition(D3DXVECTOR3(0, 0, 0));
-	matrixObject->SetScale(D3DXVECTOR3(1, 1, 1));
+	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));
 	matrixObject->SetRotation(D3DXVECTOR3(0, 0, 0));
 }
 
@@ -25,7 +25,7 @@ Obj::~Obj()
 {
 }
 
-void Obj::Initialze()
+void Obj::Initialize()
 {
 	InitD3D();
 }

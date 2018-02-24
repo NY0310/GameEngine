@@ -17,6 +17,7 @@
 #include <SimpleMath.h>
 #include <wrl.h>
 #include <SpriteBatch.h>
+#include <d3dx9.h>
 
 
 
@@ -87,6 +88,12 @@ public:
 	void Device(ComPtr<ID3D11Device> device) {
 		this->device = device;
 	}
+	// デバイスを取得する Get device object
+	LPDIRECT3DDEVICE9 Device9() {
+		return this->device9;
+	}
+
+
 	// デバイスコンテキストを取得する Get device context object
 	ComPtr<ID3D11DeviceContext> Context() {
 		return this->context;
@@ -141,6 +148,9 @@ public:
 	// デバイスを生成する Create device
 	void CreateDevice();
 
+	//
+	void CreateDevice9();
+
 	// リソースを生成する Create Resource
 	void CreateResources();
 
@@ -171,6 +181,12 @@ private:
 	ComPtr<IDXGISwapChain1> swapChain1;
 	ComPtr<ID3D11RenderTargetView> renderTargetView;
 	ComPtr<ID3D11DepthStencilView> depthStencilView;
+
+	//IDirect3D9へのポインタ
+	LPDIRECT3D9 d3d9;
+	//d3d9のデバイス
+	LPDIRECT3DDEVICE9 device9;
+
 
 	//ビューポート
 	CD3D11_VIEWPORT  viewport;

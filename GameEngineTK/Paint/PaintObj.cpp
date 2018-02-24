@@ -6,12 +6,11 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 
-PaintObj::PaintObj()
+PaintObj::PaintObj(bool isPlane)
 {
-	campus = make_unique<Campus>();
-	campus->InitD3D();
+	campus = make_unique<Paint>();
+	campus->InitD3D(isPlane);
 	paintCollision = make_unique<PaintCollision>();
-	mouseRay = MouseRay::GetInstance();
 	matrixObject->SetPosition(D3DXVECTOR3(0, 1.5, 0));
 	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));
 }
@@ -23,31 +22,24 @@ void PaintObj::UpDate()
 	paintCollision->SetTriangles(triangles);
 	paintCollision->SetWorldMatrix(matrixObject->GetWorldMatrix());
 
-	Segment* segment;
-	D3DXVECTOR2 uv = D3DXVECTOR2(0,0);
-	segment = mouseRay->RayCreate();
+	//Segment* segment;
+	//D3DXVECTOR2 uv = D3DXVECTOR2(0,0);
 
-	if (segment)
-	{
-		if (paintCollision->IntersectSegment(segment, uv))
-		{
-			D3DXVECTOR4 color = Colors::Gold;
-			static int a = 0;
-			a++;
 
-			if (a % 2 == 1)
-			{
-				D3DXVECTOR4 color = Colors::Red;
-				campus->CreateInk(color, uv, 1);
-			}
-			else
-			{
-				D3DXVECTOR4 colora = Colors::Green;
-				campus->CreateInk(colora, uv, 1);
-			}
-		}
-		delete segment;
-	}
+	//if (segment)
+	//{
+	//	if (paintCollision->IntersectSegment(segment, uv))
+	//	{
+	//		static int a = 0;
+	//		a++;
+
+	//		if (a % 7)
+	//		{
+	//			campus->CreateInk(color[a % 7], uv, 1);
+	//		}
+	//		delete segment;
+	//	}
+	//}
 
 }
 

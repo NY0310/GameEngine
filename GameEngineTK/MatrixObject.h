@@ -5,10 +5,13 @@
 #include <d3d11_1.h>
 #include <SimpleMath.h>
 #include "AStar/Math.h"
+#include "FollowCamera.h"
 
 class MatrixObject {
 public:
 	using Vector3 = DirectX::SimpleMath::Vector3;
+	//コンストラクタ
+	MatrixObject();
 	//ワールド行列作成
 	void WorldMatrixCreate();
 	//ワールド座標設定
@@ -30,7 +33,7 @@ public:
 	//ワールド座標設定
 	virtual void SetPosition(const Vector3& position) { transfer = Math::VectorToD3DXVECTOR3(position); }
 	//ワールド座標取得
-	virtual const Vector3& GetPositionMath() { return Math::D3DXVECTOR3ToVector(transfer); }
+	virtual Vector3& GetPositionMath() { return Math::D3DXVECTOR3ToVector(transfer); }
 	//スケール設定
 	virtual void SetScale(const Vector3& scale) { this->scale = Math::VectorToD3DXVECTOR3(scale); }
 	//スケール取得
@@ -45,6 +48,8 @@ public:
 	virtual const DirectX::SimpleMath::Quaternion& GetQuaternionMath() { return  Math::D3DXQUATERNIONtoQuaternion(this->quaternion); }
 	//ワールド行列取得
 	const D3DXMATRIX& GetWorldMatrix() { return worldMatrix; }
+	//
+	DirectX::SimpleMath::Matrix GetWVP() { return Math::D3DXMATRIXToMatrix(wvp); }
 private:
 	//全行列作成
 	void CreateAllMatrix();
@@ -63,5 +68,6 @@ private:
 	D3DXMATRIX transferMatrix;//移動行列
 	D3DXMATRIX scaleMatrix;//スケール行列
 	D3DXMATRIX rotationMatrix;//回転行列
+	D3DXMATRIX wvp;//ワールドビュープロジェクション行列
 	bool IsUseQuternion = false;//クォータニオンを使用するか
 };

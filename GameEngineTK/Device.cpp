@@ -91,8 +91,53 @@ void Devices::CreateDevice()
 
 	// TODO: デバイスに依存したオブジェクトを初期化する 
 	// Initialize device dependent objects here (independent of window size).
+	
 
 	spriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
+}
+
+void Devices::CreateDevice9()
+{
+	//D3d"9"のデバイスを作る、全てはD3DXMESHの引数に必要だから
+	// Direct3D"9"オブジェクトの作成
+	if (nullptr == (d3d9 = Direct3DCreate9(D3D_SDK_VERSION)))
+	{
+		MessageBoxA(0, "Direct3D9の作成に失敗しました", "", MB_OK);
+	}
+	// DIRECT3D"9"デバイスオブジェクトの作成
+	D3DPRESENT_PARAMETERS d3dpp;
+	ZeroMemory(&d3dpp, sizeof(d3dpp));
+	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+	d3dpp.BackBufferCount = 1;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.Windowed = true;
+	d3dpp.EnableAutoDepthStencil = true;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+
+
+	if (FAILED(d3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING,
+		&d3dpp, &device9)))
+	{
+		if (FAILED(d3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+			D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+			&d3dpp, &device9)))
+		{
+			MessageBoxA(0, "HALモードでDIRECT3Dデバイスを作成できません\nREFモードで再試行します", nullptr, MB_OK);
+			if (FAILED(d3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hWnd,
+				D3DCREATE_HARDWARE_VERTEXPROCESSING,
+				&d3dpp, &device9)))
+			{
+				if (FAILED(d3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hWnd,
+					D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+					&d3dpp, &device9)))
+				{
+					MessageBoxA(0, "DIRECT3Dデバイスの作成に失敗しました", nullptr, MB_OK);
+				}
+			}
+		}
+	}
+
 }
 
 // SizeChangedイベントでウィンドウを変更するすべてのメモリリソースを配置する

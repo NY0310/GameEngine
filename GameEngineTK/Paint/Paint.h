@@ -1,5 +1,5 @@
+#pragma once
 #include <windows.h>
-#include <wrl/client.h>
 #include <vector>
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"
@@ -8,9 +8,8 @@
 
 using namespace Microsoft::WRL;
 
-class Campus
+class Paint
 {
-public:
 private:
 	struct InkData
 	{
@@ -21,22 +20,22 @@ private:
 	};
 
 
-	struct CampusVertex
+	struct PaintVertex
 	{
 		D3DXVECTOR3 Pos; //位置
 		D3DXVECTOR2 Tex; //テクスチャー座標
 	};
 
 public:
-	Campus() = default;
-	~Campus() = default;
-	Campus& operator= (const Campus&) = delete;
-	Campus(const Campus&) = delete;
+	Paint() = default;
+	~Paint() = default;
+	Paint& operator= (const Paint&) = delete;
+	Paint(const Paint&) = delete;
 
 	void CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae);
 	void CreateVertexBuffer();
 	ID3D11ShaderResourceView** GetInkTexSRV();
-	HRESULT InitD3D();
+	HRESULT InitD3D(bool isplane = true);
 	void Render();
 private:
 	ID3D11Buffer* CreateVertexBuffer(InkData& inkdata);

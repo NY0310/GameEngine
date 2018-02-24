@@ -25,6 +25,12 @@ public:
 	}
 };
 
+class InkSphere : public Sphere
+{
+public:
+	DirectX::SimpleMath::Vector4 Color;
+};
+
 
 //線分
 class Segment
@@ -34,6 +40,13 @@ public:
 	DirectX::SimpleMath::Vector3 Start;
 	//終了地点
 	DirectX::SimpleMath::Vector3 End;
+};
+
+class InkSegment : public Segment
+{
+public:
+	DirectX::SimpleMath::Vector4 Color;
+	int index;
 };
 
 //三角形

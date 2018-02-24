@@ -12,10 +12,9 @@
 extern void ExitGame();
 
 using namespace DirectX;
-using namespace DirectX::SimpleMath;
 using namespace std;
 using Microsoft::WRL::ComPtr;
-
+using namespace demo;
 
 
 Game::Game() :
@@ -44,7 +43,7 @@ void Game::Initialize(HWND window, int width, int height)
 	// リソースを生成する Create Resources
 	devices.CreateResources();
 
-
+	devices.CreateDevice9();
 
 	srand(static_cast<unsigned int>(time(nullptr)));
 
@@ -136,19 +135,19 @@ void Game::Initialize(HWND window, int width, int height)
 	stage.Initialize();
 
 
-	const int objnum =4;
+	const int objnum =5;
 	D3DXVECTOR3 position[objnum] = {
-		D3DXVECTOR3(0,1,-2),
-		D3DXVECTOR3(2,2,-2),
-		D3DXVECTOR3(-2,0,-2),
-		D3DXVECTOR3(-2,2,-2),
+		D3DXVECTOR3(2,3.5,0),
+		D3DXVECTOR3(1,3,-1),
+		D3DXVECTOR3(-2,3,-1),
+		D3DXVECTOR3(2,2,-1),
+		D3DXVECTOR3(-2,1,0)
 	};
 
 	D3DXVECTOR3 rot[objnum] = {
-		D3DXVECTOR3(0,0,0),
-		D3DXVECTOR3(1,0.6,0.3),
-		D3DXVECTOR3(0.5,0,1),
-		D3DXVECTOR3(1.4,0,1),
+		D3DXVECTOR3(0,2,0),
+		
+
 	};
 	obj.resize(objnum);
 
@@ -156,25 +155,30 @@ void Game::Initialize(HWND window, int width, int height)
 for (auto& data : obj)
 	{
 		data = new PaintObj();
-		data->Initialze();
-		data->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
+		data->Initialize();
+		data->LoadOBJFile("Resources/OBJ/InkObj.obj");
 		data->LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 		data->matrixObject->SetPosition(position[cnt]);
-		data->matrixObject->SetRotation(rot[cnt]);
+		//data->matrixObject->SetRotation(rot[cnt]);
 		cnt++;
-		}
-	shadermanager = ShaderManager::Get();
+	}
 
+
+	obj2 = new Obj();
+	obj2->Initialize();
+	obj2->LoadOBJFile("Resources/OBJ/InkObj.obj");
+	obj2->LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 
 	////D3DXMESHライブラリを使用するクラス生成
 	//m_pMesh = new CD3DXMESH;
 	////初期化
 	//m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
-	skinmesh = new CD3DXSKINMESH();
+	skinmesh = new PaintSkinMesh();
 	skinmesh->Initialize();
 	skinmesh->CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
 
-		
+	painter = new PaintCreator();
+
 }
 
 
@@ -193,11 +197,10 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-
+	painter->Update();
 	// TODO: Add your game logic here.
 	MouseUtil::GetInstance()->Update();
-
-
+	obj2->Update();
 	//	毎フレーム処理を書く
 	m_debugCamera->Update();
 
@@ -229,19 +232,13 @@ void Game::Update(DX::StepTimer const& timer)
 
 
 
-
-
-
-
-
-
 	//
 	{//	自機に追従するカメラ
 
 		m_Camera->Update();
 	}
 
-
+	skinmesh->UpDate();
 
 	for (auto& data : obj)
 		data->UpDate();
@@ -252,6 +249,7 @@ void Game::Render()
 {
 
 	auto& devices = Devices::Get();
+
 
 
 
@@ -274,10 +272,14 @@ void Game::Render()
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 
 	//pSss->ZTexRender(m_Camera);
+	skinmesh->InkRender();
 	for (auto& data : obj)
 	data->InkRender();
+
 	//obj->ZTextureRender(m_Camera);
 	Clear();
+	painter->Render();
+
 	//pBumpMapping->Render(m_Camera);
 	//pSss->Render(m_Camera);
 
@@ -335,37 +337,31 @@ void Game::Render()
 
 
 
-	//tomanageparticle->Render(m_Camera);
 
 	devices.SpriteBatch().get()->End();
 	//アルファ値を無効にする
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 	//pTessellation->Render(m_Camera);
 	//pDisplacementMapping->Render(m_Camera);
-	//skinmesh->m_View = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetView());
-	//skinmesh->m_Eye = shaderManader.VectorToD3DXVECTOR3(m_Camera->GetEyePos());
-	//skinmesh->m_Proj = shaderManader.MatrixToD3DXMATRIX(m_Camera->GetProjection());
 	////再生開始箇所を変えることによりモーションを切り替える
 	//if (GetKeyState(VK_F1) & 0x80)//握る
 	//{
-	//	skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 0);
+	//	skinmesh->d3dxMesh->m_pAnimController->SetTrackPosition(0, 0);
 	//}
 	//if (GetKeyState(VK_F2) & 0x80)//振る
 	//{
-	//	skinmesh->m_pD3dxMesh->m_pAnimController->SetTrackPosition(0, 1.3);
+	//	skinmesh->d3dxMesh->m_pAnimController->SetTrackPosition(0, 1.3);
 	//}
-
-	//	skinmesh->Render();
+	//skinmesh->Render();
 
 	////D3DXMESHライブラリを使用してXファイルを描画するクラス
 //	m_pMesh->Render( D3DXVECTOR3(1, 1, -1));
-	/*m_pMesh->GetfYaw() += 0.0002;
-	m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);*/
+	//m_pMesh->GetfYaw() += 0.0002;
+	//m_pMesh->GetAnimController()->AdvanceTime(0.007, NULL);
 
-	for (auto& data : obj)
-	data->Render();
-
-
+	//for (auto& data : obj)
+	//data->Render();
+//	obj2->Render();
 	Present();
 
 }

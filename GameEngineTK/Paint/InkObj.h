@@ -8,40 +8,25 @@
 #include "../MatrixObject.h"
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"
+#include "../UsingDirectSimpleMath.h"
+
+using namespace UsingDirectSimpleMath;
 
 using namespace Microsoft::WRL;
 
-class Obj
+
+class InkObj
 {
-protected:
+private:
 
 	//頂点の構造体
 	struct SimpleVertex
 	{
-		D3DXVECTOR3 Pos; //位置
-		D3DXVECTOR3 Normal;//法線
-		D3DXVECTOR2 Tex; //テクスチャー座標
+		D3DXVECTOR3 pos; //位置
 	};
 
 
 
-	//Simpleシェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
-	struct SIMPLESHADER_CONSTANT_BUFFER
-	{
-		D3DXMATRIX mW;//ワールド行列
-		D3DXMATRIX mWVP;//ワールドから射影までの変換行列
-		D3DXMATRIX mWLP;//ワールド・”ライトビュー”・プロジェクションの合成
-		D3DXMATRIX mWLPT;//ワールド・”ライトビュー”・プロジェクション・テクスチャ座標行列の合成
-		D3DXVECTOR4 vLightDir;//ライト方向
-		D3DXVECTOR4 vEyes;//カメラ位置
-	};
-
-
-
-	struct ZTEXTURE_CONSTANT_BUFFER
-	{
-		D3DXMATRIX mWLP;//ワールドライト行列
-	};
 
 	//オリジナル　マテリアル構造体
 	struct MY_MATERIAL
@@ -65,15 +50,28 @@ protected:
 
 	struct MeshAndTriangles
 	{
-		std::vector<Triangle> triangles;
 		MY_MESH mesh;
 	};
 
-	using Vector3 = DirectX::SimpleMath::Vector3;
+	//Simpleシェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
+	struct ConstantBuffer
+	{
+		Matrix wvp;//ワールド行列
+		Vector4 color;
+	};
 public:
 
-	Obj();
-	virtual ~Obj();
+	//コンスタントバッファー出力データ
+	struct ConstantInkData
+	{
+		Vector3 positon;
+		Vector3 scale;
+		Vector3	rotation;
+		Vector4 color;
+	};
+
+	InkObj();
+	virtual ~InkObj();
 	//初期化処理
 	void Initialize();
 	HRESULT InitD3D();
@@ -81,34 +79,24 @@ public:
 	virtual  void Update();
 	//OBJファイル読み込み
 	void LoadOBJFile(LPSTR filename) { InitStaticMesh(filename, &mesh); }
-	//テクスチャ読み込み
-	void LoadTextuerFile(LPSTR filename) { D3DX11CreateShaderResourceViewFromFileA(device, filename, nullptr, nullptr, &texture, nullptr); }
 	//描画
-	void Render();
-	//Zテクスチャに書き込み
-	void ZTextureRender();
-	std::unique_ptr<MatrixObject> matrixObject = std::make_unique<MatrixObject>();//行列
+	void Render(const vector<ConstantInkData> inkData);
+	void Render(Matrix & wvp, Vector4 & color);
+	std::unique_ptr<MatrixObject> matrixInkObject;//行列
 
 private:
 	//シェーダー作成
 	HRESULT CreateShader();
-	//深度マップシェーダー作成
-	HRESULT CreateDepthTextureShader();
 	//頂点インプットレイアウト作成
 	HRESULT CreateVertexInputLayout(ID3DBlob * compiledshader);
 	//コンスタントバッファ作成
 	ID3D11Buffer* CreateConstantBuffer(UINT size);
-	//深度マップテクスチャ作成
-	HRESULT CreateDepthTexture();
 	//サンプラー作成
 	HRESULT CreateSampler();
 	//OBJファイル読み込み
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 	//マテリアルファイル読み込み
 	HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
-	//重複チェック
-	//bool IsOverlap();
-
 protected:
 	/// <summary>
 	/// メッシュ
@@ -126,34 +114,10 @@ protected:
 	
 
 	static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
-	std::vector<Triangle> triangles;
 
-
-	/// <summary>
-	/// Zテクスチャ
-	/// </summary>
-	ComPtr<ID3D11Buffer> zTexConstantBuffer;//zテクスチャ用コンスタントバッファ
-	ComPtr<ID3D11VertexShader> depthVertexShader;//深度テクスチャーレンダリング用
-	ComPtr<ID3D11PixelShader> depthPixelShader;//深度テクスチャーレンダリング用
-	ComPtr<ID3D11Texture2D> depthMapTex;//深度マップテクスチャー
-	ComPtr<ID3D11RenderTargetView> depthMapTexRTV;//深度マップテクスチャーのRTV
-	ComPtr<ID3D11ShaderResourceView> depthMapTexSRV;//深度マップテクスチャーのSRV
-	ComPtr<ID3D11Texture2D> depthMapDSTex;//深度マップテクスチャー用DS
-	ComPtr<ID3D11DepthStencilView> depthMapDSTexDSV;//深度マップテクスチャー用DSのDSV	
-
-
-
-
-	/// <summary>
-	/// 委譲
-	/// </summary>
 	ID3D11Device* device = Devices::Get().Device().Get();//デバイス
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 	FollowCamera* camera = FollowCamera::GetInstance();
-
-
-
-	D3DXMATRIX m_mClipToUV;//テクスチャ行列
 	D3DXMATRIX mLight;//ライト行列
 };
 

@@ -36,7 +36,7 @@
 #include "Device.h"
 
 #include <d3dCompiler.h>
-#include "ToManageParticle.h"
+#include "InkParticleRenderer.h"
 #include "Stage.h"
 #include "HomingBullet.h"
 #include "CD3DXMESH.h"
@@ -48,8 +48,10 @@
 #include "Paint/PaintObj.h"
 #include "AStar/AStar.h"
 #include "AStar/Map.h"
-#include "SkinMesh.h"
+#include "PaintSkinMesh.h"
 #include "ShaderManager.h"
+#include "Paint\PaintCreator.h"
+#include "Sprite\Sprite.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -157,7 +159,7 @@ private:
 
 	////キーボードトラッカー
 	DirectX::Keyboard::KeyboardStateTracker KeybordTracker;
-	std::unique_ptr<Player> player;
+	std::unique_ptr<demo::Player> player;
 
 	//敵
 	std::vector<std::unique_ptr<Enemy>> m_Enemies;
@@ -187,7 +189,6 @@ private:
 	int clearcnt;
 	int CLEARNUM = 15;
 
-	ToManageParticle* tomanageparticle;
 	std::vector<PaintObj*> obj;
 	ShaderManager shadermanager;//シェーダー関連
 	CD3DXMESH* m_pMesh;//D3DXMESHライブラリを使用してXファイルを描画するクラス
@@ -196,6 +197,9 @@ private:
 	Tessellation* pTessellation;//テセレーション
 	DisplacementMapping* pDisplacementMapping;//ディスプレイスマッピング
 
-	CD3DXSKINMESH* skinmesh;
+	PaintSkinMesh* skinmesh;
 	ShaderManager shaderManader = ShaderManager::Get();
+	PaintCreator* painter;
+	Sprite* sprite;
+	Obj* obj2;
 };       

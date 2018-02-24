@@ -45,6 +45,9 @@ public:
 	//Uv座標系から正規デバイス座標系に変換する
 	static const D3DXVECTOR3& ChangeRegularDevice(const D3DXVECTOR3& position);
 	static const D3DXVECTOR2& ChangeRegularDevice(const D3DXVECTOR2& position);
+	//Uv座標系から正規デバイス座標系に変換する
+	static const DirectX::SimpleMath::Vector3& ChangeRegularDevice(const DirectX::SimpleMath::Vector3& position);
+	static const DirectX::SimpleMath::Vector2& ChangeRegularDevice(const DirectX::SimpleMath::Vector2& position);
 
 private:
 	//2つの値とも0

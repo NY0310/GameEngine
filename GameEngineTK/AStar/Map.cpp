@@ -44,7 +44,7 @@ void Map::CreateMap()
 		for (int j = 0; j < attributeMap->GetMapWidth(); j++)
 		{
 			Obj* obj = new Obj();
-			obj->Initialze();
+			obj->Initialize();
 			Vector3 pos = Vector3(i, 0, j);
 			//obj->SetPosition(pos);
 			obj->LoadOBJFile("Resources/OBJ/Panel.obj");

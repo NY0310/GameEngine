@@ -15,7 +15,6 @@
 			Right,
 			X1,
 			X2,
-
 			Num
 		};
 		using Mode = DirectX::Mouse::Mode;
@@ -65,3 +64,4 @@
 		// ボタントリガー状態
 		DirectX::Mouse::ButtonStateTracker::ButtonState* m_ButtonTrackerStates[Button::Num];
 	};
+	

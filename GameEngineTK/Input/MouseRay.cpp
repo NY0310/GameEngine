@@ -29,7 +29,8 @@ Segment* MouseRay::RayCreate()
 {
 	FollowCamera* camera = FollowCamera::GetInstance();
 	MouseUtil* mouse = MouseUtil::GetInstance();
-	if (mouse->IsTriggered(MouseUtil::Button::Left))
+	mouse->Update();
+	if (mouse->IsPressed(MouseUtil::Button::Left))
 	{
 		Vector3 pos;
 		int x = mouse->GetPos().x;
@@ -38,7 +39,7 @@ Segment* MouseRay::RayCreate()
 		Matrix proj = camera->GetProjection();
 		CalcScreenToXZ(&pos, x, y, Devices::Get().Width(), Devices::Get().Height(), &view, &proj);
 		Segment* segment = new Segment();
-		segment->End = camera->GetEyePos();
+		segment->End = camera->GetEyePos() + Vector3(0,0,0);
 		segment->Start = pos;
 		return segment;
 	}

@@ -68,14 +68,26 @@
     <Filter Include="SkinnedMesh">
       <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PARTICLE\Player">
+    <Filter Include="Player">
       <UniqueIdentifier>{1dd6822a-9f99-4476-91bb-81c8894fd63e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PARTICLE\Player\HomingBullet">
+    <Filter Include="Player\HomingBullet">
       <UniqueIdentifier>{47f7593f-b24b-44ee-9916-fd9024e839b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PARTICLE\Player\Bullet">
+    <Filter Include="Player\Bullet">
       <UniqueIdentifier>{9a6bd89c-c67e-4a33-8a76-080a9f8a7ef1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sprite">
+      <UniqueIdentifier>{caf5f5ea-ab6d-4c7c-9508-27d65aefae4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactor">
+      <UniqueIdentifier>{9e7a5cad-372d-451b-b938-7266248a343a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactor\Player">
+      <UniqueIdentifier>{c0a4624f-8a3d-4537-ab26-9a59d9a100c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactor\Player\State">
+      <UniqueIdentifier>{4079ed47-c91d-4421-8001-9040f8c1a424}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -120,21 +132,15 @@
     <ClInclude Include="Device.h">
       <Filter>Device</Filter>
     </ClInclude>
-    <ClInclude Include="PARTICLE.h">
-      <Filter>PARTICLE</Filter>
-    </ClInclude>
     <ClInclude Include="Stage.h" />
     <ClInclude Include="HomingBullet.h">
-      <Filter>PARTICLE\Player\HomingBullet</Filter>
+      <Filter>Player\HomingBullet</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>PARTICLE\Player</Filter>
+      <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>PARTICLE\Player\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="ToManageParticle.h">
-      <Filter>PARTICLE</Filter>
+      <Filter>Player\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="CD3DXMESH.h">
@@ -160,9 +166,6 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Paint\Ink.h">
-      <Filter>Paint</Filter>
-    </ClInclude>
     <ClInclude Include="Paint\PaintCollision.h">
       <Filter>Paint</Filter>
     </ClInclude>
@@ -226,9 +229,55 @@
     <ClInclude Include="SkinMesh.h">
       <Filter>SkinnedMesh</Filter>
     </ClInclude>
-    <ClInclude Include="MatrixObject.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="SimpleTextures.h" />
+    <ClInclude Include="MatrixObject.h">
+      <Filter>SkinnedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="PaintSkinMesh.h">
+      <Filter>SkinnedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\Paint.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\PaintCreator.h">
+      <Filter>Paint</Filter>
+    </ClInclude>
+    <ClInclude Include="InkParticle.h">
+      <Filter>PARTICLE</Filter>
+    </ClInclude>
+    <ClInclude Include="InkParticleRenderer.h">
+      <Filter>PARTICLE</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite\Sprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\InkObj.h">
+      <Filter>PARTICLE</Filter>
+    </ClInclude>
+    <ClInclude Include="UsingDirectSimpleMath.h" />
+    <ClInclude Include="InkObj2.h" />
+    <ClInclude Include="Charactor\Charactor.h">
+      <Filter>Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\MainPlayer.h">
+      <Filter>Charactor\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\MainPlayer.cpp">
+      <Filter>Charactor\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\State\PlayerState.h">
+      <Filter>Charactor\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\State\PlayerRun.h">
+      <Filter>Charactor\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\State\PlayerStop.h">
+      <Filter>Charactor\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\State\PlayerWalk.h">
+      <Filter>Charactor\Player\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -273,21 +322,15 @@
     <ClCompile Include="Device.cpp">
       <Filter>Device</Filter>
     </ClCompile>
-    <ClCompile Include="PARTICLE.cpp">
-      <Filter>PARTICLE</Filter>
-    </ClCompile>
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="HomingBullet.cpp">
-      <Filter>PARTICLE\Player\HomingBullet</Filter>
+      <Filter>Player\HomingBullet</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>PARTICLE\Player</Filter>
+      <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>PARTICLE\Player\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="ToManageParticle.cpp">
-      <Filter>PARTICLE</Filter>
+      <Filter>Player\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="CD3DXMESH.cpp">
@@ -313,9 +356,6 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Paint\Ink.cpp">
-      <Filter>Paint</Filter>
-    </ClCompile>
     <ClCompile Include="Paint\PaintCollision.cpp">
       <Filter>Paint</Filter>
     </ClCompile>
@@ -367,6 +407,41 @@
     <ClCompile Include="MatrixObject.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="SimpleTextures.cpp" />
+    <ClCompile Include="PaintSkinMesh.cpp">
+      <Filter>SkinnedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\Paint.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\PaintShoot.cpp" />
+    <ClCompile Include="Paint\PaintCreator.cpp">
+      <Filter>Paint</Filter>
+    </ClCompile>
+    <ClCompile Include="InkParticle.cpp">
+      <Filter>PARTICLE</Filter>
+    </ClCompile>
+    <ClCompile Include="InkParticleRenderer.cpp">
+      <Filter>PARTICLE</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite\Sprite.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\InkObj.cpp">
+      <Filter>PARTICLE</Filter>
+    </ClCompile>
+    <ClCompile Include="InkObj2.cpp" />
+    <ClCompile Include="Charactor\Charactor.cpp">
+      <Filter>Charactor</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\State\PlayerRun.cpp">
+      <Filter>Charactor\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\State\PlayerStop.cpp">
+      <Filter>Charactor\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\State\PlayerWalk.cpp">
+      <Filter>Charactor\Player\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -462,11 +537,26 @@
     <FxCompile Include="Resources\HLSL\Drip.hlsl">
       <Filter>Paint</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="Paint\PaintUpdate.hlsl">
+    <FxCompile Include="Resources\HLSL\PlaneDrip.hlsl">
       <Filter>Paint</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
+      <Filter>SkinnedMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PaintSkinMesh.hlsl">
+      <Filter>SkinnedMesh</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PointSprite.hlsl">
+      <Filter>PARTICLE</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PaintUpdate.hlsl">
+      <Filter>Paint</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Sprite.hlsl">
+      <Filter>Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\InkObj.hlsl">
+      <Filter>PARTICLE</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

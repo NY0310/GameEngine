@@ -7,7 +7,7 @@
 #pragma once
 #include "Obj.h"
 #include "../Collision.h"
-#include "Ink.h"
+#include "Paint.h"
 #include "../Input/MouseRay.h"
 #include "PaintCollision.h"
 
@@ -15,7 +15,7 @@
 class PaintObj : public Obj
 {
 public:
-	PaintObj();
+	PaintObj(bool isPlane = false);
 	~PaintObj() = default;
 	//更新処理
 	void UpDate();
@@ -24,9 +24,8 @@ public:
 	//インク描画
 	void InkRender() { campus->Render(); }
 private:
-	std::unique_ptr<Campus>campus;
+	std::unique_ptr<Paint>campus;
 	std::unique_ptr<PaintCollision>paintCollision;
-	MouseRay* mouseRay;
 };
 
 

@@ -178,3 +178,13 @@ const D3DXVECTOR2& Math::ChangeRegularDevice(const D3DXVECTOR2& position)
 { 
 	return D3DXVECTOR2(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1)); 
 }
+
+const Vector3 & Math::ChangeRegularDevice(const Vector3 & position)
+{
+	return Vector3(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1), 0);
+}
+
+const Vector2 & Math::ChangeRegularDevice(const Vector2 & position)
+{
+	return Vector2(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1));
+}
