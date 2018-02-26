@@ -6,12 +6,13 @@
 MatrixObject::MatrixObject()
 {
 	scale = D3DXVECTOR3(1,1,1);
+	rotation = D3DXVECTOR3(0, 0, 0);
 }
 
 /// <summary>
 /// ワールド行列作成
 /// </summary>
-void MatrixObject::WorldMatrixCreate()
+void MatrixObject::Update()
 {
 	FollowCamera* camera = FollowCamera::GetInstance();
 	//全ての行列を作成

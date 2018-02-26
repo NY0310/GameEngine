@@ -1,9 +1,8 @@
 #include "Sprite.h"
 
-
+using namespace std;
 Sprite::Sprite()
 {
-	scale = Vector3::One;
 }
 
 Sprite::~Sprite()
@@ -20,7 +19,7 @@ Sprite::~Sprite()
 HRESULT Sprite::Initialize()
 {
 	auto& devices = Devices::Get();
-
+	matrixObject = make_unique<MatrixObject>();
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *compiledShader = nullptr;
 	D3D11_BLEND_DESC bd;
@@ -118,31 +117,16 @@ void Sprite::Render()
 {
 	auto& devices = Devices::Get();
 
-	Matrix World, Scale, Tran, Rot, View, Proj, wvp;
-
-	View = camera->GetView();
-	Proj = camera->GetProjection();
-
-
-	//ワールドトランスフォームは個々で異なる
-	Scale = Matrix::CreateScale(scale);
-	Tran = Matrix::CreateTranslation(position);
-	Rot = Matrix::CreateFromYawPitchRoll(rotation.x, rotation.y, rotation.z);
-
 	devices.Context()->VSSetShader(vertexShader.Get(), nullptr, 0);
 	devices.Context()->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-
-	World = Tran * Scale;
-	wvp = World * View * Proj;
 	//シェーダーのコンスタントバッファーに各種データを渡す
 	D3D11_MAPPED_SUBRESOURCE pData;
 	CONSTANT_BUFFER cb;
 	if (SUCCEEDED(devices.Context().Get()->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		wvp.Invert();
-		cb.wvp = wvp;
+		cb.wvp = matrixObject->GetWVP();
 		cb.viewPortWidth = devices.Width();
 		cb.viewPortHight = devices.Height();
 
@@ -207,28 +191,20 @@ HRESULT Sprite::CreateVertexBuffer()
 	auto& devices = Devices::Get();
 	UINT width = devices.Width() / 2;
 	UINT hight = devices.Height() / 2;
-	int shiftX = widthHalfSize * scale.x;
-	int shiftY = widthHalfSize * scale.y;
-
-	Matrix Scale = Matrix::CreateScale(scale);
+	int shiftX = widthHalfSize * matrixObject->GetScale().x;
+	int shiftY = widthHalfSize * matrixObject->GetScale().y;
+	D3DXVECTOR3 position = matrixObject->GetPosition();
 
 	//バーテックスバッファー作成
 	//頂点を定義
 	VertexData vertices[] =
 	{
-		{ Vector3((position.x - shiftX) / width,(position.y - shiftY) / hight,0), Vector2(0,1) },//頂点1	
-		{ Vector3((position.x - shiftX) / width,(position.y + shiftY) / hight, 0), Vector2(0, 0) }, //頂点2
-		{ Vector3((position.x + shiftX) / width, (position.y - shiftY) / hight, 0), Vector2(1, 1) },  //頂点3
-		{ Vector3((position.x + shiftX) / width,  (position.y + shiftY) / hight, 0), Vector2(1, 0) },//頂点4	
+		{ D3DXVECTOR3((position.x - shiftX) / width,(position.y - shiftY) / hight,0), D3DXVECTOR2(0,1) },//頂点1	
+		{ D3DXVECTOR3((position.x - shiftX) / width,(position.y + shiftY) / hight, 0), D3DXVECTOR2(0, 0) }, //頂点2
+		{ D3DXVECTOR3((position.x + shiftX) / width, (position.y - shiftY) / hight, 0), D3DXVECTOR2(1, 1) },  //頂点3
+		{ D3DXVECTOR3((position.x + shiftX) / width,  (position.y + shiftY) / hight, 0), D3DXVECTOR2(1, 0) },//頂点4	
 	};
-	////頂点を定義
-	//VertexData vertices[] =
-	//{
-	//	{ Vector3(-1,-1,0),Vector2(0,1) },//頂点1	
-	//	{ Vector3(-1, 1, 0), Vector2(0, 0) }, //頂点2
-	//	{ Vector3(1, -1, 0), Vector2(1, 1) },  //頂点3
-	//	{ Vector3(1, 1, 0), Vector2(1, 0) },//頂点4	
-	//};
+
 
 
 	D3D11_BUFFER_DESC bufferDesc;

@@ -4,7 +4,6 @@
 #include <d3d11_1.h>
 #include <vector> 
 #include <memory>
-#include <SimpleMath.h>
 #include <DirectXColors.h>
 #include <cassert>
 #include"AStar/Math.h"
@@ -25,7 +24,7 @@ public:
 	//デストラクタ
 	~InkParticle();
 	//生成(既にメモリは確保されている)
-	void Create(const DirectX::SimpleMath::Vector3& position,const DirectX::SimpleMath::Vector3& nDirection, const DirectX::SimpleMath::Vector4& color, const int index);
+	void Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirection, const D3DXVECTOR4& color, const int index);
 	//更新処理
 	void Update();
 	//描画するか
@@ -38,27 +37,13 @@ public:
 	InkSegment* GetSegment() {
 		return colisitionSegment.get();
 	}
-	DirectX::SimpleMath::Matrix& GetWVP() {
+	const D3DXMATRIX& GetWVP() {
 		auto a =  matrixObject->GetWVP();
 		return a;
 	}
-	////座標を取得
-	//const Vector3 GetPosition() {
-	//	return  position;
-	//}
-	////大きさを取得
-	//const Vector3 GetScale() {
-	//	return scale;
-	//}
 private:
-	//座標
-	//Vector3 position;
 	//移動ベクトル
-	DirectX::SimpleMath::Vector3 direction;
-	////大きさ
-	//Vector3 scale;
-	////回転
-	//Vector3 rotation;
+	D3DXVECTOR3 direction;
 	//速度	
 	static const float speed;
 	//重力
@@ -95,7 +80,7 @@ public:
 	//描画
 	void Render();
 	//インクを発射する
-	void Shoot(const DirectX::SimpleMath::Vector3& emitPosition, DirectX::SimpleMath::Vector3& nDirection, const DirectX::SimpleMath::Vector4& color);
+	void Shoot(const D3DXVECTOR3& emitPosition, D3DXVECTOR3& nDirection, const D3DXVECTOR4& color);
 	////座標を取得
 	//const std::vector<InkParticleRenderer::ConstantInkData> GetConstantInkData() {
 	//	return inkParticledata;
@@ -118,7 +103,7 @@ private:
 	//インターバル更新処理
 	void IntervalUpdate();
 	//方向をずらす
-	DirectX::SimpleMath::Vector3 ShiftDirection(DirectX::SimpleMath::Vector3 direction);
+	D3DXVECTOR3 ShiftDirection(D3DXVECTOR3 direction);
 	//float一つ分のずらしを算出
 	float RandShiftDirection();
 private:

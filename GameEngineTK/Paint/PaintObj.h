@@ -18,7 +18,7 @@ public:
 	PaintObj(bool isPlane = false);
 	~PaintObj() = default;
 	//更新処理
-	void UpDate();
+	void Update();
 	//描画
 	void Render();
 	//インク描画

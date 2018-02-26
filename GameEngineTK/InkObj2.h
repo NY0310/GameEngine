@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include "MatrixObject.h"
 #include "ShaderManager.h"
 #include "FollowCamera.h"
@@ -37,8 +38,8 @@ public:
 	//Simpleシェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
 	struct InkData
 	{
-		DirectX::SimpleMath::Matrix wvp;//ワールドから射影までの変換行列
-		DirectX::SimpleMath::Vector4 color;
+		D3DXMATRIX wvp;//ワールドから射影までの変換行列
+		D3DXVECTOR4 color;
 	};
 	InkObj2();
 

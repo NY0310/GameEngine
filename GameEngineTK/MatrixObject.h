@@ -9,11 +9,10 @@
 
 class MatrixObject {
 public:
-	using Vector3 = DirectX::SimpleMath::Vector3;
 	//コンストラクタ
 	MatrixObject();
 	//ワールド行列作成
-	void WorldMatrixCreate();
+	void Update();
 	//ワールド座標設定
 	virtual void SetPosition(const D3DXVECTOR3& position) { transfer = position; }
 	//ワールド座標取得
@@ -31,17 +30,17 @@ public:
 	//クォータニオン取得
 	virtual const D3DXQUATERNION& GetQuaternion() { return  this->quaternion; }
 	//ワールド座標設定
-	virtual void SetPosition(const Vector3& position) { transfer = Math::VectorToD3DXVECTOR3(position); }
+	virtual void SetPosition(const DirectX::SimpleMath::Vector3& position) { transfer = Math::VectorToD3DXVECTOR3(position); }
 	//ワールド座標取得
-	virtual Vector3& GetPositionMath() { return Math::D3DXVECTOR3ToVector(transfer); }
+	virtual DirectX::SimpleMath::Vector3& GetPositionMath() { return Math::D3DXVECTOR3ToVector(transfer); }
 	//スケール設定
-	virtual void SetScale(const Vector3& scale) { this->scale = Math::VectorToD3DXVECTOR3(scale); }
+	virtual void SetScale(const DirectX::SimpleMath::Vector3& scale) { this->scale = Math::VectorToD3DXVECTOR3(scale); }
 	//スケール取得
-	virtual const Vector3& GetScaleMath() { return Math::D3DXVECTOR3ToVector(this->scale); }
+	virtual const DirectX::SimpleMath::Vector3& GetScaleMath() { return Math::D3DXVECTOR3ToVector(this->scale); }
 	//回転設定
-	virtual void SetRotation(const Vector3& rotation) { this->rotation = Math::VectorToD3DXVECTOR3(rotation); }
+	virtual void SetRotation(const DirectX::SimpleMath::Vector3& rotation) { this->rotation = Math::VectorToD3DXVECTOR3(rotation); }
 	//回転取得
-	virtual const Vector3& GetRotationMath() { return Math::D3DXVECTOR3ToVector(this->rotation); IsUseQuternion = false; }
+	virtual const DirectX::SimpleMath::Vector3& GetRotationMath() { return Math::D3DXVECTOR3ToVector(this->rotation); IsUseQuternion = false; }
 	//クォータニオン設定
 	virtual void SetQuaternion(const DirectX::SimpleMath::Quaternion& quaternion) { this->quaternion = Math::QuaterniontoD3DXQUATERNION(quaternion); IsUseQuternion = true; }
 	//クォータニオン取得
@@ -49,7 +48,7 @@ public:
 	//ワールド行列取得
 	const D3DXMATRIX& GetWorldMatrix() { return worldMatrix; }
 	//
-	DirectX::SimpleMath::Matrix GetWVP() { return Math::D3DXMATRIXToMatrix(wvp); }
+	const D3DXMATRIX& GetWVP() { return wvp; }
 private:
 	//全行列作成
 	void CreateAllMatrix();

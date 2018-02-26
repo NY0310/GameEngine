@@ -136,9 +136,6 @@
     <ClInclude Include="HomingBullet.h">
       <Filter>Player\HomingBullet</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Player</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>Player\Bullet</Filter>
     </ClInclude>
@@ -240,9 +237,6 @@
     <ClInclude Include="Paint\Paint.h">
       <Filter>Paint</Filter>
     </ClInclude>
-    <ClInclude Include="Paint\PaintCreator.h">
-      <Filter>Paint</Filter>
-    </ClInclude>
     <ClInclude Include="InkParticle.h">
       <Filter>PARTICLE</Filter>
     </ClInclude>
@@ -263,9 +257,6 @@
     <ClInclude Include="Charactor\Player\MainPlayer.h">
       <Filter>Charactor\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\Player\MainPlayer.cpp">
-      <Filter>Charactor\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\Player\State\PlayerState.h">
       <Filter>Charactor\Player\State</Filter>
     </ClInclude>
@@ -277,6 +268,9 @@
     </ClInclude>
     <ClInclude Include="Charactor\Player\State\PlayerWalk.h">
       <Filter>Charactor\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Paint\PaintGun.h">
+      <Filter>Paint</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -325,9 +319,6 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="HomingBullet.cpp">
       <Filter>Player\HomingBullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>Player\Bullet</Filter>
@@ -414,9 +405,6 @@
       <Filter>Paint</Filter>
     </ClCompile>
     <ClCompile Include="Paint\PaintShoot.cpp" />
-    <ClCompile Include="Paint\PaintCreator.cpp">
-      <Filter>Paint</Filter>
-    </ClCompile>
     <ClCompile Include="InkParticle.cpp">
       <Filter>PARTICLE</Filter>
     </ClCompile>
@@ -441,6 +429,12 @@
     </ClCompile>
     <ClCompile Include="Charactor\Player\State\PlayerWalk.cpp">
       <Filter>Charactor\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\MainPlayer.cpp">
+      <Filter>Charactor\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Paint\PaintGun.cpp">
+      <Filter>Paint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

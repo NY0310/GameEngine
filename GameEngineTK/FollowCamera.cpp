@@ -23,7 +23,7 @@ FollowCamera::FollowCamera()
 	m_targetAngle = 0.0f;
 	m_keyboard = nullptr;
 	m_isFPS = false;
-	m_player = nullptr;
+	//m_player = nullptr;
 }
 
 //	更新
@@ -39,8 +39,8 @@ void FollowCamera::Update()
 	}
 
 	//追従対象の座標等をセット
-	SetTarGetTrans(m_player->GetTrans());
-	SetTargetAngle(m_player->GetRot().y);
+	/*SetTarGetTrans(m_player->GetTrans());
+	SetTargetAngle(m_player->GetRot().y);*/
 
 	//	カメラ視点座標、参照点座標
 	Vector3 eyepos, refpos;

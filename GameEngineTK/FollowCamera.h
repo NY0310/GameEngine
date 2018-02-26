@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include <Keyboard.h>
 #include "Camera.h"
-#include "Player.h"
+//#include "Charactor/Player/MainPlayer.h"
 
 class FollowCamera : public Camera
 {
@@ -35,7 +35,7 @@ public:
 	//	キーボードをセット
 	void SetKeyboard(DirectX::Keyboard* keyboard);
 	//プレイヤをセット
-	void SetPlayer(Player* player) { m_player = player; }
+	//void SetPlayer(Player* player) { m_player = player; }
 private:
 	//自クラスインスタンス
 	static  std::unique_ptr<FollowCamera> camera;
@@ -50,6 +50,4 @@ protected:
 	DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
 	//	FPSフラグ
 	bool m_isFPS;
-	//プレイヤ
-	Player* m_player;
 };

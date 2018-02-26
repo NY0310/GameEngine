@@ -1,8 +1,9 @@
 #pragma once
-#include "ShaderManager.h"
-#include "FollowCamera.h"
-
 #include<d3dx9.h>
+#include <vector>
+
+#include "FollowCamera.h"
+#include "ShaderManager.h"
 #include "ShaderManager.h"
 #include "Device.h"
 

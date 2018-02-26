@@ -30,7 +30,6 @@
 #include "FollowCamera.h"
 #include "Obj3d.h"
 #include <vector>
-#include "Player.h"
 #include "Enemy.h"
 #include "ModelExpansionEffect.h"
 #include "Device.h"
@@ -50,8 +49,7 @@
 #include "AStar/Map.h"
 #include "PaintSkinMesh.h"
 #include "ShaderManager.h"
-#include "Paint\PaintCreator.h"
-#include "Sprite\Sprite.h"
+#include "Charactor/Player/MainPlayer.h"
 // old: D3DX11CompileFromFile
 
 //#include <d3dcompiler.inl>
@@ -159,7 +157,6 @@ private:
 
 	////キーボードトラッカー
 	DirectX::Keyboard::KeyboardStateTracker KeybordTracker;
-	std::unique_ptr<demo::Player> player;
 
 	//敵
 	std::vector<std::unique_ptr<Enemy>> m_Enemies;
@@ -199,7 +196,6 @@ private:
 
 	PaintSkinMesh* skinmesh;
 	ShaderManager shaderManader = ShaderManager::Get();
-	PaintCreator* painter;
-	Sprite* sprite;
 	Obj* obj2;
+	Player* mainPlayer;
 };       

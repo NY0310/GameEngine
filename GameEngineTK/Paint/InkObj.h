@@ -5,6 +5,8 @@
 /// </summary>
 
 #pragma once
+#include <vector>
+#include <map>
 #include "../MatrixObject.h"
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"

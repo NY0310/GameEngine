@@ -25,6 +25,14 @@ namespace scenegraph {
 		//代入禁止
 		NodeAbstract& operator=(const NodeAbstract&) = delete;
 		//初期化
+		virtual void LoopInitialize() = 0;
+		//更新
+		virtual void LoopUpdate() = 0;
+		//描画
+		virtual void LoopRender() = 0;
+		//終了
+		virtual void LoopFinalize() = 0;
+		//初期化
 		virtual void Initialize() = 0;
 		//更新
 		virtual void Update() = 0;
@@ -32,6 +40,7 @@ namespace scenegraph {
 		virtual void Render() = 0;
 		//終了
 		virtual void Finalize() = 0;
+
 		//子を追加
 		virtual void AddChild(std::shared_ptr<NodeAbstract>&& child) = 0;
 		//子を切り離す

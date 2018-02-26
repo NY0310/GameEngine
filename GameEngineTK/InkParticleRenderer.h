@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11_1.h>
 #include <SimpleMath.h>
+#include <vector>
 #include "FollowCamera.h"
 #include "Device.h"
 #include "ShaderManager.h"

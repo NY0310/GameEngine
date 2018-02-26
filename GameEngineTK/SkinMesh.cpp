@@ -674,10 +674,6 @@ HRESULT SkinMesh::Initialize()
 	ID3D11Device* device = Devices::Get().Device().Get();
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();
 
-	matrixObject = make_unique<MatrixObject>();
-	matrixObject->SetScale(D3DXVECTOR3(5, 5, 5));
-	matrixObject->SetPosition(D3DXVECTOR3(1, 1, 1));
-	matrixObject->SetRotation(D3DXVECTOR3(1, 1, 1));
 
 	//D3D11関連の初期化
 	ID3DBlob *pCompiledShader = nullptr;
@@ -1135,15 +1131,12 @@ void SkinMesh::UpDateTriangles()
 /// <summary>
 /// 描画
 /// </summary>
-void SkinMesh::Render()
+void SkinMesh::Render(MatrixObject* matrixObject)
 {
-	matrixObject->WorldMatrixCreate();
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();
 	D3D11_MAPPED_SUBRESOURCE pData;
 	FollowCamera* camera = FollowCamera::GetInstance();
 	D3DXVECTOR3 eye = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
-	D3DXMATRIX view = Math::MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX proj = Math::MatrixToD3DXMATRIX(camera->GetProjection());
 
 	//使用するシェーダーのセット
 	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
@@ -1217,7 +1210,7 @@ void SkinMesh::Render()
 			SkinMeshGlobal sg;
 			sg.mW = matrixObject->GetWorldMatrix();
 			D3DXMatrixTranspose(&sg.mW, &sg.mW);
-			sg.mWVP = matrixObject->GetWorldMatrix()*view*proj;
+			sg.mWVP = matrixObject->GetWVP();
 			D3DXMatrixTranspose(&sg.mWVP, &sg.mWVP);
 			sg.vAmbient = material[i].Ka;
 			sg.vDiffuse = material[i].Kd;

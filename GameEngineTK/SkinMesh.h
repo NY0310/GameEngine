@@ -1,12 +1,11 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "Device.h"
 #include "ShaderManager.h"
 #include "FollowCamera.h"
 #include "AStar/Math.h"
 #include "MatrixObject.h"
-#include "ShaderManager.h"
-
 
 using namespace Microsoft::WRL;
 
@@ -173,6 +172,9 @@ public:
 //
 //class SkinMesh
 //SkinMesh オリジナルメッシュクラス
+
+
+
 class SkinMesh
 {
 public:
@@ -196,9 +198,6 @@ public:
 	std::vector<Triangle> triangles;
 
 	DWORD numMaterial;
-
-	std::unique_ptr<MatrixObject> matrixObject;
-
 	//ボーン
 	int numBone;
 	Bone* boneArray;
@@ -208,7 +207,7 @@ public:
 	~SkinMesh();
 	virtual HRESULT Initialize();
 	HRESULT CreateIndexBuffer(DWORD dwSize, int* pIndex, ID3D11Buffer** ppIndexBuffer);
-	virtual void Render();
+	virtual void Render(MatrixObject* matrixObject);
 	HRESULT CreateFromX(CHAR* szFileName);
 	HRESULT ReadSkinInfo(SkinVertex*);
 	void SetNewPoseMatrices(int frame);

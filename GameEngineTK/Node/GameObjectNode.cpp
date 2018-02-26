@@ -10,43 +10,109 @@
 using namespace std;
 using namespace scenegraph;
 using namespace gameobject;
-::GameObjectNode::GameObjectNode(shared_ptr<GameObjectInterface>&& gameobject)
-	:Node()
-{
-	gameObject  = move(gameobject);
-}
+//::GameObjectNode::GameObjectNode(shared_ptr<GameObjectInterface>&& gameobject)
+//	:Node()
+//{
+//	gameObject  = move(gameobject);
+//}
 
-void GameObjectNode::Initialize()
+void RootGameObjectNode::LoopInitialize()
 {
-	gameObject->Initialize();
 	for (auto& child : children) {
-		child->Initialize();
+		child->LoopInitialize();
 	}
 }
 
-void GameObjectNode::Update()
+void RootGameObjectNode::LoopUpdate()
 {
-	gameObject->Update();
 	for (auto& child : children) {
-		child->Update();
+		child->LoopUpdate();
 	}
 
 }
 
-void GameObjectNode::Render()
+void RootGameObjectNode::LoopRender()
 {
-	gameObject->Render();
 	for (auto& child : children) {
-		child->Render();
+		child->LoopRender();
+	}
+}
+
+void RootGameObjectNode::LoopFinalize()
+{
+	for (auto& child : children) {
+		child->LoopFinalize();
 	}
 
 }
 
-void GameObjectNode::Finalize()
+
+/// <summary>
+/// ノードを複製する(再起関数)
+/// </summary>
+/// <returns>複製したノード</returns>
+shared_ptr<NodeAbstract> RootGameObjectNode::Clone()
 {
-	gameObject->Finalize();
+
+	auto clone = make_shared<GameObjectNode>(*this);
+
+	// リストをクリアする
+	clone->GetChildren().clear();
+
+	for (auto& child : children)
+	{
+		clone->AddChild(child->Clone());
+	}
+	return clone;
+
+
+}
+
+
+
+
+
+
+
+/// <summary>
+/// GameObjectNode
+/// 2017/10/13
+/// Yusuke Nakata
+/// </summary>
+
+
+
+void GameObjectNode::LoopInitialize()
+{
+	this->Initialize();
 	for (auto& child : children) {
-		child->Finalize();
+		child->LoopInitialize();
+	}
+}
+
+void GameObjectNode::LoopUpdate()
+{
+	this->Update();
+	for (auto& child : children) {
+		child->LoopUpdate();
+	}
+
+}
+
+void GameObjectNode::LoopRender()
+{
+	this->Render();
+	for (auto& child : children) {
+		child->LoopRender();
+	}
+
+}
+
+void GameObjectNode::LoopFinalize()
+{
+	this->Finalize();
+	for (auto& child : children) {
+		child->LoopFinalize();
 	}
 
 }

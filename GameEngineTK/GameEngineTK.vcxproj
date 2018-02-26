@@ -174,7 +174,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Charactor\Charactor.h" />
     <ClInclude Include="Charactor\Player\MainPlayer.h" />
-    <ClInclude Include="Charactor\Player\MainPlayer.cpp" />
+    <ClCompile Include="Charactor\Player\MainPlayer.cpp" />
     <ClInclude Include="Charactor\Player\State\PlayerRun.h" />
     <ClInclude Include="Charactor\Player\State\PlayerState.h" />
     <ClInclude Include="Charactor\Player\State\PlayerStop.h" />
@@ -216,10 +216,9 @@
     <ClInclude Include="Paint\Paint.h" />
     <ClInclude Include="Paint\Obj.h" />
     <ClInclude Include="Paint\PaintCollision.h" />
-    <ClInclude Include="Paint\PaintCreator.h" />
+    <ClInclude Include="Paint\PaintGun.h" />
     <ClInclude Include="Paint\PaintObj.h" />
     <ClInclude Include="InkParticle.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SkinMesh.h" />
     <ClInclude Include="Sprite\Sprite.h" />
@@ -281,11 +280,10 @@
     <ClCompile Include="Paint\Paint.cpp" />
     <ClCompile Include="Paint\Obj.cpp" />
     <ClCompile Include="Paint\PaintCollision.cpp" />
-    <ClCompile Include="Paint\PaintCreator.cpp" />
+    <ClCompile Include="Paint\PaintGun.cpp" />
     <ClCompile Include="Paint\PaintObj.cpp" />
     <ClCompile Include="Paint\PaintShoot.cpp" />
     <ClCompile Include="InkParticle.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SkinMesh.cpp" />
     <ClCompile Include="Source.cpp" />

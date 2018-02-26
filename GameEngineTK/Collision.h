@@ -8,6 +8,7 @@
 #pragma once
 #include <d3d11_1.h>
 #include <SimpleMath.h>
+#include <d3dx9math.h>
 
 
 //‹…
@@ -45,7 +46,7 @@ public:
 class InkSegment : public Segment
 {
 public:
-	DirectX::SimpleMath::Vector4 Color;
+	D3DXVECTOR4 Color;
 	int index;
 };
 

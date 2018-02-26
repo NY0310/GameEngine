@@ -16,9 +16,9 @@ PaintObj::PaintObj(bool isPlane)
 }
 
 
-void PaintObj::UpDate()
+void PaintObj::Update()
 {
-	matrixObject->WorldMatrixCreate();
+	matrixObject->Update();
 	paintCollision->SetTriangles(triangles);
 	paintCollision->SetWorldMatrix(matrixObject->GetWorldMatrix());
 

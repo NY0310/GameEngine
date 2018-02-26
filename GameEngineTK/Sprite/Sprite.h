@@ -1,12 +1,10 @@
 #pragma once
-#include <d3d11_1.h>
-#include <SimpleMath.h>
+#include <memory>
 #include "../ShaderManager.h"
 #include "../FollowCamera.h"
 #include "../Device.h"
-#include "../UsingDirectSimpleMath.h"
+#include "../MatrixObject.h"
 
-using namespace  UsingDirectSimpleMath;
 
 class Sprite
 {
@@ -31,32 +29,32 @@ public:
 	//描画
 	void Render();
 	//座標を設定
-	void SetPosition(const Vector3& position) {
-		if (this->position != position)
+	void SetPosition(const D3DXVECTOR3& position) {
+		if (matrixObject->GetPosition() != position)
 		{
-			this->position = position;
+			matrixObject->SetPosition(position);
 			CreateVertexBuffer();
 		}
 	}
 	//大きさを取得
-	void SetScale(const Vector3& scale) {
-		this->scale = scale;
+	void SetScale(const D3DXVECTOR3& scale) {
+		matrixObject->SetScale(scale);
 	}
 	//回転を取得
-	void SetRotation(const Vector3& rotation) {
-		this->rotation = rotation;
+	void SetRotation(const D3DXVECTOR3& rotation) {
+		matrixObject->SetRotation(rotation);
 	}
 private:
 	//バーテックスシェーダーに送るデータ
 	struct VertexData
 	{
-		Vector3 position;
-		Vector2 tex;
+		D3DXVECTOR3 position;
+		D3DXVECTOR2 tex;
 	};
 	//シェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
 	struct CONSTANT_BUFFER
 	{
-		DirectX::SimpleMath::Matrix wvp;
+		D3DXMATRIX wvp;
 		ALIGN16 float viewPortWidth ;
 		ALIGN16 float viewPortHight;
 	};
@@ -77,13 +75,10 @@ private:
 	ComPtr<ID3D11ShaderResourceView> texture;//テクスチャー
 	ComPtr<ID3D11SamplerState> sampler;//テクスチャーのサンプラー
 
-	Vector3 position;
-	Vector3 scale;
-	Vector3 rotation;
 
 	int widthHalfSize;//幅
 	int hightHalfSize;//高さ
 	Dimension dimension;//描画次元
 	FollowCamera* camera = FollowCamera::GetInstance();
-
+	std::unique_ptr<MatrixObject> matrixObject;
 };

@@ -301,7 +301,7 @@ void InkObj2::Render(InkData inkData)
 	if (SUCCEEDED(deviceContext->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		cb.wvp = inkData.wvp.Transpose();
+		D3DXMatrixTranspose(&cb.wvp ,&inkData.wvp);
 
 		cb.color = inkData.color;
 

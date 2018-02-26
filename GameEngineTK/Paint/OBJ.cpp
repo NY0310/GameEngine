@@ -196,7 +196,7 @@ HRESULT Obj::InitD3D()
 
 void Obj::Update()
 {
-	matrixObject->WorldMatrixCreate();
+	matrixObject->Update();
 }
 
 

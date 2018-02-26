@@ -37,7 +37,7 @@ InkParticle::~InkParticle()
 /// <param name="nDirection">進行ベクトル</param>
 /// <param name="color">色</param>
 /// <param name="index">インデックス</param>
-void InkParticle::Create(const Vector3& position,const Vector3& nDirection, const Vector4& color,const int index)
+void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirection, const D3DXVECTOR4& color,const int index)
 {
 	assert(!isValidity && "このインクは既に有効状態です");
 	matrixObject->SetPosition(position);
@@ -57,9 +57,9 @@ void InkParticle::Update()
 	if (isValidity)
 	{
 		birthFrame++;
-		auto position = matrixObject->GetPositionMath() ;
+		auto position = matrixObject->GetPosition() ;
 		matrixObject->SetPosition(position + direction * speed);
-		matrixObject->WorldMatrixCreate();
+		matrixObject->Update();
 	}
 }
 
@@ -127,15 +127,16 @@ void InkParticleManager::Render()
 /// <param name="emitPosition">発射座標</param>
 /// <param name="nDirection">エイㇺのベクトル</param>
 /// <param name="color">インクの色</param>
-void InkParticleManager::Shoot(const Vector3 & emitPosition,Vector3 & nDirection, const Vector4 & color)
+void InkParticleManager::Shoot(const D3DXVECTOR3 & emitPosition, D3DXVECTOR3 & nDirection, const D3DXVECTOR4 & color)
 {
 	if (isShoot)
 	{
 		return;
 	}
 
-	//ShiftDirection(nDirection);
-	nDirection.Normalize();
+	ShiftDirection(nDirection);
+	D3DXVec3Normalize(&nDirection,&nDirection);
+
 	for (int i = 0; i < MAX_PARTICLE; i++)
 	{
 		if (!inkParticle[i]->IsValidity())
@@ -225,7 +226,7 @@ void InkParticleManager::IntervalUpdate()
 /// </summary>
 /// <param name="direction"></param>
 /// <returns></returns>
-Vector3 InkParticleManager::ShiftDirection(Vector3 direction)
+D3DXVECTOR3 InkParticleManager::ShiftDirection(D3DXVECTOR3 direction)
 {
 	direction.x += RandShiftDirection();
 	direction.y += RandShiftDirection();

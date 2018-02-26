@@ -6,32 +6,32 @@
 #pragma once
 #include "Node.h"
 
-
-namespace gameobject {
-	class GameObjectInterface;
-}
+//
+//namespace gameobject {
+//	class GameObjectInterface;
+//}
 
 
 namespace scenegraph
 {
 
-	class GameObjectNode :  public Node
+	class RootGameObjectNode :  public Node
 	{
 	public:
-		explicit GameObjectNode(std::shared_ptr<gameobject::GameObjectInterface>&& gameobject);
-//		GameObjectNode() = default;
+		//explicit GameObjectNode(tInterface>&& gameobject);
+		RootGameObjectNode() = default;
 
-		GameObjectNode& operator=(const GameObjectNode&) = delete;
+		RootGameObjectNode& operator=(const RootGameObjectNode&) = delete;
 
-		~GameObjectNode() = default;
+		~RootGameObjectNode() = default;
 		//初期化
-		void Initialize()override;
+		void LoopInitialize()override;
 		//更新
-		void Update()override;
+		void LoopUpdate()override;
 		//描画
-		void Render()override;
+		void LoopRender()override;
 		//終了
-		void Finalize()override;
+		void LoopFinalize()override;
 
 		/// <summary>
 		/// ノードを複製する(再起関数)
@@ -40,7 +40,41 @@ namespace scenegraph
 		std::shared_ptr<NodeAbstract> Clone()override;
 
 	private:
-		std::shared_ptr<gameobject::GameObjectInterface> gameObject;
+		//std::shared_ptr<gameobject::GameObjectInterface> gameObject;
+	};
+	class GameObjectNode : public Node
+	{
+	public:
+		//explicit GameObjectNode();
+		GameObjectNode() = default;
+
+		//GameObjectNode& operator=(const GameObjectNode&) = delete;
+
+		~GameObjectNode() = default;
+		//初期化
+		void Initialize()override {}
+		//更新
+		void Update()override {}
+		//描画
+		void Render()override {}
+		//終了
+		void Finalize()override {}
+
+		/// <summary>
+		/// ノードを複製する(再起関数)
+		/// </summary>
+		/// <returns>複製したノード</returns>
+		std::shared_ptr<NodeAbstract> Clone()override;
+
+	private:
+		//初期化
+		void LoopInitialize()override;
+		//更新
+		void LoopUpdate()override;
+		//描画
+		void LoopRender()override;
+		//終了
+		void LoopFinalize()override;
+
 	};
 }
-

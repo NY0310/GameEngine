@@ -2,7 +2,8 @@
 
 
 using namespace std;
-std::map < LPSTR, InkObj::MeshAndTriangles> InkObj::modelDatas;
+
+map < LPSTR, InkObj::MeshAndTriangles> InkObj::modelDatas;
 
 InkObj::InkObj()
 {
@@ -111,7 +112,7 @@ HRESULT InkObj::InitD3D()
 
 void InkObj::Update()
 {
-	matrixInkObject->WorldMatrixCreate();
+	matrixInkObject->Update();
 }
 
 

@@ -14,7 +14,6 @@ extern void ExitGame();
 using namespace DirectX;
 using namespace std;
 using Microsoft::WRL::ComPtr;
-using namespace demo;
 
 
 Game::Game() :
@@ -118,12 +117,12 @@ void Game::Initialize(HWND window, int width, int height)
 	//	天球モデルの生成
 	//	m_objSkydome.LoadModel(L"Skydome.cmo");
 
+	mainPlayer = new Player(10);
+	mainPlayer->Initialize();
 
 
-	player = std::make_unique<Player>(keyboard.get());
-	player->Initialize();
 	//追従カメラにプレイヤーをセット
-	m_Camera->SetPlayer(player.get()); 
+//	m_Camera->SetPlayer(mainPlayer);
 
 
 
@@ -173,11 +172,11 @@ for (auto& data : obj)
 	//m_pMesh = new CD3DXMESH;
 	////初期化
 	//m_pMesh->Init("Resources/X/RobotA_1motion_2truck.x");
-	skinmesh = new PaintSkinMesh();
-	skinmesh->Initialize();
-	skinmesh->CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
+	//skinmesh = new PaintSkinMesh();
+	//skinmesh->Initialize();
+	//skinmesh->CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
 
-	painter = new PaintCreator();
+
 
 }
 
@@ -197,7 +196,6 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-	painter->Update();
 	// TODO: Add your game logic here.
 	MouseUtil::GetInstance()->Update();
 	obj2->Update();
@@ -212,8 +210,6 @@ void Game::Update(DX::StepTimer const& timer)
 
 	////キーボードの様態を取得
 	Keyboard::State kb = keyboard->GetState();
-	//プレイヤのアップデート関数
-	player->Update();
 
 	////キーボードトラッカーの更新
 	KeybordTracker.Update(kb);
@@ -221,14 +217,14 @@ void Game::Update(DX::StepTimer const& timer)
 
 	m_LandShape.Update();
 
-	if (player->Gethitcnt() == player->GetMAX_HOMING())
-	{
-		if (key.IsKeyDown(Keyboard::Keys::R))
-		{
-			player->ResetCnt();
-			FireHomingBullets(player->GetTrans());
-		}
-	}
+	//if (player->Gethitcnt() == player->GetMAX_HOMING())
+	//{
+	//	if (key.IsKeyDown(Keyboard::Keys::R))
+	//	{
+	//		player->ResetCnt();
+	//		FireHomingBullets(player->GetTrans());
+	//	}
+	//}
 
 
 
@@ -238,10 +234,11 @@ void Game::Update(DX::StepTimer const& timer)
 		m_Camera->Update();
 	}
 
-	skinmesh->UpDate();
+	mainPlayer->Update();
+
 
 	for (auto& data : obj)
-		data->UpDate();
+		data->Update();
 }
 
 // Draws the scene.
@@ -272,13 +269,12 @@ void Game::Render()
 	devices.Context().Get()->OMSetBlendState(m_states->Opaque(), nullptr, 0xffffffff);
 
 	//pSss->ZTexRender(m_Camera);
-	skinmesh->InkRender();
+	/*skinmesh->InkRender();
 	for (auto& data : obj)
-	data->InkRender();
+	data->InkRender();*/
 
 	//obj->ZTextureRender(m_Camera);
 	Clear();
-	painter->Render();
 
 	//pBumpMapping->Render(m_Camera);
 	//pSss->Render(m_Camera);
@@ -335,6 +331,7 @@ void Game::Render()
 	//}
 
 
+	mainPlayer->Render();
 
 
 
