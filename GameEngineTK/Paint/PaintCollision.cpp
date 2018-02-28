@@ -80,7 +80,7 @@ bool PaintCollision::IntersectSegment(Segment* segment, D3DXVECTOR2& uv)
 
 				//塗られるオブジェクトのワールド座標をかける
 				//PerspectiveCollect(透視投影を考慮したUV補間)
-				Matrix mvp = shaderManager.D3DXMATRIXToMatrix(worldMatrix) * camera->GetView()* camera->GetProjection();
+				Matrix mvp = shaderManager.D3DXMATRIXToMatrix(worldMatrix * camera->GetView()* camera->GetProjection());
 				//各点をProjectionSpaceへの変換
 				Vector4 p1_p = MatrixTimes(mvp, Vector4(p1.x, p1.y, p1.z, 0));
 				Vector4 p2_p = MatrixTimes(mvp, Vector4(p2.x, p2.y, p1.z, 0));
@@ -173,7 +173,7 @@ bool PaintCollision::IntersectSphere(Sphere* sphere, D3DXVECTOR2 & uv)
 
 				//塗られるオブジェクトのワールド座標をかける
 				//PerspectiveCollect(透視投影を考慮したUV補間)
-				Matrix mvp = shaderManager.D3DXMATRIXToMatrix(worldMatrix) * camera->GetView()* camera->GetProjection();
+				Matrix mvp = shaderManager.D3DXMATRIXToMatrix(worldMatrix * camera->GetView()* camera->GetProjection());
 				//各点をProjectionSpaceへの変換
 				Vector4 p1_p = MatrixTimes(mvp, Vector4(p1.x, p1.y, p1.z, 1));
 				Vector4 p2_p = MatrixTimes(mvp, Vector4(p2.x, p2.y, p1.z, 1));

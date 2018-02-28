@@ -41,7 +41,6 @@ namespace scenegraph
 		inline void AddChild(std::shared_ptr<NodeAbstract>&& child)override
 		{
 			//e‚ðÝ’è
-
 			child->SetParent(shared_from_this());
 			children.emplace_back(child);
 		}

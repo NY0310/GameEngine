@@ -88,7 +88,7 @@ void Line::Render()
 	if (SUCCEEDED(deviceContext->Map(m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		D3DXMATRIX m = World *  shadermanager.MatrixToD3DXMATRIX(camera->GetView())*  shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+		D3DXMATRIX m = World *  camera->GetView()*  camera->GetProjection();
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWVP = m;
 

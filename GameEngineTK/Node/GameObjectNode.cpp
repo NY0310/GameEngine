@@ -54,7 +54,7 @@ void RootGameObjectNode::LoopFinalize()
 shared_ptr<NodeAbstract> RootGameObjectNode::Clone()
 {
 
-	auto clone = make_shared<GameObjectNode>(*this);
+	auto clone = make_shared<RootGameObjectNode>(*this);
 
 	// リストをクリアする
 	clone->GetChildren().clear();

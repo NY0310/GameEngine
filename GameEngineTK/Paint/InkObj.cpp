@@ -344,8 +344,8 @@ HRESULT InkObj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 
 void InkObj::Render(const vector<ConstantInkData> inkData)
 {
-	D3DXMATRIX View = Math::MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = Math::MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX View = camera->GetView();
+	D3DXMATRIX Proj = camera->GetProjection();
 
 
 	//使用するシェーダーの登録	
@@ -374,7 +374,7 @@ void InkObj::Render(const vector<ConstantInkData> inkData)
 		Tran = Matrix::CreateTranslation(data.positon);
 		Rot = Matrix::CreateRotationX(data.rotation.x);
 		World = Scale * Tran;
-		wvp = World * camera->GetView() * camera->GetProjection();
+		//wvp = World * camera->GetView() * camera->GetProjection();
 		Render(wvp, data.color);
 	}
 

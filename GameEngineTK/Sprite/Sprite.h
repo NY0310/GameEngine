@@ -29,13 +29,23 @@ public:
 	//描画
 	void Render();
 	//座標を設定
-	void SetPosition(const D3DXVECTOR3& position) {
+	void Set2DPosition(const D3DXVECTOR2& position) {
 		if (matrixObject->GetPosition() != position)
 		{
-			matrixObject->SetPosition(position);
+			matrixObject->SetPosition(D3DXVECTOR3(position.x,position.y,0));
 			CreateVertexBuffer();
 		}
 	}
+	//座標を設定
+	void Set3DPosition(const D3DXVECTOR3& position) {
+		matrixObject->SetPosition(position);
+	}
+
+	void SetVertexBufferPosition(const D3DXVECTOR3& position) {
+			vertexBufferPosition = position;
+			CreateVertexBuffer();
+	}
+
 	//大きさを取得
 	void SetScale(const D3DXVECTOR3& scale) {
 		matrixObject->SetScale(scale);
@@ -78,6 +88,7 @@ private:
 
 	int widthHalfSize;//幅
 	int hightHalfSize;//高さ
+	D3DXVECTOR3 vertexBufferPosition;//バーテックスバッファーの座標
 	Dimension dimension;//描画次元
 	FollowCamera* camera = FollowCamera::GetInstance();
 	std::unique_ptr<MatrixObject> matrixObject;

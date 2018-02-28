@@ -20,7 +20,7 @@ void MatrixObject::Update()
 	//スケール・回転・移動行列からワールド行列作成
 	worldMatrix = scaleMatrix * rotationMatrix * transferMatrix;
 	//ワールド行列・ビュー行列・プロジェクション行列を作成
-	wvp = worldMatrix * Math::MatrixToD3DXMATRIX(camera->GetView()) * Math::MatrixToD3DXMATRIX(camera->GetProjection());
+	wvp = worldMatrix * camera->GetView() * camera->GetProjection();
 }
 
 /// <summary>

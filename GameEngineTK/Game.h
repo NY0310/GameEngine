@@ -139,7 +139,7 @@ private:
 	//	エフェクトファクトリ
 	std::unique_ptr<DirectX::EffectFactory> m_factory;
 	//	天球モデル
-	Obj3d m_objSkydome;
+	//Obj3d m_objSkydome;
 
 	//	球モデル
 	std::unique_ptr<DirectX::Model> m_modelBall;
@@ -159,7 +159,7 @@ private:
 	DirectX::Keyboard::KeyboardStateTracker KeybordTracker;
 
 	//敵
-	std::vector<std::unique_ptr<Enemy>> m_Enemies;
+	//std::vector<std::unique_ptr<Enemy>> m_Enemies;
 
 
 
@@ -173,12 +173,12 @@ private:
 
 
 
-	Stage stage;
+	//Stage stage;
 
 
-	// ホーミング弾
-	std::vector<std::unique_ptr<HomingBullet>> m_HomingBullets;
-	LandShape m_LandShape;
+	//// ホーミング弾
+	//std::vector<std::unique_ptr<HomingBullet>> m_HomingBullets;
+	//LandShape m_LandShape;
 
 
 
@@ -197,5 +197,5 @@ private:
 	PaintSkinMesh* skinmesh;
 	ShaderManager shaderManader = ShaderManager::Get();
 	Obj* obj2;
-	Player* mainPlayer;
+	std::shared_ptr<Player> mainPlayer;
 };       

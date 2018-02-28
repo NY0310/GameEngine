@@ -6,10 +6,12 @@
 #include "../AStar/Math.h"
 #include "../Sprite/Sprite.h"
 #include "../Device.h"
+#include "../Node/GameObjectNode.h"
 
-class PaintGun
+class PaintGun : public scenegraph::GameObjectNode
 {
 public:
+	//コンストラクタ
 	PaintGun();
 	//初期化
 	void Initialize();
@@ -19,15 +21,23 @@ public:
 	void Render();
 	//終了処理
 	void Finalize();
+	//発射位置を設定する
+	void SetEmitPosition(const D3DXVECTOR3& emitPosition) {
+		this->emitPosition = emitPosition
+			;
+	}
+
 private:
 	//インク発射
-	void Shoot();
+	void Emit();
 	//エイムの更新処理
 	void AimUpdate();
 	//インクのパーティクルマネージャー
 	std::unique_ptr<InkParticleManager> inkParticleManager;
 	//エイム
 	std::unique_ptr<Sprite> aim;
+	//発射座標
+	D3DXVECTOR3 emitPosition;
 };
 
 
@@ -36,22 +46,27 @@ private:
 class InkTank
 {
 public:
+	//初期化　
+	void Initialize();
+	//更新処理
 	void Update();
-	void Reset();
-	void Shoot();
+	//発射
+	void Emit();
 private:
 	enum StandardColor
 	{
 		red,
 		green,
-		yellow
+		blue,
+		total
 	};
+	//色を計算
 	void CalcColor();
-	void ColorChange();
+	//追加する色を変更する
+	void ChangeColor();
 	D3DXVECTOR4 color;
-	int redAmount;
-	int greenAmount;
-	int yellowAmount;
-	int maxInk;
+	//インク量
+	int colorAmount[total + 1];
+	//追加する色
 	StandardColor inColor;
 };

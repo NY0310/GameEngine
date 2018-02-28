@@ -332,8 +332,8 @@ void DisplacementMapping::Render(std::unique_ptr<FollowCamera>& camera)
 
 
 	D3DXMATRIX mWorld;
-	D3DXMATRIX mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX mView = camera->GetView();
+	D3DXMATRIX mProj = camera->GetProjection();
 	//ワールドトランスフォーム（絶対座標変換）
 	D3DXMatrixIdentity(&mWorld);
 	//ワールドトランスフォーム（絶対座標変換）

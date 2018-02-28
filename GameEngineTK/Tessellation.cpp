@@ -102,8 +102,8 @@ HRESULT Tessellation::InitPolygon()
 void Tessellation::Render(std::unique_ptr<FollowCamera>& camera)
 {
 	D3DXMATRIX mWorld;
-	D3DXMATRIX mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX mView = camera->GetView();
+	D3DXMATRIX mProj = camera->GetProjection();
 	//D3DXMatrixIdentity(&mWorld);
 	//ワールドトランスフォーム（絶対座標変換）
 	D3DXMatrixRotationY(&mWorld, timeGetTime() / 1000.0f);//単純にyaw回転させる

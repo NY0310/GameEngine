@@ -158,19 +158,19 @@ void InkParticleRenderer::Render(const vector<ConstantInkData> inkData)
 	devices.Context().Get()->GSSetShader(geometryShader.Get(), nullptr, 0);
 	devices.Context().Get()->PSSetShader(pixelShader.Get(), nullptr, 0);
 
-	Matrix World, Scale, Tran, Rot, View, Proj , wvp;
+	D3DXMATRIX World, Scale, Tran, Rot, View, Proj , wvp;
 
 	View = camera->GetView();
 	Proj = camera->GetProjection();
 
-	D3DXVECTOR3 vEyePt = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXVECTOR3 vEyePt = camera->GetEyePos();
 
 
 	//
-	Matrix CancelRotation = View;
+	D3DXMATRIX CancelRotation = View;
 	CancelRotation._41 = CancelRotation._42 = CancelRotation._43 = 0;
 	
-	CancelRotation.Invert();
+	D3DXMatrixTranspose(&CancelRotation,&CancelRotation);
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(vertexData);
 	UINT offset = 0;
@@ -193,8 +193,8 @@ void InkParticleRenderer::Render(const vector<ConstantInkData> inkData)
 	for(auto data : inkData)
 	{
 		//ワールドトランスフォームは個々で異なる
-		Scale =	Matrix::CreateScale(data.scale);
-		Tran = Matrix::CreateTranslation(data.positon);
+		D3DXMatrixScaling(&Scale,data.scale.x, data.scale.y, data.scale.z);
+		D3DXMatrixTranslation(&Tran ,data.positon.x, data.positon.y, data.positon.z);
 		World = Scale  * Tran;
 		wvp = World * View * Proj;
 		RenderSprite(wvp, data.color);
@@ -211,7 +211,7 @@ void InkParticleRenderer::Render(const vector<ConstantInkData> inkData)
 /// 描画処理
 /// </summary>
 /// <param name="WVP"></param>
-void InkParticleRenderer::RenderSprite(Matrix& WVP , Vector4& color)
+void InkParticleRenderer::RenderSprite(D3DXMATRIX& WVP , D3DXVECTOR4& color)
 {
 	auto& devices = Devices::Get();
 
@@ -222,8 +222,8 @@ void InkParticleRenderer::RenderSprite(Matrix& WVP , Vector4& color)
 	if (SUCCEEDED(devices.Context().Get()->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
-		Matrix m = WVP;
-		m.Invert();
+		D3DXMATRIX m = WVP;
+		D3DXMatrixTranspose(&m, &m);
 		cb.wvp = m;
 		cb.color = color;
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));

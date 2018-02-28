@@ -57,7 +57,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//	カメラの生成
 	m_Camera = FollowCamera::GetInstance();
 	//	カメラにキーボードをセット
-	m_Camera->SetKeyboard(keyboard.get());
+	//m_Camera->SetKeyboard(keyboard.get());
 	//m_spriteFont = std::make_unique<SpriteFont>(devices.Device().Get(), L"Resources/myfile.spritefont");
 
 	//D3D11_RASTERIZER_DESC rdc;
@@ -71,27 +71,27 @@ void Game::Initialize(HWND window, int width, int height)
 	//devices.Context().Get()->RSSetState(m_pRasterizerState);
 
 
-	{//OBj3dのシステム初期化
-		Obj3d::CommonDef def;
-		def.pCamera = m_Camera;
-		def.pDevice = devices.Device().Get();
-		def.pDeviceContext = devices.Context().Get();
-		//	3Dオブジェクトの静的メンバ変数を初期化
-		Obj3d::InitializeCommon(def);
-	}
+	//{//OBj3dのシステム初期化
+	//	Obj3d::CommonDef def;
+	//	def.pCamera = m_Camera;
+	//	def.pDevice = devices.Device().Get();
+	//	def.pDeviceContext = devices.Context().Get();
+	//	//	3Dオブジェクトの静的メンバ変数を初期化
+	//	Obj3d::InitializeCommon(def);
+	//}
 
 
-	//土地あたり判定
-	LandShapeCommonDef lscDef;
-	lscDef.pDevice = devices.Device().Get();
-	lscDef.pDeviceContext = devices.Context().Get();
-	lscDef.pCamera = m_Camera;
-	//土地のあたり判定共通初期化
-	LandShape::InitializeCommon(lscDef);
+	////土地あたり判定
+	//LandShapeCommonDef lscDef;
+	//lscDef.pDevice = devices.Device().Get();
+	//lscDef.pDeviceContext = devices.Context().Get();
+	//lscDef.pCamera = m_Camera;
+	////土地のあたり判定共通初期化
+	//LandShape::InitializeCommon(lscDef);
 
 
-	m_LandShape.Initialize(L"Skydome2", L"Skydome2");
-	m_LandShape.SetScale(1.1);
+	//m_LandShape.Initialize(L"Skydome2", L"Skydome2");
+	//m_LandShape.SetScale(1.1);
 
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(devices.Context().Get());
 
@@ -117,8 +117,9 @@ void Game::Initialize(HWND window, int width, int height)
 	//	天球モデルの生成
 	//	m_objSkydome.LoadModel(L"Skydome.cmo");
 
-	mainPlayer = new Player(10);
-	mainPlayer->Initialize();
+	mainPlayer = make_shared<Player>(10);
+	mainPlayer->CreateAddChild();
+	mainPlayer->LoopInitialize();
 
 
 	//追従カメラにプレイヤーをセット
@@ -131,7 +132,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	m_str = L"CLEAR";
 
-	stage.Initialize();
+	//stage.Initialize();
 
 
 	const int objnum =5;
@@ -202,7 +203,7 @@ void Game::Update(DX::StepTimer const& timer)
 	//	毎フレーム処理を書く
 	m_debugCamera->Update();
 
-	stage.GetLandShape().Update();
+	//stage.GetLandShape().Update();
 
 	//	キーボードの取得
 	Keyboard::State key = keyboard->GetState();
@@ -215,7 +216,7 @@ void Game::Update(DX::StepTimer const& timer)
 	KeybordTracker.Update(kb);
 
 
-	m_LandShape.Update();
+	//m_LandShape.Update();
 
 	//if (player->Gethitcnt() == player->GetMAX_HOMING())
 	//{
@@ -234,7 +235,7 @@ void Game::Update(DX::StepTimer const& timer)
 		m_Camera->Update();
 	}
 
-	mainPlayer->Update();
+	mainPlayer->LoopUpdate();
 
 
 	for (auto& data : obj)
@@ -331,7 +332,7 @@ void Game::Render()
 	//}
 
 
-	mainPlayer->Render();
+	mainPlayer->LoopRender();
 
 
 
@@ -445,23 +446,23 @@ void Game::GetDefaultSize(int& width, int& height) const
 
 
 
-void Game::FireHomingBullets(const DirectX::SimpleMath::Vector3 pos)
-{
-	// 敵の数分だけ発射
-	unsigned int enemyNum = m_Enemies.size();
-	for (unsigned int i = 0; i < enemyNum; i++)
-	{
-		Enemy* enemy = m_Enemies[i].get();
-
-		// 弾生成
-		std::unique_ptr<HomingBullet> bullet = std::make_unique<HomingBullet>();
-		bullet->Initialize();
-		// 上に発射
-		bullet->Fire(pos, Vector3::UnitY);
-		bullet->SetTarget(enemy);
-
-		m_HomingBullets.push_back(std::move(bullet));
-	}
-}
+//void Game::FireHomingBullets(const DirectX::SimpleMath::Vector3 pos)
+//{
+//	// 敵の数分だけ発射
+//	unsigned int enemyNum = m_Enemies.size();
+//	for (unsigned int i = 0; i < enemyNum; i++)
+//	{
+//		Enemy* enemy = m_Enemies[i].get();
+//
+//		// 弾生成
+//		std::unique_ptr<HomingBullet> bullet = std::make_unique<HomingBullet>();
+//		bullet->Initialize();
+//		// 上に発射
+//		bullet->Fire(pos, Vector3::UnitY);
+//		bullet->SetTarget(enemy);
+//
+//		m_HomingBullets.push_back(std::move(bullet));
+//	}
+//}
 
 

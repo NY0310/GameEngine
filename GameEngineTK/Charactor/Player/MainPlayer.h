@@ -1,6 +1,7 @@
 #pragma once
 #include "../Charactor.h"
 #include "../../SkinMesh.h"
+#include "../../Paint/PaintGun.h"
 
 class Player : public Charactor
 {
@@ -13,8 +14,8 @@ public:
 	Player(const Player&) = delete;
 	// 代入禁止
 	Player& operator=(const Player&) = delete;
-	//初期化
-	//void Initialize(DirectX::SimpleMath::Vector3 position);
+	//子供を追加し親子関係を構築する
+	void CreateAddChild()final;
 	//初期化処理
 	void Initialize()final;
 	//更新処理
@@ -25,6 +26,6 @@ public:
 	void Finalize()final;
 private:
 	std::unique_ptr<SkinMesh> animetionSkin;
-
+	std::shared_ptr<PaintGun> paintGun;
 };
 

@@ -6,7 +6,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <Keyboard.h>
 #include "Camera.h"
 //#include "Charactor/Player/MainPlayer.h"
 
@@ -25,15 +24,12 @@ public:
 	void Update() override;
 
 	//	追従対象の座標をセット
-	void SetTarGetTrans(const DirectX::SimpleMath::Vector3& tarGetTrans);
+	void SetTarGetTrans(const D3DXVECTOR3& tarGetTrans);
 	//	追従対象の回転角をセット
 	void SetTargetAngle(float targetAngle);
 
 
 	//const DirectX::SimpleMath::Vector3& GetEyepos()const { return ; }
-
-	//	キーボードをセット
-	void SetKeyboard(DirectX::Keyboard* keyboard);
 	//プレイヤをセット
 	//void SetPlayer(Player* player) { m_player = player; }
 private:
@@ -41,13 +37,9 @@ private:
 	static  std::unique_ptr<FollowCamera> camera;
 protected:
 	//	自機の座標
-	DirectX::SimpleMath::Vector3 m_tarGetTrans;
+	D3DXVECTOR3 tarGetTrans;
 	//	追従対象の回転角
-	float m_targetAngle;
-	//	キーボード
-	DirectX::Keyboard* m_keyboard;
-	//	キーボードトラッカー
-	DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
+	float targetAngle;
 	//	FPSフラグ
-	bool m_isFPS;
+	bool isFPS;
 };

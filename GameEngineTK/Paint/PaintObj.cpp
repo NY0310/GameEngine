@@ -47,12 +47,12 @@ void PaintObj::Render()
 {
 
 
-	D3DXMATRIX View = Math::MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = Math::MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX View = camera->GetView();
+	D3DXMATRIX Proj = camera->GetProjection();
 
 
 
-	D3DXVECTOR3 vEyePt = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXVECTOR3 vEyePt = camera->GetEyePos();
 
 	////ワールドトランスフォーム
 	static float x = 0;

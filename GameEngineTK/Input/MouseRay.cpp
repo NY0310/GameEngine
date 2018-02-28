@@ -1,5 +1,5 @@
 #include "MouseRay.h"
-
+#include "../AStar/Math.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace std;
@@ -30,20 +30,16 @@ Segment* MouseRay::RayCreate()
 	FollowCamera* camera = FollowCamera::GetInstance();
 	MouseUtil* mouse = MouseUtil::GetInstance();
 	mouse->Update();
-	if (mouse->IsPressed(MouseUtil::Button::Left))
-	{
-		Vector3 pos;
-		int x = mouse->GetPos().x;
-		int y = mouse->GetPos().y;
-		Matrix view = camera->GetView();
-		Matrix proj = camera->GetProjection();
-		CalcScreenToXZ(&pos, x, y, Devices::Get().Width(), Devices::Get().Height(), &view, &proj);
-		Segment* segment = new Segment();
-		segment->End = camera->GetEyePos() + Vector3(0,0,0);
-		segment->Start = pos;
-		return segment;
-	}
-	return nullptr;
+	Vector3 pos;
+	int x = mouse->GetPos().x;
+	int y = mouse->GetPos().y;
+	Matrix view = Math::D3DXMATRIXToMatrix(camera->GetView());
+	Matrix proj = Math::D3DXMATRIXToMatrix(camera->GetProjection());
+	CalcScreenToXZ(&pos, x, y, Devices::Get().Width(), Devices::Get().Height(), &view, &proj);
+	Segment* segment = new Segment();
+	segment->End = Math::D3DXVECTOR3ToVector(camera->GetEyePos()) + Vector3(0,0,0);
+	segment->Start = pos;
+	return segment;
 }
 
 

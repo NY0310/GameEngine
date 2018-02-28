@@ -215,8 +215,8 @@ void BumpMapping::Render(std::unique_ptr<FollowCamera>& camera)
 {
 
 	D3DXMATRIX mWorld;
-	D3DXMATRIX mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX mView = camera->GetView();
+	D3DXMATRIX mProj = camera->GetProjection();
 	D3DXMatrixIdentity(&mWorld);
 
 	//D3DXMatrixTranslation(&mWorld, 3.0f, 8.0f, -3.0f);
@@ -251,7 +251,7 @@ void BumpMapping::Render(std::unique_ptr<FollowCamera>& camera)
 		//Specularを渡す
 		cb.Specular = D3DXVECTOR4(1.5, 1.5, 1.5, 1);
 		//カメラの位置(視点)をシェーダーに渡す
-		D3DXVECTOR3 eyepos = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+		D3DXVECTOR3 eyepos = (camera->GetEyePos());
 		cb.Specular = D3DXVECTOR4(eyepos.x, eyepos.y, eyepos.z, 0);
 
 		//波　関連

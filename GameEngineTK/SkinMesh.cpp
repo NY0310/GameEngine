@@ -1136,7 +1136,7 @@ void SkinMesh::Render(MatrixObject* matrixObject)
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();
 	D3D11_MAPPED_SUBRESOURCE pData;
 	FollowCamera* camera = FollowCamera::GetInstance();
-	D3DXVECTOR3 eye = Math::VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXVECTOR3 eye =camera->GetEyePos();
 
 	//使用するシェーダーのセット
 	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);

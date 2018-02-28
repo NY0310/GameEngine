@@ -85,6 +85,7 @@ HRESULT Sprite::Initialize()
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	devices.Device().Get()->CreateSamplerState(&SamDesc, sampler.ReleaseAndGetAddressOf());
 
+	CreateVertexBuffer();
 	return S_OK;
 
 }
@@ -119,7 +120,7 @@ void Sprite::Render()
 
 	devices.Context()->VSSetShader(vertexShader.Get(), nullptr, 0);
 	devices.Context()->PSSetShader(pixelShader.Get(), nullptr, 0);
-
+	matrixObject->Update();
 	//シェーダーのコンスタントバッファーに各種データを渡す
 	D3D11_MAPPED_SUBRESOURCE pData;
 	CONSTANT_BUFFER cb;
@@ -193,18 +194,25 @@ HRESULT Sprite::CreateVertexBuffer()
 	UINT hight = devices.Height() / 2;
 	int shiftX = widthHalfSize * matrixObject->GetScale().x;
 	int shiftY = widthHalfSize * matrixObject->GetScale().y;
-	D3DXVECTOR3 position = matrixObject->GetPosition();
 
 	//バーテックスバッファー作成
 	//頂点を定義
 	VertexData vertices[] =
 	{
-		{ D3DXVECTOR3((position.x - shiftX) / width,(position.y - shiftY) / hight,0), D3DXVECTOR2(0,1) },//頂点1	
-		{ D3DXVECTOR3((position.x - shiftX) / width,(position.y + shiftY) / hight, 0), D3DXVECTOR2(0, 0) }, //頂点2
-		{ D3DXVECTOR3((position.x + shiftX) / width, (position.y - shiftY) / hight, 0), D3DXVECTOR2(1, 1) },  //頂点3
-		{ D3DXVECTOR3((position.x + shiftX) / width,  (position.y + shiftY) / hight, 0), D3DXVECTOR2(1, 0) },//頂点4	
+		{ D3DXVECTOR3((vertexBufferPosition.x - shiftX) / width,(vertexBufferPosition.y - shiftY) / hight,-5), D3DXVECTOR2(0,1) },//頂点1	
+		{ D3DXVECTOR3((vertexBufferPosition.x - shiftX) / width,(vertexBufferPosition.y + shiftY) / hight, -5), D3DXVECTOR2(0, 0) }, //頂点2
+		{ D3DXVECTOR3((vertexBufferPosition.x + shiftX) / width, (vertexBufferPosition.y - shiftY) / hight, -5), D3DXVECTOR2(1, 1) },  //頂点3
+		{ D3DXVECTOR3((vertexBufferPosition.x + shiftX) / width,  (vertexBufferPosition.y + shiftY) / hight, -5), D3DXVECTOR2(1, 0) },//頂点4	
 	};
 
+	////頂点を定義
+	//VertexData vertices[] =
+	//{
+	//	{ D3DXVECTOR3(-1,-1,1),D3DXVECTOR2(0,1) },//頂点1	
+	//	{ D3DXVECTOR3(-1, 1, 1), D3DXVECTOR2(0, 0) }, //頂点2
+	//	{ D3DXVECTOR3(1, -1, 1), D3DXVECTOR2(1, 1) },  //頂点3
+	//	{ D3DXVECTOR3(1, 1, ), D3DXVECTOR2(1, 0) },//頂点4	
+	//};
 
 
 	D3D11_BUFFER_DESC bufferDesc;

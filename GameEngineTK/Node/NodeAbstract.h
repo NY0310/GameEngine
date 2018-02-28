@@ -32,6 +32,8 @@ namespace scenegraph {
 		virtual void LoopRender() = 0;
 		//終了
 		virtual void LoopFinalize() = 0;
+		//子供を追加し親子関係を構築する
+		virtual void CreateAddChild() = 0;
 		//初期化
 		virtual void Initialize() = 0;
 		//更新

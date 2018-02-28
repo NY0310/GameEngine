@@ -1,8 +1,6 @@
 //	ヘッダファイルのインクルード
 #include "FollowCamera.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
 using namespace std;
 //	静的メンバ変数の初期化
 const float FollowCamera::CAMERA_DISTANCE = 5.0f;
@@ -19,10 +17,9 @@ FollowCamera* FollowCamera::GetInstance()
 FollowCamera::FollowCamera()
 {
 	//	初期化処理
-	m_tarGetTrans = Vector3::Zero;
-	m_targetAngle = 0.0f;
-	m_keyboard = nullptr;
-	m_isFPS = false;
+	tarGetTrans = D3DXVECTOR3(0,0,0);
+	targetAngle = 0.0f;
+	isFPS = false;
 	//m_player = nullptr;
 }
 
@@ -30,31 +27,31 @@ FollowCamera::FollowCamera()
 void FollowCamera::Update()
 {
 	//	キーボードの状態絵御取得
-	Keyboard::State keystate = m_keyboard->GetState();
-	m_keyboardTracker.Update(keystate);
+	//Keyboard::State keystate = m_keyboard->GetState();
+	//m_keyboardTracker.Update(keystate);
 
-	if (m_keyboardTracker.IsKeyPressed(Keyboard::Keyboard::C))
-	{
-		m_isFPS = !m_isFPS;
-	}
+	//if (m_keyboardTracker.IsKeyPressed(Keyboard::Keyboard::C))
+	//{
+	//	m_isFPS = !m_isFPS;
+	//}
 
 	//追従対象の座標等をセット
 	/*SetTarGetTrans(m_player->GetTrans());
 	SetTargetAngle(m_player->GetRot().y);*/
 
 	//	カメラ視点座標、参照点座標
-	Vector3 eyepos, refpos;
-	if(m_isFPS == true)
+	D3DXVECTOR3 eyepos, refpos;
+	if(isFPS == true)
 	{//	FPSカメラの処理
-		Vector3 position;
 		//	参照点座標を計算
-		position = m_tarGetTrans + Vector3(0, 0.2f, 0);
+		 D3DXVECTOR3 position = tarGetTrans + D3DXVECTOR3(0, 0.2f, 0);
 		//	自機からカメラ座標への差分
-		Vector3 cameraV(0, 0, -CAMERA_DISTANCE);
+		D3DXVECTOR3 cameraV(0, 0, -CAMERA_DISTANCE);
+		D3DXMATRIX rotmat;
 		//	自機の後ろに回り込むための回転行列
-		Matrix rotmat = Matrix::CreateRotationY(m_targetAngle);
+		 D3DXMatrixRotationY(&rotmat,targetAngle);
 		//	カメラへのベクトルを回転
-		cameraV = Vector3::TransformNormal(cameraV, rotmat);
+		D3DXVec3TransformNormal(&cameraV,&cameraV, &rotmat);
 		//	ちょっと進んだ位置が視点座標
 		eyepos = position + cameraV * 0.1f;
 		//	がっつり進んだ位置が参照点座標
@@ -63,42 +60,43 @@ void FollowCamera::Update()
 	else
 	{//	TPSカメラの処理
 	 //	参照点座標を計算
-		refpos = m_tarGetTrans + Vector3(0, 2, 0);
+		refpos = tarGetTrans + D3DXVECTOR3(0, 2, 0);
 		//	自機からカメラ座標への差分
-		Vector3 cameraV(0, 0, CAMERA_DISTANCE);
+		D3DXVECTOR3 cameraV(0, 0, CAMERA_DISTANCE);
 		//	自機の後ろに回り込むための回転行列
-		Matrix rotmat = Matrix::CreateRotationY(m_targetAngle);
+		D3DXMATRIX rotmat;
+		D3DXMatrixRotationY(&rotmat,targetAngle);
 		//	カメラへのベクトルを回転
-		cameraV = Vector3::TransformNormal(cameraV, rotmat);
+		D3DXVec3TransformNormal(&cameraV,&cameraV,&rotmat);
 		//	カメラ座標を計算
 		eyepos = refpos + cameraV;
 	}
 
 	//	視点を現在位置から補間する
-	eyepos = m_eyepos + (eyepos - m_eyepos) * 0.05f;
+	eyepos = eyepos + (eyepos - eyepos) * 0.05f;
 	//	参照点を現在位置から補間する
-	refpos = m_refpos + (refpos - m_refpos) * 0.2f;
+	refpos = refpos + (refpos - refpos) * 0.2f;
 
 	//ローカル回転
 	//Yaw
-	if (eyepos.y != m_eyepos.y) 
+	if (eyepos.y != eyepos.y) 
 	{
 		//	視点を現在位置から補間する
-		eyepos.y = m_eyepos.y + (eyepos.y - m_eyepos.y) * 0.05f;
+		eyepos.y = eyepos.y + (eyepos.y - eyepos.y) * 0.05f;
 		//	参照点を現在位置から補間する
-		refpos.y = m_refpos.y + (refpos.y - m_refpos.y) * 0.2f;
+		refpos.y = refpos.y + (refpos.y - refpos.y) * 0.2f;
 	}
 	//Pich
-	else if (eyepos.x != m_eyepos.x)
+	else if (eyepos.x != eyepos.x)
 	{
-		eyepos.x = m_eyepos.x + (eyepos.x - m_eyepos.x) * 0.05f;
-		refpos.x = m_refpos.x + (refpos.x - m_refpos.x) * 0.2f;
+		eyepos.x = eyepos.x + (eyepos.x - eyepos.x) * 0.05f;
+		refpos.x = refpos.x + (refpos.x - refpos.x) * 0.2f;
 	}
 	//Roll
-	else if (eyepos.z != m_eyepos.z)
+	else if (eyepos.z != eyepos.z)
 	{
-		eyepos.z = m_eyepos.z + (eyepos.z - m_eyepos.z) * 0.05f;
-		refpos.z = m_refpos.z + (refpos.z - m_refpos.z) * 0.2f;
+		eyepos.z = eyepos.z + (eyepos.z - eyepos.z) * 0.05f;
+		refpos.z = refpos.z + (refpos.z - refpos.z) * 0.2f;
 	}
 
 	this->SetEyePos(eyepos);
@@ -123,19 +121,19 @@ void FollowCamera::Update()
 	//	基底クラスの更新
 	Camera::Update();
 }
-void FollowCamera::SetTarGetTrans(const DirectX::SimpleMath::Vector3 & targetPos)
+void FollowCamera::SetTarGetTrans(const D3DXVECTOR3& targetPos)
 {
-	m_tarGetTrans = targetPos;
+	this->tarGetTrans = targetPos;
 }
 
 void FollowCamera::SetTargetAngle(float targetAngle)
 {
-	m_targetAngle = targetAngle;
+	this->targetAngle = targetAngle;
 }
 
-//	キーボードをセット
-void FollowCamera::SetKeyboard(DirectX::Keyboard * keyboard)
-{
-	m_keyboard = keyboard;
-}
+////	キーボードをセット
+//void FollowCamera::SetKeyboard(DirectX::Keyboard * keyboard)
+//{
+//	m_keyboard = keyboard;
+//}
 

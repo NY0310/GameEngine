@@ -24,7 +24,7 @@ void PaintGun::Initialize()
 void PaintGun::Update()
 {
 	AimUpdate();
-	Shoot();
+	Emit();
 	inkParticleManager->Update();
 }
 
@@ -40,7 +40,7 @@ void PaintGun::Render()
 /// <summary>
 /// インクの発射
 /// </summary>
-void PaintGun::Shoot()
+void PaintGun::Emit()
 {
 	MouseRay* mouseRay = MouseRay::GetInstance();
 
@@ -60,9 +60,10 @@ void PaintGun::Shoot()
 		a++;
 		D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start - segment->End);
 		D3DXVec3Normalize(&mouseVec, &mouseVec);
-		const float longsize = 3;
+		const float longsize = 10;
 		mouseVec *= longsize;
-		inkParticleManager->Shoot(D3DXVECTOR3(Math::VectorToD3DXVECTOR3(segment->End)), D3DXVECTOR3(Math::VectorToD3DXVECTOR3(segment->Start - segment->End)), color[a]);
+		inkParticleManager->Shoot(emitPosition, D3DXVECTOR3(mouseVec - emitPosition), color[a]);
+
 		delete segment;
 	}
 
@@ -73,9 +74,29 @@ void PaintGun::Shoot()
 /// </summary>
 void PaintGun::AimUpdate()
 {
+	MouseRay* mouseRay = MouseRay::GetInstance();
 	MouseUtil* mouse = MouseUtil::GetInstance();
+	Segment* segment = mouseRay->RayCreate();
+	D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start - segment->End);
+	D3DXVec3Normalize(&mouseVec, &mouseVec);
+	const float longsize = 10;
+	mouseVec *= longsize;
+
 	auto& devices = Devices::Get();
-	aim->SetPosition(D3DXVECTOR3(mouse->GetX() - (int)devices.Width() / 2, (int)devices.Height() / 2 - mouse->GetY(), 0));
+	D3DXVECTOR2 position2D;
+	auto camera = FollowCamera::GetInstance();
+	camera->Project(mouseVec, &position2D);
+
+	aim->SetVertexBufferPosition(D3DXVECTOR3(position2D.x - (int)devices.Width() / 2, (int)devices.Height() / 2 - position2D.y ,0));
+	camera->SetRefPos(D3DXVECTOR3(position2D.x - (int)devices.Width() / 2, (int)devices.Height() / 2 - position2D.y, 0));
+	//D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start);
+	//D3DXVec3Normalize(&mouseVec, &mouseVec);
+	//D3DXVECTOR2 position2D;
+	//auto camera = FollowCamera::GetInstance();
+	//camera->Project(mouseVec, &position2D);
+
+	//aim->Set3DPosition(D3DXVECTOR3(mouseVec));
+
 }
 
 
@@ -92,30 +113,31 @@ void PaintGun::Finalize()
 
 void InkTank::Update()
 {
-	maxInk = redAmount + greenAmount + yellowAmount;
+	colorAmount[total] = colorAmount[red] + colorAmount[green] + colorAmount[blue];
 }
 
 /// <summary>
 /// タンクのインクをリセット
 /// </summary>
-void InkTank::Reset()
+void InkTank::Initialize()
 {
-	redAmount = 0;
-	greenAmount = 0;
-	yellowAmount = 0;
+	for (int i = 0; i < total; i++)
+	{
+		colorAmount[i] = 0;
+	}
 }
 
-void InkTank::Shoot()
+void InkTank::Emit()
 {
 
 }
 
 void InkTank::CalcColor()
 {
-	color = D3DXVECTOR4(red / maxInk, green / maxInk, yellow / maxInk, 1);
+	color = D3DXVECTOR4(colorAmount[red] / colorAmount[total], colorAmount[green] / colorAmount[total], colorAmount[blue] / colorAmount[total], 1);
 }
 
-void InkTank::ColorChange()
+void InkTank::ChangeColor()
 {
 	MouseUtil* mouse = MouseUtil::GetInstance();
 	int wheel =  mouse->GetWheelValue();

@@ -760,13 +760,13 @@ void CD3DXMESH::DrawPartsMesh(PARTS_MESH * pPartsMesh, D3DXMATRIX World , unique
 	//mWorld = mScale*mYaw*mPitch*mRoll*mTran;
 	auto& devices = Devices::Get();
 	D3DXMATRIX mWorld = World;
-	D3DXMATRIX View = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	D3DXMATRIX Proj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	D3DXMATRIX View = camera->GetView();
+	D3DXMATRIX Proj = camera->GetProjection();
 
 
 
 
-	D3DXVECTOR3 vEyePt = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+	D3DXVECTOR3 vEyePt = camera->GetEyePos();
 	//D3DXVECTOR3 vLookatPt = shadermanager.VectorToD3DXVECTOR3(camera->GetRefPos());
 	//D3DXVECTOR3 vUpVec = shadermanager.VectorToD3DXVECTOR3(camera->GetUpVec());
 

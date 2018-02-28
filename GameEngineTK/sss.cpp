@@ -158,8 +158,8 @@ void sss::ZTexRender(std::unique_ptr<FollowCamera>& camera)
 	pDeviceContext->ClearRenderTargetView(m_pDepthRTV, ClearColor);
 	pDeviceContext->ClearDepthStencilView(m_pDepthDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);//深度バッファクリア
 
-	m_mView = shadermanager.MatrixToD3DXMATRIX(camera->GetView());
-	m_mProj = shadermanager.MatrixToD3DXMATRIX(camera->GetProjection());
+	m_mView = camera->GetView();
+	m_mProj = camera->GetProjection();
 
 
 	//モデルワールド行列 
@@ -261,7 +261,7 @@ void sss::Render(std::unique_ptr<FollowCamera>& camera)
 		cb.vLightPos = vLight;//vLightは上で、回転させたあとのライト現在位置
 
 							  //視線ベクトルをエフェクト（シェーダー）に通知・適用
-		cb.vEye = shadermanager.VectorToD3DXVECTOR3(camera->GetEyePos());
+		cb.vEye = camera->GetEyePos();
 		//どこまで透過するかの距離
 		cb.g_Transparent = 2.4;
 

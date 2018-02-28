@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include "../MatrixObject.h"
-#include "../Node/GameObjectNode.h"
+#include "../SceneGraph/SceneGraph.h"//シーングラフ
 
 class Charactor : public scenegraph::GameObjectNode
 {
