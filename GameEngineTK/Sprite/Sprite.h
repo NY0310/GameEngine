@@ -15,7 +15,7 @@ public:
 		Dimension3,
 	};
 	//コンストラクタ
-	Sprite();
+	Sprite(Dimension dimension = Dimension2);
 	//デストラクタ
 	~Sprite();
 	// コピーコンストラクタ禁止
@@ -28,23 +28,23 @@ public:
 	HRESULT LoadTexture(LPCWSTR FileName);
 	//描画
 	void Render();
+	//コンスタントバッファーをセットする(3Dのみ)
+	void SetConstantBuffer();
 	//座標を設定
 	void Set2DPosition(const D3DXVECTOR2& position) {
-		if (matrixObject->GetPosition() != position)
+		if (vertexBufferPosition != position)
 		{
-			matrixObject->SetPosition(D3DXVECTOR3(position.x,position.y,0));
-			CreateVertexBuffer();
+			vertexBufferPosition = position;
+			CreateVertexBuffer2D();
 		}
 	}
 	//座標を設定
 	void Set3DPosition(const D3DXVECTOR3& position) {
+		if(matrixObject->GetPosition() != position)
 		matrixObject->SetPosition(position);
 	}
 
-	void SetVertexBufferPosition(const D3DXVECTOR3& position) {
-			vertexBufferPosition = position;
-			CreateVertexBuffer();
-	}
+
 
 	//大きさを取得
 	void SetScale(const D3DXVECTOR3& scale) {
@@ -65,14 +65,13 @@ private:
 	struct CONSTANT_BUFFER
 	{
 		D3DXMATRIX wvp;
-		ALIGN16 float viewPortWidth ;
-		ALIGN16 float viewPortHight;
 	};
 
 	//テクスチャのサイズを取得する
 	void GetTextureSize(ID3D11ShaderResourceView* srv);
+	HRESULT CreateVertexBuffer2D();
+	HRESULT CreateVertexBuffer3D();
 	//バーテックスバッファーを作成する
-	HRESULT CreateVertexBuffer();
 
 	ComPtr<ID3D11VertexShader> vertexShader;//バーテックスシェーダ
 	ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダ
@@ -86,9 +85,9 @@ private:
 	ComPtr<ID3D11SamplerState> sampler;//テクスチャーのサンプラー
 
 
-	int widthHalfSize;//幅
-	int hightHalfSize;//高さ
-	D3DXVECTOR3 vertexBufferPosition;//バーテックスバッファーの座標
+	int widthSize;//幅
+	int hightSize;//高さ
+	D3DXVECTOR2 vertexBufferPosition;//バーテックスバッファーの座標
 	Dimension dimension;//描画次元
 	FollowCamera* camera = FollowCamera::GetInstance();
 	std::unique_ptr<MatrixObject> matrixObject;

@@ -13,7 +13,7 @@ void PaintGun::Initialize()
 {
 	inkParticleManager = make_unique<InkParticleManager>();
 	inkParticleManager->Initialize();
-	aim = make_unique<Sprite>();
+	aim = make_unique<Sprite>(Sprite::Dimension3);
 	aim->Initialize();
 	aim->LoadTexture(L"Resources/PNG/Aim.png");
 }
@@ -82,13 +82,13 @@ void PaintGun::AimUpdate()
 	const float longsize = 10;
 	mouseVec *= longsize;
 
-	auto& devices = Devices::Get();
-	D3DXVECTOR2 position2D;
-	auto camera = FollowCamera::GetInstance();
-	camera->Project(mouseVec, &position2D);
+	//auto& devices = Devices::Get();
+	//D3DXVECTOR2 position2D;
+	//auto camera = FollowCamera::GetInstance();
+	//camera->Project(mouseVec, &position2D);
 
-	aim->SetVertexBufferPosition(D3DXVECTOR3(position2D.x - (int)devices.Width() / 2, (int)devices.Height() / 2 - position2D.y ,0));
-	camera->SetRefPos(D3DXVECTOR3(position2D.x - (int)devices.Width() / 2, (int)devices.Height() / 2 - position2D.y, 0));
+	aim->Set3DPosition(D3DXVECTOR3(mouseVec.x, mouseVec.y , mouseVec.z));
+	//camera->SetRefPos(D3DXVECTOR3(position2D.x - (int)devices.Width() / 2, (int)devices.Height() / 2 - position2D.y, 0));
 	//D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start);
 	//D3DXVec3Normalize(&mouseVec, &mouseVec);
 	//D3DXVECTOR2 position2D;

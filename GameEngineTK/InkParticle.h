@@ -92,7 +92,7 @@ public:
 	//インクの削除
 	void Destroy(int inkSegmentIndex);
 	//パーティクル最大数
-	static const int MAX_PARTICLE = 100;
+	static const int MAX_PARTICLE = 1;
 private:
 	//インクパーティクルの更新処理
 	void InkParticleUpdate();
