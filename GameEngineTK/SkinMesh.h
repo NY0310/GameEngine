@@ -5,8 +5,7 @@
 #include "ShaderManager.h"
 #include "FollowCamera.h"
 #include "AStar/Math.h"
-#include "MatrixObject.h"
-
+#include "Node/GameObjectNode.h"
 using namespace Microsoft::WRL;
 
 #define MAX_BONES 255
@@ -175,9 +174,9 @@ public:
 
 
 
-class SkinMesh
+class SkinMesh : public scenegraph::GameObjectNode
 {
-public:
+private:
 	//Dx11
 	ComPtr<ID3D11SamplerState> sampleLinear;
 	ComPtr<ID3D11VertexShader> vertexShader;
@@ -201,13 +200,13 @@ public:
 	//ボーン
 	int numBone;
 	Bone* boneArray;
-
+public:
 	//メソッド
 	SkinMesh();
 	~SkinMesh();
-	virtual HRESULT Initialize();
+	void Initialize();
 	HRESULT CreateIndexBuffer(DWORD dwSize, int* pIndex, ID3D11Buffer** ppIndexBuffer);
-	virtual void Render(MatrixObject* matrixObject);
+	void Render()override;
 	HRESULT CreateFromX(CHAR* szFileName);
 	HRESULT ReadSkinInfo(SkinVertex*);
 	void SetNewPoseMatrices(int frame);

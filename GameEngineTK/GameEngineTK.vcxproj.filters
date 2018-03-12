@@ -5,436 +5,384 @@
       <UniqueIdentifier>1e92bf82-9181-4ad6-a481-5a9a58b738ba</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="State">
-      <UniqueIdentifier>{ed3b177c-c7a7-4f5c-8efd-76debb93e7d6}</UniqueIdentifier>
+    <Filter Include="Game">
+      <UniqueIdentifier>{31f0b780-52a6-44af-823f-bb79545f57b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Collisiton">
-      <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
+    <Filter Include="NYLibrary">
+      <UniqueIdentifier>{d698d537-ba1b-408d-8e7f-478fc78681fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PARTICLE">
-      <UniqueIdentifier>{29af85b1-b77d-4347-baf4-b25ebc9be8c8}</UniqueIdentifier>
+    <Filter Include="NYLibrary\OBJ">
+      <UniqueIdentifier>{80c102fa-36bb-43c3-acbd-137c7fb08aca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Device">
-      <UniqueIdentifier>{bfe89338-d642-460d-b173-f661ea4eebda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Camera">
-      <UniqueIdentifier>{c7180978-e9e6-4655-9953-ba4723eac26c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Effect">
-      <UniqueIdentifier>{a8dde476-e2a9-4ad1-808c-aec5656e44b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Mesh">
-      <UniqueIdentifier>{9b430cb5-d219-4f11-8eb7-607e22b8ad82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Mesh\D3DX">
-      <UniqueIdentifier>{eee5079f-0b59-46b0-a4cd-32a29edf4b93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Mesh\OBJ">
-      <UniqueIdentifier>{e922770e-a639-46f0-a5ad-52905d0fb0b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Bunp">
-      <UniqueIdentifier>{43741387-380b-4d6d-bdfe-808261f3c135}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tesselation">
-      <UniqueIdentifier>{c6a4583f-d965-4868-b04d-e9babde8eb2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{e62c3388-0c6e-473f-b881-bfdfe52f3c64}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Paint">
-      <UniqueIdentifier>{dbb51dd8-26bb-48e0-ad80-8e8f69d8cddf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="hlsl">
-      <UniqueIdentifier>{677e718f-abb8-4186-8090-feafe60bd17d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Astar">
-      <UniqueIdentifier>{53a1497a-aea5-4aae-a590-7b32f1068628}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ObjState">
-      <UniqueIdentifier>{7ae23fad-8159-42d1-81c9-94f02b71d6e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SceneGraph">
+    <Filter Include="NYLibrary\SceneGraph">
       <UniqueIdentifier>{e4d127ca-34e5-4e71-97d5-c3fb21fa94a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SceneGraph\GameObject">
-      <UniqueIdentifier>{21e6359b-4419-4d35-a7b9-957126443443}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SceneGraph\Node">
+    <Filter Include="NYLibrary\SceneGraph\Node">
       <UniqueIdentifier>{622dc828-869a-44ca-9c0e-8257930090e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SceneGraph\Visitor">
+    <Filter Include="NYLibrary\SceneGraph\Visitor">
       <UniqueIdentifier>{771f378b-a19a-4444-9021-54ee44422442}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SkinnedMesh">
-      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
+    <Filter Include="NYLibrary\Camera">
+      <UniqueIdentifier>{c7180978-e9e6-4655-9953-ba4723eac26c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Player">
-      <UniqueIdentifier>{1dd6822a-9f99-4476-91bb-81c8894fd63e}</UniqueIdentifier>
+    <Filter Include="NYLibrary\Input">
+      <UniqueIdentifier>{e62c3388-0c6e-473f-b881-bfdfe52f3c64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Player\HomingBullet">
-      <UniqueIdentifier>{47f7593f-b24b-44ee-9916-fd9024e839b4}</UniqueIdentifier>
+    <Filter Include="NYLibrary\Device">
+      <UniqueIdentifier>{bfe89338-d642-460d-b173-f661ea4eebda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Player\Bullet">
-      <UniqueIdentifier>{9a6bd89c-c67e-4a33-8a76-080a9f8a7ef1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sprite">
+    <Filter Include="NYLibrary\Sprite">
       <UniqueIdentifier>{caf5f5ea-ab6d-4c7c-9508-27d65aefae4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Charactor">
+    <Filter Include="NYLibrary\MatrixObject">
+      <UniqueIdentifier>{b5105bc5-d218-41dd-9915-e1ea3bfd6594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\SkinMeshAnimation">
+      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Math">
+      <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Collisiton">
+      <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Astar">
+      <UniqueIdentifier>{53a1497a-aea5-4aae-a590-7b32f1068628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Light">
+      <UniqueIdentifier>{82ab37f1-2e6b-4c7a-b037-6d6f76bbbd67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\ShaderManager">
+      <UniqueIdentifier>{31e9ac9e-af67-4dc3-9146-6c3731fa0c5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{2d0b0374-1454-47bb-96e9-6964a4310ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene">
+      <UniqueIdentifier>{e81ffcdd-6b85-4d49-bc7a-ad514080debf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\TitleScene">
+      <UniqueIdentifier>{d3eba96c-3d4c-434a-8baa-17667b0f6abe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\ResoultScene">
+      <UniqueIdentifier>{b0bad162-746c-4536-bd7f-438fccc477f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Charactor">
       <UniqueIdentifier>{9e7a5cad-372d-451b-b938-7266248a343a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Charactor\Player">
+    <Filter Include="Scene\GameScene\Charactor\Player">
       <UniqueIdentifier>{c0a4624f-8a3d-4537-ab26-9a59d9a100c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Charactor\Player\State">
+    <Filter Include="Scene\GameScene\Charactor\Player\State">
       <UniqueIdentifier>{4079ed47-c91d-4421-8001-9040f8c1a424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Charactor\Enemy">
+      <UniqueIdentifier>{c75dff77-be45-44ff-ba8d-eb6bcd8af898}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Stage">
+      <UniqueIdentifier>{6ef1175c-d395-4772-95cf-1869d8d9792c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\SimpleTexture">
+      <UniqueIdentifier>{d8ff60c8-0ac4-45bb-beff-c8c4c72c0610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaintAsset">
+      <UniqueIdentifier>{dbb51dd8-26bb-48e0-ad80-8e8f69d8cddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaintAsset\InkParticle">
+      <UniqueIdentifier>{29af85b1-b77d-4347-baf4-b25ebc9be8c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaintAsset\PaintGun">
+      <UniqueIdentifier>{095b0286-dac4-422c-ba1a-44c69a95375e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaintAsset\PaintSystem">
+      <UniqueIdentifier>{bb3a50df-135d-460e-b6f3-019b55541589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaintAsset\PaintCollisiton">
+      <UniqueIdentifier>{14e703cd-cc0b-4c16-9aac-afb61aa13a3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StepTimer.h" />
-    <ClInclude Include="State.h">
-      <Filter>State</Filter>
+    <ClInclude Include="Source\NYLibrary\Device\Device.h">
+      <Filter>NYLibrary\Device</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>State</Filter>
+    <ClInclude Include="Source\NYLibrary\Input\KeyboardUtil.h">
+      <Filter>NYLibrary\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Obj3d.h">
-      <Filter>State</Filter>
+    <ClInclude Include="Source\NYLibrary\Input\MouseRay.h">
+      <Filter>NYLibrary\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="Collision.h">
-      <Filter>Collisiton</Filter>
+    <ClInclude Include="Source\NYLibrary\Input\MouseUtil.h">
+      <Filter>NYLibrary\Input</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionNode.h">
-      <Filter>Collisiton</Filter>
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\GameObjectNode.h">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClInclude>
-    <ClInclude Include="LandShape.h">
-      <Filter>Collisiton</Filter>
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\Leaf.h">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClInclude>
-    <ClInclude Include="LandShapeData.h">
-      <Filter>Collisiton</Filter>
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\Node.h">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\NodeAbstract.h">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClInclude>
-    <ClInclude Include="DebugCamera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Visitor\SearchUpdateVisitor.h">
+      <Filter>NYLibrary\SceneGraph\Visitor</Filter>
     </ClInclude>
-    <ClInclude Include="ModelEffect.h">
-      <Filter>Effect</Filter>
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Visitor\VisitorInterface.h">
+      <Filter>NYLibrary\SceneGraph\Visitor</Filter>
     </ClInclude>
-    <ClInclude Include="ModelExpansionEffect.h">
-      <Filter>Effect</Filter>
+    <ClInclude Include="Source\NYLibrary\Sprite\Sprite.h">
+      <Filter>NYLibrary\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="FollowCamera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="Source\Scene\GameScene\GameScene.h">
+      <Filter>Scene\GameScene</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>Device</Filter>
+    <ClInclude Include="Source\Scene\ResultScene\ResultScene.h">
+      <Filter>Scene\ResoultScene</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h" />
-    <ClInclude Include="HomingBullet.h">
-      <Filter>Player\HomingBullet</Filter>
+    <ClInclude Include="Source\Scene\TitleScene\TitleScene.h">
+      <Filter>Scene\TitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Player\Bullet</Filter>
+    <ClInclude Include="Source\NYLibrary\SimpleTexture\SimpleTextures.h">
+      <Filter>NYLibrary\SimpleTexture</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="CD3DXMESH.h">
-      <Filter>Mesh\D3DX</Filter>
+    <ClInclude Include="Source\NYLibrary\Obj\Obj.h">
+      <Filter>NYLibrary\OBJ</Filter>
     </ClInclude>
-    <ClInclude Include="sss.h">
-      <Filter>Mesh</Filter>
+    <ClInclude Include="Source\NYLibrary\Collision\Collision.h">
+      <Filter>NYLibrary\Collisiton</Filter>
     </ClInclude>
-    <ClInclude Include="BumpMapping.h">
-      <Filter>Bunp</Filter>
+    <ClInclude Include="Source\NYLibrary\Camera\Camera.h">
+      <Filter>NYLibrary\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Tessellation.h">
-      <Filter>Tesselation</Filter>
+    <ClInclude Include="Source\NYLibrary\Camera\DebugCamera.h">
+      <Filter>NYLibrary\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="DisplacementMapping.h">
-      <Filter>Tesselation</Filter>
+    <ClInclude Include="Source\NYLibrary\Camera\FollowCamera.h">
+      <Filter>NYLibrary\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Line.h" />
-    <ClInclude Include="Input\KeyboardUtil.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="Source\NYLibrary\ShaderManager\ShaderManager.h">
+      <Filter>NYLibrary\ShaderManager</Filter>
     </ClInclude>
-    <ClInclude Include="Input\MouseUtil.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Stage\Stage.h">
+      <Filter>Scene\GameScene\Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Paint\PaintCollision.h">
-      <Filter>Paint</Filter>
+    <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h">
+      <Filter>NYLibrary\SkinMeshAnimation</Filter>
     </ClInclude>
-    <ClInclude Include="Input\MouseRay.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="Source\Game\Game.h">
+      <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Paint\PaintObj.h">
-      <Filter>Paint</Filter>
+    <ClInclude Include="Source\Game\StepTimer.h">
+      <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Paint\Obj.h">
-      <Filter>Paint</Filter>
+    <ClInclude Include="Source\NYLibrary\Light\Light.h">
+      <Filter>NYLibrary\Light</Filter>
     </ClInclude>
-    <ClInclude Include="AStar\AStar.h">
-      <Filter>Astar</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.h">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="AStar\AttributeMap.h">
-      <Filter>Astar</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.h">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="AStar\Math.h">
-      <Filter>Astar</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.h">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="AStar\Node.h">
-      <Filter>Astar</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.h">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="AStar\Map.h">
-      <Filter>Astar</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h">
+      <Filter>Scene\GameScene\Charactor</Filter>
     </ClInclude>
-    <ClInclude Include="ObjState\ObjState.h">
-      <Filter>ObjState</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h">
+      <Filter>Scene\GameScene\Charactor</Filter>
     </ClInclude>
-    <ClInclude Include="ObjState\Stop.h">
-      <Filter>ObjState</Filter>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h">
+      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="ObjState\Walk.h">
-      <Filter>ObjState</Filter>
+    <ClInclude Include="Source\NYLibrary\AStar\AStar.h">
+      <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
-    <ClInclude Include="ObjState\Run.h">
-      <Filter>ObjState</Filter>
+    <ClInclude Include="Source\NYLibrary\AStar\AttributeMap.h">
+      <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\GameObjectInterface.h">
-      <Filter>SceneGraph\GameObject</Filter>
+    <ClInclude Include="Source\NYLibrary\AStar\Map.h">
+      <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
-    <ClInclude Include="Visitor\SearchUpdateVisitor.h">
-      <Filter>SceneGraph\Visitor</Filter>
+    <ClInclude Include="Source\NYLibrary\Math\Math.h">
+      <Filter>NYLibrary\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Visitor\VisitorInterface.h">
-      <Filter>SceneGraph\Visitor</Filter>
+    <ClInclude Include="Source\Scene\Scene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Node\GameObjectNode.h">
-      <Filter>SceneGraph\Node</Filter>
+    <ClInclude Include="Source\Scene\SceneManager.h">
+      <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Node\Leaf.h">
-      <Filter>SceneGraph\Node</Filter>
+    <ClInclude Include="Source\NYLibrary\MatrixObject\MatrixObject.h">
+      <Filter>NYLibrary\MatrixObject</Filter>
     </ClInclude>
-    <ClInclude Include="Node\Node.h">
-      <Filter>SceneGraph\Node</Filter>
+    <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h">
+      <Filter>PaintAsset\PaintCollisiton</Filter>
     </ClInclude>
-    <ClInclude Include="Node\NodeAbstract.h">
-      <Filter>SceneGraph\Node</Filter>
+    <ClInclude Include="Source\PaintAsset\PaintSystem\Paint.h">
+      <Filter>PaintAsset\PaintSystem</Filter>
     </ClInclude>
-    <ClInclude Include="SkinMesh.h">
-      <Filter>SkinnedMesh</Filter>
+    <ClInclude Include="Source\PaintAsset\PaintSystem\PaintObj.h">
+      <Filter>PaintAsset\PaintSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="SimpleTextures.h" />
-    <ClInclude Include="MatrixObject.h">
-      <Filter>SkinnedMesh</Filter>
+    <ClInclude Include="Source\PaintAsset\PaintGun\PaintGun.h">
+      <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
-    <ClInclude Include="PaintSkinMesh.h">
-      <Filter>SkinnedMesh</Filter>
+    <ClInclude Include="Source\PaintAsset\InkParticle\InkObj2.h">
+      <Filter>PaintAsset\InkParticle</Filter>
     </ClInclude>
-    <ClInclude Include="Paint\Paint.h">
-      <Filter>Paint</Filter>
+    <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h">
+      <Filter>PaintAsset\InkParticle</Filter>
     </ClInclude>
-    <ClInclude Include="InkParticle.h">
-      <Filter>PARTICLE</Filter>
+    <ClInclude Include="Source\PaintAsset\PaintGun\Aim.h">
+      <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
-    <ClInclude Include="InkParticleRenderer.h">
-      <Filter>PARTICLE</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite\Sprite.h">
-      <Filter>Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Paint\InkObj.h">
-      <Filter>PARTICLE</Filter>
-    </ClInclude>
-    <ClInclude Include="UsingDirectSimpleMath.h" />
-    <ClInclude Include="InkObj2.h" />
-    <ClInclude Include="Charactor\Charactor.h">
-      <Filter>Charactor</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Player\MainPlayer.h">
-      <Filter>Charactor\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Player\State\PlayerState.h">
-      <Filter>Charactor\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Player\State\PlayerRun.h">
-      <Filter>Charactor\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Player\State\PlayerStop.h">
-      <Filter>Charactor\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Player\State\PlayerWalk.h">
-      <Filter>Charactor\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Paint\PaintGun.h">
-      <Filter>Paint</Filter>
+    <ClInclude Include="Source\NYLibrary\AStar\MapNode.h">
+      <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="State.cpp">
-      <Filter>State</Filter>
+    <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
+      <Filter>NYLibrary\Device</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>State</Filter>
+    <ClCompile Include="Source\NYLibrary\Input\KeyboardUtil.cpp">
+      <Filter>NYLibrary\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Obj3d.cpp">
-      <Filter>State</Filter>
+    <ClCompile Include="Source\NYLibrary\Input\MouseRay.cpp">
+      <Filter>NYLibrary\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Collision.cpp">
-      <Filter>Collisiton</Filter>
+    <ClCompile Include="Source\NYLibrary\Input\MouseUtil.cpp">
+      <Filter>NYLibrary\Input</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionNode.cpp">
-      <Filter>Collisiton</Filter>
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Node\GameObjectNode.cpp">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClCompile>
-    <ClCompile Include="LandShape.cpp">
-      <Filter>Collisiton</Filter>
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Node\Node.cpp">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClCompile>
-    <ClCompile Include="LandShapeData.cpp">
-      <Filter>Collisiton</Filter>
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Node\NodeAbstract.cpp">
+      <Filter>NYLibrary\SceneGraph\Node</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Visitor\SearchUpdateVisitor.cpp">
+      <Filter>NYLibrary\SceneGraph\Visitor</Filter>
     </ClCompile>
-    <ClCompile Include="DebugCamera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="Source\NYLibrary\Sprite\Sprite.cpp">
+      <Filter>NYLibrary\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="ModelEffect.cpp">
-      <Filter>Effect</Filter>
+    <ClCompile Include="Source\Scene\GameScene\GameScene.cpp">
+      <Filter>Scene\GameScene</Filter>
     </ClCompile>
-    <ClCompile Include="ModelExpansionEffect.cpp">
-      <Filter>Effect</Filter>
+    <ClCompile Include="Source\Scene\ResultScene\ResultScene.cpp">
+      <Filter>Scene\ResoultScene</Filter>
     </ClCompile>
-    <ClCompile Include="FollowCamera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp">
+      <Filter>Scene\TitleScene</Filter>
     </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>Device</Filter>
+    <ClCompile Include="Source\NYLibrary\SimpleTexture\SimpleTextures.cpp">
+      <Filter>NYLibrary\SimpleTexture</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="HomingBullet.cpp">
-      <Filter>Player\HomingBullet</Filter>
+    <ClCompile Include="Source\NYLibrary\Obj\Obj.cpp">
+      <Filter>NYLibrary\OBJ</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Player\Bullet</Filter>
+    <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp">
+      <Filter>NYLibrary\Collisiton</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="CD3DXMESH.cpp">
-      <Filter>Mesh\D3DX</Filter>
+    <ClCompile Include="Source\NYLibrary\Camera\Camera.cpp">
+      <Filter>NYLibrary\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="sss.cpp">
-      <Filter>Mesh</Filter>
+    <ClCompile Include="Source\NYLibrary\Camera\DebugCamera.cpp">
+      <Filter>NYLibrary\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="BumpMapping.cpp">
-      <Filter>Bunp</Filter>
+    <ClCompile Include="Source\NYLibrary\Camera\FollowCamera.cpp">
+      <Filter>NYLibrary\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Tessellation.cpp">
-      <Filter>Tesselation</Filter>
+    <ClCompile Include="Source\NYLibrary\ShaderManager\ShaderManager.cpp">
+      <Filter>NYLibrary\ShaderManager</Filter>
     </ClCompile>
-    <ClCompile Include="DisplacementMapping.cpp">
-      <Filter>Tesselation</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Stage\Stage.cpp">
+      <Filter>Scene\GameScene\Stage</Filter>
     </ClCompile>
-    <ClCompile Include="Line.cpp" />
-    <ClCompile Include="Input\KeyboardUtil.cpp">
-      <Filter>Input</Filter>
+    <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp">
+      <Filter>NYLibrary\SkinMeshAnimation</Filter>
     </ClCompile>
-    <ClCompile Include="Input\MouseUtil.cpp">
-      <Filter>Input</Filter>
+    <ClCompile Include="Source\Game\Game.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Paint\PaintCollision.cpp">
-      <Filter>Paint</Filter>
+    <ClCompile Include="Source\Game\Main.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Input\MouseRay.cpp">
-      <Filter>Input</Filter>
+    <ClCompile Include="Source\NYLibrary\Light\Light.cpp">
+      <Filter>NYLibrary\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Paint\PaintObj.cpp">
-      <Filter>Paint</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.cpp">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClCompile>
-    <ClCompile Include="Paint\Obj.cpp">
-      <Filter>Paint</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.cpp">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClCompile>
-    <ClCompile Include="AStar\AStar.cpp">
-      <Filter>Astar</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.cpp">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClCompile>
-    <ClCompile Include="AStar\AttributeMap.cpp">
-      <Filter>Astar</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.cpp">
+      <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClCompile>
-    <ClCompile Include="AStar\Math.cpp">
-      <Filter>Astar</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp">
+      <Filter>Scene\GameScene\Charactor</Filter>
     </ClCompile>
-    <ClCompile Include="AStar\Map.cpp">
-      <Filter>Astar</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp">
+      <Filter>Scene\GameScene\Charactor</Filter>
     </ClCompile>
-    <ClCompile Include="ObjState\Stop.cpp">
-      <Filter>ObjState</Filter>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp">
+      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="ObjState\Walk.cpp">
-      <Filter>ObjState</Filter>
+    <ClCompile Include="Source\NYLibrary\AStar\AStar.cpp">
+      <Filter>NYLibrary\Astar</Filter>
     </ClCompile>
-    <ClCompile Include="ObjState\Run.cpp">
-      <Filter>ObjState</Filter>
+    <ClCompile Include="Source\NYLibrary\AStar\AttributeMap.cpp">
+      <Filter>NYLibrary\Astar</Filter>
     </ClCompile>
-    <ClCompile Include="Visitor\SearchUpdateVisitor.cpp">
-      <Filter>SceneGraph\Visitor</Filter>
+    <ClCompile Include="Source\NYLibrary\AStar\Map.cpp">
+      <Filter>NYLibrary\Astar</Filter>
     </ClCompile>
-    <ClCompile Include="Node\GameObjectNode.cpp">
-      <Filter>SceneGraph\Node</Filter>
+    <ClCompile Include="Source\NYLibrary\Math\Math.cpp">
+      <Filter>NYLibrary\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Node\Node.cpp">
-      <Filter>SceneGraph\Node</Filter>
+    <ClCompile Include="Source\Scene\Scene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Node\NodeAbstract.cpp">
-      <Filter>SceneGraph\Node</Filter>
+    <ClCompile Include="Source\Scene\SceneManager.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="SkinMesh.cpp">
-      <Filter>SkinnedMesh</Filter>
+    <ClCompile Include="Source\NYLibrary\MatrixObject\MatrixObject.cpp">
+      <Filter>NYLibrary\MatrixObject</Filter>
     </ClCompile>
-    <ClCompile Include="MatrixObject.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="SimpleTextures.cpp" />
-    <ClCompile Include="PaintSkinMesh.cpp">
-      <Filter>SkinnedMesh</Filter>
+    <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp">
+      <Filter>PaintAsset\PaintCollisiton</Filter>
     </ClCompile>
-    <ClCompile Include="Paint\Paint.cpp">
-      <Filter>Paint</Filter>
+    <ClCompile Include="Source\PaintAsset\PaintSystem\Paint.cpp">
+      <Filter>PaintAsset\PaintSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Paint\PaintShoot.cpp" />
-    <ClCompile Include="InkParticle.cpp">
-      <Filter>PARTICLE</Filter>
+    <ClCompile Include="Source\PaintAsset\PaintSystem\PaintObj.cpp">
+      <Filter>PaintAsset\PaintSystem</Filter>
     </ClCompile>
-    <ClCompile Include="InkParticleRenderer.cpp">
-      <Filter>PARTICLE</Filter>
+    <ClCompile Include="Source\PaintAsset\PaintGun\PaintGun.cpp">
+      <Filter>PaintAsset\PaintGun</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite\Sprite.cpp">
-      <Filter>Sprite</Filter>
+    <ClCompile Include="Source\PaintAsset\InkParticle\InkObj2.cpp">
+      <Filter>PaintAsset\InkParticle</Filter>
     </ClCompile>
-    <ClCompile Include="Paint\InkObj.cpp">
-      <Filter>PARTICLE</Filter>
+    <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp">
+      <Filter>PaintAsset\InkParticle</Filter>
     </ClCompile>
-    <ClCompile Include="InkObj2.cpp" />
-    <ClCompile Include="Charactor\Charactor.cpp">
-      <Filter>Charactor</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Player\State\PlayerRun.cpp">
-      <Filter>Charactor\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Player\State\PlayerStop.cpp">
-      <Filter>Charactor\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Player\State\PlayerWalk.cpp">
-      <Filter>Charactor\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Player\MainPlayer.cpp">
-      <Filter>Charactor\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Paint\PaintGun.cpp">
-      <Filter>Paint</Filter>
+    <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp">
+      <Filter>PaintAsset\PaintGun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -501,56 +449,32 @@
     </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="D3DXMESH.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="sss.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="Tessellation.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="Line.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\Campus.hlsl">
-      <Filter>Paint</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\OBJ.hlsl">
-      <Filter>Paint</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\DisplacementMapping.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\BumpMapping.hlsl">
-      <Filter>hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\Drip.hlsl">
-      <Filter>Paint</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\PlaneDrip.hlsl">
-      <Filter>Paint</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
-      <Filter>SkinnedMesh</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\PaintSkinMesh.hlsl">
-      <Filter>SkinnedMesh</Filter>
+      <Filter>NYLibrary\SkinMeshAnimation</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\PointSprite.hlsl">
-      <Filter>PARTICLE</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\PaintUpdate.hlsl">
-      <Filter>Paint</Filter>
+      <Filter>PaintAsset\InkParticle</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\Sprite.hlsl">
-      <Filter>Sprite</Filter>
+      <Filter>NYLibrary\Sprite</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\InkObj.hlsl">
-      <Filter>PARTICLE</Filter>
+      <Filter>PaintAsset\InkParticle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PlaneDrip.hlsl">
+      <Filter>PaintAsset\PaintSystem</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\PaintUpdate.hlsl">
+      <Filter>PaintAsset\PaintSystem</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Drip.hlsl">
+      <Filter>PaintAsset\PaintSystem</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\OBJ.hlsl">
+      <Filter>PaintAsset\PaintSystem</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\Campus.hlsl">
+      <Filter>PaintAsset\PaintSystem</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -164,137 +164,101 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AStar\AStar.h" />
-    <ClInclude Include="AStar\AttributeMap.h" />
-    <ClInclude Include="AStar\Map.h" />
-    <ClInclude Include="AStar\Math.h" />
-    <ClInclude Include="AStar\Node.h" />
-    <ClInclude Include="BumpMapping.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Charactor\Charactor.h" />
-    <ClInclude Include="Charactor\Player\MainPlayer.h" />
-    <ClCompile Include="Charactor\Player\MainPlayer.cpp" />
-    <ClInclude Include="Charactor\Player\State\PlayerRun.h" />
-    <ClInclude Include="Charactor\Player\State\PlayerState.h" />
-    <ClInclude Include="Charactor\Player\State\PlayerStop.h" />
-    <ClInclude Include="Charactor\Player\State\PlayerWalk.h" />
-    <ClInclude Include="Collision.h" />
-    <ClInclude Include="CollisionNode.h" />
-    <ClInclude Include="CD3DXMESH.h" />
-    <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="DisplacementMapping.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="FollowCamera.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObject\GameObjectInterface.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="HomingBullet.h" />
-    <ClInclude Include="InkObj2.h" />
-    <ClInclude Include="Input\KeyboardUtil.h" />
-    <ClInclude Include="Input\MouseRay.h" />
-    <ClInclude Include="Input\MouseUtil.h" />
-    <ClInclude Include="LandShape.h" />
-    <ClInclude Include="LandShapeData.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Line.h" />
-    <ClInclude Include="MatrixObject.h" />
-    <ClInclude Include="ModelEffect.h" />
-    <ClInclude Include="ModelExpansionEffect.h" />
-    <ClInclude Include="Node\GameObjectNode.h" />
-    <ClInclude Include="Node\Leaf.h" />
-    <ClInclude Include="Node\Node.h" />
-    <ClInclude Include="Node\NodeAbstract.h" />
-    <ClInclude Include="Obj3d.h" />
-    <ClInclude Include="ObjState\Run.h" />
-    <ClInclude Include="ObjState\Walk.h" />
-    <ClInclude Include="ObjState\ObjState.h" />
-    <ClInclude Include="ObjState\Stop.h" />
-    <ClInclude Include="PaintSkinMesh.h" />
-    <ClInclude Include="Paint\InkObj.h" />
-    <ClInclude Include="Paint\Paint.h" />
-    <ClInclude Include="Paint\Obj.h" />
-    <ClInclude Include="Paint\PaintCollision.h" />
-    <ClInclude Include="Paint\PaintGun.h" />
-    <ClInclude Include="Paint\PaintObj.h" />
-    <ClInclude Include="InkParticle.h" />
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="SkinMesh.h" />
-    <ClInclude Include="Sprite\Sprite.h" />
-    <ClInclude Include="sss.h" />
-    <ClInclude Include="Stage.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="StepTimer.h" />
-    <ClInclude Include="Tessellation.h" />
-    <ClInclude Include="SimpleTextures.h" />
-    <ClInclude Include="InkParticleRenderer.h" />
-    <ClInclude Include="UsingDirectSimpleMath.h" />
-    <ClInclude Include="Visitor\SearchUpdateVisitor.h" />
-    <ClInclude Include="Visitor\VisitorInterface.h" />
+    <ClInclude Include="Source\Game\Game.h" />
+    <ClInclude Include="Source\Game\StepTimer.h" />
+    <ClInclude Include="Source\NYLibrary\AStar\AStar.h" />
+    <ClInclude Include="Source\NYLibrary\AStar\AttributeMap.h" />
+    <ClInclude Include="Source\NYLibrary\AStar\Map.h" />
+    <ClInclude Include="Source\NYLibrary\AStar\MapNode.h" />
+    <ClInclude Include="Source\NYLibrary\Camera\Camera.h" />
+    <ClInclude Include="Source\NYLibrary\Camera\DebugCamera.h" />
+    <ClInclude Include="Source\NYLibrary\Camera\FollowCamera.h" />
+    <ClInclude Include="Source\NYLibrary\Collision\Collision.h" />
+    <ClInclude Include="Source\NYLibrary\Device\Device.h" />
+    <ClInclude Include="Source\NYLibrary\Input\KeyboardUtil.h" />
+    <ClInclude Include="Source\NYLibrary\Input\MouseRay.h" />
+    <ClInclude Include="Source\NYLibrary\Input\MouseUtil.h" />
+    <ClInclude Include="Source\NYLibrary\Light\Light.h" />
+    <ClInclude Include="Source\NYLibrary\Math\Math.h" />
+    <ClInclude Include="Source\NYLibrary\MatrixObject\MatrixObject.h" />
+    <ClInclude Include="Source\NYLibrary\Obj\Obj.h" />
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\GameObjectNode.h" />
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\Leaf.h" />
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\Node.h" />
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Node\NodeAbstract.h" />
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Visitor\SearchUpdateVisitor.h" />
+    <ClInclude Include="Source\NYLibrary\SceneGraph\Visitor\VisitorInterface.h" />
+    <ClInclude Include="Source\NYLibrary\ShaderManager\ShaderManager.h" />
+    <ClInclude Include="Source\NYLibrary\SimpleTexture\SimpleTextures.h" />
+    <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h" />
+    <ClInclude Include="Source\NYLibrary\Sprite\Sprite.h" />
+    <ClInclude Include="Source\PaintAsset\InkParticle\InkObj2.h" />
+    <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h" />
+    <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h" />
+    <ClInclude Include="Source\PaintAsset\PaintGun\Aim.h" />
+    <ClInclude Include="Source\PaintAsset\PaintGun\PaintGun.h" />
+    <ClInclude Include="Source\PaintAsset\PaintSystem\Paint.h" />
+    <ClInclude Include="Source\PaintAsset\PaintSystem\PaintObj.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.h" />
+    <ClInclude Include="Source\Scene\GameScene\GameScene.h" />
+    <ClInclude Include="Source\Scene\GameScene\Stage\Stage.h" />
+    <ClInclude Include="Source\Scene\ResultScene\ResultScene.h" />
+    <ClInclude Include="Source\Scene\Scene.h" />
+    <ClInclude Include="Source\Scene\SceneManager.h" />
+    <ClInclude Include="Source\Scene\TitleScene\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AStar\AStar.cpp" />
-    <ClCompile Include="AStar\AttributeMap.cpp" />
-    <ClCompile Include="AStar\Map.cpp" />
-    <ClCompile Include="AStar\Math.cpp" />
-    <ClCompile Include="BumpMapping.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CD3DXMESH.cpp" />
-    <ClCompile Include="Charactor\Charactor.cpp" />
-    <ClCompile Include="Charactor\Player\State\PlayerRun.cpp" />
-    <ClCompile Include="Charactor\Player\State\PlayerStop.cpp" />
-    <ClCompile Include="Charactor\Player\State\PlayerWalk.cpp" />
-    <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="CollisionNode.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="DisplacementMapping.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="HomingBullet.cpp" />
-    <ClCompile Include="InkObj2.cpp" />
-    <ClCompile Include="Input\KeyboardUtil.cpp" />
-    <ClCompile Include="Input\MouseRay.cpp" />
-    <ClCompile Include="Input\MouseUtil.cpp" />
-    <ClCompile Include="LandShape.cpp" />
-    <ClCompile Include="LandShapeData.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Line.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MatrixObject.cpp" />
-    <ClCompile Include="ModelEffect.cpp" />
-    <ClCompile Include="ModelExpansionEffect.cpp" />
-    <ClCompile Include="Node\GameObjectNode.cpp" />
-    <ClCompile Include="Node\Node.cpp" />
-    <ClCompile Include="Node\NodeAbstract.cpp" />
-    <ClCompile Include="Obj3d.cpp" />
-    <ClCompile Include="ObjState\Run.cpp" />
-    <ClCompile Include="ObjState\Walk.cpp" />
-    <ClCompile Include="ObjState\Stop.cpp" />
-    <ClCompile Include="PaintSkinMesh.cpp" />
-    <ClCompile Include="Paint\InkObj.cpp" />
-    <ClCompile Include="Paint\Paint.cpp" />
-    <ClCompile Include="Paint\Obj.cpp" />
-    <ClCompile Include="Paint\PaintCollision.cpp" />
-    <ClCompile Include="Paint\PaintGun.cpp" />
-    <ClCompile Include="Paint\PaintObj.cpp" />
-    <ClCompile Include="Paint\PaintShoot.cpp" />
-    <ClCompile Include="InkParticle.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="SkinMesh.cpp" />
-    <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Sprite\Sprite.cpp" />
-    <ClCompile Include="sss.cpp" />
-    <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="State.cpp" />
-    <ClCompile Include="Tessellation.cpp" />
-    <ClCompile Include="SimpleTextures.cpp" />
-    <ClCompile Include="InkParticleRenderer.cpp" />
-    <ClCompile Include="Visitor\SearchUpdateVisitor.cpp" />
+    <ClCompile Include="Source\Game\Game.cpp" />
+    <ClCompile Include="Source\Game\Main.cpp" />
+    <ClCompile Include="Source\NYLibrary\AStar\AStar.cpp" />
+    <ClCompile Include="Source\NYLibrary\AStar\AttributeMap.cpp" />
+    <ClCompile Include="Source\NYLibrary\AStar\Map.cpp" />
+    <ClCompile Include="Source\NYLibrary\Camera\Camera.cpp" />
+    <ClCompile Include="Source\NYLibrary\Camera\DebugCamera.cpp" />
+    <ClCompile Include="Source\NYLibrary\Camera\FollowCamera.cpp" />
+    <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp" />
+    <ClCompile Include="Source\NYLibrary\Device\Device.cpp" />
+    <ClCompile Include="Source\NYLibrary\Input\KeyboardUtil.cpp" />
+    <ClCompile Include="Source\NYLibrary\Input\MouseRay.cpp" />
+    <ClCompile Include="Source\NYLibrary\Input\MouseUtil.cpp" />
+    <ClCompile Include="Source\NYLibrary\Light\Light.cpp" />
+    <ClCompile Include="Source\NYLibrary\Math\Math.cpp" />
+    <ClCompile Include="Source\NYLibrary\MatrixObject\MatrixObject.cpp" />
+    <ClCompile Include="Source\NYLibrary\Obj\Obj.cpp" />
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Node\GameObjectNode.cpp" />
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Node\Node.cpp" />
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Node\NodeAbstract.cpp" />
+    <ClCompile Include="Source\NYLibrary\SceneGraph\Visitor\SearchUpdateVisitor.cpp" />
+    <ClCompile Include="Source\NYLibrary\ShaderManager\ShaderManager.cpp" />
+    <ClCompile Include="Source\NYLibrary\SimpleTexture\SimpleTextures.cpp" />
+    <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp" />
+    <ClCompile Include="Source\NYLibrary\Sprite\Sprite.cpp" />
+    <ClCompile Include="Source\PaintAsset\InkParticle\InkObj2.cpp" />
+    <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintGun\PaintGun.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintSystem\Paint.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintSystem\PaintObj.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\GameScene.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Stage\Stage.cpp" />
+    <ClCompile Include="Source\Scene\ResultScene\ResultScene.cpp" />
+    <ClCompile Include="Source\Scene\Scene.cpp" />
+    <ClCompile Include="Source\Scene\SceneManager.cpp" />
+    <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -332,28 +296,11 @@
     <MeshContentTask Include="Assets\Teapot.FBX" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Line.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\BumpMapping.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="Resources\HLSL\Campus.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\DisplacementMapping.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\Drip.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -378,12 +325,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\OBJ.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Resources\HLSL\PaintSkinMesh.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -422,45 +363,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Shader.hlsl">
-      <FileType>Document</FileType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="sss.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Tessellation.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="D3DXMESH.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
