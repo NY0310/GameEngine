@@ -24,24 +24,12 @@ namespace NYLibrary
 		FollowCamera(const FollowCamera&) = delete;
 		//	更新
 		void Update() override;
-
-
-
-		//const DirectX::SimpleMath::Vector3& GetEyepos()const { return ; }
 		//プレイヤをセット
 		void SetPlayer(Player* player) { this->player = player; }
 	private:
-		//	追従対象の座標をセット
-		void SetTarGetTrans(const D3DXVECTOR3& tarGetTrans);
-		//	追従対象の回転角をセット
-		void SetTargetAngle(float targetAngle);
 		//自クラスインスタンス
 		static  std::unique_ptr<FollowCamera> camera;
 	protected:
-		//	自機の座標
-		D3DXVECTOR3 targetTrans;
-		//	追従対象の回転角
-		float targetAngle;
 		//	FPSフラグ
 		bool isFPS;
 		Player* player;

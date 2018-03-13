@@ -21,7 +21,7 @@ namespace Scene
 	{
 	public:
 		//コンストラクタ
-		SceneManager() = default;
+		SceneManager() {};
 		//デストラクタ
 		~SceneManager() = default;
 		//コピーコンストラクタ禁止

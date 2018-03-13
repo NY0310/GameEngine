@@ -8,15 +8,16 @@ using namespace NYLibrary;
 void Map::Initialize()
 {
 	attributeMap = make_shared<AttributeMap>();
-	aStar = make_unique<AStar>();
-	aStar->SetAttributeMap(attributeMap);
-	aStar->Initialize();
+	//aStar = make_unique<AStar>();
+	//aStar->SetAttributeMap(attributeMap);
+	//aStar->Initialize();
 	//マップデータ読み込み
 	attributeMap->ReadCSV("Resources/CSV/stage.csv");
 	//マップのサイズを変更する
 	MapObjResize(attributeMap->GetMapHight(), attributeMap->GetMapWidth());
 	//マップデータからオブジェクトを生成
 	CreateMap();
+	int a = 0;
 }
 
 void Map::Render()

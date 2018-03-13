@@ -5,7 +5,6 @@
 /// </summary>
 #pragma once
 #include "Node.h"
-#include "../../MatrixObject/MatrixObject.h"
 
 //
 //namespace gameobject {
@@ -20,8 +19,8 @@ namespace NYLibrary
 	{
 	public:
 		//explicit GameObjectNode(tInterface>&& gameobject);
-
-		RootGameObjectNode& operator=(const RootGameObjectNode&) = delete;
+		RootGameObjectNode() {}
+		//RootGameObjectNode& operator=(const RootGameObjectNode&) = delete;
 
 		~RootGameObjectNode() = default;
 		//初期化
@@ -43,7 +42,7 @@ namespace NYLibrary
 
 	private:
 		//子供を追加し親子関係を構築する
-		void CreateAddChild()override {};
+		void CreateAddChild()override {}
 		//初期化
 		void Initialize()override {}
 		//更新
@@ -63,7 +62,7 @@ namespace NYLibrary
 
 		~GameObjectNodeEmpty() = default;
 		//子供を追加し親子関係を構築する
-		void CreateAddChild()override {};
+		void CreateAddChild()override {}
 		//初期化
 		void Initialize()override {}
 		//更新
@@ -72,6 +71,14 @@ namespace NYLibrary
 		void Render()override {}
 		//終了
 		void Finalize()override {}
+		/// <summary>
+		/// ノードを複製する(再起関数)
+		/// </summary>
+		/// <returns>複製したノード</returns>
+		std::shared_ptr<NodeAbstract> Clone()override;
+
+	private:
+
 		void LoopCreateAddChild()override;
 		//初期化
 		void LoopInitialize()override;
@@ -82,17 +89,9 @@ namespace NYLibrary
 		//終了
 		void LoopFinalize()override;
 
-		/// <summary>
-		/// ノードを複製する(再起関数)
-		/// </summary>
-		/// <returns>複製したノード</returns>
-		std::shared_ptr<NodeAbstract> Clone()override;
-
-	private:
-
 	};
 
-	class GameObjectNode : public NYLibrary::GameObjectNodeEmpty,public NYLibrary::MatrixObject
+	class GameObjectNode : public NYLibrary::GameObjectNodeEmpty
 	{
 	public:
 		GameObjectNode() {}

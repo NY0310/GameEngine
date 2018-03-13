@@ -61,7 +61,7 @@ namespace NYLibrary
 
 	class WorldMatrixOrderFactory {
 	public:
-		std::unique_ptr<WorldMatrixOrder> Set(WorldMatrixOrder::ORDER ORDER) {
+		std::weak_ptr<WorldMatrixOrder> Set(WorldMatrixOrder::ORDER ORDER) {
 			switch (ORDER)
 			{
 			case WorldMatrixOrder::ORDER::SCALEM_ROTOMAT_TRANSMAT:
@@ -85,10 +85,10 @@ namespace NYLibrary
 			default:
 				break;
 			}
-			return move(order);
+			return order;
 		}
 	private:
-		std::unique_ptr<WorldMatrixOrder> order;
+		std::shared_ptr<WorldMatrixOrder> order;
 	};
 
 
@@ -191,8 +191,6 @@ namespace NYLibrary
 		const D3DXMATRIX& GetTransferMatrix() { return this->transferMatrix; }
 		//回転行列取得
 		const D3DXMATRIX& GetRotationMatrix() { return this->rotationMatrix; }
-
-		void SetOrder(std::unique_ptr<WorldMatrixOrder>& order) { this->order = std::move(order); }
 		void ChangeOrder(WorldMatrixOrder::ORDER order);//ワールド行列の掛け算を入れ替える
 
 	private:
@@ -214,12 +212,10 @@ namespace NYLibrary
 		D3DXMATRIX scaleMatrix;//スケール行列
 		D3DXMATRIX rotationMatrix;//回転行列
 		D3DXMATRIX wvp;//ワールドビュープロジェクション行列
-		bool IsUseQuternion = false;//クォータニオンを使用するか
+		bool IsUseQuternion;//クォータニオンを使用するか
 		// ワールド行列の掛け算順序(ファクトリーメゾット)
-		std::unique_ptr<WorldMatrixOrder> order;
+		std::weak_ptr<WorldMatrixOrder> order;
 		//ワールド行列の掛け算順序ファクトリー
-		WorldMatrixOrderFactory worldMatrixOrderFactory;
-
-
+		WorldMatrixOrderFactory* worldMatrixOrderFactory;
 	};
 };

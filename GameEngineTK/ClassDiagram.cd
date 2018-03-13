@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Game" Collapsed="true">
+    <Position X="40.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAwAAAAAAgQSARAAAgAAAECBAAiAAAACAJACBABIQAQ=</HashCode>
+      <FileName>Source\Game\Game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Character" Collapsed="true">
+    <Position X="22.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAgKAA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Character.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="17.5" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAARAAEAAABQAAAAAAAAEAAAAAgAAAEAAgAQAAABA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Player\MainPlayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerRun" Collapsed="true">
+    <Position X="4.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAQAAAAAAAAABAEAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Player\State\PlayerRun.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerState" Collapsed="true">
+    <Position X="7" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAIABAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Player\State\PlayerState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerStop" Collapsed="true">
+    <Position X="7" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAQAAAAAAAAABAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Player\State\PlayerStop.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerWalk" Collapsed="true">
+    <Position X="9.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAQAAAAAAAAABAEAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Enemy" Collapsed="true">
+    <Position X="15.25" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Scene\GameScene\Charactor\Enemy\Enemy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InkObj2" Collapsed="true">
+    <Position X="33.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgADAgIAAUAAEACAAQQAAIADBQAAABAAAAAAAgA=</HashCode>
+      <FileName>Source\PaintAsset\InkParticle\InkObj2.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InkParticle" Collapsed="true">
+    <Position X="4" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAgAAAAIsABhAIAAAAAAAABEAWAAAAAgAAAAAAA=</HashCode>
+      <FileName>Source\PaintAsset\InkParticle\InkParticle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InkParticleManager" Collapsed="true">
+    <Position X="10.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DiQIAAAAAAAEBQBBAAAAYAAAAABAAgEAABAgAAAEgAQ=</HashCode>
+      <FileName>Source\PaintAsset\InkParticle\InkParticle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aim" Collapsed="true">
+    <Position X="31" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAQAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\PaintAsset\PaintGun\Aim.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PaintGun" Collapsed="true">
+    <Position X="19.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAAAAAAAARAQAAAAAAABEAAAAAgAAAABAAABgBAAA=</HashCode>
+      <FileName>Source\PaintAsset\PaintGun\PaintGun.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InkTank" Collapsed="true">
+    <Position X="35.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAAAAAAAAAwAAAAAAABAAAAAAAAKAgAAAAAAAAAA=</HashCode>
+      <FileName>Source\PaintAsset\PaintGun\PaintGun.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Paint" Collapsed="true">
+    <Position X="40.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EEIEAJGCAEAAgAACIAgEAAAGAAAAEgABARAgCAAIAQA=</HashCode>
+      <FileName>Source\PaintAsset\PaintSystem\Paint.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PaintObj" Collapsed="true">
+    <Position X="13" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAACAAAAgCgAEAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Source\PaintAsset\PaintSystem\PaintObj.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PaintCollision" Collapsed="true">
+    <Position X="33.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAADAgAAAAAAAEAAAQUQBAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Source\PaintAsset\PaintCollision\PaintCollision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DX::StepTimer" Collapsed="true">
+    <Position X="37" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQEQAAAAQEQAABQEAIAIAAIAABQCAAgCAwBQJAAwAA=</HashCode>
+      <FileName>Source\Game\StepTimer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Obj" Collapsed="true">
+    <Position X="14.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAoAjAoIAgUACECCAIQAACoArRwIAYBACEAjAAgA=</HashCode>
+      <FileName>Source\NYLibrary\Obj\Obj.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::RootGameObjectNode" Collapsed="true">
+    <Position X="5.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAgAAAAAAAAQIAAAAAAAGQAAAAgAAAABAABAAAABA=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Node\GameObjectNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::GameObjectNodeEmpty" Collapsed="true">
+    <Position X="19.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQEgAAAAAAAAQIAAAAAAAGAAAAAgAAAABAgAAAAABA=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Node\GameObjectNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::GameObjectNode" Collapsed="true">
+    <Position X="22" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAEAAAAAAIAAAAQgAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Node\GameObjectNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Leaf" Collapsed="true">
+    <Position X="1.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAEAAAAAIAAAQAQAIAQAAAAAAiCAAAABA=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Node\Leaf.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Node" Collapsed="true">
+    <Position X="17.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAEAQAAAIAACQAQAIAQAAAAAAgAAEAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Node\Node.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::VisitorInterface" Collapsed="true">
+    <Position X="40.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAACAAAAAAAAAAAAAAAAAgAAAAAAE=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Visitor\VisitorInterface.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::NodeAbstract" Collapsed="true">
+    <Position X="16.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BMQAgAAAAAAAEQLEAAIAACWAQAIAwAAAAFAgAQBAABA=</HashCode>
+      <FileName>Source\NYLibrary\SceneGraph\Node\NodeAbstract.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Camera" Collapsed="true">
+    <Position X="6.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQCCQHVQAQAQAAQSABACBCAAAgQBBAAAYABAQQABgA=</HashCode>
+      <FileName>Source\NYLibrary\Camera\Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::DebugCamera" Collapsed="true">
+    <Position X="38.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAIAAAAAAAAAAQAAAAAAAQABEYAAAAAAgQBAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\Camera\DebugCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::FollowCamera" Collapsed="true">
+    <Position X="6.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAgAAABAAAAAAAEAABAAAAAABAACgAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\Camera\FollowCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::KeyboardUtil" Collapsed="true">
+    <Position X="37" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gBQAAAAAAAABAAAAAAABCAAABAAAAAAIAAAAAABAAAg=</HashCode>
+      <FileName>Source\NYLibrary\Input\KeyboardUtil.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::MouseRay" Collapsed="true">
+    <Position X="35.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAEAAAAAAAAAAAgABAAAAACAAAAAAAAgAAA=</HashCode>
+      <FileName>Source\NYLibrary\Input\MouseRay.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::MouseUtil" Collapsed="true">
+    <Position X="37" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iAQQEAAAIAABAgBAIAAIAAgABAAAAAAIYAAAAAhAKAg=</HashCode>
+      <FileName>Source\NYLibrary\Input\MouseUtil.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Uncopyable" Collapsed="true">
+    <Position X="3.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAgAAAAEAA=</HashCode>
+      <FileName>Source\NYLibrary\Device\Device.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Devices" Collapsed="true">
+    <Position X="3.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>WUCCCEACBgAEAgREVQAAIEAAQCACAMAAQgARAgAAABE=</HashCode>
+      <FileName>Source\NYLibrary\Device\Device.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Sprite" Collapsed="true">
+    <Position X="31" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAUCgAFAAAAAQAAkAAAAIBAAJAAAigQohAgAAAAAA4=</HashCode>
+      <FileName>Source\NYLibrary\Sprite\Sprite.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::WorldMatrixOrder" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::SCALEM_ROTOMAT_TRANSMAT" Collapsed="true">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::SCALEM_TRANSMAT_ROTOMAT" Collapsed="true">
+    <Position X="3.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::TRANSMAT_ROTOMAT_SCALEM" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::TRANSMAT_SCALEM_ROTOMAT" Collapsed="true">
+    <Position X="7.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::ROTOMAT_TRANSMAT_SCALEM" Collapsed="true">
+    <Position X="10" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::ROTOMAT_SCALEM_TRANSMAT" Collapsed="true">
+    <Position X="12.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::WorldMatrixOrderFactory" Collapsed="true">
+    <Position X="33.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::MatrixObject" Collapsed="true">
+    <Position X="16.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAhgBECCACAAgCBAAABEDASEAEggQICgBAgCAAAQ=</HashCode>
+      <FileName>Source\NYLibrary\MatrixObject\MatrixObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::MY_HIERARCHY" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="38.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAIAAAAAAAAAAQAAAAABAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="NYLibrary::D3DXPARSER" Collapsed="true">
+    <Position X="37" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAkAAAEEAAAgAQYUQAIBAAAgANAkAAECAAQGAgJAQA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::SkinMesh" Collapsed="true">
+    <Position X="17.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAgBBACAUwwACkABAAQEkhAARgAAKABAAUABAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Math" Collapsed="true">
+    <Position X="33.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACBAAABBAAAAAAAAAAAAABEGAhAAABBAAAUAAAAgAAA=</HashCode>
+      <FileName>Source\NYLibrary\Math\Math.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Sphere" Collapsed="true">
+    <Position X="0.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Source\NYLibrary\Collision\Collision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::InkSphere" Collapsed="true">
+    <Position X="0.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\Collision\Collision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Segment" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\Collision\Collision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::InkSegment" Collapsed="true">
+    <Position X="0.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAABAAA=</HashCode>
+      <FileName>Source\NYLibrary\Collision\Collision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Triangle" Collapsed="true">
+    <Position X="38.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAACIAABAAAACAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\Collision\Collision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::AStar" Collapsed="true">
+    <Position X="33.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAGACAAAAAgAQgiIAAAAAEABgAggAAAIIAAAAhAAAA=</HashCode>
+      <FileName>Source\NYLibrary\AStar\AStar.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::AttributeMap" Collapsed="true">
+    <Position X="35.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAQQBgAAAIgAAAAAABAAEAgSAAQAACAIAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\AStar\AttributeMap.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Map" Collapsed="true">
+    <Position X="8.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAQAACAAAAqAAAAAAAAAAAJAoAAAAEAA=</HashCode>
+      <FileName>Source\NYLibrary\AStar\Map.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::MapNode" Collapsed="true">
+    <Position X="40.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQcCQAAAACAEAAAAIAAAACQQAAAAIAIAAEgAgQQQAgQ=</HashCode>
+      <FileName>Source\NYLibrary\AStar\MapNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::Light" Collapsed="true">
+    <Position X="38.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAgAAAAAAAAAAAQAhIABEAAA=</HashCode>
+      <FileName>Source\NYLibrary\Light\Light.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NYLibrary::SimpleTextures" Collapsed="true">
+    <Position X="35.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAIYQCAAAgAQAAEAAAAAEYACAAgAIAAAAMAAgCEAM=</HashCode>
+      <FileName>Source\NYLibrary\SimpleTexture\SimpleTextures.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene::SceneAbstract" Collapsed="true">
+    <Position X="25.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAEAAAAQAAAAAAAAAAAIAAgAACABAgAAAAAIA=</HashCode>
+      <FileName>Source\Scene\Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene::NullScene" Collapsed="true">
+    <Position X="26.5" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQAAAAAAAAAAQAAAAAAAAAAAAAAgAAAABAgAAAAAAA=</HashCode>
+      <FileName>Source\Scene\Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene::SceneManager" Collapsed="true">
+    <Position X="6.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAoAAAAAAAAAEAAAgAAAAAAQ=</HashCode>
+      <FileName>Source\Scene\SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene::GameScene" Collapsed="true">
+    <Position X="28.75" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAEAAAAAAAAQAAAAAAAAEAAIAAgAABABAgAAAAAAA=</HashCode>
+      <FileName>Source\Scene\GameScene\GameScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene::TitleScene" Collapsed="true">
+    <Position X="22" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQAAAAAAAAAAAAAAgIAAABAgAAAAAAA=</HashCode>
+      <FileName>Source\Scene\TitleScene\TitleScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene::ResultScene" Collapsed="true">
+    <Position X="24.25" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQAAAAAAAAAAAAAAgAAAABAgAAAAAgA=</HashCode>
+      <FileName>Source\Scene\ResultScene\ResultScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="NYLibrary::LightAndEyeGlobal" Collapsed="true">
+    <Position X="38.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAABAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::SkinMeshGlobal" Collapsed="true">
+    <Position X="35.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAEAABAAAAAAABAAQA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::BoneGlobal" Collapsed="true">
+    <Position X="35.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::SkinMaterial" Collapsed="true">
+    <Position X="33.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAIAAAAACAEAAAAAAAAAAAAAAQQAgAAAAACAAABAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::SkinVertex" Collapsed="true">
+    <Position X="37" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgJAABAAAAAAAAAAAAAAAAgE=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::Bone" Collapsed="true">
+    <Position X="33.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAABAAAAAAAAAgAAAEAAAAAAIBAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::DerivedFrame" Collapsed="true">
+    <Position X="37" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="NYLibrary::MYMESHCONTAINER" Collapsed="true">
+    <Position X="40.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAQAAAQAAAAAACAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Source\NYLibrary\SkinMeshAnimation\SkinMesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="Scene::SceneKind" Collapsed="true">
+    <Position X="33.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAQAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Scene\Scene.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>

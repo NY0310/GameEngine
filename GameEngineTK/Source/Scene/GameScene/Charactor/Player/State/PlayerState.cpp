@@ -41,7 +41,7 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	float b = static_cast<float>(pos.y) / hight;
 	D3DXVECTOR2 c = Math::ChangeRegularDevice(D3DXVECTOR2(a,b));
 	c.x *= -1;
-	c*= 90;
+	c*= 45.0f;
 	Rotation(player,c);
 
 }

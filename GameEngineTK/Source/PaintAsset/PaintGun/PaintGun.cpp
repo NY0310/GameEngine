@@ -10,6 +10,8 @@ void PaintGun::CreateAddChild()
 {
 	aim = make_shared<Aim>();
 	AddChild(aim);
+	inkParticleManager = make_shared<InkParticleManager>();
+	AddChild(inkParticleManager);
 }
 
 /// <summary>
@@ -17,8 +19,6 @@ void PaintGun::CreateAddChild()
 /// </summary>
 void PaintGun::Initialize()
 {
-	inkParticleManager = make_shared<InkParticleManager>();
-	inkParticleManager->Initialize();
 	auto& devices = Devices::Get();
 }
 
@@ -29,7 +29,6 @@ void PaintGun::Update()
 {
 	AimUpdate();
 	Emit();
-	inkParticleManager->Update();
 }
 
 /// <summary>
@@ -37,7 +36,6 @@ void PaintGun::Update()
 /// </summary>
 void PaintGun::Render()
 {
-	inkParticleManager->Render();
 }
 
 /// <summary>
@@ -45,37 +43,35 @@ void PaintGun::Render()
 /// </summary>
 void PaintGun::Emit()
 {
-	MouseRay* mouseRay = MouseRay::GetInstance();
+	//MouseRay* mouseRay = MouseRay::GetInstance();
 
-	Segment* segment = mouseRay->RayCreate();
-	static int a = 0;
-	D3DXVECTOR4 color[7]{
-		Colors::Blue,
-		Colors::Red,
-		Colors::Green,
-		Colors::Yellow,
-		Colors::Purple,
-		Colors::Aqua,
-		Colors::Orange
-	};
-	if (segment)
-	{
-		a++;
-		if (a == 7)
-		{
-			a = 0;
-		}
-		D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start - segment->End);
-		D3DXVec3Normalize(&mouseVec, &mouseVec);
-		const float longsize = 10;
-		mouseVec *= longsize;
-		MouseUtil* mouse = MouseUtil::GetInstance();
-		if (mouse->IsPressed(MouseUtil::Left))
-		inkParticleManager->Shoot(emitPosition, mouseVec, color[a]);
+	//static int a = 0;
+	//D3DXVECTOR4 color[7]{
+	//	Colors::Blue,
+	//	Colors::Red,
+	//	Colors::Green,
+	//	Colors::Yellow,
+	//	Colors::Purple,
+	//	Colors::Aqua,
+	//	Colors::Orange
+	//};
+	//	a++;
+	//	if (a == 7)
+	//	{
+	//		a = 0;
+	//	}
 
-		delete segment;
-	}
+	//	//親の情報を取得(プレイヤー)
+	//	std::weak_ptr<NodeAbstract> player = Getparent();
+	//	emitPosition = player._Get()->GetPosition();
 
+	//	D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start - segment->End);
+	//	D3DXVec3Normalize(&mouseVec, &mouseVec);
+	//	const float longsize = 10;
+	//	mouseVec *= longsize;
+	//	MouseUtil* mouse = MouseUtil::GetInstance();
+	//	if (mouse->IsPressed(MouseUtil::Left))
+	//	inkParticleManager->Shoot(emitPosition, mouseVec, color[a]);
 }
 
 /// <summary>

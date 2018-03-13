@@ -9,7 +9,7 @@
 
 namespace NYLibrary
 {
-	class Node : public virtual NodeAbstract,public std::enable_shared_from_this<Node>
+	class Node :virtual public NodeAbstract,public std::enable_shared_from_this<Node>
 	{
 	public:
 		/// <summary>
