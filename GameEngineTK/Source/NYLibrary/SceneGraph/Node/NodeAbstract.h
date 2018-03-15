@@ -12,12 +12,12 @@
 
 namespace NYLibrary
 {
-	class Object {
+	class Object : public MatrixObject{
 
 	};
 
 	class VisitorInterface;
-	class NodeAbstract: public MatrixObject
+	class NodeAbstract: public Object
 	{
 	public:
 		//ノードのリスト

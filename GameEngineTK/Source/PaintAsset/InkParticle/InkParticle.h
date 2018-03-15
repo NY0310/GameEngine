@@ -14,7 +14,7 @@
 /// <summary>
 /// インク一滴分
 /// </summary>
-class InkParticle : public NYLibrary::RootGameObjectNode
+class InkParticle : public NYLibrary::GameObjectNode
 {
 public:
 	//コンストラクタ
@@ -36,29 +36,29 @@ public:
 		return colisitionSegment.get();
 	}
 	const D3DXMATRIX& GetWVP() {
-		auto a =  matrixObject->GetWVP();
+		auto a =  GetWVP();
 		return a;
 	}
 private:
 	//移動ベクトル
 	D3DXVECTOR3 direction;
 	//速度	
-	static const float speed;
-	//重力
-	static const float gravity;
+	static const float SPEED;
 	//表示してからの時間
 	int birthFrame;
 	//動くか
 	bool isValidity;
 	//当たり判定用の線
 	std::unique_ptr<NYLibrary::InkSegment> colisitionSegment;
-	//行列管理
-	std::unique_ptr<NYLibrary::MatrixObject> matrixObject;
+	//落下速度
+	static const float GRAVITY;
 public:
 	// コピーコンストラクタ禁止
 	InkParticle(const InkParticle&) = delete;
 	// 代入禁止
 	InkParticle& operator=(const InkParticle&) = delete;
+	//クォータニオン作成
+	void CalcQuaternion();
 };
 
 /// <summary>
@@ -101,12 +101,12 @@ private:
 	//インターバル更新処理
 	void IntervalUpdate();
 	//方向をずらす
-	D3DXVECTOR3 ShiftDirection(D3DXVECTOR3 direction);
+	D3DXVECTOR3 ShiftDirection(D3DXVECTOR3& direction);
 	//float一つ分のずらしを算出
 	float RandShiftDirection();
 private:
 	//方向のずらし最大量
-	static const int MAX_SHIFT_DIRECTION = 3;
+	static const int MAX_SHIFT_DIRECTION = 100;
 	//インクのパーティクル
 	std::shared_ptr<InkParticle> inkParticle[MAX_PARTICLE];
 	//インクの描画者

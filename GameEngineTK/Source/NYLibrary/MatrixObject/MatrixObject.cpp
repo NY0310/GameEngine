@@ -6,9 +6,15 @@ using namespace NYLibrary;
 
 MatrixObject::MatrixObject()
 {
+	MatrixInitialize();
+}
+
+
+void NYLibrary::MatrixObject::MatrixInitialize()
+{
 	IsUseQuternion = true;
 	transfer = D3DXVECTOR3(0, 0, 0);
-	scale = D3DXVECTOR3(1,1,1);
+	scale = D3DXVECTOR3(1, 1, 1);
 	eulerAangle = D3DXVECTOR3(0, 0, 0);
 	quaternion = D3DXQUATERNION(0, 0, 0, 0);
 	D3DXMatrixIdentity(&worldMatrix);//ワールド行列
@@ -19,6 +25,7 @@ MatrixObject::MatrixObject()
 	worldMatrixOrderFactory = new WorldMatrixOrderFactory();
 	//ワールド行列の掛け算順序ファクトリーの初期化
 	order = worldMatrixOrderFactory->Set(WorldMatrixOrder::ORDER::SCALEM_ROTOMAT_TRANSMAT);
+
 }
 
 
@@ -31,6 +38,7 @@ void MatrixObject::ChangeOrder(WorldMatrixOrder::ORDER order)
 	//this->order.release();
 	this->order = worldMatrixOrderFactory->Set(order);
 }
+
 
 
 /// <summary>

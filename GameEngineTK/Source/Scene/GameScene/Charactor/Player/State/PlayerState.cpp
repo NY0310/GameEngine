@@ -53,12 +53,12 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 /// <param name="speed">移動速度</param>
 void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 {
-	//	移動ベクトル
+	//	移動ベクトルw
 	D3DXVECTOR3 moveV(speed);
 	//	移動ベクトルを自機の角度分回転させる
 	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());	
 	//	自機の座標を移動
-	player->SetPosition(player->GetPosition() +  speed);
+	player->SetPosition(player->GetPosition() + moveV);
 
 }
 

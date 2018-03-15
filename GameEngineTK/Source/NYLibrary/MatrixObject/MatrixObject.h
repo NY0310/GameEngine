@@ -100,6 +100,7 @@ namespace NYLibrary
 		virtual ~MatrixObject() = default;
 
 
+		void MatrixInitialize();
 		//ƒ[ƒ‹ƒhs—ñì¬
 		void Calc();
 

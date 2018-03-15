@@ -24,7 +24,7 @@ namespace NYLibrary
 		//代入禁止
 		VisitorInterface& operator=(const VisitorInterface&) = delete;
 		//ノード専用の検索関数
-		virtual void Visit(std::shared_ptr<NYLibrary::Node> node) = 0;
+		virtual void Visit(std::shared_ptr<NYLibrary::NodeAbstract> node) = 0;
 		//リーフ専用の検索関数
 		virtual void Visit(std::shared_ptr<NYLibrary::Leaf> leaf) = 0;
 

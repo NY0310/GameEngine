@@ -29,7 +29,7 @@ void Player::Initialize()
 	SkinMesh::Initialize();
 	CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
 	SetPosition(D3DXVECTOR3(0, 0, 0));
-	SetScale(D3DXVECTOR3(10, 10, 10));
+	SetScale(D3DXVECTOR3(5, 5, 5));
 	//自身のステート
 	playerState.reset(PlayerWalk::GetInstance());
 	FollowCamera* camera = FollowCamera::GetInstance();

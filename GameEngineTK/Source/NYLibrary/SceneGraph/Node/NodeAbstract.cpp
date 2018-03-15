@@ -14,7 +14,7 @@ NodeAbstract::NodeAbstract()
 
 /// <summary>
 /// ノードの数を取得する
-/// </summary>
+/// </summary>																																																																																																																																																																																wde
 /// <returns>ノードの数</returns>
 int NodeAbstract::GetSize()
 {

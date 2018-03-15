@@ -14,11 +14,15 @@
 
 namespace NYLibrary
 {
-
+	/// <summary>
+	///	ルートノード
+	/// このクラスがプロジェクトのアダムとデネブになるように
+	/// 子供を作ってください。
+	/// そうすればこのクラスのメンバを呼び出すと全てのクラスのメンバが呼び出されます。
+	/// </summary>
 	class RootGameObjectNode :  public Node
 	{
 	public:
-		//explicit GameObjectNode(tInterface>&& gameobject);
 		RootGameObjectNode() {}
 		//RootGameObjectNode& operator=(const RootGameObjectNode&) = delete;
 
@@ -33,12 +37,8 @@ namespace NYLibrary
 		void LoopRender()override;
 		//終了
 		void LoopFinalize()override;
-
-		/// <summary>
-		/// ノードを複製する(再起関数)
-		/// </summary>
-		/// <returns>複製したノード</returns>
-		std::shared_ptr<NodeAbstract> Clone()override;
+		// ノードを複製する(再起関数)
+		std::shared_ptr<NodeAbstract> Clone();
 
 	private:
 		//子供を追加し親子関係を構築する
@@ -53,10 +53,16 @@ namespace NYLibrary
 		void Finalize()override {}
 
 	};
-	class GameObjectNodeEmpty : public NYLibrary::Node
+
+
+	/// <summary>
+	/// ゲームオブジェクトノードエンプティー
+	/// このクラスは空オブジェクトに使用してください
+	/// 座標、行列機能が備わっていません。
+	/// </summary>
+	class GameObjectNodeEmpty : public Node
 	{
 	public:
-		//explicit GameObjectNode();
 		GameObjectNodeEmpty() {}
 		GameObjectNodeEmpty& operator=(const GameObjectNodeEmpty&) = delete;
 
@@ -71,42 +77,34 @@ namespace NYLibrary
 		void Render()override {}
 		//終了
 		void Finalize()override {}
-		/// <summary>
-		/// ノードを複製する(再起関数)
-		/// </summary>
-		/// <returns>複製したノード</returns>
-		std::shared_ptr<NodeAbstract> Clone()override;
-
+		// ノードを複製する(再起関数)
+		std::shared_ptr<NodeAbstract> Clone()final;
 	private:
-
-		void LoopCreateAddChild()override;
+		void LoopCreateAddChild()final;
 		//初期化
-		void LoopInitialize()override;
+		void LoopInitialize()final;
 		//更新
 		virtual void LoopUpdate()override;
 		//描画
-		void LoopRender()override;
+		void LoopRender()final;
 		//終了
-		void LoopFinalize()override;
+		void LoopFinalize()final;
 
 	};
 
-	class GameObjectNode : public NYLibrary::GameObjectNodeEmpty
+	/// <summary>
+	/// ゲームオブジェクトノード
+	/// 座標、行列機能完備。毎フレーム行列計算します。
+	/// </summary>
+	class GameObjectNode : public GameObjectNodeEmpty
 	{
 	public:
 		GameObjectNode() {}
-		//explicit GameObjectNode();
-
 		GameObjectNode& operator=(const GameObjectNode&) = delete;
 
 		~GameObjectNode() = default;
-		//子供を追加し親子関係を構築する
-		void CreateAddChild()override {};
-		//更新
-		void LoopUpdate()override;
-
 	private:
+		void LoopUpdate()final;
 
 	};
-
 };

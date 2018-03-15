@@ -7,7 +7,7 @@ using namespace NYLibrary;
 
 
 //	静的メンバ変数の初期化
-const float FollowCamera::CAMERA_DISTANCE = 5.0f;
+const float FollowCamera::CAMERA_DISTANCE = 3.0f;
 unique_ptr<FollowCamera> FollowCamera::camera ;
 
 FollowCamera* FollowCamera::GetInstance()
@@ -51,9 +51,9 @@ void FollowCamera::Update()
 	else
 	{//	TPSカメラの処理
 	 //	参照点座標を計算
-		refpos = player->GetPosition() +D3DXVECTOR3(0, 2, 0);
+		refpos = player->GetPosition() + D3DXVECTOR3(0, 1.4, 0);
 		//	自機からカメラ座標への差分
-		D3DXVECTOR3 cameraV(0, 0, CAMERA_DISTANCE);
+		D3DXVECTOR3 cameraV(0, 1, CAMERA_DISTANCE);
 		//	自機の後ろに回り込むための回転行列
 		D3DXMATRIX rotmat;
 		//D3DXMatrixRotationY(&rotmat,targetAngle);

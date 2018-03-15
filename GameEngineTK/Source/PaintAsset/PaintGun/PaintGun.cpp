@@ -45,33 +45,44 @@ void PaintGun::Emit()
 {
 	//MouseRay* mouseRay = MouseRay::GetInstance();
 
-	//static int a = 0;
-	//D3DXVECTOR4 color[7]{
-	//	Colors::Blue,
-	//	Colors::Red,
-	//	Colors::Green,
-	//	Colors::Yellow,
-	//	Colors::Purple,
-	//	Colors::Aqua,
-	//	Colors::Orange
-	//};
-	//	a++;
-	//	if (a == 7)
-	//	{
-	//		a = 0;
-	//	}
+	static int a = 0;
+	D3DXVECTOR4 color[7]{
+		Colors::Blue,
+		Colors::Red,
+		Colors::Green,
+		Colors::Yellow,
+		Colors::Purple,
+		Colors::Aqua,
+		Colors::Orange
+	};
+		a++;
+		if (a == 7)
+		{
+			a = 0;
+		}
 
-	//	//親の情報を取得(プレイヤー)
-	//	std::weak_ptr<NodeAbstract> player = Getparent();
-	//	emitPosition = player._Get()->GetPosition();
+		//親の情報を取得(プレイヤー)
+		Object* player = Getparent()._Get();
+		const D3DXVECTOR3 shitGunPosition(0, 0.5f, -0.2f);
+		emitPosition = player->GetPosition() + shitGunPosition ;
+		////	移動ベクトルw
+		D3DXVECTOR3 moveV(0,0,-1);
 
-	//	D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start - segment->End);
-	//	D3DXVec3Normalize(&mouseVec, &mouseVec);
-	//	const float longsize = 10;
-	//	mouseVec *= longsize;
-	//	MouseUtil* mouse = MouseUtil::GetInstance();
-	//	if (mouse->IsPressed(MouseUtil::Left))
-	//	inkParticleManager->Shoot(emitPosition, mouseVec, color[a]);
+		//移動ベクトルを自機の角度分回転させる
+		D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());	
+
+		////D3DXQUATERNION playerQuaternion = player._Get()->GetQuaternion();
+		/// 
+		MouseUtil* mouse = MouseUtil::GetInstance();
+		if (mouse->IsPressed(MouseUtil::Left))
+		inkParticleManager->Shoot(emitPosition, moveV, color[a]);
+
+		//D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start - segment->End);
+		//D3DXVec3Normalize(&mouseVec, &mouseVec);
+		//const float longsize = 10;
+		//mouseVec *= longsize;
+		//MouseUtil* mouse = MouseUtil::GetInstance();
+		//if (mouse->IsPressed(MouseUtil::Left))
 }
 
 /// <summary>

@@ -4,10 +4,10 @@ using namespace std;
 using namespace DirectX::Colors;
 using namespace DirectX::SimpleMath;
 
-//重力
-const float InkParticle::gravity = 0.03f;
 //速度	
-const float InkParticle::speed = 0.1f;
+const float InkParticle::SPEED = 0.5f;
+//落下速度
+const float InkParticle::GRAVITY = 0.01f;
 
 
 /// <summary>
@@ -16,8 +16,7 @@ const float InkParticle::speed = 0.1f;
 InkParticle::InkParticle()
 {
 	colisitionSegment = make_unique<InkSegment>();
-	matrixObject = make_unique<MatrixObject>();
-	matrixObject->SetScale(D3DXVECTOR3(1, 1, 1));
+	SetScale(D3DXVECTOR3(0.4, 0.4, 0.4));
 	birthFrame = 0;
 	isValidity = false;
 }
@@ -40,9 +39,9 @@ InkParticle::~InkParticle()
 void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirection, const D3DXVECTOR4& color,const int index)
 {
 	assert(!isValidity && "このインクは既に有効状態です");
-	matrixObject->SetPosition(position);
+	SetPosition(position);
 	this->direction = nDirection;
-	matrixObject->SetRotation(nDirection);
+	SetRotation(nDirection);
 	colisitionSegment->Color = color;
 	colisitionSegment->index = index;
 	birthFrame = 0;
@@ -57,10 +56,34 @@ void InkParticle::Update()
 	if (isValidity)
 	{
 		birthFrame++;
-		auto position = matrixObject->GetPosition() ;
-		matrixObject->SetPosition(position + direction * speed);
-		matrixObject->Calc();
+		direction.y -= GRAVITY;
+		SetPosition(GetPosition() + direction * SPEED);
+		CalcQuaternion();
 	}
+}
+
+/// <summary>
+/// 進行方向ベクトルに合わせてクォータニオンで回転させる
+/// </summary>
+void InkParticle::CalcQuaternion()
+{
+	//クォータニオン初期化
+	D3DXQUATERNION q(0, 0, 0, 1);
+	//初期進行方向ベクトル
+	D3DXVECTOR3 Zminus(0, 0, -1.0f);
+	//初期ベクトルと現在のベクトルのコサイン値を内積で求める
+	float cosine = D3DXVec3Dot(&Zminus, &direction);
+	//度数からラジアン値に変換
+	float delta = acosf(cosine);
+
+	//初期ベクトルから現在のベクトルへ回す際の回転軸を外積で求める
+	D3DXVECTOR3 axis;
+	D3DXVec3Cross(&axis, &Zminus, &direction);
+	D3DXVec3Normalize(&axis, &axis);
+
+	//指定した回転軸周りに指定ラジアンだけ回すクォータニオンを得る
+	D3DXQuaternionRotationAxis(&q, &axis, delta);
+	SetQuaternion(q);
 }
 
 
@@ -89,15 +112,18 @@ InkParticleManager::~InkParticleManager()
 
 void InkParticleManager::Initialize()
 {
+	//全てのインクを予め生成、子供として登録
 	for (int i = 0; i<MAX_PARTICLE; i++)
 	{
 		inkParticle[i] = make_shared<InkParticle>();
-		inkParticle[i]->Destroy();
 		AddChild(inkParticle[i]);
+		inkParticle[i]->Destroy();
 	}
+
+	//インクオブジェクトのインスタンス生成、初期化
 	renderer = make_unique<InkObj2>();
 	renderer->Initialize();
-	renderer->LoadOBJFile("Resources/OBJ/InkObj2.obj");
+	renderer->LoadOBJFile("Resources/OBJ/InkObj.obj");
 }
 
 
@@ -136,7 +162,7 @@ void InkParticleManager::Shoot(const D3DXVECTOR3 & emitPosition, D3DXVECTOR3 & n
 	}
 
 	ShiftDirection(nDirection);
-	D3DXVec3Normalize(&nDirection,&nDirection);
+	//D3DXVec3Normalize(&nDirection,&nDirection);
 
 	for (int i = 0; i < MAX_PARTICLE; i++)
 	{
@@ -200,8 +226,7 @@ void InkParticleManager::InkDataUpdate()
 		if (inkParticle[i]->IsValidity())
 		{
 			inkdata.color = inkParticle[i]->GetSegment()->Color;
-			auto mat = inkParticle[i]->GetWVP();
-			inkdata.wvp = mat;
+			inkdata.wvp = GetChild(i)->GetWVP();
 			inkParticledata.emplace_back(inkdata);
 		}
 	}
@@ -227,11 +252,10 @@ void InkParticleManager::IntervalUpdate()
 /// </summary>
 /// <param name="direction"></param>
 /// <returns></returns>
-D3DXVECTOR3 InkParticleManager::ShiftDirection(D3DXVECTOR3 direction)
+D3DXVECTOR3 InkParticleManager::ShiftDirection(D3DXVECTOR3& direction)
 {
 	direction.x += RandShiftDirection();
 	direction.y += RandShiftDirection();
-	direction.z += RandShiftDirection();
 	return direction;
 }
 
@@ -241,7 +265,11 @@ D3DXVECTOR3 InkParticleManager::ShiftDirection(D3DXVECTOR3 direction)
 /// <returns>ずらす値</returns>
 float InkParticleManager::RandShiftDirection()
 {
-	return rand() % MAX_SHIFT_DIRECTION / 100;
+	float shift =  static_cast<float>(rand() % MAX_SHIFT_DIRECTION) / 1000;
+	shift /= 2;
+	if (rand() % 2)
+		shift *= -1;
+	return shift;
 }
 
 

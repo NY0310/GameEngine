@@ -21,7 +21,7 @@ void RootGameObjectNode::LoopInitialize()
 	}
 }
 
-void NYLibrary::RootGameObjectNode::LoopCreateAddChild()
+void RootGameObjectNode::LoopCreateAddChild()
 {
 	for (auto& child : children) {
 		child->LoopCreateAddChild();
@@ -79,12 +79,13 @@ shared_ptr<NodeAbstract> RootGameObjectNode::Clone()
 
 
 
-
 /// <summary>
-/// GameObjectNode
-/// 2017/10/13
-/// Yusuke Nakata
+/// 
 /// </summary>
+
+
+
+
 
 void GameObjectNodeEmpty::LoopCreateAddChild()
 {
@@ -102,6 +103,8 @@ void GameObjectNodeEmpty::LoopInitialize()
 	}
 }
 
+
+
 void GameObjectNodeEmpty::LoopUpdate()
 {
 	this->Update();
@@ -110,6 +113,8 @@ void GameObjectNodeEmpty::LoopUpdate()
 	}
 
 }
+
+
 
 void GameObjectNodeEmpty::LoopRender()
 {
@@ -150,7 +155,6 @@ shared_ptr<NodeAbstract>  GameObjectNodeEmpty::Clone()
 
 
 }
-
 
 
 

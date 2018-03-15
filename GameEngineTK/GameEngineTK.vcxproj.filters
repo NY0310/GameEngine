@@ -41,9 +41,6 @@
     <Filter Include="NYLibrary\SkinMeshAnimation">
       <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\Math">
-      <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Collisiton">
       <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
     </Filter>
@@ -100,6 +97,9 @@
     </Filter>
     <Filter Include="PaintAsset\PaintCollisiton">
       <UniqueIdentifier>{14e703cd-cc0b-4c16-9aac-afb61aa13a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\OBJ\Math">
+      <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -212,7 +212,7 @@
       <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Math\Math.h">
-      <Filter>NYLibrary\Math</Filter>
+      <Filter>NYLibrary\OBJ\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\Scene.h">
       <Filter>Scene</Filter>
@@ -352,7 +352,7 @@
       <Filter>NYLibrary\Astar</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Math\Math.cpp">
-      <Filter>NYLibrary\Math</Filter>
+      <Filter>NYLibrary\OBJ\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\Scene.cpp">
       <Filter>Scene</Filter>

@@ -10,7 +10,6 @@ using namespace std;
 using namespace NYLibrary;
 
 Node::Node()
-	:NodeAbstract()
 {
 	children.clear();
 }
@@ -41,7 +40,7 @@ shared_ptr<NodeAbstract> Node::RemoveChild(const shared_ptr<NodeAbstract>& child
 			return node;
 		}
 	}
-	return shared_ptr<Node>(nullptr);
+	return shared_ptr<NodeAbstract>(nullptr);
 
 }
 
@@ -70,4 +69,17 @@ void Node::Count(int& cnt)
 		child->Count(cnt);
 	}
 }
+
+
+/// <summary>
+/// ノードの数を取得する
+/// </summary>
+/// <returns>ノードの数</returns>
+int Node::GetSize()
+{
+	int Cnt = 0;
+	this->Count(Cnt);
+	return Cnt;
+}
+
 

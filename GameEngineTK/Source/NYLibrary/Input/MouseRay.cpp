@@ -30,7 +30,6 @@ Segment* MouseRay::RayCreate()
 {
 	FollowCamera* camera = FollowCamera::GetInstance();
 	MouseUtil* mouse = MouseUtil::GetInstance();
-	mouse->Update();
 	Vector3 pos;
 	int x = mouse->GetPos().x;
 	int y = mouse->GetPos().y;
