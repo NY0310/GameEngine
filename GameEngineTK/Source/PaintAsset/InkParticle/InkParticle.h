@@ -35,10 +35,10 @@ public:
 	NYLibrary::InkSegment* GetSegment() {
 		return colisitionSegment.get();
 	}
-	const D3DXMATRIX& GetWVP() {
-		auto a =  GetWVP();
-		return a;
-	}
+	//const D3DXMATRIX& GetWVP() {
+	//	auto a =  GetWVP();
+	//	return a;
+	//}
 private:
 	//ˆÚ“®ƒxƒNƒgƒ‹
 	D3DXVECTOR3 direction;

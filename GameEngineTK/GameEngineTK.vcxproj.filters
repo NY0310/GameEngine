@@ -101,6 +101,12 @@
     <Filter Include="NYLibrary\OBJ\Math">
       <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NYLibrary\Component">
+      <UniqueIdentifier>{cb46fb5f-8edd-458d-8bc4-633fd5366090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Component\Collider">
+      <UniqueIdentifier>{16d5e639-00c1-42a3-8dcf-178e28210e6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -247,6 +253,18 @@
     <ClInclude Include="Source\NYLibrary\AStar\MapNode.h">
       <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Component.h">
+      <Filter>NYLibrary\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Element.h">
+      <Filter>NYLibrary\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Collider\Collider.h">
+      <Filter>NYLibrary\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Collision\CollisitionManager.h">
+      <Filter>NYLibrary\Collisiton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -383,6 +401,12 @@
     </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp">
       <Filter>PaintAsset\PaintGun</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Component\Collider\Collider.cpp">
+      <Filter>NYLibrary\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Collision\CollisitionManager.cpp">
+      <Filter>NYLibrary\Collisiton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
