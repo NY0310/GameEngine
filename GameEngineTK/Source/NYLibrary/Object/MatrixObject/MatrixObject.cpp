@@ -15,6 +15,7 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 	IsUseQuternion = true;
 	transfer = D3DXVECTOR3(0, 0, 0);
 	scale = D3DXVECTOR3(1, 1, 1);
+	localSize = 0;
 	eulerAangle = D3DXVECTOR3(0, 0, 0);
 	quaternion = D3DXQUATERNION(0, 0, 0, 0);
 	D3DXMatrixIdentity(&worldMatrix);//ÉèÅ[ÉãÉhçsóÒ

@@ -2,10 +2,8 @@
 /// オブジェクトの行列クラス
 /// </summary>
 #pragma once
-//#include <d3d11_1.h>
-//#include <SimpleMath.h>
-#include "../Math/Math.h"
-#include "../Camera/FollowCamera.h"
+#include "../../Camera/FollowCamera.h"
+#include "../Object.h"
 
 namespace NYLibrary
 {
@@ -91,8 +89,7 @@ namespace NYLibrary
 		std::shared_ptr<WorldMatrixOrder> order;
 	};
 
-
-	class MatrixObject {
+	class MatrixObject : virtual public Object{
 	public:
 		//コンストラクタ
 		MatrixObject();
@@ -168,22 +165,6 @@ namespace NYLibrary
 		virtual void SetQuaternion(const D3DXQUATERNION& quaternion) { this->quaternion = quaternion; IsUseQuternion = true; }
 		//クォータニオン取得
 		virtual const D3DXQUATERNION& GetQuaternion() { return  this->quaternion; }
-		////ワールド座標設定
-		//virtual void SetPosition(const DirectX::SimpleMath::Vector3& position) { transfer = Math::VectorToD3DXVECTOR3(position); }
-		////ワールド座標取得
-		//virtual DirectX::SimpleMath::Vector3& GetPositionMath() { return Math::D3DXVECTOR3ToVector(transfer); }
-		////スケール設定
-		//virtual void SetScale(const DirectX::SimpleMath::Vector3& scale) { this->scale = Math::VectorToD3DXVECTOR3(scale); }
-		////スケール取得
-		//virtual const DirectX::SimpleMath::Vector3& GetScaleMath() { return Math::D3DXVECTOR3ToVector(this->scale); }
-		////回転設定
-		//virtual void SetRotation(const DirectX::SimpleMath::Vector3& rotation) { this->eulerAangle = Math::VectorToD3DXVECTOR3(rotation); }
-		////回転取得
-		//virtual const DirectX::SimpleMath::Vector3& GetRotationMath() { return Math::D3DXVECTOR3ToVector(this->eulerAangle); IsUseQuternion = false; }
-		////クォータニオン設定
-		//virtual void SetQuaternion(const DirectX::SimpleMath::Quaternion& quaternion) { this->quaternion = Math::QuaterniontoD3DXQUATERNION(quaternion); IsUseQuternion = true; }
-		////クォータニオン取得
-		//virtual const DirectX::SimpleMath::Quaternion& GetQuaternionMath() { return  Math::D3DXQUATERNIONtoQuaternion(this->quaternion); }
 		//ワールド行列取得
 		const D3DXMATRIX& GetWorldMatrix() { return worldMatrix; }
 		//ワールド・ビュー・プロジェクション行列
@@ -207,6 +188,7 @@ namespace NYLibrary
 		D3DXMATRIX worldMatrix;//ワールド行列
 		D3DXVECTOR3 transfer;//移動量
 		D3DXVECTOR3 scale;//サイズ
+		float localSize;//ローカルでのサイズ
 		D3DXVECTOR3 eulerAangle;//回転
 		D3DXQUATERNION quaternion;//クォータニオン
 		D3DXMATRIX transferMatrix;//移動行列
@@ -214,7 +196,7 @@ namespace NYLibrary
 		D3DXMATRIX rotationMatrix;//回転行列
 		D3DXMATRIX wvp;//ワールドビュープロジェクション行列
 		bool IsUseQuternion;//クォータニオンを使用するか
-		// ワールド行列の掛け算順序(ファクトリーメゾット)
+		// ワールド行列の掛け算順序(ファクトリーメソッド)
 		std::weak_ptr<WorldMatrixOrder> order;
 		//ワールド行列の掛け算順序ファクトリー
 		WorldMatrixOrderFactory* worldMatrixOrderFactory;

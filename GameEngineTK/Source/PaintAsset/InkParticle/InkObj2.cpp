@@ -2,15 +2,9 @@
 
 
 using namespace std;
-std::map < LPSTR, InkObj2::MeshAndTriangles> InkObj2::modelDatas;
 
 InkObj2::InkObj2()
 {
-	// メンバ変数初期化
-	/*matrixObject->SetPosition(D3DXVECTOR3(0, 0, 0));
-	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));
-	matrixObject->SetRotation(D3DXVECTOR3(0, 0, 0));
-}*/
 }
 
 
@@ -141,9 +135,6 @@ HRESULT InkObj2::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 
 	//一時的なメモリ確保（頂点バッファとインデックスバッファ）
 	D3DXVECTOR3* pvVertexBuffer = new D3DXVECTOR3[pMesh->dwNumFace * 3];
-	//Vector3* pvCoord = new Vector3[pMesh->dwNumVert];
-	//Vector3* pvNormal = new Vector3[dwVNCount];
-	//Vector2* pvTexture = new Vector2[dwVTCount];
 	int* piFaceBuffer = new int[pMesh->dwNumFace * 3];//３頂点ポリゴンなので、1フェイス=3頂点(3インデックス)
 
 													  //本読み込み	
@@ -169,26 +160,15 @@ HRESULT InkObj2::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 			pvVertexBuffer[dwVCount].z = z;
 
 			dwVCount++;
+
+
+			Triangle tri;
+			ComputeTriangle((pvVertexBuffer[dwFCount * 3]), pvVertexBuffer[dwFCount * 3 + 1], pvVertexBuffer[dwFCount * 3 + 2], &tri);
+
+
+			triangles.emplace_back(tri);
+
 		}
-		////法線 読み込み
-		//if (strcmp(key, "vn") == 0)
-		//{
-		//	fscanf_s(fp, "%f %f %f", &x, &y, &z);
-		//	pvNormal[dwVNCount].x = -x;//OBJは右手座標系なのでxあるいはｚを反転
-		//	pvNormal[dwVNCount].y = y;
-		//	pvNormal[dwVNCount].z = z;
-		//	dwVNCount++;
-		//}
-
-
-		////テクスチャー座標 読み込み
-		//if (strcmp(key, "vt") == 0)
-		//{
-		//	fscanf_s(fp, "%f %f", &x, &y);
-		//	pvTexture[dwVTCount].x = x;
-		//	pvTexture[dwVTCount].y = 1 - y;//OBJファイルはY成分が逆なので合わせる
-		//	dwVTCount++;
-		//}
 		//フェイス 読み込み→頂点インデックスに
 		if (strcmp(key, "f") == 0)
 		{
@@ -196,16 +176,9 @@ HRESULT InkObj2::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 			piFaceBuffer[dwFCount * 3] = v1 - 1;
 			piFaceBuffer[dwFCount * 3 + 1] = v2 - 1;
 			piFaceBuffer[dwFCount * 3 + 2] = v3 - 1;
-			//pvVertexBuffer[dwFCount * 3].pos = pvCoord[v1 - 1];
-			//pvVertexBuffer[dwFCount * 3].normal = pvNormal[vn1 - 1];
-			//pvVertexBuffer[dwFCount * 3].uv = pvTexture[vt1 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 1].pos = pvCoord[v2 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 1].normal = pvNormal[vn2 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 1].uv = pvTexture[vt2 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 2].pos = pvCoord[v3 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 2].normal = pvNormal[vn3 - 1];
-			//pvVertexBuffer[dwFCount * 3 + 2].uv = pvTexture[vt3 - 1];
 			dwFCount++;
+
+
 		}
 	}
 
@@ -233,15 +206,8 @@ HRESULT InkObj2::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	if (FAILED(device->CreateBuffer(&bd, &InitData, &pMesh->pIndexBuffer)))
 		return FALSE;
 
-	struct MeshAndTriangles data;
-	data.mesh = mesh;
-	//リストにモデル情報を格納する
-	modelDatas[FileName] = data;
 
 	//一時的な入れ物は、もはや不要
-	//delete pvCoord;
-	//delete pvNormal;
-	//delete pvTexture;
 	delete[] pvVertexBuffer;
 	delete[] piFaceBuffer;
 

@@ -12,25 +12,29 @@
 
 namespace NYLibrary
 {
+	class SphereCollider;
+	class InkSphereCollider;
+	class SegmentCollider;
+	class InkSegmentCollider;
+	class TriangleCollider;
+	class TrianglePolygonListCollider;
+
+
+
 	//球
 	class Sphere
 	{
 	public:
 		//中心座標
-		DirectX::SimpleMath::Vector3 Center;
+		D3DXVECTOR3 center;
 		//半径
-		float Radius;
-		//コンストラクタ
-		Sphere() {
-			//デフォルトの背景を1メートルにする
-			Radius = 1.0f;
-		}
+		float radius;
 	};
 
 	class InkSphere : public Sphere
 	{
 	public:
-		DirectX::SimpleMath::Vector4 Color;
+		D3DXVECTOR4 color;
 	};
 
 
@@ -39,15 +43,15 @@ namespace NYLibrary
 	{
 	public:
 		//始点座標
-		DirectX::SimpleMath::Vector3 Start;
+		D3DXVECTOR3 start;
 		//終了地点
-		DirectX::SimpleMath::Vector3 End;
+		D3DXVECTOR3 end;
 	};
 
 	class InkSegment : public Segment
 	{
 	public:
-		D3DXVECTOR4 Color;
+		D3DXVECTOR4 color;
 		int index;
 	};
 
@@ -56,25 +60,30 @@ namespace NYLibrary
 	{
 	public:
 		//頂点の座標
-		DirectX::SimpleMath::Vector3 P0;
-		DirectX::SimpleMath::Vector3 P1;
-		DirectX::SimpleMath::Vector3 P2;
+		D3DXVECTOR3 p0;
+		D3DXVECTOR3 p1;
+		D3DXVECTOR3 p2;
 		//法線ベクトル
-		DirectX::SimpleMath::Vector3 Normal;
+		D3DXVECTOR3 normal;
 		//UV
-		DirectX::SimpleMath::Vector2 Uv0;
-		DirectX::SimpleMath::Vector2 Uv1;
-		DirectX::SimpleMath::Vector2 Uv2;
+		D3DXVECTOR2 uv0;
+		D3DXVECTOR2 uv1;
+		D3DXVECTOR2 uv2;
 
 	private:
 	};
 
 
 	bool CheckSpere2Sphere(const Sphere & sphereA, const Sphere & sphereB);
-	void ComputeTriangle(const DirectX::SimpleMath::Vector3 & a, const DirectX::SimpleMath::Vector3 & b, const DirectX::SimpleMath::Vector3 & _p2, Triangle* c);
+	void ComputeTriangle(const D3DXVECTOR3 & a, const D3DXVECTOR3 & b, const D3DXVECTOR3 & _p2, Triangle* c);
 
-	bool CheckSphere2Triangle(const Sphere & _sphere, const Triangle & _triangle, DirectX::SimpleMath::Vector3 * _inter);
-	bool CheckSegment2Triangle(const Segment& _segment, const Triangle& _triangle, DirectX::SimpleMath::Vector3 *_inter);
-	void ClosestPtPoint2Triangle(const DirectX::SimpleMath::Vector3& _point, const Triangle& _triangle, DirectX::SimpleMath::Vector3* _closest);
-	bool CheckPoint2Triangle(const  DirectX::SimpleMath::Vector3& _point, const Triangle& _triangle);
+	bool CheckSphere2Triangle(const Sphere & _sphere, const Triangle & _triangle, D3DXVECTOR3 * _inter);
+	void ClosestPtPoint2Triangle(const D3DXVECTOR3& _point, const Triangle& _triangle, D3DXVECTOR3* _closest);
+	bool CheckPoint2Triangle(const  D3DXVECTOR3& _point, const Triangle& _triangle);
+	//bool CheckSegment2Triangle(const Segment& _segment, const Triangle& _triangle, D3DXVECTOR3 *_inter);
+
+	//線と全ての三角形ポリゴンの当たり判定	
+	void CheckSegment2AllTriangle(SegmentCollider* segment, TrianglePolygonListCollider* trianglePolygonListCollider);
+	//線と三角形ポリゴンの当たり判定	
+	bool CheckSegment2Triangle(const SegmentCollider* segment, Triangle* triangle,D3DXVECTOR3* inter);
 };

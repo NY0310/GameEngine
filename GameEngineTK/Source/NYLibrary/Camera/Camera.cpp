@@ -128,13 +128,13 @@ void Camera::UnProject(const D3DXVECTOR2& screenPos, Segment* worldSegment)
 	D3DXVec4Transform(&start,&viewStart, &invView);
 	D3DXVec4Transform(&end,&viewEnd, &invView);
 
-	worldSegment->Start.x = start.x;
-	worldSegment->Start.y = start.y;
-	worldSegment->Start.z = start.z;
+	worldSegment->start.x = start.x;
+	worldSegment->start.y = start.y;
+	worldSegment->start.z = start.z;
 
-	worldSegment->End.x = end.x;
-	worldSegment->End.y = end.y;
-	worldSegment->End.z = end.z;
+	worldSegment->end.x = end.x;
+	worldSegment->end.y = end.y;
+	worldSegment->end.z = end.z;
 }
 
 

@@ -6,6 +6,8 @@ namespace NYLibrary
 
 	class Component
 	{
-
+	public:
+		//XV
+		virtual void Update() = 0;
 	};
 };

@@ -35,14 +35,8 @@
     <Filter Include="NYLibrary\Sprite">
       <UniqueIdentifier>{caf5f5ea-ab6d-4c7c-9508-27d65aefae4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\MatrixObject">
-      <UniqueIdentifier>{b5105bc5-d218-41dd-9915-e1ea3bfd6594}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\SkinMeshAnimation">
       <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="NYLibrary\Collisiton">
-      <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
     </Filter>
     <Filter Include="NYLibrary\Astar">
       <UniqueIdentifier>{53a1497a-aea5-4aae-a590-7b32f1068628}</UniqueIdentifier>
@@ -107,6 +101,24 @@
     <Filter Include="NYLibrary\Component\Collider">
       <UniqueIdentifier>{16d5e639-00c1-42a3-8dcf-178e28210e6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NYLibrary\Collision">
+      <UniqueIdentifier>{03ed9fe5-897b-4b06-9e64-62a84601eafb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Object">
+      <UniqueIdentifier>{8053fb38-de89-46ea-adfc-78b161c62d7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Object\MatrixObject">
+      <UniqueIdentifier>{b5105bc5-d218-41dd-9915-e1ea3bfd6594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Object\LocalObject">
+      <UniqueIdentifier>{42f79860-f8d9-433f-bebd-847b24f8325b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Object\ColorObject">
+      <UniqueIdentifier>{2e08f7bb-720d-4389-a376-4c48edcbc8cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Component\Collider\TrianglePolygonListCollider">
+      <UniqueIdentifier>{398fc651-71b6-4471-9f25-b0810dd57123}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -158,7 +170,7 @@
       <Filter>NYLibrary\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Collision\Collision.h">
-      <Filter>NYLibrary\Collisiton</Filter>
+      <Filter>NYLibrary\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Camera\Camera.h">
       <Filter>NYLibrary\Camera</Filter>
@@ -226,9 +238,6 @@
     <ClInclude Include="Source\Scene\SceneManager.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\NYLibrary\MatrixObject\MatrixObject.h">
-      <Filter>NYLibrary\MatrixObject</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h">
       <Filter>PaintAsset\PaintCollisiton</Filter>
     </ClInclude>
@@ -262,8 +271,23 @@
     <ClInclude Include="Source\NYLibrary\Component\Collider\Collider.h">
       <Filter>NYLibrary\Component\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Source\NYLibrary\Collision\CollisitionManager.h">
-      <Filter>NYLibrary\Collisiton</Filter>
+    <ClInclude Include="Source\NYLibrary\Collision\CollisionManager.h">
+      <Filter>NYLibrary\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Object\MatrixObject\MatrixObject.h">
+      <Filter>NYLibrary\Object\MatrixObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Object\LocalObject\LocalObject.h">
+      <Filter>NYLibrary\Object\LocalObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Object\Object.h">
+      <Filter>NYLibrary\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Object\ColorObject\ColorObject.h">
+      <Filter>NYLibrary\Object\ColorObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.h">
+      <Filter>NYLibrary\Component\Collider\TrianglePolygonListCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -310,7 +334,7 @@
       <Filter>NYLibrary\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp">
-      <Filter>NYLibrary\Collisiton</Filter>
+      <Filter>NYLibrary\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Camera\Camera.cpp">
       <Filter>NYLibrary\Camera</Filter>
@@ -378,9 +402,6 @@
     <ClCompile Include="Source\Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\NYLibrary\MatrixObject\MatrixObject.cpp">
-      <Filter>NYLibrary\MatrixObject</Filter>
-    </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp">
       <Filter>PaintAsset\PaintCollisiton</Filter>
     </ClCompile>
@@ -402,11 +423,14 @@
     <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClCompile>
-    <ClCompile Include="Source\NYLibrary\Component\Collider\Collider.cpp">
-      <Filter>NYLibrary\Component\Collider</Filter>
+    <ClCompile Include="Source\NYLibrary\Collision\CollisionManager.cpp">
+      <Filter>NYLibrary\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Source\NYLibrary\Collision\CollisitionManager.cpp">
-      <Filter>NYLibrary\Collisiton</Filter>
+    <ClCompile Include="Source\NYLibrary\Object\MatrixObject\MatrixObject.cpp">
+      <Filter>NYLibrary\Object\MatrixObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.cpp">
+      <Filter>NYLibrary\Component\Collider\TrianglePolygonListCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

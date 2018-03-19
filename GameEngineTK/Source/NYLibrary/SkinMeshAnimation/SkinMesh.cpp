@@ -894,10 +894,10 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 
 		if (i % 3 == 2)
 		{
-			ComputeTriangle(Math::D3DXVECTOR3ToVector(verPos[0]), Math::D3DXVECTOR3ToVector(verPos[1]), Math::D3DXVECTOR3ToVector(verPos[2]), &tri);
-			tri.Uv0 = Math::D3DXVECTOR2ToVector(verUv[0]);
-			tri.Uv1 = Math::D3DXVECTOR2ToVector(verUv[1]);
-			tri.Uv2 = Math::D3DXVECTOR2ToVector(verUv[2]);
+			ComputeTriangle(verPos[0], verPos[1],verPos[2], &tri);
+			tri.uv0 = verUv[0];
+			tri.uv1 = verUv[1];
+			tri.uv2 = verUv[2];
 			triangles.emplace_back(tri);
 		}
 	}
@@ -1119,10 +1119,10 @@ void SkinMesh::UpDateTriangles()
 
 		if (i % 3 == 2)
 		{
-			ComputeTriangle(Math::D3DXVECTOR3ToVector(verPos[0]), Math::D3DXVECTOR3ToVector(verPos[1]), Math::D3DXVECTOR3ToVector(verPos[2]), &tri);
-			tri.Uv0 = Math::D3DXVECTOR2ToVector(verUv[0]);
-			tri.Uv1 = Math::D3DXVECTOR2ToVector(verUv[1]);
-			tri.Uv2 = Math::D3DXVECTOR2ToVector(verUv[2]);
+			ComputeTriangle(verPos[0],verPos[1],verPos[2], &tri);
+			tri.uv0 = verUv[0];
+			tri.uv1 = verUv[1];
+			tri.uv2 = verUv[2];
 			triangles.emplace_back(tri);
 		}
 	}

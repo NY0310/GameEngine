@@ -8,6 +8,8 @@ using namespace DirectX::SimpleMath;
 const float InkParticle::SPEED = 0.5f;
 //落下速度
 const float InkParticle::GRAVITY = 0.01f;
+//ローカルの大きさ
+const float InkParticle::ROCAL_SIZE = 10.0f;
 
 
 /// <summary>
@@ -19,6 +21,8 @@ InkParticle::InkParticle()
 	SetScale(D3DXVECTOR3(0.4, 0.4, 0.4));
 	birthFrame = 0;
 	isValidity = false;
+	SetLocalSize(ROCAL_SIZE);
+	AddComponent<InkSegment>();
 }
 
 /// <summary>
@@ -42,8 +46,9 @@ void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirecti
 	SetPosition(position);
 	this->direction = nDirection;
 	SetRotation(nDirection);
-	colisitionSegment->Color = color;
-	colisitionSegment->index = index;
+	//このオブジェクトの色を設定する
+	SetColor(color);
+	//コンポーネント処理を無効にする
 	birthFrame = 0;
 	isValidity = true;
 }
@@ -225,7 +230,7 @@ void InkParticleManager::InkDataUpdate()
 	{
 		if (inkParticle[i]->IsValidity())
 		{
-			inkdata.color = inkParticle[i]->GetSegment()->Color;
+		//	inkdata.color = inkParticle[i]->GetSegment()->Color;
 			inkdata.wvp = GetChild(i)->GetWVP();
 			inkParticledata.emplace_back(inkdata);
 		}

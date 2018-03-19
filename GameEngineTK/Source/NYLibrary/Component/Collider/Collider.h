@@ -1,7 +1,10 @@
 #pragma once
 #include <vector>
-#include <D3DX10math.h>
+#include <D3DX9math.h>
 #include "../Component.h"
+#include "../../Object/MatrixObject/MatrixObject.h"
+#include "../../Collision/Collision.h"
+#include "../../Collision/CollisionManager.h"
 
 
 
@@ -9,15 +12,37 @@ namespace NYLibrary
 {
 	class Collider : public Component
 	{
-	public:
+	public: 
 		//コンストラクタ
-		Collider();
+		Collider( std::string tag, MatrixObject* matrixObject) : tag(tag) { this->matrixObject.reset(matrixObject); }
+		Collider() = default;
 		//デストラクタ
-		~Collider() = default;
-		////更新処理
-		//void Update(Element* element) = 0;
-	private:
-		std::vector<Collider*> collisitonCollider;
+		~Collider() { matrixObject.release(); };
+		//更新処理
+		virtual void Update() = 0;
+		//当たった時にElement関数を呼び出す
+		void OnCollision() { listener(this); }
+		//当たり判定管理クラスに自信の情報を送る
+		void RegisterCollider() {		
+			CollisionManager* collisionManager = CollisionManager::GetInstance();
+			collisionManager->AddCollider(this);
+		}
+		//当たったコライダーを追加する
+		void AddCollisionCollider(Collider* collider) { collisitonColliderList.emplace_back(collider); }
+		//処理を受け取る
+		void addListener(std::function<void(Collider* collider)> listener) {
+			this->listener = listener;
+		}
+	protected:
+		//このコライダーに当たったコライダー
+		std::vector<Collider*> collisitonColliderList;
+		//オブジェクトのタグ(このタグが同じものは当たり判定を行わない)
+		std::string tag;
+		//座標、行列管理のアドレス
+		std::unique_ptr<MatrixObject> matrixObject;
+		//ラムダ式を受け取る
+		std::function<void(Collider* collider)> listener = [&](Collider* collider) {};
+
 	};
 
 
@@ -25,70 +50,56 @@ namespace NYLibrary
 	/// <summary>
 	/// 球体
 	/// </summary>
-	class SphereCollider : public Collider
+	class SphereCollider : public Sphere, public Collider
 	{
 	public:
 		//コンストラクタ
-		SphereCollider(const D3DXVECTOR3& center, const float& radius) :center(center), radius(radius){}
-		//中心座標
-		D3DXVECTOR3 center;
-		//半径
-		float radius;
+		SphereCollider(const std::string& tag, MatrixObject* matrixObject) : Collider(tag, matrixObject) {};
+		//更新処理
+		void Update() { center = matrixObject->GetPosition(); }
 	};
 
 	class InkSphereCollider : public SphereCollider
 	{
 	public:
-		InkSphereCollider(const D3DXVECTOR3& center, const float& radius, const D3DXVECTOR4 color) : SphereCollider(center, radius), color(color) {}
+		InkSphereCollider(const std::string& tag, MatrixObject* matrixObject): SphereCollider(tag, matrixObject) {};
 		D3DXVECTOR4 color;
 	};
 
 
 	//線分
-	class SegmentCollider : public Collider
+	class SegmentCollider : public Collider, public Segment
 	{
 	public:
-		SegmentCollider(const D3DXVECTOR3& start, const D3DXVECTOR3& end) :start(start), end(end) {}
-		//始点座標
-		D3DXVECTOR3 start;
-		//終了地点
-		D3DXVECTOR3 end;
+		//コンストラクタ
+		SegmentCollider(const std::string& tag, MatrixObject* matrixObject) : Collider(tag, matrixObject) {};
+		//更新処理
+		void Update() {  }
 	};
 
 	class InkSegmentCollider : public SegmentCollider
 	{
 	public:
-		InkSegmentCollider(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXVECTOR4& color) : SegmentCollider(start, end), color(color) {}
+		//コンストラクタ
+		InkSegmentCollider(const std::string& tag, MatrixObject* matrixObject) : SegmentCollider(tag, matrixObject) {};
+		//更新
+		void Update() {
+			SegmentCollider::Update();
+		}
 		D3DXVECTOR4 color;
 		int index;
 	};
 
 
 	//三角形
-	class TriangleCollider : public Collider
+	class TriangleCollider : public Triangle, public Collider
 	{
 	public:
-		TriangleCollider(const D3DXVECTOR3& P0, const D3DXVECTOR3& P1, const D3DXVECTOR3& P2, const D3DXVECTOR3& Normal, const D3DXVECTOR2& Uv0, const D3DXVECTOR2& Uv1, const D3DXVECTOR2& Uv2) :
-			P0(P0), P1(P1), P2(P2), Normal(Normal), Uv0(Uv0), Uv1(Uv1), Uv2(Uv2) {}
-		//頂点の座標
-		D3DXVECTOR3 P0;
-		D3DXVECTOR3 P1;
-		D3DXVECTOR3 P2;
-		//法線ベクトル
-		D3DXVECTOR3 Normal;
-		//UV
-		D3DXVECTOR2 Uv0;
-		D3DXVECTOR2 Uv1;
-		D3DXVECTOR2 Uv2;
+		//コンストラクタ
+		TriangleCollider(const std::string& tag, MatrixObject* matrixObject) : Collider(tag, matrixObject) {}
+		//更新
+		void Update(){}
 	};
 
-
-	class TrianglePolygonListCollider : public Collider
-	{
-	private:
-		TrianglePolygonListCollider();
-		std::vector<TriangleCollider*> triangleList;
-		TriangleCollider triangle;
-	};
 
 };

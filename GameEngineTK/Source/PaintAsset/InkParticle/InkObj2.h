@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include <map>
 #include "../../NYLibrary/ShaderManager/ShaderManager.h"
-#include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
+#include "../../NYLibrary/Object/LocalObject/LocalObject.h"
+#include "../../NYLibrary/Camera/FollowCamera.h"
 
 using namespace NYLibrary;
 class InkObj2
@@ -23,12 +23,6 @@ protected:
 		DWORD dwNumFace;
 		ID3D11Buffer* pVertexBuffer;
 		ID3D11Buffer* pIndexBuffer;
-	};
-
-	struct MeshAndTriangles
-	{
-		std::vector<NYLibrary::Triangle> triangles;
-		MY_MESH mesh;
 	};
 
 
@@ -59,8 +53,6 @@ private:
 	ID3D11Buffer* CreateConstantBuffer(UINT size);
 	//OBJファイル読み込み
 	HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
-
-protected:
 	/// <summary>
 	/// メッシュ
 	/// </summary>
@@ -70,10 +62,7 @@ protected:
 	ComPtr<ID3D11Buffer> constantBuffer;//コンスタントバッファ
 	ComPtr<ID3D11InputLayout> vertexLayout;//頂点インプットレイアウト
 
-
-
-	static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
-	std::vector<NYLibrary::Triangle> triangles;
+	std::vector<Triangle> triangles;
 
 
 

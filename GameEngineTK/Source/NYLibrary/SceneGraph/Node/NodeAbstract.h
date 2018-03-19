@@ -8,16 +8,11 @@
 
 #include <memory> // std::unique_ptr
 #include <vector> // std::vector
-#include "../../MatrixObject/MatrixObject.h"
-
+#include "../../Component/Element.h"
 namespace NYLibrary
 {
-	class Object : public MatrixObject{
-
-	};
-
 	class VisitorInterface;
-	class NodeAbstract: public Object
+	class NodeAbstract: public Element
 	{
 	public:
 		//ノードのリスト

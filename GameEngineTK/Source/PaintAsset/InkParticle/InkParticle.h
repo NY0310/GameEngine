@@ -4,7 +4,6 @@
 #include <d3d11_1.h>
 #include <vector> 
 #include <memory>
-#include <DirectXColors.h>
 #include <cassert>
 #include "../../NYLibrary/Collision/Collision.h"
 #include "InkObj2.h"
@@ -35,10 +34,6 @@ public:
 	NYLibrary::InkSegment* GetSegment() {
 		return colisitionSegment.get();
 	}
-	//const D3DXMATRIX& GetWVP() {
-	//	auto a =  GetWVP();
-	//	return a;
-	//}
 private:
 	//移動ベクトル
 	D3DXVECTOR3 direction;
@@ -52,6 +47,8 @@ private:
 	std::unique_ptr<NYLibrary::InkSegment> colisitionSegment;
 	//落下速度
 	static const float GRAVITY;
+	//ローカルの大きさ
+	static const float ROCAL_SIZE;
 public:
 	// コピーコンストラクタ禁止
 	InkParticle(const InkParticle&) = delete;

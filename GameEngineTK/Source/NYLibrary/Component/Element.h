@@ -1,13 +1,17 @@
 #pragma once
 #include <list>
 #include <string.h>
-#include "Component.h"
+#include <functional>
+#include "Collider/Collider.h"
+#include "../Object/LocalObject/LocalObject.h"
+#include "../Object/MatrixObject/MatrixObject.h"
+#include "../Object/ColorObject/ColorObject.h"
 
 namespace NYLibrary {
-	class Element
+	class Element : public MatrixObject,public LocalObject,public ColorObject
 	{
-	protected:
-		std::string tag;
+	private:
+		std::string tag;//タグ
 		std::list<Component*> componentList;// コンポーネントリスト
 		bool isActive;// アクティブ状態
 	public:
@@ -29,7 +33,7 @@ namespace NYLibrary {
 			// 繋げられているコンポーネントの処理
 			for (auto& component : componentList)
 			{
-				//component->Update(this);
+				component->Update();
 			}
 		}
 
@@ -38,7 +42,16 @@ namespace NYLibrary {
 		/// </summary>
 		template <class C> void AddComponent()
 		{ 
-			componentList.emplace_back(new C);
+			//C* type = dynamic_cast<Collider>(C*);
+			////コライダーならMatrixObjectの情報を渡す
+			//if (type)
+			//{
+			//	componentList.emplace_back(new C(this));
+			//}
+			//else
+			//{
+			//	componentList.emplace_back(new C());
+			//}
 
 			// 重複防止
 			componentList.unique();
@@ -91,6 +104,15 @@ namespace NYLibrary {
 			}
 
 			componentList.clear();
+		}
+
+		//コライダーが他のコライダーに当たると呼び出される
+		virtual void OnCollisiton(Collider* collider) {}
+
+		//シーンオブジェクトににシーン変更のオブジェクト関数を登録する
+		void SetReplaceSceneObject(Collider* collider) {
+			std::function<void(Collider*)> thisFunction = std::bind(&Element::OnCollisiton, this, std::placeholders::_1);
+			collider->addListener(thisFunction);
 		}
 
 		// アクティブ状態を設定する

@@ -62,7 +62,7 @@ void PaintGun::Emit()
 		}
 
 		//親の情報を取得(プレイヤー)
-		Object* player = Getparent()._Get();
+		MatrixObject* player = Getparent()._Get();
 		const D3DXVECTOR3 shitGunPosition(0, 0.5f, -0.2f);
 		emitPosition = player->GetPosition() + shitGunPosition ;
 		////	移動ベクトルw
@@ -90,15 +90,15 @@ void PaintGun::Emit()
 /// </summary>
 void PaintGun::AimUpdate()
 {
-	MouseRay* mouseRay = MouseRay::GetInstance();
-	MouseUtil* mouse = MouseUtil::GetInstance();
-	Segment* segment = mouseRay->RayCreate();
-	D3DXVECTOR3 mouseVec = Math::VectorToD3DXVECTOR3(segment->Start) - emitPosition;
-	D3DXVec3Normalize(&mouseVec, &mouseVec);
-	const float longsize = 10;
-	D3DXVECTOR3 balletVec = mouseVec * longsize - emitPosition;
-	D3DXVec3Normalize(&balletVec, &balletVec);
-	balletVec *= 3;
+	//MouseRay* mouseRay = MouseRay::GetInstance();
+	//MouseUtil* mouse = MouseUtil::GetInstance();
+	//Segment* segment = mouseRay->RayCreate();
+	//D3DXVECTOR3 mouseVec = segment->start - emitPosition;
+	//D3DXVec3Normalize(&mouseVec, &mouseVec);
+	//const float longsize = 10;
+	//D3DXVECTOR3 balletVec = mouseVec * longsize - emitPosition;
+	//D3DXVec3Normalize(&balletVec, &balletVec);
+	//balletVec *= 3;
 	//aim->matrixObject->ChangeOrder(WorldMatrixOrder::SCALEM_TRANSMAT_ROTOMAT);
 	//aim->matrixObject->transfer(balletVec);
 	//aim->matrixObject-> matrixObject->eulerAngles(nDirection);(D3DXVECTOR3(mouseVec.x, mouseVec.y, -emitPosition.z));
