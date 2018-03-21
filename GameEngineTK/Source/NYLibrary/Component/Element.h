@@ -45,16 +45,22 @@ namespace NYLibrary {
 		/// </summary>
 		template <class C> void AddComponent()
 		{ 
-			//Collider* type = dynamic_cast<Collider>();
-			////コライダーならMatrixObjectの情報を渡す
-			if (1)
-			{
-				componentList.emplace_back(new C(tag,this));
-			}
-		/*	else
-			{
-				componentList.emplace_back(new C());
-			}*/
+			//Collider* coll = new Collider();
+			//C* type = dynamic_cast<C*>(coll);
+			//delete coll;
+			//coll = nullptr;
+			//////コライダーならMatrixObjectの情報を渡す
+			//if (type)
+			//{
+				Collider* collider = new C(tag, this);
+				collider->Initialize();
+				componentList.emplace_back(collider);
+				
+			//}
+			//else
+			//{
+			//	componentList.emplace_back(new C());
+			//}
 
 
 			// 重複防止
@@ -110,7 +116,22 @@ namespace NYLibrary {
 			componentList.clear();
 		}
 
-		//コライダーが他のコライダーに当たると呼び出される
+		//コライダーのデータを更新する
+		void ColliderDateUpdate()
+		{
+			for (auto& component : componentList)
+			{
+				Collider* type = dynamic_cast<Collider*>(component);
+
+				if (type)
+				{
+					type->Initialize();
+					break;
+				}
+			}
+		}
+			
+		//コライダーが他のコライダーに当たると呼び出される(オーバーライドして任意の処理を追加してください。)
 		virtual void OnCollisiton(Collider* collider) {}
 
 		//シーンオブジェクトににシーン変更のオブジェクト関数を登録する
@@ -125,7 +146,7 @@ namespace NYLibrary {
 		inline virtual bool GetActive()	const { return isActive; }
 
 		//タグを設定する
-		void SetTag(const std::string& tagName) { tag = tagName; }
+		void SetTag(std::string tagName) { tag = tagName; }
 		//タグを取得する
 		const std::string& GetTag() { return tag; }
 	};

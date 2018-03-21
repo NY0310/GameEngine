@@ -125,6 +125,12 @@
     <Filter Include="NYLibrary\Sprite\SkinMeshAnimation">
       <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NYLibrary\Component\Collider\PlaneCollider">
+      <UniqueIdentifier>{aa7ae8a4-a2bb-4ff9-9f67-39e0a4e73306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Component\Collider\BoxCollider">
+      <UniqueIdentifier>{3d524a7b-dbab-4abd-9301-b8568a4487c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">

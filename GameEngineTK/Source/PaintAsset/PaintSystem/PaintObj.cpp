@@ -12,7 +12,7 @@ PaintObj::PaintObj(bool isPlane)
 	campus = make_unique<Paint>();
 	campus->Initialize(isPlane);
 	//paintCollision = make_unique<PaintCollision>();
-	//AddComponent<TrianglePolygonListCollider>();
+	SetTag("stage");
 
 	/*matrixObject->SetPosition(D3DXVECTOR3(0, 1.5, 0));
 	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));*/
@@ -61,9 +61,14 @@ void PaintObj::Render()
 	static float x = 0;
 	x += 0.00001;
 	D3DXMATRIX World;
-	//使用するシェーダーの登録	
-	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
-	deviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
+	//ID3D11VertexShader* VSShader;
+	//deviceContext->VSGetShader(&VSShader,nullptr,nullptr);
+	//if (VSShader != vertexShader.Get())
+	//{
+		//使用するシェーダーの登録	
+		deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+		deviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
+	//}
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
 	SIMPLESHADER_CONSTANT_BUFFER cb;
@@ -75,7 +80,7 @@ void PaintObj::Render()
 
 		//world = matrixObject->GetWorldMatrix();
 		//ワールド、カメラ、射影行列を渡す
-		D3DXMATRIX m = world  *View * Proj;
+		D3DXMATRIX m = GetWVP();
 		D3DXMatrixTranspose(&m, &m);
 		cb.mWVP = m;
 		//ワールド、ライトビュー、射影行列を渡す
@@ -98,7 +103,7 @@ void PaintObj::Render()
 	//テクスチャーをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
 	deviceContext->PSSetShaderResources(0, 1, texture.GetAddressOf());
-	deviceContext->PSSetShaderResources(1, 1, campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
+	//deviceContext->PSSetShaderResources(1, 1, campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
 	deviceContext->PSSetShaderResources(2, 1, depthMapTexSRV.GetAddressOf());//ライトビューでの深度テクスチャ作成
 															   //このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());

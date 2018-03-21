@@ -7,7 +7,7 @@ ComPtr<ID3D11VertexShader> Paint::DripVertexShader;
 ComPtr<ID3D11PixelShader>  Paint::DripPixelShader;
 ComPtr<ID3D11VertexShader> Paint::updateVertexShader;
 ComPtr<ID3D11PixelShader> Paint::updatePixelShader;
-
+ComPtr<ID3D11InputLayout> Paint::inkVertexLayout;
 
 ID3D11ShaderResourceView** Paint::GetInkTexSRV()
 { 
@@ -22,7 +22,7 @@ HRESULT Paint::Initialize(bool isplane)
 	dripTextures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2, Devices::Get().Height() * 2));
 	dripTextures->Initialize();
 
-	if (!inkVertexShader)
+	if (!inkVertexShader.Get())
 	{
 		ID3DBlob *pCompiledShader = nullptr;
 		//インクテクスチャ用バーテックスシェーダー作成

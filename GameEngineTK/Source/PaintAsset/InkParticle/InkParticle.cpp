@@ -230,8 +230,8 @@ void InkParticleManager::InkDataUpdate()
 	{
 		if (inkParticle[i]->IsValidity())
 		{
-		//	inkdata.color = inkParticle[i]->GetSegment()->Color;
 			inkdata.wvp = GetChild(i)->GetWVP();
+			inkdata.color = GetChild(i)->GetColor();
 			inkParticledata.emplace_back(inkdata);
 		}
 	}

@@ -48,7 +48,7 @@ private:
 	/// <summary>
 	/// 全てのインクをレンダリングするキャンパス
 	/// </summary>
-	ComPtr<ID3D11InputLayout> inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
+	static ComPtr<ID3D11InputLayout> inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
 	ComPtr<ID3D11Buffer> inkConstantBuffer;//インクテクスチャ用コンスタントバッファ
 	static ComPtr<ID3D11VertexShader> inkVertexShader;//インクテクスチャ用バーテックスシェーダー
 	static ComPtr<ID3D11PixelShader> inkPixelShader;//インクテクスチャ用ピクセルシェーダー

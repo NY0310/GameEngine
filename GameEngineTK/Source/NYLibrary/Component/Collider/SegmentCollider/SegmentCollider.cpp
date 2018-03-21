@@ -6,7 +6,6 @@ using namespace NYLibrary;
 SegmentCollider::SegmentCollider(const std::string & tag, ObjectData * matrixObject):
 	Collider(tag, matrixObject)
 {
-	Initialize();
 }
 
 void SegmentCollider::Initialize()

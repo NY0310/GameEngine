@@ -54,6 +54,8 @@ void Map::CreateMap()
 			obj->SetScale(0.3);
 			int a = attributeMap->GetAttributeMap(i, j);
 			obj->LoadTextuerFile(FileNames[attributeMap->GetAttributeMap(i, j) + 3]);
+			obj->AddComponent<TrianglePolygonListCollider>();
+
 			//オブジェクト生成
 			mapObj[i][j] = obj;
 		}

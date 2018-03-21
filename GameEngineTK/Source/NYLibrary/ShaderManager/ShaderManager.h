@@ -26,4 +26,5 @@
 namespace NYLibrary
 {
 	HRESULT MakeShader(LPSTR, LPSTR, LPSTR, void**, ID3DBlob**);
+	//bool SameVSShader()
 };
