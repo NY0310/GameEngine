@@ -189,3 +189,17 @@ const Vector2 & Math::ChangeRegularDevice(const Vector2 & position)
 {
 	return Vector2(Math::RegularDeviceClamp(position.x * 2 - 1), Math::RegularDeviceClamp((position.y * 2 - 1) * -1));
 }
+
+
+
+const D3DXVECTOR4& Math::MatrixTimes(const D3DXMATRIX& matrix, const D3DXVECTOR4& vector)
+{
+	D3DXVECTOR4 vec;
+	vec.x = matrix._11 * vector.x + matrix._21 * vector.y + matrix._31 * vector.z + matrix._41 * vector.w;
+	vec.y = matrix._12 * vector.x + matrix._22 * vector.y + matrix._32 * vector.z + matrix._42 * vector.w;
+	vec.z = matrix._13 * vector.x + matrix._23 * vector.y + matrix._33 * vector.z + matrix._43 * vector.w;
+	vec.w = matrix._14 * vector.x + matrix._24 * vector.y + matrix._34 * vector.z + matrix._44 * vector.w;
+	return vec;
+}
+
+

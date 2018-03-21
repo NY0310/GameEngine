@@ -2,13 +2,16 @@
 #include <list>
 #include <string.h>
 #include <functional>
-#include "Collider/Collider.h"
 #include "../Object/LocalObject/LocalObject.h"
 #include "../Object/MatrixObject/MatrixObject.h"
 #include "../Object/ColorObject/ColorObject.h"
+#include "Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
+#include "../../PaintAsset/InkSegmentCollider/InkSegmentCollider.h"
 
 namespace NYLibrary {
-	class Element : public MatrixObject,public LocalObject,public ColorObject
+	class ObjectData:  public MatrixObject, public LocalObject, public ColorObject
+	{};
+	class Element : public ObjectData
 	{
 	private:
 		std::string tag;//タグ
@@ -42,16 +45,17 @@ namespace NYLibrary {
 		/// </summary>
 		template <class C> void AddComponent()
 		{ 
-			//C* type = dynamic_cast<Collider>(C*);
+			//Collider* type = dynamic_cast<Collider>();
 			////コライダーならMatrixObjectの情報を渡す
-			//if (type)
-			//{
-			//	componentList.emplace_back(new C(this));
-			//}
-			//else
-			//{
-			//	componentList.emplace_back(new C());
-			//}
+			if (1)
+			{
+				componentList.emplace_back(new C(tag,this));
+			}
+		/*	else
+			{
+				componentList.emplace_back(new C());
+			}*/
+
 
 			// 重複防止
 			componentList.unique();
@@ -80,7 +84,7 @@ namespace NYLibrary {
 		/// <returns>コンポーネント</returns>
 		template <class C> C* GetComponent()
 		{
-			for (auto& component : componentList_)
+			for (auto& component : componentList)
 			{
 				C* type = dynamic_cast<C*>(component);
 

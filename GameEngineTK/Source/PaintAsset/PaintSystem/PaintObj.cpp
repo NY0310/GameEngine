@@ -1,16 +1,19 @@
 #include "PaintObj.h"
-
+#include "../InkSegmentCollider/InkSegmentCollider.h"
 
 using namespace std;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace NYLibrary;
 
 
 PaintObj::PaintObj(bool isPlane)
 {
 	campus = make_unique<Paint>();
-	campus->InitD3D(isPlane);
-	paintCollision = make_unique<PaintCollision>();
+	campus->Initialize(isPlane);
+	//paintCollision = make_unique<PaintCollision>();
+	//AddComponent<TrianglePolygonListCollider>();
+
 	/*matrixObject->SetPosition(D3DXVECTOR3(0, 1.5, 0));
 	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));*/
 }
@@ -19,7 +22,7 @@ PaintObj::PaintObj(bool isPlane)
 void PaintObj::Update()
 {
 	//matrixObject->Calc();
-	paintCollision->SetTriangles(triangles);
+	//paintCollision->SetTriangles(triangles);
 	//paintCollision->SetWorldMatrix(matrixObject->GetWorldMatrix());
 
 	//Segment* segment;
@@ -114,6 +117,71 @@ void PaintObj::Render()
 	deviceContext->IASetIndexBuffer(mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	//プリミティブをレンダリング
 	deviceContext->DrawIndexed(mesh.dwNumFace * 3, 0, 0);
+}
+
+void PaintObj::OnCollisiton(Collider * collider)
+{
+	InkSegmentCollider* ink = dynamic_cast<InkSegmentCollider*>(collider);
+	TrianglePolygonListCollider* triangleList = GetComponent<TrianglePolygonListCollider>();
+	if (ink && triangleList)
+	{
+		CalcInkCollisionUv(*ink, triangleList->GetCollisionTriangle(), triangleList->GetInter());
+	}
+}
+
+
+
+const D3DXVECTOR2& PaintObj::CalcInkCollisionUv(const Segment& segment, const Triangle& triangle, const D3DXVECTOR3 & inter)
+{
+	float distance = 1.0e5;
+	D3DXVECTOR3 l_inter;
+
+	// 線分の始点と衝突点の距離を計算（めりこみ距離）
+	D3DXVECTOR3 vec = segment.start - inter;
+	float temp_distance = D3DXVec3Length(&vec);
+	// めりこみ具合がここまでで最小なら
+	
+		// 衝突点の座標、めりこみ距離を記録
+		l_inter = inter;
+		distance = temp_distance;
+
+
+		D3DXVECTOR3 p1 = triangle.p0;
+		D3DXVECTOR3 p2 = triangle.p1;
+		D3DXVECTOR3 p3 = triangle.p2;
+		D3DXVECTOR3 p = l_inter;
+
+		D3DXVECTOR2 uv1 = triangle.uv0;
+		D3DXVECTOR2 uv2 = triangle.uv1;
+		D3DXVECTOR2 uv3 = triangle.uv2;
+
+		//塗られるオブジェクトのワールド座標をかける
+		//PerspectiveCollect(透視投影を考慮したUV補間)
+		D3DXMATRIX mvp = GetWVP();
+		//各点をProjectionSpaceへの変換
+		D3DXVECTOR4 p1_p = Math::MatrixTimes(mvp, D3DXVECTOR4(p1.x, p1.y, p1.z, 0));
+		D3DXVECTOR4 p2_p = Math::MatrixTimes(mvp, D3DXVECTOR4(p2.x, p2.y, p1.z, 0));
+		D3DXVECTOR4 p3_p = Math::MatrixTimes(mvp, D3DXVECTOR4(p3.x, p3.y, p1.z, 0));
+		D3DXVECTOR4 p_p = Math::MatrixTimes(mvp, D3DXVECTOR4(p.x, p.y, p.z, 0));
+
+
+		//通常座標への変換(ProjectionSpace)
+		D3DXVECTOR2 p1_n = D3DXVECTOR2(p1_p.x, p1_p.y) / p1_p.w;
+		D3DXVECTOR2 p2_n = D3DXVECTOR2(p2_p.x, p2_p.y) / p2_p.w;
+		D3DXVECTOR2 p3_n = D3DXVECTOR2(p3_p.x, p3_p.y) / p3_p.w;
+		D3DXVECTOR2 p_n = D3DXVECTOR2(p_p.x, p_p.y) / p_p.w;
+
+
+		//頂点のなす三角形を点pにより3分割し、必要になる面積を計算
+		float s = 0.5f * ((p2_n.x - p1_n.x) * (p3_n.y - p1_n.y) - (p2_n.y - p1_n.y) * (p3_n.x - p1_n.x));
+		float s1 = 0.5f * ((p3_n.x - p_n.x) * (p1_n.y - p_n.y) - (p3_n.y - p_n.y) * (p1_n.x - p_n.x));
+		float s2 = 0.5f * ((p1_n.x - p_n.x) * (p2_n.y - p_n.y) - (p1_n.y - p_n.y) * (p2_n.x - p_n.x));
+		//面積比からuvを補間
+		float u = s1 / s;
+		float v = s2 / s;
+		float w = 1 / ((1 - u - v) * 1 / p1_p.w + u * 1 / p2_p.w + v * 1 / p3_p.w);
+		D3DXVECTOR2 uv = w * ((1 - u - v) * uv1 / p1_p.w + u * uv2 / p2_p.w + v * uv3 / p3_p.w);
+		return uv;
 }
 
 

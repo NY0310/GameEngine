@@ -176,6 +176,7 @@
     <ClInclude Include="Source\NYLibrary\Collision\Collision.h" />
     <ClInclude Include="Source\NYLibrary\Collision\CollisionManager.h" />
     <ClInclude Include="Source\NYLibrary\Component\Collider\Collider.h" />
+    <ClInclude Include="Source\NYLibrary\Component\Collider\SegmentCollider\SegmentCollider.h" />
     <ClInclude Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.h" />
     <ClInclude Include="Source\NYLibrary\Component\Component.h" />
     <ClInclude Include="Source\NYLibrary\Component\Element.h" />
@@ -202,6 +203,7 @@
     <ClInclude Include="Source\NYLibrary\Sprite\Sprite.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkObj2.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h" />
+    <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h" />
     <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\Aim.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\PaintGun.h" />
@@ -232,6 +234,7 @@
     <ClCompile Include="Source\NYLibrary\Camera\FollowCamera.cpp" />
     <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp" />
     <ClCompile Include="Source\NYLibrary\Collision\CollisionManager.cpp" />
+    <ClCompile Include="Source\NYLibrary\Component\Collider\SegmentCollider\SegmentCollider.cpp" />
     <ClCompile Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.cpp" />
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp" />
     <ClCompile Include="Source\NYLibrary\Input\KeyboardUtil.cpp" />
@@ -251,6 +254,7 @@
     <ClCompile Include="Source\NYLibrary\Sprite\Sprite.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkObj2.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp" />
+    <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\PaintGun.cpp" />

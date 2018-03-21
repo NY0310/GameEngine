@@ -35,9 +35,6 @@
     <Filter Include="NYLibrary\Sprite">
       <UniqueIdentifier>{caf5f5ea-ab6d-4c7c-9508-27d65aefae4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\SkinMeshAnimation">
-      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Astar">
       <UniqueIdentifier>{53a1497a-aea5-4aae-a590-7b32f1068628}</UniqueIdentifier>
     </Filter>
@@ -92,9 +89,6 @@
     <Filter Include="PaintAsset\PaintCollisiton">
       <UniqueIdentifier>{14e703cd-cc0b-4c16-9aac-afb61aa13a3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\OBJ\Math">
-      <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Component">
       <UniqueIdentifier>{cb46fb5f-8edd-458d-8bc4-633fd5366090}</UniqueIdentifier>
     </Filter>
@@ -118,6 +112,18 @@
     </Filter>
     <Filter Include="NYLibrary\Component\Collider\TrianglePolygonListCollider">
       <UniqueIdentifier>{398fc651-71b6-4471-9f25-b0810dd57123}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Component\Collider\SegmentCollider">
+      <UniqueIdentifier>{f3ad6558-7cad-4486-88e4-1a9527c04660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PaintAsset\InkSegmentCollider">
+      <UniqueIdentifier>{ae7439bb-aa29-473c-9181-657b6b894f3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Math">
+      <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Sprite\SkinMeshAnimation">
+      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -188,7 +194,7 @@
       <Filter>Scene\GameScene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h">
-      <Filter>NYLibrary\SkinMeshAnimation</Filter>
+      <Filter>NYLibrary\Sprite\SkinMeshAnimation</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
@@ -230,7 +236,7 @@
       <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Math\Math.h">
-      <Filter>NYLibrary\OBJ\Math</Filter>
+      <Filter>NYLibrary\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\Scene.h">
       <Filter>Scene</Filter>
@@ -288,6 +294,12 @@
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.h">
       <Filter>NYLibrary\Component\Collider\TrianglePolygonListCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Collider\SegmentCollider\SegmentCollider.h">
+      <Filter>NYLibrary\Component\Collider\SegmentCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h">
+      <Filter>PaintAsset\InkSegmentCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -352,7 +364,7 @@
       <Filter>Scene\GameScene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp">
-      <Filter>NYLibrary\SkinMeshAnimation</Filter>
+      <Filter>NYLibrary\Sprite\SkinMeshAnimation</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Game.cpp">
       <Filter>Game</Filter>
@@ -394,7 +406,7 @@
       <Filter>NYLibrary\Astar</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Math\Math.cpp">
-      <Filter>NYLibrary\OBJ\Math</Filter>
+      <Filter>NYLibrary\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\Scene.cpp">
       <Filter>Scene</Filter>
@@ -431,6 +443,12 @@
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.cpp">
       <Filter>NYLibrary\Component\Collider\TrianglePolygonListCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Component\Collider\SegmentCollider\SegmentCollider.cpp">
+      <Filter>NYLibrary\Component\Collider\SegmentCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp">
+      <Filter>PaintAsset\InkSegmentCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -498,7 +516,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
-      <Filter>NYLibrary\SkinMeshAnimation</Filter>
+      <Filter>NYLibrary\Sprite\SkinMeshAnimation</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\PointSprite.hlsl">
       <Filter>PaintAsset\InkParticle</Filter>

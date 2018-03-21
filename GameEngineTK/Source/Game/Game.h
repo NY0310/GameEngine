@@ -17,10 +17,6 @@
 
 #include <VertexTypes.h>
 #include <CommonStates.h>
-//#include <SimpleMath.h>
-//#include <Model.h>
-//#include <Keyboard.h>
-//#include <Mouse.h>
 #include <d3dCompiler.h>
 #include <memory>
 
@@ -31,7 +27,7 @@
 #include "../NYLibrary/Camera/FollowCamera.h"
 #include "../NYLibrary/Input/MouseUtil.h"
 #include "../NYLibrary/Input/KeyboardUtil.h"
-
+#include "../NYLibrary/Collision/CollisionManager.h"
 
 #pragma comment(lib,"d3dx10.lib")
 #pragma comment(lib,"d3dx11.lib")
@@ -99,4 +95,5 @@ private:
 	NYLibrary::FollowCamera* camera;
 	NYLibrary::MouseUtil* mouse;
 	NYLibrary::KeyboardUtil* keyBoard;
+	NYLibrary::CollisionManager* collisionManager;
 };       

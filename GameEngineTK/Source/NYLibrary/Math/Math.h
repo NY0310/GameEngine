@@ -49,7 +49,8 @@ namespace NYLibrary
 		//Uv座標系から正規デバイス座標系に変換する
 		static const DirectX::SimpleMath::Vector3& ChangeRegularDevice(const DirectX::SimpleMath::Vector3& position);
 		static const DirectX::SimpleMath::Vector2& ChangeRegularDevice(const DirectX::SimpleMath::Vector2& position);
-
+		//行列とfloat4の積
+		static const D3DXVECTOR4 & MatrixTimes(const D3DXMATRIX & matrix, const D3DXVECTOR4 & vector);
 	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);

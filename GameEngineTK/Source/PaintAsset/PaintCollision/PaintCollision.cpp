@@ -208,15 +208,15 @@ bool PaintCollision::IntersectSphere(Sphere* sphere, D3DXVECTOR2 & uv)
 	return false;
 }
 
-Vector4 PaintCollision::MatrixTimes(const Matrix& matrix, const Vector4& vector)
-{
-	Vector4 vec;
-	vec.x = matrix._11 * vector.x + matrix._21 * vector.y + matrix._31 * vector.z + matrix._41 * vector.w;
-	vec.y = matrix._12 * vector.x + matrix._22 * vector.y + matrix._32 * vector.z + matrix._42 * vector.w;
-	vec.z = matrix._13 * vector.x + matrix._23 * vector.y + matrix._33 * vector.z + matrix._43 * vector.w;
-	vec.w = matrix._14 * vector.x + matrix._24 * vector.y + matrix._34 * vector.z + matrix._44 * vector.w;
-	return vec;
-}
-
+//D3DXVECTOR4 PaintCollision::MatrixTimes(const D3DXMATRIX& matrix, const D3DXVECTOR4& vector)
+//{
+//	D3DXVECTOR4 vec;
+//	vec.x = matrix._11 * vector.x + matrix._21 * vector.y + matrix._31 * vector.z + matrix._41 * vector.w;
+//	vec.y = matrix._12 * vector.x + matrix._22 * vector.y + matrix._32 * vector.z + matrix._42 * vector.w;
+//	vec.z = matrix._13 * vector.x + matrix._23 * vector.y + matrix._33 * vector.z + matrix._43 * vector.w;
+//	vec.w = matrix._14 * vector.x + matrix._24 * vector.y + matrix._34 * vector.z + matrix._44 * vector.w;
+//	return vec;
+//}
+//
 
 

@@ -36,7 +36,7 @@ public:
 	void CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae);
 	void CreateVertexBuffer();
 	ID3D11ShaderResourceView** GetInkTexSRV();
-	HRESULT InitD3D(bool isplane = true);
+	HRESULT Initialize(bool isplane = true);
 	void Render();
 private:
 	ID3D11Buffer* CreateVertexBuffer(InkData& inkdata);
@@ -50,8 +50,8 @@ private:
 	/// </summary>
 	ComPtr<ID3D11InputLayout> inkVertexLayout;//インクテクスチャ用頂点インプットレイアウト
 	ComPtr<ID3D11Buffer> inkConstantBuffer;//インクテクスチャ用コンスタントバッファ
-	ComPtr<ID3D11VertexShader> inkVertexShader;//インクテクスチャ用バーテックスシェーダー
-	ComPtr<ID3D11PixelShader> inkPixelShader;//インクテクスチャ用ピクセルシェーダー
+	static ComPtr<ID3D11VertexShader> inkVertexShader;//インクテクスチャ用バーテックスシェーダー
+	static ComPtr<ID3D11PixelShader> inkPixelShader;//インクテクスチャ用ピクセルシェーダー
 
 
 
@@ -61,8 +61,8 @@ private:
 	ComPtr<ID3D11SamplerState> sampleLimear;//テクスチャサンプラ
 	ComPtr<ID3D11ShaderResourceView> inkNormalMap;//ハイトマップ	
 
-	ComPtr<ID3D11VertexShader> DripVertexShader;//インクテクスチャ用バーテックスシェーダー
-	ComPtr<ID3D11PixelShader> DripPixelShader;//インクテクスチャ用ピクセルシェーダー
+	static ComPtr<ID3D11VertexShader> DripVertexShader;//インクテクスチャ用バーテックスシェーダー
+	static ComPtr<ID3D11PixelShader>  DripPixelShader;//インクテクスチャ用ピクセルシェーダー
 
 
 	ComPtr<ID3D11Buffer> dripVertexBuffer;//
@@ -70,7 +70,7 @@ private:
 	std::unique_ptr<SimpleTextures> dripTextures;//テクスチャ
 
 
-	ComPtr<ID3D11VertexShader> updateVertexShader;//インクテクスチャ用バーテックスシェーダー
-	ComPtr<ID3D11PixelShader> updatePixelShader;//インクテクスチャ用ピクセルシェーダー
+	static ComPtr<ID3D11VertexShader> updateVertexShader;//インクテクスチャ用バーテックスシェーダー
+	static ComPtr<ID3D11PixelShader> updatePixelShader;//インクテクスチャ用ピクセルシェーダー
 
 };

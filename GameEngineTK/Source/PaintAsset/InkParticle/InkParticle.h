@@ -8,7 +8,7 @@
 #include "../../NYLibrary/Collision/Collision.h"
 #include "InkObj2.h"
 #include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
-
+#include "../InkSegmentCollider/InkSegmentCollider.h"
 
 /// <summary>
 /// ƒCƒ“ƒNˆê“H•ª

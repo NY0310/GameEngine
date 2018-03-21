@@ -54,6 +54,8 @@ void Game::Initialize(HWND window, int width, int height)
 	mouse = MouseUtil::GetInstance();
 	//キーボード取得
 	keyBoard = KeyboardUtil::GetInstance();
+	//当たり判定取得
+	collisionManager = CollisionManager::GetInstance();
 
 }
 
@@ -78,6 +80,7 @@ void Game::Update(DX::StepTimer const& timer)
 	camera->Update();
 	mouse->Update();
 	keyBoard->Update();
+	collisionManager->Update();
 }
 
 // Draws the scene.

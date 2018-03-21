@@ -1,5 +1,7 @@
 #pragma once
 #include "../Collider.h"
+#include "../../Element.h"
+
 
 namespace NYLibrary
 {
@@ -9,23 +11,31 @@ namespace NYLibrary
 	class TrianglePolygonListCollider : public Collider
 	{
 	public:
-		TrianglePolygonListCollider() = default;
-		//TrianglePolygonListCollider(const std::string& tag,const std::vector<TriangleCollider*>& triangleCollider):Collider(tag,nullptr){}
+		//コンストラクタ
+		TrianglePolygonListCollider(std::string tag, Element* matrixObject);
 		//三角形ポリゴンを取得する
-		const std::vector<Triangle*>& GetTriangleList() { return triangleList; }
+		std::vector<Triangle>& GetTriangleList() { return triangleList; }
+		//初期化処理
+		void Initialize();
 		//更新処理
-		void Update() {}
+		void Update();
 		//交点を設定する
 		void SetInter(const D3DXVECTOR3& inter) { this->inter = inter; }
+		//当たった三角形を設定する
+		void SetCollisionTriangle(Triangle triangle) { collisionTriangle = triangle; }
 		//線と三角形ポリゴンの当たり判定
 		void Collision(SegmentCollider* segment);
-		//当たった三角形の設定
-		void SetCollisionTriangle(Triangle* triangle) { collisionTriangle = triangle; }
+		//三角形ポリゴンとの当たり判定
+		void Collision(TrianglePolygonListCollider* TrianglePolygonListCollider) {}
+		//当たった三角形を取得
+		Triangle GetCollisionTriangle() { return collisionTriangle; }
+		//当たった交点を取得
+		D3DXVECTOR3 GetInter() { return inter; }
 	private:
 		//三角形ポリゴン
-		std::vector<Triangle*> triangleList;
+		std::vector<Triangle> triangleList;
 		//当たった三角形
-		Triangle* collisionTriangle;
+		Triangle collisionTriangle;
 		//当たった交点
 		D3DXVECTOR3 inter;
 	};

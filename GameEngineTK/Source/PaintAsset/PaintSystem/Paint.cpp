@@ -1,6 +1,13 @@
 #include "Paint.h"
 
 using namespace std;
+ComPtr<ID3D11VertexShader> Paint::inkVertexShader;
+ComPtr<ID3D11PixelShader> Paint::inkPixelShader;
+ComPtr<ID3D11VertexShader> Paint::DripVertexShader;
+ComPtr<ID3D11PixelShader>  Paint::DripPixelShader;
+ComPtr<ID3D11VertexShader> Paint::updateVertexShader;
+ComPtr<ID3D11PixelShader> Paint::updatePixelShader;
+
 
 ID3D11ShaderResourceView** Paint::GetInkTexSRV()
 { 
@@ -8,51 +15,54 @@ ID3D11ShaderResourceView** Paint::GetInkTexSRV()
 }
 
 
-HRESULT Paint::InitD3D(bool isplane)
+HRESULT Paint::Initialize(bool isplane)
 {
 	textures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2, Devices::Get().Height() * 2));
 	textures->Initialize();
 	dripTextures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2, Devices::Get().Height() * 2));
 	dripTextures->Initialize();
 
-
-	ID3DBlob *pCompiledShader = nullptr;
-	//インクテクスチャ用バーテックスシェーダー作成
-	if (FAILED(MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)inkVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
-	//インクテクスチャ用頂点インプットレイアウトをセット
-	D3D11_INPUT_ELEMENT_DESC inkInputLayout[]
+	if (!inkVertexShader)
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	UINT numElements = sizeof(inkInputLayout) / sizeof(inkInputLayout[0]);
-	//頂点インプットレイアウトを作成
-	if (FAILED(device->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), inkVertexLayout.ReleaseAndGetAddressOf())))return E_FAIL;
-	//インクテクスチャ用ピクセルシェーダー作成
-	if (FAILED(MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)inkPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		ID3DBlob *pCompiledShader = nullptr;
+		//インクテクスチャ用バーテックスシェーダー作成
+		if (FAILED(MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)inkVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		//インクテクスチャ用頂点インプットレイアウトをセット
+		D3D11_INPUT_ELEMENT_DESC inkInputLayout[]
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		UINT numElements = sizeof(inkInputLayout) / sizeof(inkInputLayout[0]);
+		//頂点インプットレイアウトを作成
+		if (FAILED(device->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), inkVertexLayout.ReleaseAndGetAddressOf())))return E_FAIL;
+		//インクテクスチャ用ピクセルシェーダー作成
+		if (FAILED(MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)inkPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 
 
-	//垂らすシェーダー
-	//バーテックスシェーダー
-	if (isplane)
-	{
-		if (FAILED(MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		//垂らすシェーダー
+		//バーテックスシェーダー
+		if (isplane)
+		{
+			if (FAILED(MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+			//ピクセルシェーダー
+			if (FAILED(MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+			//ピクセルシェーダー
+			if (FAILED(MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+
+		}
+
+		//更新するシェーダー
+		//バーテックスシェーダー
+		if (FAILED(MakeShader("Resources/HLSL/PaintUpdate.hlsl", "VS", "vs_5_0", (void**)updateVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 		//ピクセルシェーダー
-		if (FAILED(MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
-		//ピクセルシェーダー
-		if (FAILED(MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		if (FAILED(MakeShader("Resources/HLSL/PaintUpdate.hlsl", "PS", "ps_5_0", (void**)updatePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 
 	}
-
-	//更新するシェーダー
-	//バーテックスシェーダー
-	if (FAILED(MakeShader("Resources/HLSL/PaintUpdate.hlsl", "VS", "vs_5_0", (void**)updateVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
-	//ピクセルシェーダー
-	if (FAILED(MakeShader("Resources/HLSL/PaintUpdate.hlsl", "PS", "ps_5_0", (void**)updatePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 
 
 

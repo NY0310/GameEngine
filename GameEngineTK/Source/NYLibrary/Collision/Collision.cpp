@@ -1,6 +1,7 @@
 #include "Collision.h"
 #include "../Component/Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
 #include "../Component/Component.h"
+#include "../Component/Collider/SegmentCollider/SegmentCollider.h"
 
 using namespace DirectX::SimpleMath;
 using namespace NYLibrary;
@@ -308,7 +309,7 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 	D3DXVECTOR3 inter;
 	for (auto& triangle : trianglePolygonListCollider->GetTriangleList())
 	{
-		if (CheckSegment2Triangle(segment, triangle,&inter))
+		if (CheckSegment2Triangle(segment, &triangle,&inter))
 		{
 			//ü‚Æ‚ÌŒğ“_‚ğİ’è‚·‚é
 			trianglePolygonListCollider->SetInter(inter);

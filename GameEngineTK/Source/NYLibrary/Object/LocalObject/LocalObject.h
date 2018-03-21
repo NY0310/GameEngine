@@ -10,9 +10,9 @@ namespace NYLibrary
 	public:
 		LocalObject() { localSize = 0; }
 		//三角形ポリゴンを設定する
-		void SetPolygons(const std::vector<Triangle>& polygons) { this->polygons = polygons; }
+		void SetPolygons(std::vector<Triangle> polygons) { this->polygons = polygons; }
 		//三角形ポリゴンを取得する
-		const std::vector<Triangle>&GetPolygons() {return polygons;}
+		std::vector<Triangle> GetPolygons() {return polygons;}
 		//ローカルの大きさを設定する
 		void SetLocalSize(float localSize) { this->localSize = localSize; }
 		//ローカルの大きさを取得する

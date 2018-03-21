@@ -45,7 +45,7 @@ void Map::CreateMap()
 	for (int i = 0; i < attributeMap->GetMapHight(); i++)
 		for (int j = 0; j < attributeMap->GetMapWidth(); j++)
 		{
-			shared_ptr<Obj> obj = make_shared<Obj>();
+			shared_ptr<PaintObj> obj = make_shared<PaintObj>();
 			obj->Initialize();
 			AddChild(obj);
 			D3DXVECTOR3 pos = D3DXVECTOR3(i, 0, j);

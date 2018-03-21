@@ -46,17 +46,10 @@ namespace NYLibrary
 
 
 		//線のコライダーか
-		void TypeCheckSegmentCollider(Collider* collider)
-		{
-			//SegmentCollider* segmentCollider = dynamic_cast<SegmentCollider*>(collider);
-			//(segmentCollider) ? true : false;
-		}
+		bool TypeCheckSegmentCollider(Collider* collider, Collider * collider_);
 		//三角形ポリゴンのコライダーか
-		void TypeCheckTrianglePolygonListCollider(Collider* collider)
-		{
-			//TrianglePolygonListCollider* trianglePolygonListCollider = dynamic_cast<TrianglePolygonListCollider*>(collider);
-			//(trianglePolygonListCollider) ? true : false;
-		}
+		bool TypeCheckTrianglePolygonListCollider(Collider* collider, Collider * collider_);
+
 
 	};
 };

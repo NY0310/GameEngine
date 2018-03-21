@@ -4,7 +4,7 @@
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 #include "AttributeMap.h"
-#include "../Obj/Obj.h"
+#include "../../PaintAsset/PaintSystem/PaintObj.h"
 #include "AStar.h"
 #include "../SceneGraph/Node/GameObjectNode.h"
 
@@ -29,7 +29,7 @@ namespace NYLibrary
 		//マップ生成
 		void CreateMap();
 		//配置するオブジェクト
-		std::vector<std::vector<std::shared_ptr<Obj>>> mapObj;
+		std::vector<std::vector<std::shared_ptr<PaintObj>>> mapObj;
 		//アトリビュートマップ
 		std::shared_ptr<AttributeMap> attributeMap;
 		//A*

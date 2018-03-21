@@ -1,5 +1,7 @@
 #include "CollisionManager.h"
 #include "../Component/Collider/Collider.h"
+#include "../Component/Collider/SegmentCollider/SegmentCollider.h"
+#include "../Component/Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
 
 using namespace std;
 using namespace NYLibrary;
@@ -26,10 +28,12 @@ void CollisionManager::Update()
 	{
 		for (auto collider_ : colliderList)
 		{
-			if (collider == collider_)
+			if (collider == collider_ || collider->GetTag() == collider_->GetTag())
 			{
-
+				break;
 			}
+			AllTypeCheckAndCollisition(collider, collider_);
+
 		}
 
 	}
@@ -37,7 +41,32 @@ void CollisionManager::Update()
 
 void CollisionManager::AllTypeCheckAndCollisition(Collider* collider, Collider* _collider)
 {
-	TypeCheckSegmentCollider(collider);
+	if (TypeCheckSegmentCollider(collider, _collider))
+		return;
+	if (TypeCheckTrianglePolygonListCollider(collider, _collider))
+		return;
+}
+
+bool CollisionManager::TypeCheckSegmentCollider(Collider * collider, Collider * _collider)
+{
+	SegmentCollider* segmentCollider = dynamic_cast<SegmentCollider*>(_collider);
+	if (segmentCollider)
+	{
+		collider->Collision(segmentCollider);
+		return true;
+	}
+	return false;
+}
+
+bool CollisionManager::TypeCheckTrianglePolygonListCollider(Collider * collider, Collider * collider_)
+{
+	TrianglePolygonListCollider* trianglePolygonListCollider = dynamic_cast<TrianglePolygonListCollider*>(collider);
+	if (trianglePolygonListCollider)
+	{
+		collider->Collision(trianglePolygonListCollider);
+		return true;
+	}
+	return false;
 }
 
 

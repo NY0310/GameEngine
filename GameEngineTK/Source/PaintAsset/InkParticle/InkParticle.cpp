@@ -22,7 +22,7 @@ InkParticle::InkParticle()
 	birthFrame = 0;
 	isValidity = false;
 	SetLocalSize(ROCAL_SIZE);
-	AddComponent<InkSegment>();
+	AddComponent<InkSegmentCollider>();
 }
 
 /// <summary>
