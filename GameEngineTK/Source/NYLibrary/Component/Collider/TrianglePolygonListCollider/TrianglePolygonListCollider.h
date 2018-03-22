@@ -12,13 +12,13 @@ namespace NYLibrary
 	{
 	public:
 		//コンストラクタ
-		TrianglePolygonListCollider(std::string tag, Element* matrixObject);
+		TrianglePolygonListCollider(const std::string& tag, ObjectData* matrixObject);
 		//三角形ポリゴンを取得する
 		std::vector<Triangle>& GetTriangleList() { return triangleList; }
 		//初期化処理
-		void Initialize();
+		void Initialize()final;
 		//更新処理
-		void Update();
+		void Update()final;
 		//交点を設定する
 		void SetInter(const D3DXVECTOR3& inter) { this->inter = inter; }
 		//当たった三角形を設定する
@@ -30,7 +30,7 @@ namespace NYLibrary
 		//当たった三角形を取得
 		Triangle GetCollisionTriangle() { return collisionTriangle; }
 		//当たった交点を取得
-		D3DXVECTOR3 GetInter() { return inter; }
+		const D3DXVECTOR3& GetInter() { return inter; }
 	private:
 		//三角形ポリゴン
 		std::vector<Triangle> triangleList;

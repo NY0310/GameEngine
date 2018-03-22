@@ -26,6 +26,8 @@ namespace NYLibrary
 			colliderList.emplace_back(collider);
 		}
 	private:
+		//当たり判定を取るか判定する
+		bool CheckCallCollision(Collider* collider, Collider* collider_)const;
 		//自クラスのインスタンス
 		static std::unique_ptr<CollisionManager> collisionManager;
 		//コライダーリスト(タグ、コライダー)

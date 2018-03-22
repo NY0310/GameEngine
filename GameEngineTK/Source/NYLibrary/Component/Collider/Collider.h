@@ -11,53 +11,59 @@
 namespace NYLibrary
 {
 	class ObjectData;
+
+	
+
+
 	class Collider : public Component
 	{
 	public: 
 		//コンストラクタ
-		Collider( std::string tag, ObjectData* matrixObject) : tag(tag) { this->matrixObject.reset(matrixObject); }
-		Collider() = default;
+		Collider(std::string tag, ObjectData* objectData) : tag(tag) {
+			this->objectData.reset(objectData); }
+		Collider() = delete;
 		//デストラクタ
-		~Collider() { matrixObject.release(); };
-		//初期化処理
-		virtual void Initialize() = 0;
-		//更新処理
-		virtual void Update() { ClearCollisitonColliderList(); }
+		~Collider() { objectData.release(); };
+		//初期化
+		virtual void Initialize() {}
+		//更新
+		virtual void Update() {}
 		//線分との当たり判定
-		virtual void Collision(SegmentCollider* segmentCollider) = 0;
+		virtual void Collision(SegmentCollider* segmentCollider) {}
 		//三角形ポリゴンとの当たり判定
-		virtual void Collision(TrianglePolygonListCollider* TrianglePolygonListCollider) = 0;
-		//当たった時にElement関数を呼び出す
-		void OnCollision() { listener(this); }
+		virtual void Collision(TrianglePolygonListCollider* TrianglePolygonListCollider) {}
 		//当たり判定管理クラスに自信の情報を送る
 		void RegisterCollider() {		
 			CollisionManager* collisionManager = CollisionManager::GetInstance();
 			collisionManager->AddCollider(this);
 		}
-		//当たったコライダーを追加する
-		void AddCollisionCollider(Collider* collider) { collisitonColliderListNow.emplace_back(collider); }
 		//処理を受け取る
 		void addListener(std::function<void(Collider* collider)> listener) {
 			this->listener = listener;
 		}
-		//タグを設定する
-		void SetTag(const std::string& tagName) { tag = tagName; }
 		//タグを取得する
 		const std::string& GetTag() { return tag; }
-
+		// アクティブ状態を設定する
+		void SetActive(bool active) { isActive = active; }
+		// アクティブを取得する
+		bool GetActive()const { return isActive; }
+		//オブジェクトデータを取得
+		ObjectData* GetObjectData() { return objectData.get(); }
+		//当たった時にElement関数を呼び出す
+		void OnCollision() { listener(this); }
+		void AddCollisionCollider(Collider* collider) { collisitonColliderListNow.emplace_back(collider); }
 	protected:
 		//オブジェクトのタグ(このタグが同じものは当たり判定を行わない)
 		std::string tag;
 		//座標、行列管理のアドレス
-		std::unique_ptr<ObjectData> matrixObject;
-		//現フレームにてコライダーに当たったコライダーリストをクリア
-		void ClearCollisitonColliderList() { collisitonColliderListNow.clear(); }
+		std::unique_ptr<ObjectData> objectData;
+		//アクティブ状態か
+		bool isActive;
+		//現フレームにてコライダーに当たったコライダーリスト
+		std::vector<Collider*> collisitonColliderListNow;
 	private:
 		//ラムダ式を受け取る
 		std::function<void(Collider* collider)> listener = [&](Collider* collider) {};
-		//現フレームにてコライダーに当たったコライダーリスト
-		std::vector<Collider*> collisitonColliderListNow;
-
 	};
 
 

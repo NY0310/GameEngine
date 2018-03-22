@@ -4,7 +4,6 @@
 #include <d3d11_1.h>
 #include <vector> 
 #include <memory>
-#include <cassert>
 #include "../../NYLibrary/Collision/Collision.h"
 #include "InkObj2.h"
 #include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
@@ -28,13 +27,18 @@ public:
 	bool IsValidity() { return isValidity; }
 	//削除(メモリは解放しない)
 	void Destroy() {
-	/*	assert(!isValidity, ("このインクは既に無効状態です"));*/
-		isValidity = false;}
-	//当たり判定用の線を取得
-	NYLibrary::InkSegment* GetSegment() {
-		return colisitionSegment.get();
+		SetComponentActive(false);
+		isValidity = false;
+		birthFrame = 0;
 	}
+
 private:
+	//移動
+	void Move();
+	//クォータニオン作成
+	void CalcQuaternion();
+	//生き残っているか確認
+	void LifeCheck();
 	//移動ベクトル
 	D3DXVECTOR3 direction;
 	//速度	
@@ -49,13 +53,13 @@ private:
 	static const float GRAVITY;
 	//ローカルの大きさ
 	static const float ROCAL_SIZE;
+	//インク有効時間
+	static const int LIFE_FRAME = 120;
 public:
 	// コピーコンストラクタ禁止
 	InkParticle(const InkParticle&) = delete;
 	// 代入禁止
 	InkParticle& operator=(const InkParticle&) = delete;
-	//クォータニオン作成
-	void CalcQuaternion();
 };
 
 /// <summary>
@@ -91,8 +95,8 @@ public:
 private:
 	//インクパーティクルの更新処理
 	void InkParticleUpdate();
-	//線の更新処理
-	void SegmentsUpdate();
+	////線の更新処理
+	//void SegmentsUpdate();
 	//座標の更新処理
 	void InkDataUpdate();
 	//インターバル更新処理

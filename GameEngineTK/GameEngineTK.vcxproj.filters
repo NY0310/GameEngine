@@ -274,9 +274,6 @@
     <ClInclude Include="Source\NYLibrary\AStar\MapNode.h">
       <Filter>NYLibrary\Astar</Filter>
     </ClInclude>
-    <ClInclude Include="Source\NYLibrary\Component\Component.h">
-      <Filter>NYLibrary\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Source\NYLibrary\Component\Element.h">
       <Filter>NYLibrary\Component</Filter>
     </ClInclude>
@@ -306,6 +303,9 @@
     </ClInclude>
     <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h">
       <Filter>PaintAsset\InkSegmentCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Component.h">
+      <Filter>NYLibrary\Component\Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

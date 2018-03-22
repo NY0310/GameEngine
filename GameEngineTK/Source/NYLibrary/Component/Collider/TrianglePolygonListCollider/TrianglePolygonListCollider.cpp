@@ -2,22 +2,48 @@
 
 using namespace NYLibrary;
 
-TrianglePolygonListCollider::TrianglePolygonListCollider(std::string tag, Element * matrixObject)
-	:Collider(tag, matrixObject)
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="tag">タグ</param>
+/// <param name="objectData">オブジェクトのデータ</param>
+TrianglePolygonListCollider::TrianglePolygonListCollider(const std::string& tag, ObjectData * objectData)
+	:Collider(tag, objectData)
 {
-	
+	Initialize();
 }
 
+/// <summary>
+/// 初期化
+/// </summary>
 void TrianglePolygonListCollider::Initialize()
 {
-	triangleList = matrixObject->GetPolygons();
+	Update();
+	//自信を当たり判定管理クラスに登録する
 	RegisterCollider();
 }
 
+/// <summary>
+/// データを更新
+/// </summary>
 void TrianglePolygonListCollider::Update()
 {
-	Collider::Update();
-	collisionTriangle;
+	//現フレームにてコライダーに当たったコライダーリストをクリア
+	collisitonColliderListNow.clear();
+
+	//ポリゴンデータを更新
+	triangleList = objectData->GetPolygons();
+
+	//当たった三角形ポリゴンの情報を初期化
+	collisionTriangle.normal = D3DXVECTOR3(0,0,0);
+	collisionTriangle.p0 = D3DXVECTOR3(0, 0, 0);
+	collisionTriangle.p1 = D3DXVECTOR3(0, 0, 0);
+	collisionTriangle.p2 = D3DXVECTOR3(0, 0, 0);
+	collisionTriangle.uv0 = D3DXVECTOR2(0, 0);
+	collisionTriangle.uv1 = D3DXVECTOR2(0, 0);
+	collisionTriangle.uv2 = D3DXVECTOR2(0, 0);
+
+	//当たった交点を初期化
 	inter = D3DXVECTOR3(0, 0, 0);
 }
 

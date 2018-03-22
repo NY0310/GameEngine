@@ -24,14 +24,12 @@ CollisionManager * CollisionManager::GetInstance()
 
 void CollisionManager::Update()
 {
+
 	for (auto collider : colliderList)
 	{
 		for (auto collider_ : colliderList)
 		{
-			if (collider == collider_ || collider->GetTag() == collider_->GetTag())
-			{
-				break;
-			}
+			if (CheckCallCollision(collider, collider_))break;
 			AllTypeCheckAndCollisition(collider, collider_);
 
 		}
@@ -45,6 +43,18 @@ void CollisionManager::AllTypeCheckAndCollisition(Collider* collider, Collider* 
 		return;
 	if (TypeCheckTrianglePolygonListCollider(collider, _collider))
 		return;
+}
+
+
+/// <summary>
+/// 当たり判定を取るか判定する
+/// </summary>
+/// <param name="collider">コライダー</param>
+/// <param name="collider_">コライダー</param>
+/// <returns></returns>
+bool CollisionManager::CheckCallCollision(Collider * collider, Collider * collider_)const
+{
+	return  (collider == collider_ || collider->GetTag() == collider_->GetTag() || !collider->GetActive() || !collider_->GetActive());
 }
 
 bool CollisionManager::TypeCheckSegmentCollider(Collider * collider, Collider * _collider)

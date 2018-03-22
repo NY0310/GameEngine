@@ -165,5 +165,5 @@ void GameObjectNode::LoopUpdate()
 	for (auto& child : children) {
 		child->LoopUpdate();
 	}
-
+	this->ComponentUpdate();
 }

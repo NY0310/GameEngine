@@ -31,7 +31,7 @@ namespace NYLibrary {
 		}
 
 		//更新処理
-		virtual void Update()
+		virtual void ComponentUpdate()
 		{
 			// 繋げられているコンポーネントの処理
 			for (auto& component : componentList)
@@ -49,13 +49,12 @@ namespace NYLibrary {
 			//C* type = dynamic_cast<C*>(coll);
 			//delete coll;
 			//coll = nullptr;
-			//////コライダーならMatrixObjectの情報を渡す
+			////s//コライダーならMatrixObjectの情報を渡す
 			//if (type)
 			//{
-				Collider* collider = new C(tag, this);
-				collider->Initialize();
-				componentList.emplace_back(collider);
-				
+				Collider * callCollision = new C(tag, this);
+				SetReplaceSceneObject(callCollision);
+				componentList.emplace_back(callCollision);
 			//}
 			//else
 			//{
@@ -116,8 +115,25 @@ namespace NYLibrary {
 			componentList.clear();
 		}
 
-		//コライダーのデータを更新する
-		void ColliderDateUpdate()
+		////コライダーのデータを更新する
+		//void ColliderDateUpdate()
+		//{
+		//	for (auto& component : componentList)
+		//	{
+		//		Collider* type = dynamic_cast<Collider*>(component);
+
+		//		if (type)
+		//		{
+		//			type->Initialize();
+		//			break;
+		//		}
+		//	}
+		//}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void SetComponentActive()
 		{
 			for (auto& component : componentList)
 			{
@@ -125,25 +141,26 @@ namespace NYLibrary {
 
 				if (type)
 				{
-					type->Initialize();
+					type->SetActive(isActive);
 					break;
 				}
 			}
+
 		}
 			
 		//コライダーが他のコライダーに当たると呼び出される(オーバーライドして任意の処理を追加してください。)
 		virtual void OnCollisiton(Collider* collider) {}
 
-		//シーンオブジェクトににシーン変更のオブジェクト関数を登録する
+		//衝突時に呼び出す関数オブジェクトを登録する
 		void SetReplaceSceneObject(Collider* collider) {
 			std::function<void(Collider*)> thisFunction = std::bind(&Element::OnCollisiton, this, std::placeholders::_1);
 			collider->addListener(thisFunction);
 		}
 
 		// アクティブ状態を設定する
-		virtual void SetActive(bool active) { isActive = active; }
+		void SetComponentActive(bool active) { isActive = active; SetComponentActive(); }
 		// アクティブを取得する
-		inline virtual bool GetActive()	const { return isActive; }
+		bool GetComponentActive()	const { return isActive; }
 
 		//タグを設定する
 		void SetTag(std::string tagName) { tag = tagName; }

@@ -12,6 +12,8 @@ const float InkParticle::GRAVITY = 0.01f;
 const float InkParticle::ROCAL_SIZE = 10.0f;
 
 
+
+
 /// <summary>
 /// コンストラクタ
 /// </summary>
@@ -51,6 +53,7 @@ void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirecti
 	//コンポーネント処理を無効にする
 	birthFrame = 0;
 	isValidity = true;
+	SetComponentActive(true);
 }
 
 /// <summary>
@@ -61,10 +64,16 @@ void InkParticle::Update()
 	if (isValidity)
 	{
 		birthFrame++;
-		direction.y -= GRAVITY;
-		SetPosition(GetPosition() + direction * SPEED);
+		LifeCheck();
+		Move();
 		CalcQuaternion();
 	}
+}
+
+void InkParticle::Move()
+{
+	direction.y -= GRAVITY;
+	SetPosition(GetPosition() + direction * SPEED);
 }
 
 /// <summary>
@@ -89,6 +98,14 @@ void InkParticle::CalcQuaternion()
 	//指定した回転軸周りに指定ラジアンだけ回すクォータニオンを得る
 	D3DXQuaternionRotationAxis(&q, &axis, delta);
 	SetQuaternion(q);
+}
+
+void InkParticle::LifeCheck()
+{
+	if (birthFrame >= LIFE_FRAME)
+	{
+		Destroy();
+	}
 }
 
 
@@ -139,7 +156,6 @@ void InkParticleManager::Update()
 {
 
 	InkParticleUpdate();
-	SegmentsUpdate();
 	InkDataUpdate();
 	IntervalUpdate();
 }
@@ -202,22 +218,22 @@ void InkParticleManager::InkParticleUpdate()
 	}
 }
 	
-/// <summary>
-/// 線の更新処理
-/// </summary>
-void InkParticleManager::SegmentsUpdate()
-{
-	segments.clear();
-
-	for (int i = 0; i < MAX_PARTICLE; i++)
-	{
-		if (inkParticle[i]->IsValidity())
-		{
-			segments.emplace_back(inkParticle[i]->GetSegment());
-		}
-	}
-
-}
+///// <summary>
+///// 線の更新処理
+///// </summary>
+//void InkParticleManager::SegmentsUpdate()
+//{
+//	segments.clear();
+//
+//	for (int i = 0; i < MAX_PARTICLE; i++)
+//	{
+//		if (inkParticle[i]->IsValidity())
+//		{
+//			segments.emplace_back(inkParticle[i]->GetSegment());
+//		}
+//	}
+//
+//}
 
 /// <summary>
 /// 座標の更新処理

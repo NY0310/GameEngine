@@ -307,9 +307,52 @@ bool NYLibrary::CheckSphere2Triangle(const Sphere& _sphere, const Triangle& _tri
 void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePolygonListCollider * trianglePolygonListCollider)
 {
 	D3DXVECTOR3 inter;
+
+	// 角度判定用に地面とみなす角度の限界値<度>
+	const float limit_angle = XMConvertToRadians(30.0f);
+
+	// 逆行列を計算
+	D3DXMATRIX worldInverse;
+	D3DXMatrixInverse(&worldInverse, nullptr, &segment->GetObjectData()->GetWorldMatrix());
+
+	
+	// コピー
+	D3DXVECTOR4 start;
+	D3DXVECTOR4 end;
+	// 線分をワールド座標からモデル座標系に引き込む
+	D3DXVec3Transform(&start,&segment->start,&worldInverse);
+	D3DXVec3Transform(&end, &segment->end, &worldInverse);
+
+
+
+	// 線分の方向ベクトルを取得
+	D3DXVECTOR4 segmentNormal = end - start;
+	D3DXVec4Normalize(&segmentNormal, &segmentNormal);
+
+	Segment* localSegment = new Segment;
+	localSegment->start = D3DXVECTOR3(start.x, start.y, start.z);
+	localSegment->end = D3DXVECTOR3(end.x, end.y, end.z);
+
+
 	for (auto& triangle : trianglePolygonListCollider->GetTriangleList())
 	{
-		if (CheckSegment2Triangle(segment, &triangle,&inter))
+		////ポリゴンの法線が無効な場合
+		//if (triangle.normal == D3DXVECTOR3(0, 0, 0))
+		//	continue;
+
+
+		// 上方向ベクトルと法線の内積
+		// 長さが１のベクトル２同士の内積は、コサイン（ベクトルの内積の定義より）
+		D3DXVECTOR3 vec3SegmentNormal = D3DXVECTOR3(segmentNormal.x, segmentNormal.y, segmentNormal.z);
+		float cosine = D3DXVec3Dot(&-vec3SegmentNormal,&triangle.normal);
+		// コサイン値から、上方向との角度差を計算
+		float angle = acosf(cosine);
+		// 上方向との角度が限界角より大きければ、面の傾きが大きいので、地面とみなさずスキップ
+		if ( angle > limit_angle )
+			continue;
+
+
+		if (CheckSegment2Triangle(localSegment, &triangle,&inter))
 		{
 			//線との交点を設定する
 			trianglePolygonListCollider->SetInter(inter);
@@ -322,8 +365,11 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 			segment->OnCollision();
 			trianglePolygonListCollider->OnCollision();
 
+			break;
 		}
 	}
+	delete localSegment;
+	localSegment = nullptr;
 }
 
 //--------------------------------------------------------------------------------------------
@@ -334,7 +380,7 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 // 戻り値 : 交差しているか否か
 // メ　モ : 裏面の当たりはとらない
 //--------------------------------------------------------------------------------------------
-bool NYLibrary::CheckSegment2Triangle(const SegmentCollider* segment, Triangle* triangle, D3DXVECTOR3* inter)
+bool NYLibrary::CheckSegment2Triangle(const Segment* segment, Triangle* triangle, D3DXVECTOR3* inter)
 {
 	const float epsilon = -1.0e-5f;	// 誤差吸収用の微小な値
 	D3DXVECTOR3 	LayV;		// 線分の終点→始点

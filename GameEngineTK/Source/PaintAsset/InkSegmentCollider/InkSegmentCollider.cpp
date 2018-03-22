@@ -11,6 +11,6 @@ InkSegmentCollider::InkSegmentCollider(const string & tag, ObjectData * matrixOb
 
 void InkSegmentCollider::Initialize()
 {
-	color = matrixObject->GetColor();
+	color = objectData->GetColor();
 	SegmentCollider::Initialize();
 }

@@ -7,6 +7,8 @@ namespace NYLibrary
 	class Component
 	{
 	public:
+		//‰Šú‰»
+		virtual void Initialize() = 0;
 		//XV
 		virtual void Update() = 0;
 	};

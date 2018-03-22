@@ -9,6 +9,7 @@
 #include <d3d11_1.h>
 #include <SimpleMath.h>
 #include <d3dx9math.h>
+#include "../Math/Math.h"
 
 namespace NYLibrary
 {
@@ -85,5 +86,5 @@ namespace NYLibrary
 	//線と全ての三角形ポリゴンの当たり判定	
 	void CheckSegment2AllTriangle(SegmentCollider* segment, TrianglePolygonListCollider* trianglePolygonListCollider);
 	//線と三角形ポリゴンの当たり判定	
-	bool CheckSegment2Triangle(const SegmentCollider* segment, Triangle* triangle,D3DXVECTOR3* inter);
+	bool CheckSegment2Triangle(const Segment* segment, Triangle* triangle,D3DXVECTOR3* inter);
 };

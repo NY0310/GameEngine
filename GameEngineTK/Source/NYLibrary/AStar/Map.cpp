@@ -14,7 +14,7 @@ void Map::Initialize()
 	//マップデータ読み込み
 	attributeMap->ReadCSV("Resources/CSV/stage.csv");
 	//マップのサイズを変更する
-	MapObjResize(attributeMap->GetMapHight(), attributeMap->GetMapWidth());
+	MapObjResize(1,1);
 	//マップデータからオブジェクトを生成
 	CreateMap();
 	int a = 0;
@@ -42,16 +42,16 @@ void Map::CreateMap()
 		"Resources/PNG/GoalPanel.png","Resources/PNG/WallPanel.png",
 		"Resources/PNG/planePanel.png", "Resources/PNG/SwampPanel.png"
 	};
-	for (int i = 0; i < attributeMap->GetMapHight(); i++)
-		for (int j = 0; j < attributeMap->GetMapWidth(); j++)
+	for (int i = 0; i < 1; i++)
+		for (int j = 0; j < 1; j++)
 		{
 			shared_ptr<PaintObj> obj = make_shared<PaintObj>();
 			obj->Initialize();
 			AddChild(obj);
 			D3DXVECTOR3 pos = D3DXVECTOR3(i, 0, j);
 			obj->SetPosition(pos);
-			obj->LoadOBJFile("Resources/OBJ/Panel.obj");
-			obj->SetScale(0.3);
+			obj->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
+			obj->SetScale(10);
 			int a = attributeMap->GetAttributeMap(i, j);
 			obj->LoadTextuerFile(FileNames[attributeMap->GetAttributeMap(i, j) + 3]);
 			obj->AddComponent<TrianglePolygonListCollider>();
