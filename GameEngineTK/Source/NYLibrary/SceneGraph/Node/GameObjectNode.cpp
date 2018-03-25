@@ -8,11 +8,6 @@
 
 using namespace std;
 using namespace NYLibrary;
-//::GameObjectNode::GameObjectNode(shared_ptr<GameObjectInterface>&& gameobject)
-//	:Node()
-//{
-//	gameObject  = move(gameobject);
-//}
 
 void RootGameObjectNode::LoopInitialize()
 {
@@ -41,6 +36,20 @@ void RootGameObjectNode::LoopRender()
 {
 	for (auto& child : children) {
 		child->LoopRender();
+	}
+}
+
+void RootGameObjectNode::LoopShadowRender()
+{
+	for (auto& child : children) {
+		child->LoopShadowRender();
+	}
+}
+
+void RootGameObjectNode::LoopClearRenderConfig()
+{
+	for (auto& child : children) {
+		child->LoopClearRenderConfig();
 	}
 }
 
@@ -118,11 +127,28 @@ void GameObjectNodeEmpty::LoopUpdate()
 
 void GameObjectNodeEmpty::LoopRender()
 {
+	//ƒXƒNƒŠ[ƒ“•`‰æ
 	this->Render();
 	for (auto& child : children) {
 		child->LoopRender();
 	}
 
+}
+
+void GameObjectNodeEmpty::LoopShadowRender()
+{
+	this->ShadowRender();
+	for (auto& child : children) {
+		child->LoopShadowRender();
+	}
+}
+
+void GameObjectNodeEmpty::LoopClearRenderConfig()
+{
+	this->ClearRenderConfig();
+	for (auto& child : children) {
+		child->LoopClearRenderConfig();
+	}
 }
 
 void GameObjectNodeEmpty::LoopFinalize()

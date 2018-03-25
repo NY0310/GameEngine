@@ -166,7 +166,7 @@ namespace NYLibrary
 			}
 		}
 
-
+		void Clear();
 	private:
 		static std::unique_ptr<Devices> devices;
 		HWND hWnd;

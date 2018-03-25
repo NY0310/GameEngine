@@ -1,12 +1,12 @@
-//#pragma once
-//#include "../Obj/Obj.h"
-//
-//
-//class Stage	: public Obj
-//{
-//public:
-//	Stage();
-//	~Stage();
-//private:
-//};
-//
+#pragma once
+#include "../../../PaintAsset/PaintSystem/PaintObj.h"
+
+
+class Stage	: public PaintObj
+{
+public:
+	Stage();
+	~Stage();
+private:
+};
+

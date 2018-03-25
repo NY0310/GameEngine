@@ -2,6 +2,7 @@
 #include "../Component/Collider/Collider.h"
 #include "../Component/Collider/SegmentCollider/SegmentCollider.h"
 #include "../Component/Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
+#include "../Component/Collider/PlaneCollider/PlaneCollider.h"
 
 using namespace std;
 using namespace NYLibrary;
@@ -57,9 +58,9 @@ bool CollisionManager::CheckCallCollision(Collider * collider, Collider * collid
 	return  (collider == collider_ || collider->GetTag() == collider_->GetTag() || !collider->GetActive() || !collider_->GetActive());
 }
 
-bool CollisionManager::TypeCheckSegmentCollider(Collider * collider, Collider * _collider)
+bool CollisionManager::TypeCheckSegmentCollider(Collider * collider, Collider * collider_)
 {
-	SegmentCollider* segmentCollider = dynamic_cast<SegmentCollider*>(_collider);
+	SegmentCollider* segmentCollider = dynamic_cast<SegmentCollider*>(collider_);
 	if (segmentCollider)
 	{
 		collider->Collision(segmentCollider);
@@ -70,7 +71,7 @@ bool CollisionManager::TypeCheckSegmentCollider(Collider * collider, Collider * 
 
 bool CollisionManager::TypeCheckTrianglePolygonListCollider(Collider * collider, Collider * collider_)
 {
-	TrianglePolygonListCollider* trianglePolygonListCollider = dynamic_cast<TrianglePolygonListCollider*>(collider);
+	TrianglePolygonListCollider* trianglePolygonListCollider = dynamic_cast<TrianglePolygonListCollider*>(collider_);
 	if (trianglePolygonListCollider)
 	{
 		collider->Collision(trianglePolygonListCollider);
@@ -79,6 +80,17 @@ bool CollisionManager::TypeCheckTrianglePolygonListCollider(Collider * collider,
 	return false;
 }
 
+
+bool CollisionManager::TypeCheckPlaneCollider(Collider * collider, Collider * collider_)
+{
+	PlaneCollider* planeCollider = dynamic_cast<PlaneCollider*>(collider_);
+	if (planeCollider)
+	{
+		collider->Collision(planeCollider);
+		return true;
+	}
+	return false;
+}
 
 
 

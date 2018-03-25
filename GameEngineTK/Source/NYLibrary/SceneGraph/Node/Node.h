@@ -46,6 +46,8 @@ namespace NYLibrary
 		inline void AddChild(std::shared_ptr<NodeAbstract>&& child)
 		{
 			//親を設定
+			auto a = child;
+			auto d = shared_from_this();
 			child->SetParent(shared_from_this());
 			children.emplace_back(child);
 		}
@@ -107,6 +109,10 @@ namespace NYLibrary
 		virtual void Update() = 0;
 		//描画
 		virtual void Render() = 0;
+		//影の描画
+		virtual void ShadowRender() = 0;
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		virtual void ClearRenderConfig() = 0;
 		//終了
 		virtual void Finalize() = 0;
 		//ノードの数を取得する

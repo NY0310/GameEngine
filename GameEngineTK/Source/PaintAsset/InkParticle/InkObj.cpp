@@ -1,16 +1,16 @@
-#include "InkObj2.h"
+#include "InkObj.h"
 
 
 using namespace std;
 
-InkObj2::InkObj2()
+InkObj::InkObj()
 {
 }
 
 
 
 
-HRESULT InkObj2::CreateShader()
+HRESULT InkObj::CreateShader()
 {
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *pCompiledShader = nullptr;
@@ -25,7 +25,7 @@ HRESULT InkObj2::CreateShader()
 }
 
 
-HRESULT InkObj2::CreateVertexInputLayout(ID3DBlob *compiledshader)
+HRESULT InkObj::CreateVertexInputLayout(ID3DBlob *compiledshader)
 {
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	//頂点インプットレイアウトを定義	
@@ -46,7 +46,7 @@ HRESULT InkObj2::CreateVertexInputLayout(ID3DBlob *compiledshader)
 
 }
 
-ID3D11Buffer* InkObj2::CreateConstantBuffer(UINT size)
+ID3D11Buffer* InkObj::CreateConstantBuffer(UINT size)
 {
 	ID3D11Buffer* buffer;
 	//コンスタントバッファー作成
@@ -63,7 +63,7 @@ ID3D11Buffer* InkObj2::CreateConstantBuffer(UINT size)
 
 
 
-void InkObj2::Initialize()
+void InkObj::Initialize()
 {
 	//シェーダー作成
 	CreateShader();
@@ -75,7 +75,7 @@ void InkObj2::Initialize()
 
 
 
-HRESULT InkObj2::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
+HRESULT InkObj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 {
 	////既に読み込んでいるか
 	//if (modelDatas.count(FileName) != 0)
@@ -217,7 +217,7 @@ HRESULT InkObj2::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 
 
 
-void InkObj2::Render(vector<InkData> inkDataList)
+void InkObj::Render(vector<InkData> inkDataList)
 {
 	//使用するシェーダーの登録	
 	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
@@ -253,7 +253,7 @@ void InkObj2::Render(vector<InkData> inkDataList)
 
 }
 
-void InkObj2::Render(InkData inkData)
+void InkObj::Render(InkData inkData)
 {
 
 	//シェーダーのコンスタントバッファーに各種データを渡す	

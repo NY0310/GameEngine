@@ -7,8 +7,8 @@ using namespace NYLibrary;
 /// </summary>
 /// <param name="tag">タグ</param>
 /// <param name="objectData">オブジェクトのデータ</param>
-TrianglePolygonListCollider::TrianglePolygonListCollider(const std::string& tag, ObjectData * objectData)
-	:Collider(tag, objectData)
+TrianglePolygonListCollider::TrianglePolygonListCollider(ObjectData * objectData)
+	:Collider(objectData)
 {
 	Initialize();
 }
@@ -28,8 +28,7 @@ void TrianglePolygonListCollider::Initialize()
 /// </summary>
 void TrianglePolygonListCollider::Update()
 {
-	//現フレームにてコライダーに当たったコライダーリストをクリア
-	collisitonColliderListNow.clear();
+	Collider::Update();
 
 	//ポリゴンデータを更新
 	triangleList = objectData->GetPolygons();

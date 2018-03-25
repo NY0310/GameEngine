@@ -7,10 +7,21 @@
 #include "../Object/ColorObject/ColorObject.h"
 #include "Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
 #include "../../PaintAsset/InkSegmentCollider/InkSegmentCollider.h"
+#include "Collider\PlaneCollider\PlaneCollider.h"
 
 namespace NYLibrary {
 	class ObjectData:  public MatrixObject, public LocalObject, public ColorObject
-	{};
+	{
+	protected:
+		std::string tag;//タグ
+
+	public:
+		//タグを設定する
+		void SetTag(std::string tagName) { tag = tagName; }
+		//タグを取得する
+		const std::string& GetTag() { return tag; }
+	
+	};
 	class Element : public ObjectData
 	{
 	private:
@@ -33,6 +44,7 @@ namespace NYLibrary {
 		//更新処理
 		virtual void ComponentUpdate()
 		{
+			if(isActive)
 			// 繋げられているコンポーネントの処理
 			for (auto& component : componentList)
 			{
@@ -52,7 +64,7 @@ namespace NYLibrary {
 			////s//コライダーならMatrixObjectの情報を渡す
 			//if (type)
 			//{
-				Collider * callCollision = new C(tag, this);
+				Collider * callCollision = new C(this);
 				SetReplaceSceneObject(callCollision);
 				componentList.emplace_back(callCollision);
 			//}
@@ -162,9 +174,5 @@ namespace NYLibrary {
 		// アクティブを取得する
 		bool GetComponentActive()	const { return isActive; }
 
-		//タグを設定する
-		void SetTag(std::string tagName) { tag = tagName; }
-		//タグを取得する
-		const std::string& GetTag() { return tag; }
 	};
 };

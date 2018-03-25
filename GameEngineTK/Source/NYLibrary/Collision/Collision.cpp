@@ -2,8 +2,8 @@
 #include "../Component/Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
 #include "../Component/Component.h"
 #include "../Component/Collider/SegmentCollider/SegmentCollider.h"
+#include "../Component/Collider/PlaneCollider/PlaneCollider.h"
 
-using namespace DirectX::SimpleMath;
 using namespace NYLibrary;
 
 
@@ -306,22 +306,28 @@ bool NYLibrary::CheckSphere2Triangle(const Sphere& _sphere, const Triangle& _tri
 
 void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePolygonListCollider * trianglePolygonListCollider)
 {
+	//交点
 	D3DXVECTOR3 inter;
+	//
+	float temp_distance = 0;
 
 	// 角度判定用に地面とみなす角度の限界値<度>
 	const float limit_angle = XMConvertToRadians(30.0f);
 
 	// 逆行列を計算
-	D3DXMATRIX worldInverse;
-	D3DXMatrixInverse(&worldInverse, nullptr, &segment->GetObjectData()->GetWorldMatrix());
+	D3DXMATRIX startWorldInverse;
+	D3DXMATRIX endWorldInverse;
+
+	D3DXMatrixInverse(&startWorldInverse, nullptr, &trianglePolygonListCollider->GetObjectData()->GetWorldMatrix());
+	D3DXMatrixInverse(&endWorldInverse, nullptr, &segment->GetEndWorldMatrix());
 
 	
 	// コピー
 	D3DXVECTOR4 start;
 	D3DXVECTOR4 end;
 	// 線分をワールド座標からモデル座標系に引き込む
-	D3DXVec3Transform(&start,&segment->start,&worldInverse);
-	D3DXVec3Transform(&end, &segment->end, &worldInverse);
+	D3DXVec3Transform(&start,&segment->start,&startWorldInverse);
+	D3DXVec3Transform(&end, &segment->end, &startWorldInverse);
 
 
 
@@ -337,8 +343,8 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 	for (auto& triangle : trianglePolygonListCollider->GetTriangleList())
 	{
 		////ポリゴンの法線が無効な場合
-		//if (triangle.normal == D3DXVECTOR3(0, 0, 0))
-		//	continue;
+		if (triangle.normal == D3DXVECTOR3(0, 0, 0))
+			continue;
 
 
 		// 上方向ベクトルと法線の内積
@@ -352,20 +358,24 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 			continue;
 
 
-		if (CheckSegment2Triangle(localSegment, &triangle,&inter))
+		if (CheckSegment2Triangle(localSegment, &triangle,inter))
 		{
-			//線との交点を設定する
-			trianglePolygonListCollider->SetInter(inter);
-			//当たった三角形ポリゴンを設定する
-			trianglePolygonListCollider->SetCollisionTriangle(triangle);
-			//当たったコライダーを登録する
-			segment->AddCollisionCollider(trianglePolygonListCollider);
-			trianglePolygonListCollider->AddCollisionCollider(segment);
-			//当たった通知をする
-			segment->OnCollision();
-			trianglePolygonListCollider->OnCollision();
-
-			break;
+			// 線分の始点と衝突点の距離を計算（めりこみ距離）
+			float nowTempDistance = D3DXVec3Length(&(inter-localSegment->start ));
+			if (temp_distance < nowTempDistance)
+			{
+				temp_distance = nowTempDistance;
+				//線との交点を設定する
+				trianglePolygonListCollider->SetInter(inter);
+				//当たった三角形ポリゴンを設定する
+				trianglePolygonListCollider->SetCollisionTriangle(triangle);
+				//当たったコライダーを登録する
+				segment->AddCollisionCollider(trianglePolygonListCollider);
+				trianglePolygonListCollider->AddCollisionCollider(segment);
+				//当たった通知をする
+				segment->OnCollision(trianglePolygonListCollider);
+				trianglePolygonListCollider->OnCollision(segment);
+			}
 		}
 	}
 	delete localSegment;
@@ -380,7 +390,7 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 // 戻り値 : 交差しているか否か
 // メ　モ : 裏面の当たりはとらない
 //--------------------------------------------------------------------------------------------
-bool NYLibrary::CheckSegment2Triangle(const Segment* segment, Triangle* triangle, D3DXVECTOR3* inter)
+bool NYLibrary::CheckSegment2Triangle(const Segment* segment, Triangle* triangle, D3DXVECTOR3& inter)
 {
 	const float epsilon = -1.0e-5f;	// 誤差吸収用の微小な値
 	D3DXVECTOR3 	LayV;		// 線分の終点→始点
@@ -437,7 +447,77 @@ bool NYLibrary::CheckSegment2Triangle(const Segment* segment, Triangle* triangle
 	dp = D3DXVec3Dot(&m, &triangle->normal);
 	if (dp <= epsilon) return false;
 
-	inter = &s;	// 交点をコピー
+	inter = s;	// 交点をコピー
 
 	return true;
+}
+
+
+
+
+void NYLibrary::IntersectPlane2Segment(SegmentCollider* inkSegmentColslider, PlaneCollider* planeCollider)
+{
+	D3DXVECTOR3 inter;
+	if (IntersectPlane2Segment(&inter, inkSegmentColslider->start, inkSegmentColslider->end,*planeCollider))
+	{
+		planeCollider->SetInter(inter);
+		//当たったコライダーを登録する
+		inkSegmentColslider->AddCollisionCollider(planeCollider);
+		planeCollider->AddCollisionCollider(inkSegmentColslider);
+		//当たった通知をする
+		inkSegmentColslider->OnCollision(planeCollider);
+		planeCollider->OnCollision(inkSegmentColslider);
+	}
+}
+
+//線分ABと平面の交点を計算する
+bool NYLibrary::IntersectPlane2Segment(
+	D3DXVECTOR3* inter, //戻り値　交点が見つかれば格納される
+	D3DXVECTOR3  A,   //線分始点
+	D3DXVECTOR3  B,   //線分終点
+	Plane     PL) //平面
+{
+	//平面上の点P
+	D3DXVECTOR3 P = D3DXVECTOR3(PL.p0 * PL.r, PL.p1 * PL.r, PL.p2 * PL.r);
+
+	//Pp0 PBベクトル
+	D3DXVECTOR3 PA = D3DXVECTOR3(P.x - A.x, P.y - A.y, P.z - A.z);
+	D3DXVECTOR3 PB = D3DXVECTOR3(P.x - B.x, P.y - B.y, P.z - B.z);
+
+	//PA PBそれぞれを平面法線と内積
+	double dot_PA = PA.x * PL.p0 + PA.y * PL.p1 + PA.z * PL.p2;
+	double dot_PB = PB.x * PL.p0 + PB.y * PL.p1 + PB.z * PL.p2;
+
+	//これは線端が平面上にあった時の計算の誤差を吸収しています。調整して使ってください。
+	if (abs(dot_PA) < 0.000001) { dot_PA = 0.0; }
+	if (abs(dot_PB) < 0.000001) { dot_PB = 0.0; }
+
+	//交差判定
+	if (dot_PA == 0.0 && dot_PB == 0.0) {
+		//両端が平面上にあり、交点を計算できない。
+		return false;
+	}
+	else
+		if ((dot_PA >= 0.0 && dot_PB <= 0.0) ||
+			(dot_PA <= 0.0 && dot_PB >= 0.0)) {
+			//内積の片方がプラスで片方がマイナスなので、交差している
+
+		}
+		else {
+			//交差していない
+			return false;
+		}
+
+		//以下、交点を求める 
+
+		D3DXVECTOR3 AB = D3DXVECTOR3(B.x - A.x, B.y - A.y, B.z - A.z);
+
+		//交点とAの距離 : 交点とBの距離 = dot_PA : dot_PB
+		double hiritu = abs(dot_PA) / (abs(dot_PA) + abs(dot_PB));
+
+		inter->x = A.x + (AB.x * hiritu);
+		inter->y = A.y + (AB.y * hiritu);
+		inter->z = A.z + (AB.z * hiritu);
+
+		return true;
 }

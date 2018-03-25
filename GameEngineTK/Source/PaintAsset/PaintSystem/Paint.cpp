@@ -15,18 +15,18 @@ ID3D11ShaderResourceView** Paint::GetInkTexSRV()
 }
 
 
-HRESULT Paint::Initialize(bool isplane)
+void Paint::Initialize()
 {
-	textures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2, Devices::Get().Height() * 2));
+	textures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
 	textures->Initialize();
-	dripTextures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2, Devices::Get().Height() * 2));
+	dripTextures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
 	dripTextures->Initialize();
 
 	if (!inkVertexShader.Get())
 	{
 		ID3DBlob *pCompiledShader = nullptr;
 		//インクテクスチャ用バーテックスシェーダー作成
-		if (FAILED(MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)inkVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)inkVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 		//インクテクスチャ用頂点インプットレイアウトをセット
 		D3D11_INPUT_ELEMENT_DESC inkInputLayout[]
 		{
@@ -35,32 +35,32 @@ HRESULT Paint::Initialize(bool isplane)
 		};
 		UINT numElements = sizeof(inkInputLayout) / sizeof(inkInputLayout[0]);
 		//頂点インプットレイアウトを作成
-		if (FAILED(device->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), inkVertexLayout.ReleaseAndGetAddressOf())))return E_FAIL;
+		device->CreateInputLayout(inkInputLayout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), inkVertexLayout.ReleaseAndGetAddressOf());
 		//インクテクスチャ用ピクセルシェーダー作成
-		if (FAILED(MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)inkPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		MakeShader("Resources/HLSL/Campus.hlsl", "PS", "ps_5_0", (void**)inkPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 
 
 		//垂らすシェーダー
 		//バーテックスシェーダー
-		if (isplane)
+		if (isPlane)
 		{
-			if (FAILED(MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 			//ピクセルシェーダー
-			if (FAILED(MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 		}
 		else
 		{
-			if (FAILED(MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+			MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 			//ピクセルシェーダー
-			if (FAILED(MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+			MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 
 		}
 
 		//更新するシェーダー
 		//バーテックスシェーダー
-		if (FAILED(MakeShader("Resources/HLSL/PaintUpdate.hlsl", "VS", "vs_5_0", (void**)updateVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		MakeShader("Resources/HLSL/PaintUpdate.hlsl", "VS", "vs_5_0", (void**)updateVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 		//ピクセルシェーダー
-		if (FAILED(MakeShader("Resources/HLSL/PaintUpdate.hlsl", "PS", "ps_5_0", (void**)updatePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+		MakeShader("Resources/HLSL/PaintUpdate.hlsl", "PS", "ps_5_0", (void**)updatePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 
 	}
 
@@ -74,10 +74,8 @@ HRESULT Paint::Initialize(bool isplane)
 	Inkcb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	Inkcb.MiscFlags = 0;
 	Inkcb.Usage = D3D11_USAGE_DYNAMIC;
-	if (FAILED(device->CreateBuffer(&Inkcb, nullptr, inkConstantBuffer.ReleaseAndGetAddressOf())))
-	{
-		return E_FAIL;
-	}
+	device->CreateBuffer(&Inkcb, nullptr, inkConstantBuffer.ReleaseAndGetAddressOf());
+	
 
 	D3D11_SAMPLER_DESC SamDesc;
 	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -88,21 +86,14 @@ HRESULT Paint::Initialize(bool isplane)
 	device->CreateSamplerState(&SamDesc, sampleLimear.ReleaseAndGetAddressOf());
 
 	//インクテクスチャを作成	
-	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, "Resources/PNG/pink1.png", nullptr, nullptr,inkTexture.ReleaseAndGetAddressOf(), nullptr)))
-	{
-		return E_FAIL;
-	}
+	D3DX11CreateShaderResourceViewFromFileA(device, "Resources/PNG/pink1.png", nullptr, nullptr, inkTexture.ReleaseAndGetAddressOf(), nullptr);
 
 	//テクスチャー作成
-	if (FAILED(D3DX11CreateShaderResourceViewFromFileA(device, "Resources/HeightMap/BrushNormal.jpg", nullptr, nullptr, inkNormalMap.ReleaseAndGetAddressOf(), nullptr)))
-	{
-		return E_FAIL;
-	}
+	D3DX11CreateShaderResourceViewFromFileA(device, "Resources/HeightMap/BrushNormal.jpg", nullptr, nullptr, inkNormalMap.ReleaseAndGetAddressOf(), nullptr);
 
 
 
 	CreateVertexBuffer();
-	return S_OK;
 
 }
 
@@ -174,7 +165,7 @@ ID3D11Buffer* Paint::CreateVertexBuffer(InkData & inkdata)
 }
 
 
-void Paint::Render()
+void Paint::ClearRenderConfig()
 {
 	textures->SetRenderTargets();
 	InkRender();

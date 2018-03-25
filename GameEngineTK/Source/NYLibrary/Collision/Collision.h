@@ -19,7 +19,7 @@ namespace NYLibrary
 	class InkSegmentCollider;
 	class TriangleCollider;
 	class TrianglePolygonListCollider;
-
+	class PlaneCollider;
 
 
 	//球
@@ -75,6 +75,13 @@ namespace NYLibrary
 	};
 
 
+	//平面の定義
+	class Plane {	
+	public:
+		float p0, p1, p2, r;
+	};
+
+
 	bool CheckSpere2Sphere(const Sphere & sphereA, const Sphere & sphereB);
 	void ComputeTriangle(const D3DXVECTOR3 & a, const D3DXVECTOR3 & b, const D3DXVECTOR3 & _p2, Triangle* c);
 
@@ -86,5 +93,7 @@ namespace NYLibrary
 	//線と全ての三角形ポリゴンの当たり判定	
 	void CheckSegment2AllTriangle(SegmentCollider* segment, TrianglePolygonListCollider* trianglePolygonListCollider);
 	//線と三角形ポリゴンの当たり判定	
-	bool CheckSegment2Triangle(const Segment* segment, Triangle* triangle,D3DXVECTOR3* inter);
+	bool CheckSegment2Triangle(const Segment* segment, Triangle* triangle,D3DXVECTOR3& inter);
+	void IntersectPlane2Segment(SegmentCollider * inkSegmentColslider, PlaneCollider * planeCollider);
+	bool IntersectPlane2Segment(D3DXVECTOR3 * out, D3DXVECTOR3 A, D3DXVECTOR3 B, Plane PL);
 };

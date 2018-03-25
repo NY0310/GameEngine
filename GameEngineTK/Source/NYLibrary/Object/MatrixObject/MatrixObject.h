@@ -144,25 +144,25 @@ namespace NYLibrary
 
 
 		//オイラー角設定
-		virtual void SetRotation(const D3DXVECTOR3& eulerAangle) { this->eulerAangle = eulerAangle; IsUseQuternion = false; }
+		virtual void SetRotation(const D3DXVECTOR3& eulerAangle) { this->eulerAangle = eulerAangle; isUseQuternion = false; }
 		//オイラー角取得
 		virtual const D3DXVECTOR3& GetRotation() { return  this->eulerAangle; }
 		//オイラー角設定
-		virtual void SetRotationX(float eulerAangleX) { this->eulerAangle.x = eulerAangleX; IsUseQuternion = false; }
+		virtual void SetRotationX(float eulerAangleX) { this->eulerAangle.x = eulerAangleX; isUseQuternion = false; }
 		//オイラー角取得
 		virtual const float GetRotationX() { return  this->eulerAangle.x; }
 		//オイラー角設定
-		virtual void SetRotationY(const float eulerAangleY) { this->eulerAangle.y = eulerAangleY; IsUseQuternion = false; }
+		virtual void SetRotationY(const float eulerAangleY) { this->eulerAangle.y = eulerAangleY; isUseQuternion = false; }
 		//オイラー角取得
 		virtual float GetRotationY() { return  this->eulerAangle.y; }
 		//オイラー角設定
-		virtual void SetRotationZ(float eulerAangleZ) { this->eulerAangle.z = eulerAangle.z; IsUseQuternion = false; }
+		virtual void SetRotationZ(float eulerAangleZ) { this->eulerAangle.z = eulerAangle.z; isUseQuternion = false; }
 		//オイラー角取得
 		virtual float GetRotationZ() { return  this->eulerAangle.z; }
 
 
 		//クォータニオン設定
-		virtual void SetQuaternion(const D3DXQUATERNION& quaternion) { this->quaternion = quaternion; IsUseQuternion = true; }
+		virtual void SetQuaternion(const D3DXQUATERNION& quaternion) { this->quaternion = quaternion; isUseQuternion = true; }
 		//クォータニオン取得
 		virtual const D3DXQUATERNION& GetQuaternion() { return  this->quaternion; }
 		//ワールド行列取得
@@ -175,6 +175,10 @@ namespace NYLibrary
 		const D3DXMATRIX& GetRotationMatrix() { return this->rotationMatrix; }
 		void ChangeOrder(WorldMatrixOrder::ORDER order);//ワールド行列の掛け算を入れ替える
 
+		//クォータニオンを使用するか
+		void SetIsUseQuternion(bool isUseQuternion) { this->isUseQuternion = isUseQuternion; }
+		//クォータニオンを使用するか取得する
+		bool GetIsUseQuternion() { return isUseQuternion; }
 	private:
 		//全行列作成
 		void CreateAllMatrix();
@@ -195,7 +199,7 @@ namespace NYLibrary
 		D3DXMATRIX scaleMatrix;//スケール行列
 		D3DXMATRIX rotationMatrix;//回転行列
 		D3DXMATRIX wvp;//ワールドビュープロジェクション行列
-		bool IsUseQuternion;//クォータニオンを使用するか
+		bool isUseQuternion;//クォータニオンを使用するか
 		// ワールド行列の掛け算順序(ファクトリーメソッド)
 		std::weak_ptr<WorldMatrixOrder> order;
 		//ワールド行列の掛け算順序ファクトリー

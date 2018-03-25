@@ -7,10 +7,10 @@ namespace NYLibrary
 	{
 	public:
 		//コンストラクタ
-		InkSegmentCollider(const std::string& tag, ObjectData* matrixObject);
+		InkSegmentCollider(ObjectData* objectData);
 		//初期化
 		void Initialize();
-		void Update() { SegmentCollider::Update(); }
+		void Update();
 		//色を取得
 		D3DXVECTOR4 GetColor() { return color; }
 	private:

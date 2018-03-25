@@ -1,5 +1,6 @@
 #include "Line.h"
 
+using namespace NYLibrary;
 
 Line::Line()
 {
@@ -13,7 +14,7 @@ Line::~Line()
 HRESULT Line::InitD3D()
 {
 	ID3DBlob *pCompiledShader = nullptr;
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Line.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader)))return E_FAIL;
+	MakeShader("Resources/HLSL/Line.hlsl", "VS", "vs_5_0", (void**)&m_pVertexShader, &pCompiledShader);
 	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
@@ -25,7 +26,7 @@ HRESULT Line::InitD3D()
 	{
 		return FALSE;
 	}
-	if (FAILED(shadermanager.MakeShader("Resources/HLSL/Line.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader)))return E_FAIL;
+	MakeShader("Resources/HLSL/Line.hlsl", "PS", "ps_5_0", (void**)&m_pPixelShader, &pCompiledShader);
 
 	//コンスタントバッファー作成　ここでは変換行列渡し用
 	D3D11_BUFFER_DESC cb;
@@ -39,34 +40,34 @@ HRESULT Line::InitD3D()
 	{
 		return E_FAIL;
 	}
-	InitModel();
+	//InitModel();
 }
 
 HRESULT Line::InitModel()
 {
-	//バーテックスバッファー作成
-	SimpleVertex vertices[] =
-	{
-		D3DXVECTOR3(-0.2f, 0.7f, 0.0f),
-		D3DXVECTOR3(0.5f, 0.5f, 0.0f),
-	};
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(SimpleVertex) * 2;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
+	////バーテックスバッファー作成
+	//SimpleVertex vertices[] =
+	//{
+	//	D3DXVECTOR3(-0.2f, 0.7f, 0.0f),
+	//	D3DXVECTOR3(0.5f, 0.5f, 0.0f),
+	//};
+	//D3D11_BUFFER_DESC bd;
+	//bd.Usage = D3D11_USAGE_DEFAULT;
+	//bd.ByteWidth = sizeof(SimpleVertex) * 2;
+	//bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//bd.CPUAccessFlags = 0;
+	//bd.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = vertices;
-	if (FAILED(device->CreateBuffer(&bd, &InitData, &m_pVertexBuffer)))
-	{
-		return E_FAIL;
-	}
-	//バーテックスバッファーをセット
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	//D3D11_SUBRESOURCE_DATA InitData;
+	//InitData.pSysMem = vertices;
+	//if (FAILED(device->CreateBuffer(&bd, &InitData, &m_pVertexBuffer)))
+	//{
+	//	return E_FAIL;
+	//}
+	////バーテックスバッファーをセット
+	//UINT stride = sizeof(SimpleVertex);
+	//UINT offset = 0;
+	//deviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
 	return S_OK;
 }
@@ -81,6 +82,8 @@ void Line::Render()
 
 	D3DXMatrixTranslation(&Tran, 0, 0, 0);
 	World = Tran;
+	D3DXMatrixScaling(&Tran, 10, 10, 10);
+	World *= Tran;
 	// プロジェクショントランスフォーム
 	//シェーダーのコンスタントバッファーに各種データを渡す
 	D3D11_MAPPED_SUBRESOURCE pData;
@@ -102,7 +105,7 @@ void Line::Render()
 	deviceContext->IASetInputLayout(m_pVertexLayout);
 	UINT stride = sizeof(SimpleVertex);
 	UINT offset = 0;
-	deviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1,m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 	//プリミティブ・トポロジーをセット
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	//プリミティブをレンダリング
@@ -126,6 +129,6 @@ void Line::SetVertex(D3DXVECTOR3 pos, D3DXVECTOR3 pos1)
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertices;
-	device->CreateBuffer(&bd, &InitData, &m_pVertexBuffer);	//バーテックスバッファーをセット
+	device->CreateBuffer(&bd, &InitData, m_pVertexBuffer.ReleaseAndGetAddressOf());
 
 }

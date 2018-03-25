@@ -2,10 +2,9 @@
 
 using namespace std;
 using namespace DirectX::Colors;
-using namespace DirectX::SimpleMath;
 
 //速度	
-const float InkParticle::SPEED = 0.5f;
+const float InkParticle::SPEED = 0.1f;
 //落下速度
 const float InkParticle::GRAVITY = 0.01f;
 //ローカルの大きさ
@@ -54,6 +53,9 @@ void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirecti
 	birthFrame = 0;
 	isValidity = true;
 	SetComponentActive(true);
+
+	Update();
+	Calc();
 }
 
 /// <summary>
@@ -108,10 +110,16 @@ void InkParticle::LifeCheck()
 	}
 }
 
+void InkParticle::OnCollisiton(Collider * collider)
+{
+	Destroy();
+}
+
 
 ////////////////////////////////////////////////////////////////////
 
-
+const int InkParticleManager::INTERVAL_FRAME = 3;
+const int InkParticleManager::MAX_SHIFT_DIRECTION = 80;
 
 
 /// <summary>
@@ -120,7 +128,7 @@ void InkParticle::LifeCheck()
 InkParticleManager::InkParticleManager()
 {
 	intervalFrameCnt = 0;
-	isShoot = true;
+	isShoot = false;
 }
 
 /// <summary>
@@ -128,7 +136,6 @@ InkParticleManager::InkParticleManager()
 /// </summary>
 InkParticleManager::~InkParticleManager()
 {
-	std::vector<InkSegment*>().swap(segments);
 	//delete[] inkParticle;
 }
 
@@ -143,7 +150,7 @@ void InkParticleManager::Initialize()
 	}
 
 	//インクオブジェクトのインスタンス生成、初期化
-	renderer = make_unique<InkObj2>();
+	renderer = make_unique<InkObj>();
 	renderer->Initialize();
 	renderer->LoadOBJFile("Resources/OBJ/InkObj.obj");
 }
@@ -177,7 +184,7 @@ void InkParticleManager::Render()
 /// <param name="color">インクの色</param>
 void InkParticleManager::Shoot(const D3DXVECTOR3 & emitPosition, D3DXVECTOR3 & nDirection, const D3DXVECTOR4 & color)
 {
-	if (isShoot)
+	if (isShoot == true)
 	{
 		return;
 	}
@@ -190,50 +197,27 @@ void InkParticleManager::Shoot(const D3DXVECTOR3 & emitPosition, D3DXVECTOR3 & n
 		if (!inkParticle[i]->IsValidity())
 		{
 			inkParticle[i]->Create(emitPosition, nDirection, color,i);
+			isShoot = true;
+
 			return;
 		}
 	}
-	isShoot = true;
-	intervalFrameCnt = 0;
 }
 
 
-/// <summary>
-/// インクの削除
-/// </summary>
-/// <param name="inkSegmentIndex">削除するインクのインデックス(Segmentデータから取得してください。)</param>
-void InkParticleManager::Destroy(int inkSegmentIndex)
-{
-	inkParticle[inkSegmentIndex]->Destroy();
-}
 
 /// <summary>
 /// インクパーティクルの更新処理
 /// </summary>
 void InkParticleManager::InkParticleUpdate()
 {
-	for (int i = 0; i < MAX_PARTICLE; i++)
-	{
-		inkParticle[i]->Update();
-	}
+	//for (int i = 0; i < MAX_PARTICLE; i++)
+	//{
+	//	inkParticle[i]->update();
+	//}
 }
 	
-///// <summary>
-///// 線の更新処理
-///// </summary>
-//void InkParticleManager::SegmentsUpdate()
-//{
-//	segments.clear();
-//
-//	for (int i = 0; i < MAX_PARTICLE; i++)
-//	{
-//		if (inkParticle[i]->IsValidity())
-//		{
-//			segments.emplace_back(inkParticle[i]->GetSegment());
-//		}
-//	}
-//
-//}
+
 
 /// <summary>
 /// 座標の更新処理
@@ -241,7 +225,7 @@ void InkParticleManager::InkParticleUpdate()
 void InkParticleManager::InkDataUpdate()
 {
 	inkParticledata.clear();
-	InkObj2::InkData inkdata;
+	InkObj::InkData inkdata;
 	for (int i = 0; i < MAX_PARTICLE; i++)	
 	{
 		if (inkParticle[i]->IsValidity())
@@ -259,11 +243,12 @@ void InkParticleManager::InkDataUpdate()
 /// </summary>
 void InkParticleManager::IntervalUpdate()
 {
-	if (INTERVAL_FRAME >= intervalFrameCnt)
+	intervalFrameCnt++;
+	if (INTERVAL_FRAME <= intervalFrameCnt)
 	{
 		isShoot = false;
+		intervalFrameCnt = 0;
 	}
-	intervalFrameCnt++;
 }
 
 

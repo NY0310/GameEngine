@@ -9,7 +9,7 @@ void Aim::Initialize()
 {
 	Sprite::Initialize();
 	auto& devices = Devices::Get();
-	Set2DPosition(D3DXVECTOR2((int)devices.Width() / 2, (int)devices.Height() / 2));
+	Set2DPosition(D3DXVECTOR2(devices.Width() / 2.0f, devices.Height() / 2.0f));
 	SetTransparency(0.5f);
 }
 

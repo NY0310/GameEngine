@@ -8,4 +8,6 @@ void Scene::GameScene::CreateAddChild()
 	AddChild(player);
 	map = make_shared<Map>();
 	AddChild(map);
+	stage = make_shared<Stage>();
+	AddChild(stage);
 }

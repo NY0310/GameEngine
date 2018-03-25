@@ -17,6 +17,9 @@ class PaintObj : public Obj
 public:
 	PaintObj(bool isPlane = false);
 	~PaintObj() = default;
+	//子供を生成し、子供として登録
+	void CreateAddChild();
+	void Initialize();
 	//更新処理
 	void Update();
 	//描画
@@ -25,11 +28,12 @@ public:
 	void InkRender() { campus->Render(); }
 	//当たり判定呼び出し
 	void OnCollisiton(Collider* collider);
-	const D3DXVECTOR2& CalcInkCollisionUv(const Segment& segment, const Triangle& triangle, const D3DXVECTOR3 & inter);
+	D3DXVECTOR2 CalcInkCollisionUv(const Segment& segment, const Triangle& triangle, const D3DXVECTOR3 & inter);
 private:
 	//インクが当たったUV値を算出する
-	std::unique_ptr<Paint>campus;
-	std::unique_ptr<PaintCollision>paintCollision;
+	std::shared_ptr<Paint>campus;
+	//平面化
+	bool isPlane;
 };
 
 

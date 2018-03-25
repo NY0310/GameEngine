@@ -12,6 +12,7 @@ namespace NYLibrary
 	class InkSegmentCollider;
 	class TriangleCollider;
 	class TrianglePolygonListCollider;
+	class PlaneCollider;
 
 	class CollisionManager
 	{
@@ -51,6 +52,8 @@ namespace NYLibrary
 		bool TypeCheckSegmentCollider(Collider* collider, Collider * collider_);
 		//三角形ポリゴンのコライダーか
 		bool TypeCheckTrianglePolygonListCollider(Collider* collider, Collider * collider_);
+
+		bool TypeCheckPlaneCollider(Collider * collider, Collider * collider_);
 
 
 	};

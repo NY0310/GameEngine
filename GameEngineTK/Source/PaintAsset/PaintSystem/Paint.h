@@ -5,11 +5,12 @@
 #include "../../NYLibrary/Camera/FollowCamera.h"
 #include "../../NYLibrary/Math/Math.h"
 #include "../../NYLibrary/SimpleTexture/SimpleTextures.h"
+#include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
 
 using namespace Microsoft::WRL;
 using namespace NYLibrary;
 
-class Paint
+class Paint : public GameObjectNodeEmpty
 {
 private:
 	struct InkData
@@ -28,7 +29,7 @@ private:
 	};
 
 public:
-	Paint() = default;
+	Paint(bool isPlane = false) :isPlane(isPlane) {}
 	~Paint() = default;
 	Paint& operator= (const Paint&) = delete;
 	Paint(const Paint&) = delete;
@@ -36,9 +37,10 @@ public:
 	void CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae);
 	void CreateVertexBuffer();
 	ID3D11ShaderResourceView** GetInkTexSRV();
-	HRESULT Initialize(bool isplane = true);
-	void Render();
+	void Initialize();
+	void ClearRenderConfig();
 private:
+	bool isPlane;
 	ID3D11Buffer* CreateVertexBuffer(InkData& inkdata);
 	void InkRender();
 	void DripRender();

@@ -33,6 +33,10 @@ namespace NYLibrary
 		virtual void LoopUpdate() = 0;
 		//描画
 		virtual void LoopRender() = 0;
+		//影の描画
+		virtual void LoopShadowRender() = 0;
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		virtual void LoopClearRenderConfig() = 0;
 		//終了
 		virtual void LoopFinalize() = 0;
 		//子供を追加し親子関係を構築する
@@ -43,6 +47,10 @@ namespace NYLibrary
 		virtual void Update() = 0;
 		//描画
 		virtual void Render() = 0;
+		//影の描画
+		virtual void ShadowRender() = 0;
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		virtual void ClearRenderConfig() = 0;
 		//終了
 		virtual void Finalize() = 0;
 

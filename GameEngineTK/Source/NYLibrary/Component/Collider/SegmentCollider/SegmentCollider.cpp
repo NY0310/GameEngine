@@ -8,9 +8,10 @@ using namespace NYLibrary;
 /// </summary>
 /// <param name="tag">タグ</param>
 /// <param name="matrixObject">オブジェクトのデータ</param>
-SegmentCollider::SegmentCollider(const std::string & tag, ObjectData * matrixObject):
-	Collider(tag, matrixObject)
+SegmentCollider::SegmentCollider(ObjectData * objectData):
+	Collider(objectData)
 {
+
 	Initialize();
 }
 
@@ -29,31 +30,43 @@ void SegmentCollider::Initialize()
 /// </summary>
 void SegmentCollider::Update()
 {
-	//現フレームにてコライダーに当たったコライダーリストをクリア
-	collisitonColliderListNow.clear();
-
-
-	D3DXVECTOR3 positon = objectData->GetPosition();
-	float worldHalfSize =  objectData->GetScale().z * objectData->GetLocalSize() / 2;
-	positon.z += worldHalfSize;
-	D3DXMATRIX mat;
-	D3DXMatrixTranslation(&mat, positon.x, positon.y, positon.z);
-	D3DXMatrixRotationYawPitchRoll(&mat, objectData->GetRotation().x, objectData->GetRotation().y, objectData->GetRotation().z);
-	start.x =  mat._41;
-	start.y = mat._42;
-	start.z = mat._43;
-
-
-	positon = objectData->GetPosition();
-	positon.z -= worldHalfSize;
-	D3DXMatrixTranslation(&mat, positon.x, positon.y, positon.z);
-	D3DXMatrixRotationYawPitchRoll(&mat, objectData->GetRotation().x, objectData->GetRotation().y, objectData->GetRotation().z);
-	end.x = mat._41;
-	end.y = mat._42;
-	end.z = mat._43;
+	Collider::Update();
+	CalcSegmentPosition();
 }
 
 
+void SegmentCollider::CalcSegmentPosition()
+{
+	D3DXVECTOR3 positon = objectData->GetPosition();
+	float worldHalfSize = objectData->GetScale().z * objectData->GetLocalSize() / 2;
+	end = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z + worldHalfSize), startWorldMatrix);
+	start = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z - worldHalfSize), endWorldMatrix);
+}
+
+/// <summary>
+/// 回転後の線分の座標を求める
+/// </summary>
+/// <param name="localposition">回転を無視した座標</param>
+/// <returns>回転後の座標</returns>
+D3DXVECTOR3 SegmentCollider::CalcSegmentPosition(const D3DXVECTOR3& localposition,D3DXMATRIX& matrix)
+{
+	D3DXMATRIX trans;
+	D3DXMATRIX rotMat;
+	D3DXMatrixIdentity(&matrix);
+	//D3DXMatrixScaling(&mat, objectData->GetScaleX(), objectData->GetScaleY(), objectData->GetScaleZ());
+	D3DXMatrixTranslation(&trans, localposition.x, localposition.y, localposition.z);
+	if (objectData->GetIsUseQuternion())
+	{
+		D3DXMatrixRotationQuaternion(&rotMat, &objectData->GetQuaternion());
+	}
+	else
+	{
+		D3DXMatrixRotationYawPitchRoll(&rotMat, objectData->GetRotation().x, objectData->GetRotation().y, objectData->GetRotation().z);
+	}
+	matrix *= trans * rotMat;
+
+	return D3DXVECTOR3(matrix._41, matrix._42, matrix._43);
+}
 
 
 void SegmentCollider::Collision(TrianglePolygonListCollider * trianglePolygonListCollider)

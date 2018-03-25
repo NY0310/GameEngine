@@ -264,6 +264,7 @@ void Devices::CreateResources()
 	// TODO: ウィンドウサイズに依存したオブジェクトを初期化する Initialize windows-size dependent objects here.
 }
 
+
 void Devices::OnDeviceLost() {
 	this->depthStencilView.Reset();
 	this->renderTargetView.Reset();
@@ -277,4 +278,21 @@ void Devices::OnDeviceLost() {
 	CreateDevice();
 	// リソースを生成する Create Resources
 	CreateResources();
+}
+
+void Devices::Clear()
+{
+
+
+	// Clear the views.
+	context.Get()->OMSetRenderTargets(1, RenderTargetView().GetAddressOf(), DepthStencilView().Get());
+	context.Get()->ClearRenderTargetView(RenderTargetView().Get(), Colors::CornflowerBlue);
+	context.Get()->ClearDepthStencilView(DepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	// Set the viewport.
+	CD3D11_VIEWPORT  viewport(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height));
+	context.Get()->RSSetViewports(1, &viewport);
+
+	Viewport(viewport);
+
 }

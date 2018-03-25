@@ -101,7 +101,8 @@ void Game::Render()
 
 	devices.Context().Get()->RSSetState(m_states->CullNone());
 
-	
+	//スクリーン、影以外の描画
+	sceneManager->LoopClearRenderConfig();
 
 	//#if 0
 	////アルファ値を有効にする

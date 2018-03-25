@@ -36,12 +36,11 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	DirectX::XMINT2 pos = mouse->GetPos();
 
 
-	float a = 0;
-	a = static_cast<float>(pos.x) / width;
-	float b = static_cast<float>(pos.y) / hight;
-	D3DXVECTOR2 c = Math::ChangeRegularDevice(D3DXVECTOR2(a,b));
+	float x = static_cast<float>(pos.x) / width;
+	float y = static_cast<float>(pos.y) / hight;
+	D3DXVECTOR2 c = Math::ChangeRegularDevice(D3DXVECTOR2(x,y));
 	c.x *= -1;
-	c*= 45.0f;
+	c*= 90.0f;
 	Rotation(player,c);
 
 }

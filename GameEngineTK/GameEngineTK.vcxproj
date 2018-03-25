@@ -176,6 +176,7 @@
     <ClInclude Include="Source\NYLibrary\Collision\Collision.h" />
     <ClInclude Include="Source\NYLibrary\Collision\CollisionManager.h" />
     <ClInclude Include="Source\NYLibrary\Component\Collider\Collider.h" />
+    <ClInclude Include="Source\NYLibrary\Component\Collider\PlaneCollider\PlaneCollider.h" />
     <ClInclude Include="Source\NYLibrary\Component\Collider\SegmentCollider\SegmentCollider.h" />
     <ClInclude Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.h" />
     <ClInclude Include="Source\NYLibrary\Component\Component.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Source\NYLibrary\Input\MouseRay.h" />
     <ClInclude Include="Source\NYLibrary\Input\MouseUtil.h" />
     <ClInclude Include="Source\NYLibrary\Light\Light.h" />
+    <ClInclude Include="Source\NYLibrary\Line\Line.h" />
     <ClInclude Include="Source\NYLibrary\Math\Math.h" />
     <ClInclude Include="Source\NYLibrary\Object\ColorObject\ColorObject.h" />
     <ClInclude Include="Source\NYLibrary\Object\LocalObject\LocalObject.h" />
@@ -201,7 +203,7 @@
     <ClInclude Include="Source\NYLibrary\SimpleTexture\SimpleTextures.h" />
     <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h" />
     <ClInclude Include="Source\NYLibrary\Sprite\Sprite.h" />
-    <ClInclude Include="Source\PaintAsset\InkParticle\InkObj2.h" />
+    <ClInclude Include="Source\PaintAsset\InkParticle\InkObj.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h" />
     <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h" />
     <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h" />
@@ -234,6 +236,8 @@
     <ClCompile Include="Source\NYLibrary\Camera\FollowCamera.cpp" />
     <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp" />
     <ClCompile Include="Source\NYLibrary\Collision\CollisionManager.cpp" />
+    <ClCompile Include="Source\NYLibrary\Component\Collider\Collider.cpp" />
+    <ClCompile Include="Source\NYLibrary\Component\Collider\PlaneCollider\PlaneCollider.cpp" />
     <ClCompile Include="Source\NYLibrary\Component\Collider\SegmentCollider\SegmentCollider.cpp" />
     <ClCompile Include="Source\NYLibrary\Component\Collider\TrianglePolygonListCollider\TrianglePolygonListCollider.cpp" />
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp" />
@@ -241,6 +245,7 @@
     <ClCompile Include="Source\NYLibrary\Input\MouseRay.cpp" />
     <ClCompile Include="Source\NYLibrary\Input\MouseUtil.cpp" />
     <ClCompile Include="Source\NYLibrary\Light\Light.cpp" />
+    <ClCompile Include="Source\NYLibrary\Line\Line.cpp" />
     <ClCompile Include="Source\NYLibrary\Math\Math.cpp" />
     <ClCompile Include="Source\NYLibrary\Object\MatrixObject\MatrixObject.cpp" />
     <ClCompile Include="Source\NYLibrary\Obj\Obj.cpp" />
@@ -252,7 +257,7 @@
     <ClCompile Include="Source\NYLibrary\SimpleTexture\SimpleTextures.cpp" />
     <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp" />
     <ClCompile Include="Source\NYLibrary\Sprite\Sprite.cpp" />
-    <ClCompile Include="Source\PaintAsset\InkParticle\InkObj2.cpp" />
+    <ClCompile Include="Source\PaintAsset\InkParticle\InkObj.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp" />
     <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp" />

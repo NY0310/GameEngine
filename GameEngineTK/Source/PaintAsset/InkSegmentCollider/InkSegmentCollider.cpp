@@ -4,13 +4,20 @@
 using namespace NYLibrary;
 using namespace std;
 
-InkSegmentCollider::InkSegmentCollider(const string & tag, ObjectData * matrixObject)
-	:SegmentCollider(tag,matrixObject)
+InkSegmentCollider::InkSegmentCollider(ObjectData * objectData)
+	:SegmentCollider(objectData)
 {
+	int a = 0;
 }
 
 void InkSegmentCollider::Initialize()
 {
 	color = objectData->GetColor();
 	SegmentCollider::Initialize();
+}
+
+void InkSegmentCollider::Update()
+{
+	SegmentCollider::Update(); 
+	color = objectData->GetColor();
 }

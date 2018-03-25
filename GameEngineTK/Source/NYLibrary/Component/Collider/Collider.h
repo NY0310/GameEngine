@@ -19,19 +19,20 @@ namespace NYLibrary
 	{
 	public: 
 		//コンストラクタ
-		Collider(std::string tag, ObjectData* objectData) : tag(tag) {
-			this->objectData.reset(objectData); }
+		Collider(ObjectData* objectData);
 		Collider() = delete;
 		//デストラクタ
-		~Collider() { objectData.release(); };
+		virtual ~Collider() { objectData.release(); };
 		//初期化
 		virtual void Initialize() {}
 		//更新
-		virtual void Update() {}
+		virtual void Update();
 		//線分との当たり判定
 		virtual void Collision(SegmentCollider* segmentCollider) {}
 		//三角形ポリゴンとの当たり判定
 		virtual void Collision(TrianglePolygonListCollider* TrianglePolygonListCollider) {}
+		//平面ポリゴンとの当たり判定
+		virtual void Collision(PlaneCollider* planeCollider) {}
 		//当たり判定管理クラスに自信の情報を送る
 		void RegisterCollider() {		
 			CollisionManager* collisionManager = CollisionManager::GetInstance();
@@ -50,7 +51,7 @@ namespace NYLibrary
 		//オブジェクトデータを取得
 		ObjectData* GetObjectData() { return objectData.get(); }
 		//当たった時にElement関数を呼び出す
-		void OnCollision() { listener(this); }
+		void OnCollision(Collider* collision) { listener(collision); }
 		void AddCollisionCollider(Collider* collider) { collisitonColliderListNow.emplace_back(collider); }
 	protected:
 		//オブジェクトのタグ(このタグが同じものは当たり判定を行わない)

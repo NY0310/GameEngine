@@ -5,7 +5,7 @@
 #include "../../NYLibrary/Camera/FollowCamera.h"
 
 using namespace NYLibrary;
-class InkObj2
+class InkObj
 {
 protected:
 	//頂点の構造体
@@ -34,7 +34,7 @@ public:
 		D3DXMATRIX wvp;//ワールドから射影までの変換行列
 		D3DXVECTOR4 color;
 	};
-	InkObj2();
+	InkObj();
 
 	//初期化処理
 	void Initialize();
@@ -69,7 +69,5 @@ private:
 	ID3D11Device* device = NYLibrary::Devices::Get().Device().Get();//デバイス
 	ID3D11DeviceContext* deviceContext = NYLibrary::Devices::Get().Context().Get();//デバイスコンテキスト
 	NYLibrary::FollowCamera* camera = NYLibrary::FollowCamera::GetInstance();
-
-
 };
 

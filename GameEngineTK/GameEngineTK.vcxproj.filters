@@ -23,9 +23,6 @@
     <Filter Include="NYLibrary\SceneGraph\Visitor">
       <UniqueIdentifier>{771f378b-a19a-4444-9021-54ee44422442}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\Camera">
-      <UniqueIdentifier>{c7180978-e9e6-4655-9953-ba4723eac26c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Input">
       <UniqueIdentifier>{e62c3388-0c6e-473f-b881-bfdfe52f3c64}</UniqueIdentifier>
     </Filter>
@@ -130,6 +127,15 @@
     </Filter>
     <Filter Include="NYLibrary\Component\Collider\BoxCollider">
       <UniqueIdentifier>{3d524a7b-dbab-4abd-9301-b8568a4487c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Line">
+      <UniqueIdentifier>{7e4fa02d-95ef-4a5a-8434-73e4029d7015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\Camera">
+      <UniqueIdentifier>{c7180978-e9e6-4655-9953-ba4723eac26c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stage">
+      <UniqueIdentifier>{5a58c8a0-a6da-4b35-8e7d-db610c794055}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -262,9 +268,6 @@
     <ClInclude Include="Source\PaintAsset\PaintGun\PaintGun.h">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PaintAsset\InkParticle\InkObj2.h">
-      <Filter>PaintAsset\InkParticle</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h">
       <Filter>PaintAsset\InkParticle</Filter>
     </ClInclude>
@@ -306,6 +309,15 @@
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Component\Component.h">
       <Filter>NYLibrary\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Line\Line.h">
+      <Filter>NYLibrary\Line</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Component\Collider\PlaneCollider\PlaneCollider.h">
+      <Filter>NYLibrary\Component\Collider\PlaneCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PaintAsset\InkParticle\InkObj.h">
+      <Filter>PaintAsset\InkParticle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -432,9 +444,6 @@
     <ClCompile Include="Source\PaintAsset\PaintGun\PaintGun.cpp">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PaintAsset\InkParticle\InkObj2.cpp">
-      <Filter>PaintAsset\InkParticle</Filter>
-    </ClCompile>
     <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp">
       <Filter>PaintAsset\InkParticle</Filter>
     </ClCompile>
@@ -455,6 +464,18 @@
     </ClCompile>
     <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp">
       <Filter>PaintAsset\InkSegmentCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Component\Collider\Collider.cpp">
+      <Filter>NYLibrary\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Line\Line.cpp">
+      <Filter>NYLibrary\Line</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Component\Collider\PlaneCollider\PlaneCollider.cpp">
+      <Filter>NYLibrary\Component\Collider\PlaneCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PaintAsset\InkParticle\InkObj.cpp">
+      <Filter>PaintAsset\InkParticle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

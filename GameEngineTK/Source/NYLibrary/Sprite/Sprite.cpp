@@ -32,11 +32,11 @@ void Sprite::Initialize()
 	//バーテックスシェーダー作成
 	if (dimension == Dimension2)
 	{
-		if (FAILED(MakeShader("Resources/HLSL/Sprite.hlsl", "VS2D", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &compiledShader)));
+		MakeShader("Resources/HLSL/Sprite.hlsl", "VS2D", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &compiledShader);
 	}
 	else
 	{
-		if (FAILED(MakeShader("Resources/HLSL/Sprite.hlsl", "VS3D", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &compiledShader)));
+		MakeShader("Resources/HLSL/Sprite.hlsl", "VS3D", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &compiledShader);
 	}
 
 
@@ -72,7 +72,7 @@ void Sprite::Initialize()
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
 
-	if (FAILED(devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer.ReleaseAndGetAddressOf())));
+	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer.ReleaseAndGetAddressOf());
 
 
 
@@ -197,8 +197,8 @@ HRESULT Sprite::CreateVertexBuffer2D()
 	auto& devices = Devices::Get();
 	float width = devices.Width() ;
 	float hight = devices.Height();
-	float shiftX = widthSize / 2;
-	float shiftY = hightSize / 2;
+	float shiftX = static_cast<float>(widthSize / 2);
+	float shiftY = static_cast<float>(hightSize / 2);
 	//バーテックスバッファー作成
 	//頂点を定義
 	VertexData vertices[] =
@@ -224,15 +224,15 @@ HRESULT Sprite::CreateVertexBuffer2D()
 	{
 		return E_FAIL;
 	}
-
+	return S_OK;
 }
 
 
 HRESULT Sprite::CreateVertexBuffer3D()
 {
 	auto& devices = Devices::Get();
-	float width = devices.Width();
-	float hight = devices.Height();
+	float width = static_cast<float>(devices.Width());
+	float hight = static_cast<float>(devices.Height());
 
 	//頂点を定義
 	VertexData vertices[] =
@@ -258,5 +258,6 @@ HRESULT Sprite::CreateVertexBuffer3D()
 		return E_FAIL;
 	}
 
+	return S_OK;
 
 }

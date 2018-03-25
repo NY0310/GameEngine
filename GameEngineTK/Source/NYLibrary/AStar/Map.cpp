@@ -45,15 +45,17 @@ void Map::CreateMap()
 	for (int i = 0; i < 1; i++)
 		for (int j = 0; j < 1; j++)
 		{
-			shared_ptr<PaintObj> obj = make_shared<PaintObj>();
+			shared_ptr<PaintObj> obj = make_shared<PaintObj>(false);
 			obj->Initialize();
 			AddChild(obj);
-			D3DXVECTOR3 pos = D3DXVECTOR3(i, 0, j);
+			obj->CreateAddChild();
+			D3DXVECTOR3 pos = D3DXVECTOR3(static_cast<float>(i), 0, static_cast<float>(j));
 			obj->SetPosition(pos);
 			obj->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
 			obj->SetScale(10);
 			int a = attributeMap->GetAttributeMap(i, j);
-			obj->LoadTextuerFile(FileNames[attributeMap->GetAttributeMap(i, j) + 3]);
+			obj->LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
+			obj->SetTag("stage");
 			obj->AddComponent<TrianglePolygonListCollider>();
 
 			//オブジェクト生成

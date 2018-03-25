@@ -2,22 +2,29 @@
 #include "../InkSegmentCollider/InkSegmentCollider.h"
 
 using namespace std;
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
 using namespace NYLibrary;
 
 
 PaintObj::PaintObj(bool isPlane)
+	:isPlane(isPlane)
 {
-	campus = make_unique<Paint>();
-	campus->Initialize(isPlane);
-	//paintCollision = make_unique<PaintCollision>();
-	SetTag("stage");
 
-	/*matrixObject->SetPosition(D3DXVECTOR3(0, 1.5, 0));
-	matrixObject->SetScale(D3DXVECTOR3(7, 7, 7));*/
 }
 
+
+
+
+void PaintObj::CreateAddChild()
+{
+	campus = make_shared<Paint>();
+	AddChild(campus);
+
+}
+
+void PaintObj::Initialize()
+{
+	Obj::Initialize();
+}
 
 void PaintObj::Update()
 {
@@ -27,7 +34,6 @@ void PaintObj::Update()
 
 	//Segment* segment;
 	//D3DXVECTOR2 uv = D3DXVECTOR2(0,0);
-
 
 	//if (segment)
 	//{
@@ -48,6 +54,7 @@ void PaintObj::Update()
 
 void PaintObj::Render()
 {
+
 
 
 	D3DXMATRIX View = camera->GetView();
@@ -103,7 +110,7 @@ void PaintObj::Render()
 	//テクスチャーをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
 	deviceContext->PSSetShaderResources(0, 1, texture.GetAddressOf());
-	//deviceContext->PSSetShaderResources(1, 1, campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
+	deviceContext->PSSetShaderResources(1, 1, campus->GetInkTexSRV());//全インクをレンダリングしたテクスチャ
 	deviceContext->PSSetShaderResources(2, 1, depthMapTexSRV.GetAddressOf());//ライトビューでの深度テクスチャ作成
 															   //このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
@@ -124,37 +131,38 @@ void PaintObj::Render()
 	deviceContext->DrawIndexed(mesh.dwNumFace * 3, 0, 0);
 }
 
+
 void PaintObj::OnCollisiton(Collider * collider)
 {
 	InkSegmentCollider* ink = dynamic_cast<InkSegmentCollider*>(collider);
 	TrianglePolygonListCollider* triangleList = GetComponent<TrianglePolygonListCollider>();
 	if (ink && triangleList)
 	{
-		CalcInkCollisionUv(*ink, triangleList->GetCollisionTriangle(), triangleList->GetInter());
+		campus->CreateInk(ink->GetColor(), CalcInkCollisionUv(*ink, triangleList->GetCollisionTriangle(), triangleList->GetInter()), 0.5f);
 	}
 }
 
 
 
-const D3DXVECTOR2& PaintObj::CalcInkCollisionUv(const Segment& segment, const Triangle& triangle, const D3DXVECTOR3 & inter)
+D3DXVECTOR2 PaintObj::CalcInkCollisionUv(const Segment& segment, const Triangle& triangle, const D3DXVECTOR3 & inter)
 {
-	float distance = 1.0e5;
-	D3DXVECTOR3 l_inter;
+//	float distance = 1.0e5;
+	//D3DXVECTOR3 l_inter;
 
 	// 線分の始点と衝突点の距離を計算（めりこみ距離）
-	D3DXVECTOR3 vec = segment.start - inter;
-	float temp_distance = D3DXVec3Length(&vec);
+	/*D3DXVECTOR3 vec = segment.start - inter;
+	float temp_distance = D3DXVec3Length(&vec);*/
 	// めりこみ具合がここまでで最小なら
 	
 		// 衝突点の座標、めりこみ距離を記録
-		l_inter = inter;
-		distance = temp_distance;
+	//	l_inter = inter;
+	//	distance = temp_distance;
 
 
 		D3DXVECTOR3 p1 = triangle.p0;
 		D3DXVECTOR3 p2 = triangle.p1;
 		D3DXVECTOR3 p3 = triangle.p2;
-		D3DXVECTOR3 p = l_inter;
+		D3DXVECTOR3 p = inter;
 
 		D3DXVECTOR2 uv1 = triangle.uv0;
 		D3DXVECTOR2 uv2 = triangle.uv1;

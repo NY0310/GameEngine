@@ -12,7 +12,7 @@ MatrixObject::MatrixObject()
 
 void NYLibrary::MatrixObject::MatrixInitialize()
 {
-	IsUseQuternion = true;
+	isUseQuternion = true;
 	transfer = D3DXVECTOR3(0, 0, 0);
 	scale = D3DXVECTOR3(1, 1, 1);
 	localSize = 0;
@@ -83,7 +83,7 @@ void MatrixObject::CreateTransferMatrix()
 void MatrixObject::CreateRotationMatrix()
 {
 	//クォータニオンを使用するか
-	if (IsUseQuternion)
+	if (isUseQuternion)
 	{
 		D3DXMatrixRotationQuaternion(&rotationMatrix, &quaternion);
 	}

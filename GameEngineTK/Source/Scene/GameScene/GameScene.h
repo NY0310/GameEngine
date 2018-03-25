@@ -7,6 +7,7 @@
 #include "../Scene.h"
 #include "Charactor/Player/MainPlayer.h"
 #include "../../NYLibrary/AStar/Map.h"
+#include "Stage/Stage.h"
 
 namespace Scene
 {
@@ -31,5 +32,6 @@ namespace Scene
 	private:
 		std::shared_ptr<Player> player;
 		std::shared_ptr<Map> map;
+		std::shared_ptr<Stage> stage;
 	};
 };

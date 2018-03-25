@@ -156,7 +156,7 @@ void InkTank::Emit()
 
 void InkTank::CalcColor()
 {
-	color = D3DXVECTOR4(colorAmount[red] / colorAmount[total], colorAmount[green] / colorAmount[total], colorAmount[blue] / colorAmount[total], 1);
+	color = D3DXVECTOR4(static_cast<float>(colorAmount[red] / colorAmount[total]), static_cast<float>(colorAmount[green] / colorAmount[total]), static_cast<float>(colorAmount[blue] / colorAmount[total]), 1);
 }
 
 void InkTank::ChangeColor()

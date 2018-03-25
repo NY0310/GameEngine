@@ -35,6 +35,10 @@ namespace NYLibrary
 		void LoopUpdate()override;
 		//描画
 		void LoopRender()override;
+		//影の描画
+		void LoopShadowRender()override;
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		void LoopClearRenderConfig()override;
 		//終了
 		void LoopFinalize()override;
 		// ノードを複製する(再起関数)
@@ -49,6 +53,10 @@ namespace NYLibrary
 		void Update()override {}
 		//描画
 		void Render()override {}
+		//影の描画
+		void ShadowRender()override {}
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		void ClearRenderConfig()override {}
 		//終了
 		void Finalize()override {}
 
@@ -75,6 +83,10 @@ namespace NYLibrary
 		void Update()override {}
 		//描画
 		void Render()override {}
+		//影の描画
+		void ShadowRender()override {}
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		void ClearRenderConfig()override {}
 		//終了
 		void Finalize()override {}
 		// ノードを複製する(再起関数)
@@ -87,6 +99,10 @@ namespace NYLibrary
 		virtual void LoopUpdate()override;
 		//描画
 		void LoopRender()final;
+		//影の描画
+		void LoopShadowRender()final;
+		//この描画処理後に画面に映すレンダリングターゲットを適応
+		void LoopClearRenderConfig()final;
 		//終了
 		void LoopFinalize()final;
 
