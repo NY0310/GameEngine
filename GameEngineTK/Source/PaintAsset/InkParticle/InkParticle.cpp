@@ -112,7 +112,7 @@ void InkParticle::LifeCheck()
 
 void InkParticle::OnCollisiton(Collider * collider)
 {
-	Destroy();
+//	Destroy();
 }
 
 
@@ -161,8 +161,6 @@ void InkParticleManager::Initialize()
 /// </summary>
 void InkParticleManager::Update()
 {
-
-	InkParticleUpdate();
 	InkDataUpdate();
 	IntervalUpdate();
 }
@@ -206,17 +204,6 @@ void InkParticleManager::Shoot(const D3DXVECTOR3 & emitPosition, D3DXVECTOR3 & n
 
 
 
-/// <summary>
-/// インクパーティクルの更新処理
-/// </summary>
-void InkParticleManager::InkParticleUpdate()
-{
-	//for (int i = 0; i < MAX_PARTICLE; i++)
-	//{
-	//	inkParticle[i]->update();
-	//}
-}
-	
 
 
 /// <summary>

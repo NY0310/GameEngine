@@ -39,8 +39,8 @@ void SegmentCollider::CalcSegmentPosition()
 {
 	D3DXVECTOR3 positon = objectData->GetPosition();
 	float worldHalfSize = objectData->GetScale().z * objectData->GetLocalSize() / 2;
-	end = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z + worldHalfSize), startWorldMatrix);
-	start = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z - worldHalfSize), endWorldMatrix);
+	start = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z + worldHalfSize), startWorldMatrix);
+	end = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z - worldHalfSize), endWorldMatrix);
 }
 
 /// <summary>
@@ -72,4 +72,9 @@ D3DXVECTOR3 SegmentCollider::CalcSegmentPosition(const D3DXVECTOR3& localpositio
 void SegmentCollider::Collision(TrianglePolygonListCollider * trianglePolygonListCollider)
 {
 	CheckSegment2AllTriangle(this, trianglePolygonListCollider);
+}
+
+void NYLibrary::SegmentCollider::Collision(PlaneCollider * planeCollider)
+{
+	IntersectPlane2Segment(this, planeCollider);
 }

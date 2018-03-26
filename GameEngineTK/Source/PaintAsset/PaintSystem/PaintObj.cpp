@@ -140,6 +140,12 @@ void PaintObj::OnCollisiton(Collider * collider)
 	{
 		campus->CreateInk(ink->GetColor(), CalcInkCollisionUv(*ink, triangleList->GetCollisionTriangle(), triangleList->GetInter()), 0.5f);
 	}
+
+	PlaneCollider* planeCollider = GetComponent<PlaneCollider>();
+	if (ink && planeCollider)
+	{
+		campus->CreateInk(ink->GetColor(), D3DXVECTOR2(planeCollider->GetInter().x, planeCollider->GetInter().y), 0.5f);
+	}
 }
 
 

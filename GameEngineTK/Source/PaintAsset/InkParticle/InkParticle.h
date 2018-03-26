@@ -85,8 +85,6 @@ public:
 	//パーティクル最大数
 	static const int MAX_PARTICLE = 50;
 private:
-	//インクパーティクルの更新処理
-	void InkParticleUpdate();
 	//座標の更新処理
 	void InkDataUpdate();
 	//インターバル更新処理

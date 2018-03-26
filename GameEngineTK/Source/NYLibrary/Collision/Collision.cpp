@@ -343,8 +343,8 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 	for (auto& triangle : trianglePolygonListCollider->GetTriangleList())
 	{
 		////ポリゴンの法線が無効な場合
-		if (triangle.normal == D3DXVECTOR3(0, 0, 0))
-			continue;
+		//if (triangle.normal == D3DXVECTOR3(0, 0, 0))
+		//	continue;
 
 
 		// 上方向ベクトルと法線の内積
@@ -478,15 +478,15 @@ bool NYLibrary::IntersectPlane2Segment(
 	Plane     PL) //平面
 {
 	//平面上の点P
-	D3DXVECTOR3 P = D3DXVECTOR3(PL.p0 * PL.r, PL.p1 * PL.r, PL.p2 * PL.r);
+	D3DXVECTOR3 P = D3DXVECTOR3(PL.nX * PL.r, PL.nY * PL.r, PL.nZ * PL.r);
 
 	//Pp0 PBベクトル
 	D3DXVECTOR3 PA = D3DXVECTOR3(P.x - A.x, P.y - A.y, P.z - A.z);
 	D3DXVECTOR3 PB = D3DXVECTOR3(P.x - B.x, P.y - B.y, P.z - B.z);
 
 	//PA PBそれぞれを平面法線と内積
-	double dot_PA = PA.x * PL.p0 + PA.y * PL.p1 + PA.z * PL.p2;
-	double dot_PB = PB.x * PL.p0 + PB.y * PL.p1 + PB.z * PL.p2;
+	double dot_PA = PA.x * PL.nX + PA.y * PL.nY + PA.z * PL.nZ;
+	double dot_PB = PB.x * PL.nX + PB.y * PL.nY + PB.z * PL.nZ;
 
 	//これは線端が平面上にあった時の計算の誤差を吸収しています。調整して使ってください。
 	if (abs(dot_PA) < 0.000001) { dot_PA = 0.0; }
@@ -495,7 +495,7 @@ bool NYLibrary::IntersectPlane2Segment(
 	//交差判定
 	if (dot_PA == 0.0 && dot_PB == 0.0) {
 		//両端が平面上にあり、交点を計算できない。
-		return false;
+		//return false;
 	}
 	else
 		if ((dot_PA >= 0.0 && dot_PB <= 0.0) ||

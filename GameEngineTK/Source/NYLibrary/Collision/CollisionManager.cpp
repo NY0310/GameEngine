@@ -44,6 +44,10 @@ void CollisionManager::AllTypeCheckAndCollisition(Collider* collider, Collider* 
 		return;
 	if (TypeCheckTrianglePolygonListCollider(collider, _collider))
 		return;
+	if (TypeCheckPlaneCollider(collider, _collider))
+		return;
+
+	
 }
 
 

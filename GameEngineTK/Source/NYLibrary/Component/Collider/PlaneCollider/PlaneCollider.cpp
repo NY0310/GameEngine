@@ -32,11 +32,25 @@ void PlaneCollider::Update()
 {
 	Collider::Update();
 
-	p0 = objectData->GetPositionX();
-	p1 = objectData->GetPositionY();
-	p2 = objectData->GetPositionZ();
-	r = objectData->GetScaleX() * objectData->GetLocalSize();
+	//ポリゴンのどれかひとつの頂点と法線ベクトルから平面を作成する
+	CreatePlaneFromPointNormal(objectData->GetPolygons().begin()->p2, objectData->GetPolygons().begin()->normal);
+
 }
+
+
+
+
+//ひとつの頂点と法線ベクトルから平面を作成する
+void PlaneCollider::CreatePlaneFromPointNormal(D3DXVECTOR3 pos, D3DXVECTOR3 normal)//※normalは単位ベクトルであること
+{
+	//pとnormalを内積
+	//r = pos.x * normal.x + pos.y * normal.y + pos.z * normal.z;
+	r = D3DXVec3Dot(&pos, &normal);
+	nX = normal.x;
+	nY = normal.y;
+	nZ = normal.z;
+}
+
 
 
 void PlaneCollider::Collision(SegmentCollider * segmentCollider)

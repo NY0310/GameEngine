@@ -4,10 +4,10 @@ using namespace NYLibrary;
 
 void Scene::GameScene::CreateAddChild()
 {
-	player = make_shared<Player>(10);
-	AddChild(player);
-	map = make_shared<Map>();
-	AddChild(map);
 	stage = make_shared<Stage>();
 	AddChild(stage);
+	map = make_shared<Map>();
+	AddChild(map);
+	player = make_shared<Player>(10);
+	AddChild(player);
 }

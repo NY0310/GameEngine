@@ -78,7 +78,7 @@ namespace NYLibrary
 	//•½–Ê‚Ì’è‹`
 	class Plane {	
 	public:
-		float p0, p1, p2, r;
+		float nX, nY, nZ, r;
 	};
 
 

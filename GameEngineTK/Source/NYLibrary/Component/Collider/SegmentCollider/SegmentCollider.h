@@ -24,6 +24,10 @@ namespace NYLibrary
 		D3DXVECTOR3 CalcSegmentPosition(const D3DXVECTOR3 & localposition, D3DXMATRIX & matrix);
 		//三角形ポリゴンとの当たり判定
 		void Collision(TrianglePolygonListCollider* TrianglePolygonListCollider);
+		//三角形ポリゴンとの当たり判定
+		void Collision(PlaneCollider* planeCollider);
+
+
 		//開始点のワールド行列を取得する
 		const D3DXMATRIX& GetStartWorldMatrix() {
 			return startWorldMatrix;
