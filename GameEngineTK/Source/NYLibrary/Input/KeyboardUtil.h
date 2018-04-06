@@ -22,9 +22,9 @@ namespace NYLibrary
 		bool IsTriggered(DirectX::Keyboard::Keys key);
 		// 指定キーのリリースチェック
 		bool IsReleased(DirectX::Keyboard::Keys key);
+	protected:
 		// コンストラクタ
 		KeyboardUtil();
-	protected:
 		// キーボード
 		std::unique_ptr<DirectX::Keyboard> m_Keyboard;
 		// ステート

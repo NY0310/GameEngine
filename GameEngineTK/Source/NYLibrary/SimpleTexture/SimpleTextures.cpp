@@ -30,8 +30,6 @@ void SimpleTextures::Initialize()
 	CreateRenderTargetView();
 	//レンダリングターゲットをクリア
 	ClearRenderTargetView();
-	//深度ステンシルビュー作成
-	CreateDepthStencilView();
 }
 
 
@@ -41,10 +39,8 @@ void SimpleTextures::Initialize()
 void SimpleTextures::Finalize()
 {
 	texture2D.Reset();
-	depthTexture2D.Reset();
 	shaderResourceView.Reset();
 	renderTargetView.Reset();
-	depthStencilView.Reset();
 }
 
 /// <summary>
@@ -127,26 +123,3 @@ void SimpleTextures::CreateRenderTargetView()
 	device.Get()->CreateRenderTargetView(texture2D.Get(), &inkDescRT, renderTargetView.ReleaseAndGetAddressOf());
 }
 
-/// <summary>
-/// 深度ステンシルビュー作成
-/// </summary>
-void SimpleTextures::CreateDepthStencilView()
-{
-	//深度マップテクスチャをレンダーターゲットにする際のデプスステンシルビュー用のテクスチャーを作成
-	D3D11_TEXTURE2D_DESC descDepth;
-	ZeroMemory(&descDepth, sizeof(D3D11_TEXTURE2D_DESC));
-	descDepth.Width = viewSize.x;
-	descDepth.Height = viewSize.y;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
-	descDepth.SampleDesc.Count = 1;
-	descDepth.SampleDesc.Quality = 0;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-	device.Get()->CreateTexture2D(&descDepth, nullptr, depthTexture2D.ReleaseAndGetAddressOf());
-	//そのテクスチャーに対しデプスステンシルビュー(DSV)を作成
-	device.Get()->CreateDepthStencilView(depthTexture2D.Get(), nullptr, depthStencilView.ReleaseAndGetAddressOf());
-}

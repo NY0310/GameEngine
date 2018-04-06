@@ -19,7 +19,7 @@ MouseRay::MouseRay()
 MouseRay * MouseRay::GetInstance()
 {
 	if (!mouseRay)
-		mouseRay = make_unique<MouseRay>();
+		mouseRay.reset(new MouseRay);
 	return  mouseRay.get();
 }
 

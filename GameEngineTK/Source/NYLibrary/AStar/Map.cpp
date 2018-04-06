@@ -27,6 +27,19 @@ void Map::Render()
 			j->Render();
 }
 
+
+void Map::ShadowRender()
+{
+	static float flame = 0;
+	flame++;
+	for (auto i : mapObj)
+		for (auto j : i)
+		{
+			j->ShadowRender();
+			//j->SetRotationX(D3DXToRadian(flame / 10));
+		}
+}
+
 void Map::MapObjResize(int hight, int windth)
 {
 	mapObj.resize(hight);
@@ -34,6 +47,13 @@ void Map::MapObjResize(int hight, int windth)
 		i.resize(windth);
 }
 
+void Map::ClearRenderConfig() {
+	for (auto i : mapObj)
+		for (auto j : i)
+		{
+			j->ClearRenderConfig();
+		}
+}
 
 void Map::CreateMap()
 {
@@ -45,17 +65,19 @@ void Map::CreateMap()
 	for (int i = 0; i < 1; i++)
 		for (int j = 0; j < 1; j++)
 		{
-			shared_ptr<PaintObj> obj = make_shared<PaintObj>(false);
+			shared_ptr<PaintObj> obj = make_shared<PaintObj>(true);
 			obj->Initialize();
 			AddChild(obj);
 			obj->CreateAddChild();
 			D3DXVECTOR3 pos = D3DXVECTOR3(static_cast<float>(i), 0, static_cast<float>(j));
 			obj->SetPosition(pos);
-			obj->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
-			obj->SetScale(10);
+			//obj->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
+			obj->LoadOBJFile("Resources/OBJ/floor.obj");
+
 			int a = attributeMap->GetAttributeMap(i, j);
 			obj->LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 			obj->SetTag("stage");
+
 			obj->AddComponent<TrianglePolygonListCollider>();
 
 			//オブジェクト生成

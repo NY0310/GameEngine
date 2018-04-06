@@ -18,10 +18,10 @@ Camera::Camera()
 	D3DXMatrixIdentity(&proj);
 
 	//	ビュー行列の生成
-	D3DXMatrixLookAtRH(&view,&eyepos, &refpos,&upvec);
+	D3DXMatrixLookAtLH(&view,&eyepos, &refpos,&upvec);
 
 	//	射影行列の生成
-	D3DXMatrixPerspectiveFovRH(&proj,fovY / zoom, aspect, nearClip, farClip);
+	D3DXMatrixPerspectiveFovLH(&proj,fovY / zoom, aspect, nearClip, farClip);
 }
 
 //	デストラクタ
@@ -34,10 +34,10 @@ Camera::~Camera()
 void Camera::Update()
 {
 	//	ビュー行列の生成
-	D3DXMatrixLookAtRH(&view, &eyepos, &refpos, &upvec);
+	D3DXMatrixLookAtLH(&view, &eyepos, &refpos, &upvec);
 
 	//	射影行列の生成
-	D3DXMatrixPerspectiveFovRH(&proj, fovY / zoom, aspect, nearClip, farClip);
+	D3DXMatrixPerspectiveFovLH(&proj, fovY / zoom, aspect, nearClip, farClip);
 
 }
 

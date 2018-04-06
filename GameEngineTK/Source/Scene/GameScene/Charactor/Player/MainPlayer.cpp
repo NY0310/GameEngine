@@ -61,3 +61,10 @@ void Player::ChangeState(PlayerState * state)
 {
 	playerState.reset(state);
 }
+
+
+
+void Player::Render()
+{
+	SkinMesh::Render();
+}

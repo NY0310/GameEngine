@@ -5,6 +5,8 @@ ComPtr<ID3D11VertexShader> Paint::inkVertexShader;
 ComPtr<ID3D11PixelShader> Paint::inkPixelShader;
 ComPtr<ID3D11VertexShader> Paint::DripVertexShader;
 ComPtr<ID3D11PixelShader>  Paint::DripPixelShader;
+ComPtr<ID3D11VertexShader> Paint::DripPlaneVertexShader;
+ComPtr<ID3D11PixelShader>  Paint::DripPlanePixelShader;
 ComPtr<ID3D11VertexShader> Paint::updateVertexShader;
 ComPtr<ID3D11PixelShader> Paint::updatePixelShader;
 ComPtr<ID3D11InputLayout> Paint::inkVertexLayout;
@@ -14,7 +16,31 @@ ID3D11ShaderResourceView** Paint::GetInkTexSRV()
 	return dripTextures->GetShaderResourceView().GetAddressOf();
 }
 
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="isPlane">平面か</param>
+Paint::Paint(bool isPlane ):isPlane(isPlane)
+{}
 
+
+/// <summary>
+/// デストラクタ
+/// </summary>
+Paint::~Paint()
+{
+	inkTexture.Reset();
+	sampleLimear.Reset();
+	inkNormalMap.Reset();
+	dripVertexBuffer.Reset();
+	textures->Finalize();
+	textures.release();
+	dripTextures.release();
+}
+
+/// <summary>
+/// 初期化
+/// </summary>
 void Paint::Initialize()
 {
 	textures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
@@ -44,9 +70,9 @@ void Paint::Initialize()
 		//バーテックスシェーダー
 		if (isPlane)
 		{
-			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
+			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripPlaneVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 			//ピクセルシェーダー
-			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
+			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPlanePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 		}
 		else
 		{
@@ -100,7 +126,13 @@ void Paint::Initialize()
 
 
 
-void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae)
+/// <summary>
+/// インクを生成する
+/// </summary>
+/// <param name="Color">色</param>
+/// <param name="uv">テクスチャ座標</param>
+/// <param name="size">大きさ</param>
+void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size)
 {
 	InkData inkdata;
 	inkdata.Color = Color;
@@ -134,7 +166,11 @@ void Paint::CreateVertexBuffer()
 	device->CreateBuffer(&bd, &InitData, dripVertexBuffer.ReleaseAndGetAddressOf());
 }
 
-
+/// <summary>
+/// インクのuv値と大きさからバーテックスバッファーを生成
+/// </summary>
+/// <param name="inkdata"><インクのデータ/param>
+/// <returns>生成したバーテックスバッファー</returns>
 ID3D11Buffer* Paint::CreateVertexBuffer(InkData & inkdata)
 {
 	//インクサイズを正規デバイス座標系にする
@@ -164,7 +200,9 @@ ID3D11Buffer* Paint::CreateVertexBuffer(InkData & inkdata)
 	return canvasVertexBuffer;
 }
 
-
+/// <summary>
+/// インクの描画
+/// </summary>
 void Paint::ClearRenderConfig()
 {
 	textures->SetRenderTargets();
@@ -179,13 +217,26 @@ void Paint::ClearRenderConfig()
 	inkData.clear();
 }
 
+
+/// <summary>
+/// 新規インクの描画
+/// </summary>
 void Paint::InkRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
+	if (isPlane)
+	{
+		deviceContext->VSSetShader(DripPlaneVertexShader.Get(), nullptr, 0);
+		deviceContext->PSSetShader(DripPlanePixelShader.Get(), nullptr, 0);
 
-	deviceContext->VSSetShader(inkVertexShader.Get(), nullptr, 0);
-	deviceContext->PSSetShader(inkPixelShader.Get(), nullptr, 0);
+	}
+	else
+	{
+		deviceContext->VSSetShader(inkVertexShader.Get(), nullptr, 0);
+		deviceContext->PSSetShader(inkPixelShader.Get(), nullptr, 0);
+
+	}
 
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
 	deviceContext->PSSetShaderResources(0, 1, inkTexture.GetAddressOf());//インクのレクスチャ
@@ -214,7 +265,10 @@ void Paint::InkRender()
 }
 
 
-
+/// <summary>
+/// 新規インクの描画
+/// </summary>
+/// <param name="ink">インク一つ分のデータ</param>
 void Paint::InkRender(InkData& ink)
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
@@ -242,7 +296,9 @@ void Paint::InkRender(InkData& ink)
 
 }
 
-
+/// <summary>
+/// インク垂れ流し
+/// </summary>
 void Paint::DripRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
@@ -278,6 +334,9 @@ void Paint::DripRender()
 	deviceContext->Draw(4, 0);
 }
 
+/// <summary>
+/// インクの垂れ流しを実装するために更新する
+/// </summary>
 void Paint::UpDateRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト

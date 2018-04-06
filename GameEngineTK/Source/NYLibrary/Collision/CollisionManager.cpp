@@ -30,7 +30,7 @@ void CollisionManager::Update()
 	{
 		for (auto collider_ : colliderList)
 		{
-			if (CheckCallCollision(collider, collider_))break;
+			if (CheckCallCollision(collider, collider_))continue;
 			AllTypeCheckAndCollisition(collider, collider_);
 
 		}

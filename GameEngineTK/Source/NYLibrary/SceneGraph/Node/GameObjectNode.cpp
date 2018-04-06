@@ -11,6 +11,9 @@ using namespace NYLibrary;
 
 void RootGameObjectNode::LoopInitialize()
 {
+	//シャドウマップ取得
+	ShadowMap* shadowMap = ShadowMap::GetInstance();
+	shadowMap->Initilize();
 	for (auto& child : children) {
 		child->LoopInitialize();
 	}
@@ -41,6 +44,12 @@ void RootGameObjectNode::LoopRender()
 
 void RootGameObjectNode::LoopShadowRender()
 {
+	//シャドウマップ取得
+	ShadowMap* shadowMap = ShadowMap::GetInstance();
+	shadowMap->OMSetRenderTargets();
+	shadowMap->ClearRTVAndDSV();
+	shadowMap->SetShader();
+
 	for (auto& child : children) {
 		child->LoopShadowRender();
 	}
@@ -89,11 +98,8 @@ shared_ptr<NodeAbstract> RootGameObjectNode::Clone()
 
 
 /// <summary>
-/// 
+/// 空オブジェクト(行列計算を行わない)
 /// </summary>
-
-
-
 
 
 void GameObjectNodeEmpty::LoopCreateAddChild()
@@ -183,7 +189,9 @@ shared_ptr<NodeAbstract>  GameObjectNodeEmpty::Clone()
 }
 
 
-
+/// <summary>
+/// ゲームオブジェクト
+/// </summary>
 void GameObjectNode::LoopUpdate()
 {
 	this->Update();

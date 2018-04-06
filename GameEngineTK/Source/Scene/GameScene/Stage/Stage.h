@@ -6,6 +6,9 @@ class Stage	: public PaintObj
 {
 public:
 	Stage();
+	void Update();
+	void ShadowRender();
+	//void ShadowRender();
 	~Stage();
 private:
 };

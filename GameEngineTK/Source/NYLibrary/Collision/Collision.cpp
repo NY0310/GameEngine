@@ -354,8 +354,6 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 		// コサイン値から、上方向との角度差を計算
 		float angle = acosf(cosine);
 		// 上方向との角度が限界角より大きければ、面の傾きが大きいので、地面とみなさずスキップ
-		if ( angle > limit_angle )
-			continue;
 
 
 		if (CheckSegment2Triangle(localSegment, &triangle,inter))
@@ -477,47 +475,56 @@ bool NYLibrary::IntersectPlane2Segment(
 	D3DXVECTOR3  B,   //線分終点
 	Plane     PL) //平面
 {
-	//平面上の点P
-	D3DXVECTOR3 P = D3DXVECTOR3(PL.nX * PL.r, PL.nY * PL.r, PL.nZ * PL.r);
+	////平面上の点P
+	//D3DXVECTOR3 P = D3DXVECTOR3(PL.nX * PL.r, PL.nY * PL.r, PL.nZ * PL.r);
 
-	//Pp0 PBベクトル
-	D3DXVECTOR3 PA = D3DXVECTOR3(P.x - A.x, P.y - A.y, P.z - A.z);
-	D3DXVECTOR3 PB = D3DXVECTOR3(P.x - B.x, P.y - B.y, P.z - B.z);
+	////Pp0 PBベクトル
+	//D3DXVECTOR3 PA = D3DXVECTOR3(P.x - A.x, P.y - A.y, P.z - A.z);
+	//D3DXVECTOR3 PB = D3DXVECTOR3(P.x - B.x, P.y - B.y, P.z - B.z);
 
-	//PA PBそれぞれを平面法線と内積
-	double dot_PA = PA.x * PL.nX + PA.y * PL.nY + PA.z * PL.nZ;
-	double dot_PB = PB.x * PL.nX + PB.y * PL.nY + PB.z * PL.nZ;
+	////PA PBそれぞれを平面法線と内積
+	//double dot_PA = PA.x * PL.nX + PA.y * PL.nY + PA.z * PL.nZ;
+	//double dot_PB = PB.x * PL.nX + PB.y * PL.nY + PB.z * PL.nZ;
 
-	//これは線端が平面上にあった時の計算の誤差を吸収しています。調整して使ってください。
-	if (abs(dot_PA) < 0.000001) { dot_PA = 0.0; }
-	if (abs(dot_PB) < 0.000001) { dot_PB = 0.0; }
+	////これは線端が平面上にあった時の計算の誤差を吸収しています。調整して使ってください。
+	//if (abs(dot_PA) < 0.000001) { dot_PA = 0.0; }
+	//if (abs(dot_PB) < 0.000001) { dot_PB = 0.0; }
 
-	//交差判定
-	if (dot_PA == 0.0 && dot_PB == 0.0) {
-		//両端が平面上にあり、交点を計算できない。
-		//return false;
-	}
-	else
-		if ((dot_PA >= 0.0 && dot_PB <= 0.0) ||
-			(dot_PA <= 0.0 && dot_PB >= 0.0)) {
-			//内積の片方がプラスで片方がマイナスなので、交差している
+	////交差判定
+	//if (dot_PA == 0.0 && dot_PB == 0.0) {
+	//	//両端が平面上にあり、交点を計算できない。
+	//	//return false;
+	//}
+	//else
+	//	if ((dot_PA >= 0.0 && dot_PB <= 0.0) ||
+	//		(dot_PA <= 0.0 && dot_PB >= 0.0)) {
+	//		//内積の片方がプラスで片方がマイナスなので、交差している
 
-		}
-		else {
-			//交差していない
-			return false;
-		}
+	//	}
+	//	else {
+	//		//交差していない
+	//		return false;
+	//	}
 
-		//以下、交点を求める 
+	//	//以下、交点を求める 
 
-		D3DXVECTOR3 AB = D3DXVECTOR3(B.x - A.x, B.y - A.y, B.z - A.z);
+	//	D3DXVECTOR3 AB = D3DXVECTOR3(B.x - A.x, B.y - A.y, B.z - A.z);
 
-		//交点とAの距離 : 交点とBの距離 = dot_PA : dot_PB
-		double hiritu = abs(dot_PA) / (abs(dot_PA) + abs(dot_PB));
+	//	//交点とAの距離 : 交点とBの距離 = dot_PA : dot_PB
+	//	double hiritu = abs(dot_PA) / (abs(dot_PA) + abs(dot_PB));
 
-		inter->x = A.x + (AB.x * hiritu);
-		inter->y = A.y + (AB.y * hiritu);
-		inter->z = A.z + (AB.z * hiritu);
+	//	inter->x = A.x + (AB.x * hiritu);
+	//	inter->y = A.y + (AB.y * hiritu);
+	//	inter->z = A.z + (AB.z * hiritu);
 
+	//	return true;
+
+	D3DXVECTOR3 AB = A - B;
+	float t = (PL.h - D3DXVec3Dot(&PL.normal, &A)) / D3DXVec3Dot(&PL.normal,&AB);
+
+	if (t >= 0.0f && t <= 1.0f) {
+		*inter = A + t * AB;
 		return true;
+	}
+	return false;
 }

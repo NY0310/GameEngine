@@ -39,8 +39,8 @@ void SegmentCollider::CalcSegmentPosition()
 {
 	D3DXVECTOR3 positon = objectData->GetPosition();
 	float worldHalfSize = objectData->GetScale().z * objectData->GetLocalSize() / 2;
-	start = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z + worldHalfSize), startWorldMatrix);
-	end = CalcSegmentPosition(D3DXVECTOR3(positon.x, positon.y, positon.z - worldHalfSize), endWorldMatrix);
+	start = CalcSegmentPosition(D3DXVECTOR3(0, 0, + worldHalfSize), startWorldMatrix);
+	end = CalcSegmentPosition(D3DXVECTOR3(0, 0, - worldHalfSize), endWorldMatrix);
 }
 
 /// <summary>
@@ -55,15 +55,7 @@ D3DXVECTOR3 SegmentCollider::CalcSegmentPosition(const D3DXVECTOR3& localpositio
 	D3DXMatrixIdentity(&matrix);
 	//D3DXMatrixScaling(&mat, objectData->GetScaleX(), objectData->GetScaleY(), objectData->GetScaleZ());
 	D3DXMatrixTranslation(&trans, localposition.x, localposition.y, localposition.z);
-	if (objectData->GetIsUseQuternion())
-	{
-		D3DXMatrixRotationQuaternion(&rotMat, &objectData->GetQuaternion());
-	}
-	else
-	{
-		D3DXMatrixRotationYawPitchRoll(&rotMat, objectData->GetRotation().x, objectData->GetRotation().y, objectData->GetRotation().z);
-	}
-	matrix *= trans * rotMat;
+	matrix =  trans *  objectData->GetRotationMatrix() * objectData->GetTransferMatrix();
 
 	return D3DXVECTOR3(matrix._41, matrix._42, matrix._43);
 }

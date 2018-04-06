@@ -9,30 +9,21 @@
 #include <wrl/client.h>
 
 #include <d3d11_1.h>
-#include <DirectXMath.h>
-
-#include <algorithm>
-#include <exception>
-#include <stdexcept>
-
-#include <VertexTypes.h>
 #include <CommonStates.h>
-#include <d3dCompiler.h>
 #include <memory>
 
 #include "../NYLibrary/Device/Device.h"
 #include "StepTimer.h"
-#include "../NYLibrary/ShaderManager/ShaderManager.h"
 #include "../Scene/SceneManager.h"
 #include "../NYLibrary/Camera/FollowCamera.h"
 #include "../NYLibrary/Input/MouseUtil.h"
 #include "../NYLibrary/Input/KeyboardUtil.h"
 #include "../NYLibrary/Collision/CollisionManager.h"
+#include "../NYLibrary/Light/Light.h"
+#include "../NYLibrary/ShadowMap/ShadowMap.h"
 
 #pragma comment(lib,"d3dx10.lib")
 #pragma comment(lib,"d3dx11.lib")
-#define WINDOW_WIDTH 640 //ウィンドウ幅
-#define WINDOW_HEIGHT 480 //ウィンドウ高さ
 
 
 namespace DX
@@ -78,11 +69,11 @@ private:
 
 	void Clear();
 	void Present();
-	HWND                                            m_window;
-	int                                             m_outputWidth;
-	int                                             m_outputHeight;
-
-	D3D_FEATURE_LEVEL                               m_featureLevel;
+	HWND m_window;
+	int  m_outputWidth;
+	int  m_outputHeight;
+					  
+	D3D_FEATURE_LEVEL  m_featureLevel;
 
 
 	// Rendering loop timer.
@@ -96,4 +87,5 @@ private:
 	NYLibrary::MouseUtil* mouse;
 	NYLibrary::KeyboardUtil* keyBoard;
 	NYLibrary::CollisionManager* collisionManager;
+	NYLibrary::Light* light;
 };       

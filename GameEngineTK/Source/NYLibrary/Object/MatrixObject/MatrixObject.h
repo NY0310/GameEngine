@@ -35,7 +35,7 @@ namespace NYLibrary
 
 	class TRANSMAT_ROTOMAT_SCALEM :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
-			world = scalem * transm * rotm;
+			world = transm * rotm * scalem;
 		}
 	};
 

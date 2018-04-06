@@ -5,7 +5,7 @@
 /// </summary>
 #pragma once
 #include "Node.h"
-
+#include "../../ShadowMap/ShadowMap.h"
 //
 //namespace gameobject {
 //	class GameObjectInterface;

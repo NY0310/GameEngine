@@ -25,6 +25,7 @@ public:
 	void Finalize();
 	//ó‘Ô•Ï‰»
 	void ChangeState(PlayerState* state);
+	void Render();
 	//ˆÚ“®‘¬“x‚ğİ’è‚·‚é
 	void SetMoveSpeed(float speed) { moveSpeed = speed; }
 private:

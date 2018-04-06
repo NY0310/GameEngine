@@ -1,11 +1,8 @@
-﻿#include <assert.h>
-
-#include "MouseUtil.h"
+﻿#include "MouseUtil.h"
 
 using namespace DirectX;
 using namespace NYLibrary;
 
-// static member variable
 std::unique_ptr<MouseUtil> MouseUtil::m_Instance;
 
 
@@ -13,7 +10,7 @@ MouseUtil * MouseUtil::GetInstance()
 {
 	if (!m_Instance)
 	{
-		m_Instance = std::make_unique<MouseUtil>();
+		m_Instance.reset(new MouseUtil());
 	}
 
 	return m_Instance.get();

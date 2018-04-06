@@ -51,6 +51,8 @@ namespace NYLibrary
 		static const DirectX::SimpleMath::Vector2& ChangeRegularDevice(const DirectX::SimpleMath::Vector2& position);
 		//行列とfloat4の積
 		static const D3DXVECTOR4 & MatrixTimes(const D3DXMATRIX & matrix, const D3DXVECTOR4 & vector);
+		////線形補間いよる進行度算出
+		//static float D3DXVec3Lerp(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXVECTOR3& now);
 	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);

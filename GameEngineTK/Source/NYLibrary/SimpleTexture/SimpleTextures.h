@@ -29,8 +29,8 @@ namespace NYLibrary
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetShaderResourceView() { return shaderResourceView; }
 		//レンダリングターゲットビューを取得
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>& GetRenderTargetView() { return renderTargetView; }
-		//深度ステンシルビューを取得
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& GetDepthStencilView() { return depthStencilView; }
+		////深度ステンシルビューを取得
+		//Microsoft::WRL::ComPtr<ID3D11DepthStencilView>& GetDepthStencilView() { return depthStencilView; }
 		//レンダリングターゲットを使用する
 		void SetRenderTargets();
 		//レンダリングターゲットをクリアする
@@ -38,14 +38,14 @@ namespace NYLibrary
 	private:
 		//2Dテクスチャ
 		Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D;
-		//深度ステンシル用2Dテクスチャ
-		Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture2D;
+		////深度ステンシル用2Dテクスチャ
+		//Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture2D;
 		//シェーダーリソースビュー
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 		//レンダリングターゲットビュー
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView;
-		//深度ステンシルビュー
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
+		////深度ステンシルビュー
+		//Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
 		//2Dテクスチャのフォーマット
 		static const DXGI_FORMAT FORMAT;
 		//ビューの大きさ
@@ -59,7 +59,7 @@ namespace NYLibrary
 		void CreateShaderResourceView();
 		//レンダリングターゲットビュー作成
 		void CreateRenderTargetView();
-		//深度ステンシルビュー作成
-		void CreateDepthStencilView();
+		////深度ステンシルビュー作成
+		//void CreateDepthStencilView();
 	};
 };

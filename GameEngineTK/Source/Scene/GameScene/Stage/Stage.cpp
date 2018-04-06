@@ -1,17 +1,48 @@
 #include "Stage.h"
-
+#include "../../../NYLibrary/Input/KeyboardUtil.h"
 Stage::Stage()
 	:PaintObj(true)
 {
-	LoadOBJFile("Resources/OBJ/floor.obj");
-	//LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
-	LoadTextuerFile("Resources/PNG/GoalPanel.png");
+	//LoadOBJFile("Resources/OBJ/floor.obj");
+	LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
+	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
 	SetTag("stage");
-	SetLocalSize(10);
-	AddComponent<PlaneCollider>();
+	SetLocalSize(60);
+	SetScale(10);
+	AddComponent<TrianglePolygonListCollider>();
 }
 
+
+void Stage::Update()
+{
+	auto& a = Light::GetInstance()->GetLightPosition();
+
+
+	auto key = KeyboardUtil::GetInstance();
+	D3DXVECTOR3 tra(0,0,0);
+	if (key->IsPressed(Keyboard::I))
+		tra.y = 1;
+		if (key->IsPressed(Keyboard::K))
+			tra.y -= 1;
+			if (key->IsPressed(Keyboard::L))
+				tra.x = 1;
+				if (key->IsPressed(Keyboard::J))
+					tra.x -= 1;
+				if (key->IsPressed(Keyboard::N))
+					tra.z -= 1;
+
+					if (key->IsPressed(Keyboard::M))
+						tra.z = 1;
+					SetPosition(a + tra);
+					Light::GetInstance()->SetLightEyePosition(a + tra);
+
+}
+
+void Stage::ShadowRender()
+{
+
+}
 
 Stage::~Stage()
 {

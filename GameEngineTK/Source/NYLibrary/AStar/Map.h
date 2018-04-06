@@ -24,8 +24,10 @@ namespace NYLibrary
 		//最短経路取得
 		std::vector<DirectX::SimpleMath::Vector2> GetShortestPath() { aStar->SearchRoute(); return aStar->GetResultPath(); }
 	private:
+		void ShadowRender();
 		//マップのリストサイズ変更
 		void MapObjResize(const int Hight, const int windth);
+		void ClearRenderConfig();
 		//マップ生成
 		void CreateMap();
 		//配置するオブジェクト

@@ -112,7 +112,7 @@ void InkParticle::LifeCheck()
 
 void InkParticle::OnCollisiton(Collider * collider)
 {
-//	Destroy();
+	//Destroy();
 }
 
 
@@ -136,7 +136,12 @@ InkParticleManager::InkParticleManager()
 /// </summary>
 InkParticleManager::~InkParticleManager()
 {
-	//delete[] inkParticle;
+	for (auto child : inkParticle)
+	{
+		RemoveChild(child);
+		child.reset();
+	}
+	
 }
 
 void InkParticleManager::Initialize()
@@ -217,9 +222,61 @@ void InkParticleManager::InkDataUpdate()
 	{
 		if (inkParticle[i]->IsValidity())
 		{
+			//D3DXMATRIX matrix;
+			//D3DXMATRIX trans;
+			//D3DXMATRIX rotMat;
+			//D3DXVECTOR3 localposition = GetChild(i)->GetPosition();
+			////D3DXMatrixScaling(&mat, objectData->GetScaleX(), objectData->GetScaleY(), objectData->GetScaleZ());
+			//D3DXMatrixTranslation(&trans, 0, 0, - 2);
+			//if (GetChild(i)->GetIsUseQuternion())
+			//{
+			//	D3DXMatrixRotationQuaternion(&rotMat, &GetChild(i)->GetQuaternion());
+			//}
+			//else
+			//{
+			//	D3DXMatrixRotationYawPitchRoll(&rotMat, GetChild(i)->GetRotation().x, GetChild(i)->GetRotation().y, GetChild(i)->GetRotation().z);
+			//}
+
+			//
+
+			//matrix = trans *  GetChild(i)->GetRotationMatrix() * GetChild(i)->GetTransferMatrix();
+
+
+
+
+
+			//auto camera = FollowCamera::GetInstance();
+
+			//inkdata.wvp = matrix *  camera->GetView() * camera->GetProjection();
+
+			//inkdata.color = GetChild(i)->GetColor();
+			//inkParticledata.emplace_back(inkdata);
+
+
+
+
+
+			//localposition = GetChild(i)->GetPosition();
+			////D3DXMatrixScaling(&mat, objectData->GetScaleX(), objectData->GetScaleY(), objectData->GetScaleZ());
+			//D3DXMatrixTranslation(&trans, 0, 0, + 2);
+			//if (GetChild(i)->GetIsUseQuternion())
+			//{
+			//	D3DXMatrixRotationQuaternion(&rotMat, &GetChild(i)->GetQuaternion());
+			//}
+			//else
+			//{
+			//	D3DXMatrixRotationYawPitchRoll(&rotMat, GetChild(i)->GetRotation().x, GetChild(i)->GetRotation().y, GetChild(i)->GetRotation().z);
+			//}
+			//matrix = trans *  GetChild(i)->GetRotationMatrix() * GetChild(i)->GetTransferMatrix();
+			//inkdata.wvp = matrix *  camera->GetView() * camera->GetProjection();
+			//inkdata.color = GetChild(i)->GetColor();
+			//inkParticledata.emplace_back(inkdata);
+
 			inkdata.wvp = GetChild(i)->GetWVP();
 			inkdata.color = GetChild(i)->GetColor();
 			inkParticledata.emplace_back(inkdata);
+
+
 		}
 	}
 

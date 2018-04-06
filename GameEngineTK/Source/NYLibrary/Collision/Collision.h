@@ -78,8 +78,10 @@ namespace NYLibrary
 	//•½–Ê‚Ì’è‹`
 	class Plane {	
 	public:
-		float nX, nY, nZ, r;
+		D3DXVECTOR3 normal;
+		float h;
 	};
+
 
 
 	bool CheckSpere2Sphere(const Sphere & sphereA, const Sphere & sphereB);

@@ -20,14 +20,10 @@ namespace NYLibrary
 			Num
 		};
 		using Mode = DirectX::Mouse::Mode;
-
-	public:
-		static MouseUtil* GetInstance();
 	private:
 		static std::unique_ptr<MouseUtil> m_Instance;
 	public:
-		// コンストラクタ
-		MouseUtil(Mode mode = Mode::MODE_ABSOLUTE);
+		static MouseUtil* GetInstance();
 		// ウィンドウハンドルセット
 		void SetWindow(HWND window);
 		// 毎フレーム更新
@@ -55,6 +51,8 @@ namespace NYLibrary
 		// ホイール値の取得
 		int GetWheelValue();
 	protected:
+		// コンストラクタ
+		MouseUtil(Mode mode = Mode::MODE_ABSOLUTE);
 		// マウス
 		std::unique_ptr<DirectX::Mouse> m_Mouse;
 		// ステート

@@ -114,7 +114,7 @@ HRESULT MY_HIERARCHY::CreateMeshContainer(LPCSTR Name, CONST D3DXMESHDATA* pMesh
 	{
 		if (NumMaterials > 0)
 		{
-			for (int i = 0; i < NumMaterials; i++)
+			for (DWORD i = 0; i < NumMaterials; i++)
 			{
 				//メッシュコンテナにマテリアルのメモリをコピーする
 				memcpy(&pMeshContainer->pMaterials[i], &pMaterials[i], sizeof(D3DXMATERIAL));
@@ -203,7 +203,7 @@ HRESULT MY_HIERARCHY::DestroyMeshContainer(LPD3DXMESHCONTAINER pMeshContainerBas
 
 	if (pMeshContainer->ppTextures != nullptr)
 	{
-		for (iMaterial = 0; iMaterial < pMeshContainer->NumMaterials; iMaterial++)
+		for (iMaterial = 0; iMaterial < static_cast<signed>(pMeshContainer->NumMaterials); iMaterial++)
 		{
 			SAFE_RELEASE(pMeshContainer->ppTextures[iMaterial]);
 		}
@@ -659,7 +659,7 @@ SkinMesh::~SkinMesh()
 	delete[] boneArray;
 	delete[] material;
 	vertexBuffer.Reset();
-	for (int i = 0; i<numMaterial; i++)
+	for (DWORD i = 0; i<numMaterial; i++)
 	{
 		//SAFE_RELEASE(m_ppIndexBuffer[i]);
 	}
@@ -680,9 +680,8 @@ void SkinMesh::Initialize()
 	ID3DBlob *pCompiledShader = nullptr;
 	ID3DBlob *pErrors = nullptr;
 
-	//ブロブからバーテックスシェーダー作成
-	if (FAILED(MakeShader("Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", "VSSkin", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &pCompiledShader)));
-		//return E_FAIL;
+	//ブロブからバーテックスシェーダー作
+	MakeShader("Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", "VSSkin", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 
 	//頂点インプットレイアウトを定義	
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -696,14 +695,13 @@ void SkinMesh::Initialize()
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 
 	//頂点インプットレイアウトを作成
-	if (FAILED(device->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), vertexLayout.ReleaseAndGetAddressOf())))
+	device->CreateInputLayout(layout, numElements, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), vertexLayout.ReleaseAndGetAddressOf());
 		//return FALSE;
 	//頂点インプットレイアウトをセット
 	deviceContext->IASetInputLayout(vertexLayout.Get());
 
 	//ブロブからピクセルシェーダー作成
-	if (FAILED(MakeShader("Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", "PSSkin", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)));
-		//return E_FAIL;
+	MakeShader("Resources/HLSL/Geometry_Material_Texture_Skin.hlsl", "PSSkin", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 
 
 	D3D11_BUFFER_DESC cb;

@@ -12,7 +12,7 @@ KeyboardUtil * KeyboardUtil::GetInstance()
 {
 	if (!m_Instance)
 	{
-		m_Instance = make_unique<KeyboardUtil>();
+		m_Instance.reset(new KeyboardUtil());
 	}
 
 	return m_Instance.get();

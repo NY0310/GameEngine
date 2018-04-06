@@ -42,6 +42,19 @@ void Game::Initialize(HWND window, int width, int height)
 	//	汎用ステートを生成
 	m_states = std::make_unique<CommonStates>(devices.Device().Get());
 
+	//フォローカメラ取得
+	camera = FollowCamera::GetInstance();
+	//マウス取得
+	mouse = MouseUtil::GetInstance();
+	//キーボード取得
+	keyBoard = KeyboardUtil::GetInstance();
+
+	//当たり判定取得
+	collisionManager = CollisionManager::GetInstance();
+	//ライトの取得
+	light = Light::GetInstance();
+
+
 	//シーンマネージャ取得する
 	sceneManager = make_unique<SceneManager>();
 	//タイトルシーンを作成
@@ -49,13 +62,9 @@ void Game::Initialize(HWND window, int width, int height)
 	sceneManager->LoopCreateAddChild();
 	//初期化
 	sceneManager->LoopInitialize();
-	camera = FollowCamera::GetInstance();
-	//マウス取得
-	mouse = MouseUtil::GetInstance();
-	//キーボード取得
-	keyBoard = KeyboardUtil::GetInstance();
-	//当たり判定取得
-	collisionManager = CollisionManager::GetInstance();
+
+
+
 
 }
 
@@ -77,10 +86,17 @@ void Game::Update(DX::StepTimer const& timer)
 {
 	//シーンマネージャの更新(これでゲーム内の更新処理が全て呼ばれる)
 	sceneManager->LoopUpdate();
+	//フォローカメラ更新
 	camera->Update();
+	//マウス更新
 	mouse->Update();
+	//キーボード更新
 	keyBoard->Update();
+	//ライトの更新
+	light->Calc();
+	//当たり判定更新
 	collisionManager->Update();
+
 }
 
 // Draws the scene.
@@ -92,7 +108,6 @@ void Game::Render()
 		return;
 	}
 
-	Clear();
 	auto& devices = Devices::Get();
 
 
@@ -104,21 +119,25 @@ void Game::Render()
 	//スクリーン、影以外の描画
 	sceneManager->LoopClearRenderConfig();
 
+
+
+	////影の描画
+	sceneManager->LoopShadowRender();
+
 	//#if 0
 	////アルファ値を有効にする
 	devices.Context().Get()->OMSetBlendState(m_states->AlphaBlend(), nullptr, 0xffffffff);
+
 
 	Clear();
 
 
 
 
-
-	//描画
+	////描画
 	sceneManager->LoopRender();
 
 	Present();
-
 }
 //
 //// Helper method to clear the back buffers.

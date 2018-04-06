@@ -41,33 +41,6 @@
     <Filter Include="NYLibrary\ShaderManager">
       <UniqueIdentifier>{31e9ac9e-af67-4dc3-9146-6c3731fa0c5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{2d0b0374-1454-47bb-96e9-6964a4310ff7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\GameScene">
-      <UniqueIdentifier>{e81ffcdd-6b85-4d49-bc7a-ad514080debf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\TitleScene">
-      <UniqueIdentifier>{d3eba96c-3d4c-434a-8baa-17667b0f6abe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\ResoultScene">
-      <UniqueIdentifier>{b0bad162-746c-4536-bd7f-438fccc477f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\GameScene\Charactor">
-      <UniqueIdentifier>{9e7a5cad-372d-451b-b938-7266248a343a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\GameScene\Charactor\Player">
-      <UniqueIdentifier>{c0a4624f-8a3d-4537-ab26-9a59d9a100c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\GameScene\Charactor\Player\State">
-      <UniqueIdentifier>{4079ed47-c91d-4421-8001-9040f8c1a424}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\GameScene\Charactor\Enemy">
-      <UniqueIdentifier>{c75dff77-be45-44ff-ba8d-eb6bcd8af898}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\GameScene\Stage">
-      <UniqueIdentifier>{6ef1175c-d395-4772-95cf-1869d8d9792c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\SimpleTexture">
       <UniqueIdentifier>{d8ff60c8-0ac4-45bb-beff-c8c4c72c0610}</UniqueIdentifier>
     </Filter>
@@ -119,9 +92,6 @@
     <Filter Include="NYLibrary\Math">
       <UniqueIdentifier>{bfa55c21-9938-4880-a198-c6de223564bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\Sprite\SkinMeshAnimation">
-      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Component\Collider\PlaneCollider">
       <UniqueIdentifier>{aa7ae8a4-a2bb-4ff9-9f67-39e0a4e73306}</UniqueIdentifier>
     </Filter>
@@ -136,6 +106,39 @@
     </Filter>
     <Filter Include="Stage">
       <UniqueIdentifier>{5a58c8a0-a6da-4b35-8e7d-db610c794055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\ShadowMap">
+      <UniqueIdentifier>{6ca9ac79-5e60-4a83-bd07-69af0dbd5d46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{2d0b0374-1454-47bb-96e9-6964a4310ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene">
+      <UniqueIdentifier>{e81ffcdd-6b85-4d49-bc7a-ad514080debf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Charactor">
+      <UniqueIdentifier>{9e7a5cad-372d-451b-b938-7266248a343a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Charactor\Player">
+      <UniqueIdentifier>{c0a4624f-8a3d-4537-ab26-9a59d9a100c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Charactor\Player\State">
+      <UniqueIdentifier>{4079ed47-c91d-4421-8001-9040f8c1a424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Charactor\Enemy">
+      <UniqueIdentifier>{c75dff77-be45-44ff-ba8d-eb6bcd8af898}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\GameScene\Stage">
+      <UniqueIdentifier>{6ef1175c-d395-4772-95cf-1869d8d9792c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\TitleScene">
+      <UniqueIdentifier>{d3eba96c-3d4c-434a-8baa-17667b0f6abe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\ResoultScene">
+      <UniqueIdentifier>{b0bad162-746c-4536-bd7f-438fccc477f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\SkinMeshAnimation">
+      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -206,7 +209,7 @@
       <Filter>Scene\GameScene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h">
-      <Filter>NYLibrary\Sprite\SkinMeshAnimation</Filter>
+      <Filter>NYLibrary\SkinMeshAnimation</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
@@ -319,6 +322,9 @@
     <ClInclude Include="Source\PaintAsset\InkParticle\InkObj.h">
       <Filter>PaintAsset\InkParticle</Filter>
     </ClInclude>
+    <ClInclude Include="Source\NYLibrary\ShadowMap\ShadowMap.h">
+      <Filter>NYLibrary\ShadowMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -382,7 +388,7 @@
       <Filter>Scene\GameScene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp">
-      <Filter>NYLibrary\Sprite\SkinMeshAnimation</Filter>
+      <Filter>NYLibrary\SkinMeshAnimation</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Game.cpp">
       <Filter>Game</Filter>
@@ -477,6 +483,9 @@
     <ClCompile Include="Source\PaintAsset\InkParticle\InkObj.cpp">
       <Filter>PaintAsset\InkParticle</Filter>
     </ClCompile>
+    <ClCompile Include="Source\NYLibrary\ShadowMap\ShadowMap.cpp">
+      <Filter>NYLibrary\ShadowMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -543,7 +552,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\HLSL\Geometry_Material_Texture_Skin.hlsl">
-      <Filter>NYLibrary\Sprite\SkinMeshAnimation</Filter>
+      <Filter>NYLibrary\SkinMeshAnimation</Filter>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\PointSprite.hlsl">
       <Filter>PaintAsset\InkParticle</Filter>
@@ -568,6 +577,9 @@
     </FxCompile>
     <FxCompile Include="Resources\HLSL\Campus.hlsl">
       <Filter>PaintAsset\PaintSystem</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\HLSL\ShadowMap.hlsl">
+      <Filter>NYLibrary\ShadowMap</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -202,4 +202,8 @@ const D3DXVECTOR4& Math::MatrixTimes(const D3DXMATRIX& matrix, const D3DXVECTOR4
 	return vec;
 }
 
+//float Math::D3DXVec3Lerp(const D3DXVECTOR3 & start, const D3DXVECTOR3 & end, const D3DXVECTOR3& now)
+//{
+//}
+
 

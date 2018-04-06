@@ -29,12 +29,12 @@ private:
 	};
 
 public:
-	Paint(bool isPlane = false) :isPlane(isPlane) {}
-	~Paint() = default;
+	Paint(bool isPlane = false);
+	~Paint();
 	Paint& operator= (const Paint&) = delete;
 	Paint(const Paint&) = delete;
 
-	void CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float sclae);
+	void CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size);
 	void CreateVertexBuffer();
 	ID3D11ShaderResourceView** GetInkTexSRV();
 	void Initialize();
@@ -65,6 +65,8 @@ private:
 
 	static ComPtr<ID3D11VertexShader> DripVertexShader;//インクテクスチャ用バーテックスシェーダー
 	static ComPtr<ID3D11PixelShader>  DripPixelShader;//インクテクスチャ用ピクセルシェーダー
+	static ComPtr<ID3D11VertexShader> DripPlaneVertexShader;//インクテクスチャ用バーテックスシェーダー
+	static ComPtr<ID3D11PixelShader>  DripPlanePixelShader;//インクテクスチャ用ピクセルシェーダー
 
 
 	ComPtr<ID3D11Buffer> dripVertexBuffer;//

@@ -3,6 +3,7 @@
 
 namespace NYLibrary
 {
+
 	class InkSegmentCollider :  public SegmentCollider
 	{
 	public:
@@ -15,5 +16,6 @@ namespace NYLibrary
 		D3DXVECTOR4 GetColor() { return color; }
 	private:
 		D3DXVECTOR4 color;
+
 	};
 }

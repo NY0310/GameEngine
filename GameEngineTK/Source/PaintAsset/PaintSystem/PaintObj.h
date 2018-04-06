@@ -28,7 +28,7 @@ public:
 	void InkRender() { campus->Render(); }
 	//当たり判定呼び出し
 	void OnCollisiton(Collider* collider);
-	D3DXVECTOR2 CalcInkCollisionUv(const Segment& segment, const Triangle& triangle, const D3DXVECTOR3 & inter);
+	D3DXVECTOR2 CalcInkCollisionUv(const Triangle& triangle, const D3DXVECTOR3 & inter);
 private:
 	//インクが当たったUV値を算出する
 	std::shared_ptr<Paint>campus;

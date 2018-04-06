@@ -28,7 +28,6 @@ void Sprite::Initialize()
 	auto& devices = Devices::Get();
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *compiledShader = nullptr;
-	D3D11_BLEND_DESC bd;
 	//バーテックスシェーダー作成
 	if (dimension == Dimension2)
 	{
@@ -50,14 +49,14 @@ void Sprite::Initialize()
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 
 	//頂点インプットレイアウトを作成
-	if (FAILED(devices.Device()->CreateInputLayout(layout, numElements, compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), vertexLayout.ReleaseAndGetAddressOf())))
+	devices.Device()->CreateInputLayout(layout, numElements, compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), vertexLayout.ReleaseAndGetAddressOf());
 
 	SAFE_RELEASE(compiledShader);
 
 
 
 	//ピクセルシェーダー作成
-	if (FAILED(MakeShader("Resources/HLSL/Sprite.hlsl", "PS", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &compiledShader)));
+	MakeShader("Resources/HLSL/Sprite.hlsl", "PS", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &compiledShader);
 	SAFE_RELEASE(compiledShader);
 
 
@@ -110,6 +109,7 @@ HRESULT Sprite::LoadTexture(LPCWSTR FileName)
 	if (dimension == Dimension3)
 	CreateVertexBuffer3D();
 
+	return S_OK;
 }
 
 void Sprite::Render()
@@ -128,7 +128,7 @@ void Sprite::Render()
 	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	//テクスチャーをシェーダーに渡す
 	devices.Context().Get()->PSSetSamplers(0, 1, sampler.GetAddressOf());
-	devices.Context().Get()->PSSetShaderResources(0, 1, texture.GetAddressOf());	//プリミティブをレンダリング
+	devices.Context().Get()->PSSetShaderResources(0, 1, ShadowMap::GetInstance()->GetShaderResourceView().GetAddressOf());	//プリミティブをレンダリング
 
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(VertexData);
@@ -195,8 +195,8 @@ void Sprite::GetTextureSize(ID3D11ShaderResourceView * srv)
 HRESULT Sprite::CreateVertexBuffer2D()
 {
 	auto& devices = Devices::Get();
-	float width = devices.Width() ;
-	float hight = devices.Height();
+	float width = static_cast<float>(devices.Width());
+	float hight = static_cast<float>(devices.Height());
 	float shiftX = static_cast<float>(widthSize / 2);
 	float shiftY = static_cast<float>(hightSize / 2);
 	//バーテックスバッファー作成

@@ -2,26 +2,35 @@
 /// ライト
 /// </summary>
 #pragma once
-#include <D3DX10.h>
+#include <memory>
+#include "../Object/MatrixObject/MatrixObject.h"
 
 namespace NYLibrary
 {
-	class Light
+	class Light : public MatrixObject
 	{
 	public:
-		//コンストラクタ
-		Light(D3DXVECTOR3 eyeposition);
 		//デストラクタ
 		~Light() = default;
-		//引数なしのコンストラクタ禁止
-		Light() = delete;
 		//コピーコンストラクタ禁止
 		Light(const Light&) = delete;
 		//代入禁止
 		Light& operator=(const Light&) = delete;
+		static Light* GetInstance();
+		////更新
+		//void Update();
 		//ライトビューを取得
-		const D3DXMATRIX GetView() { return view; }
+		const D3DXMATRIX& GetLightView() { return view; }
+		//ライト視点を設定
+		void SetLightEyePosition(const D3DXVECTOR3& eyePosition) { this->eyePosition = eyePosition; }
+		//ライト視点を取得
+		D3DXVECTOR3 GetLightPosition() { return eyePosition; }
+		//行列計算
+		void Calc();
 	private:
+		Light();
+		//引数なしのコンストラクタ
+		static std::unique_ptr<Light> light;//ライト
 		D3DXMATRIX view;//ビュー
 		D3DXVECTOR3 eyePosition;//視点
 		D3DXVECTOR3 refPosition;//注視点
