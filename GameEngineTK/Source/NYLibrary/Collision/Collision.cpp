@@ -7,15 +7,15 @@
 using namespace NYLibrary;
 
 
-bool NYLibrary::CheckSpere2Sphere(const Sphere&sphereA, const Sphere& sphereB)
+bool NYLibrary::CheckSpere2Sphere(const Sphere * sphereA, const Sphere* sphereB)
 {
 	//‹…A‚ÆB‚Ì’†SÀ•W‚ð‹‚ß‚é
-	D3DXVECTOR3 sub = sphereB.center - sphereA.center;
+	D3DXVECTOR3 sub = sphereB->center - sphereA->center;
 	//A‚ÆB‚Ì‹——£‚ðŒvŽZ
 	float distanceSquare = sub.x * sub.x * +sub.y  * sub.y + sub.z * sub.z;
 
 	//”¼Œa‚Ì˜a‚ðŒvŽZ
-	float radiusSquare = sphereA.radius + sphereB.radius;
+	float radiusSquare = sphereA->radius + sphereB->radius;
 
 	radiusSquare = radiusSquare * radiusSquare;
 

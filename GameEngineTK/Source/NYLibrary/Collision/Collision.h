@@ -84,7 +84,7 @@ namespace NYLibrary
 
 
 
-	bool CheckSpere2Sphere(const Sphere & sphereA, const Sphere & sphereB);
+	bool CheckSpere2Sphere(const Sphere* sphereA, const Sphere* sphereB);
 	void ComputeTriangle(const D3DXVECTOR3 & a, const D3DXVECTOR3 & b, const D3DXVECTOR3 & _p2, Triangle* c);
 
 	bool CheckSphere2Triangle(const Sphere & _sphere, const Triangle & _triangle, D3DXVECTOR3 * _inter);

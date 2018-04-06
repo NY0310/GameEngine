@@ -53,6 +53,8 @@ namespace NYLibrary
 		static const D3DXVECTOR4 & MatrixTimes(const D3DXMATRIX & matrix, const D3DXVECTOR4 & vector);
 		////線形補間いよる進行度算出
 		//static float D3DXVec3Lerp(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXVECTOR3& now);
+		//二つの値を比較して大きいほうを返す
+		static float ComparisonBig(float A, float B) {return  (A > B) ? A : B; }
 	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);

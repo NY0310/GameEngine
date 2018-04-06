@@ -15,7 +15,7 @@ namespace NYLibrary
 	
 
 
-	class Collider : public Component
+	class Collider : public Component , public Sphere
 	{
 	public: 
 		//コンストラクタ

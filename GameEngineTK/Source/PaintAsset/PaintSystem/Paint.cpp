@@ -225,18 +225,9 @@ void Paint::InkRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
-	if (isPlane)
-	{
-		deviceContext->VSSetShader(DripPlaneVertexShader.Get(), nullptr, 0);
-		deviceContext->PSSetShader(DripPlanePixelShader.Get(), nullptr, 0);
+	deviceContext->VSSetShader(inkVertexShader.Get(), nullptr, 0);
+	deviceContext->PSSetShader(inkPixelShader.Get(), nullptr, 0);
 
-	}
-	else
-	{
-		deviceContext->VSSetShader(inkVertexShader.Get(), nullptr, 0);
-		deviceContext->PSSetShader(inkPixelShader.Get(), nullptr, 0);
-
-	}
 
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
 	deviceContext->PSSetShaderResources(0, 1, inkTexture.GetAddressOf());//インクのレクスチャ
@@ -303,9 +294,19 @@ void Paint::DripRender()
 {
 	ID3D11DeviceContext* deviceContext = Devices::Get().Context().Get();//デバイスコンテキスト
 
+	if (isPlane)
+	{
+		deviceContext->VSSetShader(DripPlaneVertexShader.Get(), nullptr, 0);
+		deviceContext->PSSetShader(DripPlanePixelShader.Get(), nullptr, 0);
 
-	deviceContext->VSSetShader(DripVertexShader.Get(), nullptr, 0);
-	deviceContext->PSSetShader(DripPixelShader.Get(), nullptr, 0);
+	}
+	else
+	{
+		deviceContext->VSSetShader(DripVertexShader.Get(), nullptr, 0);
+		deviceContext->PSSetShader(DripPixelShader.Get(), nullptr, 0);
+
+	}
+
 
 	//サンプラーとテクスチャをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
