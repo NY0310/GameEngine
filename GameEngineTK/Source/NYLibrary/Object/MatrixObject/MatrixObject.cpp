@@ -25,7 +25,7 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 	D3DXMatrixIdentity(&wvp);//ワールドビュープロジェクション行列
 	worldMatrixOrderFactory = new WorldMatrixOrderFactory();
 	//ワールド行列の掛け算順序ファクトリーの初期化
-	order = worldMatrixOrderFactory->Set(WorldMatrixOrder::ORDER::SCALEM_ROTOMAT_TRANSMAT);
+	order = worldMatrixOrderFactory->Set(WorldMatrixOrder::ORDER::SCALEMAT_ROTOMAT_TRANSMAT);
 
 }
 
@@ -74,6 +74,7 @@ void MatrixObject::CreateAllMatrix()
 /// </summary>
 void MatrixObject::CreateTransferMatrix()
 {
+	if(isCalcTransferMatrix)
 	D3DXMatrixTranslation(&transferMatrix, this->transfer.x, this->transfer.y, this->transfer.z);
 }
 
@@ -82,6 +83,7 @@ void MatrixObject::CreateTransferMatrix()
 /// </summary>
 void MatrixObject::CreateRotationMatrix()
 {
+	if(isCalcRotationMatrix)
 	//クォータニオンを使用するか
 	if (isUseQuternion)
 	{
@@ -99,6 +101,7 @@ void MatrixObject::CreateRotationMatrix()
 /// </summary>
 void MatrixObject::CreateScaleMatrix()
 {
+	if(isCalcScaleMatrix)
 	D3DXMatrixScaling(&scaleMatrix, scale.x, scale.y, scale.z);
 }
 

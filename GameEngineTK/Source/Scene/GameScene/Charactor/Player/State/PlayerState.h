@@ -19,7 +19,8 @@ private:
 	//プレイヤの移動
 	void Move(Player* player, D3DXVECTOR3 speed);
 	//プレイヤの回転
-	void Rotation(Player* player, D3DXVECTOR2 angle);
+	D3DXQUATERNION Rotation(D3DXVECTOR2 angle);
 	//回転速度
-	//static const float ROTATION;
+	static const float ROTATION;
+	D3DXVECTOR3 rot;
 };

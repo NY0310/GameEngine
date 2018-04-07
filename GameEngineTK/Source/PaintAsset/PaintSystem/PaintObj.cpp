@@ -158,7 +158,7 @@ void PaintObj::OnCollisiton(Collider * collider)
 	TrianglePolygonListCollider* triangleList = GetComponent<TrianglePolygonListCollider>();
 	if (ink && triangleList)
 	{
-		campus->CreateInk(ink->GetColor(), CalcInkCollisionUv(triangleList->GetCollisionTriangle(), triangleList->GetInter()), 0.5f);
+		campus->CreateInk(ink->GetColor(), CalcInkCollisionUv(triangleList->GetCollisionTriangle(), triangleList->GetInter()), 0.1f);
 	}
 	PlaneCollider* plane = GetComponent<PlaneCollider>();
 	if (ink && plane)
@@ -177,7 +177,7 @@ void PaintObj::OnCollisiton(Collider * collider)
 		//	tri = triangles[1];
 		//}
 		D3DXVECTOR2 uv = CalcInkCollisionUv(triangles[0], plane->GetInter());
-		//if (!uv)
+		if (!uv)
 		{
 			uv = CalcInkCollisionUv(triangles[1], plane->GetInter());
 
@@ -208,12 +208,18 @@ D3DXVECTOR2 PaintObj::CalcInkCollisionUv(const Triangle& triangle, const D3DXVEC
 		D3DXVECTOR4 p3_p = Math::MatrixTimes(mvp, D3DXVECTOR4(p3.x, p3.y, p3.z, 0));
 		D3DXVECTOR4 p_p = Math::MatrixTimes(mvp, D3DXVECTOR4(p.x, p.y, p.z, 0));
 
-
 		//通常座標への変換(ProjectionSpace)
 		D3DXVECTOR2 p1_n = D3DXVECTOR2(p1_p.x, p1_p.y) / p1_p.w;
 		D3DXVECTOR2 p2_n = D3DXVECTOR2(p2_p.x, p2_p.y) / p2_p.w;
 		D3DXVECTOR2 p3_n = D3DXVECTOR2(p3_p.x, p3_p.y) / p3_p.w;
 		D3DXVECTOR2 p_n = D3DXVECTOR2(p_p.x, p_p.y) / p_p.w;
+
+
+		//非数かチェック
+		Math::ValidateNan(p1_n);
+		Math::ValidateNan(p2_n);
+		Math::ValidateNan(p3_n);
+		Math::ValidateNan(p_n);
 
 
 		//頂点のなす三角形を点pにより3分割し、必要になる面積を計算

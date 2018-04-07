@@ -71,10 +71,10 @@ bool CollisionManager::CheckCallCollision(Collider * collider, Collider * collid
 	{
 		return false;
 	}
-	if (!CheckSpere2Sphere(collider,collider_))
-	{
-		return false;
-	}
+	//if (!CheckSpere2Sphere(collider,collider_))
+	//{
+	//	return false;
+	//}
 
 	return true;
 }

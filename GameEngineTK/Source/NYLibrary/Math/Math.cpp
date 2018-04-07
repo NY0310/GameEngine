@@ -35,6 +35,66 @@ int Math::PythagoreanTheorem(int a, int b)
 	return static_cast<int>(sqrt((a * a) + (b * b)));
 }
 
+
+bool NYLibrary::Math::ValidateNan(float & A)
+{
+	if (isnan(A))
+	{
+		A = 0;
+		return true;
+	}
+
+	return false;
+}
+
+bool NYLibrary::Math::ValidateNan(D3DXVECTOR2 & A)
+{
+	bool isNan = false;
+	if (isnan(A.x))
+	{
+		A.x = 0;
+		isNan = true;
+	}
+	if (isnan(A.y))
+	{
+		A.y = 0;
+		isNan = true;
+	}
+	return isNan;
+}
+
+/// <summary>
+/// 非数かチェックし非数なら0にする
+/// </summary>
+/// <param name="A">float4</param>
+/// <returns>非数が存在したか</returns>
+bool NYLibrary::Math::ValidateNan(D3DXVECTOR4 & A)
+{
+	if (isnan(A.x))
+	{
+		A.x = 0;
+		return true;
+	}
+	if (isnan(A.y))
+	{
+		A.y = 0;
+		return true;
+	}
+	if (isnan(A.z))
+	{
+		A.z = 0;
+		return true;
+	}
+	if (isnan(A.w))
+	{
+		A.w = 0;
+		return true;
+	}
+	return false;
+
+}
+
+
 /// <summary>
 /// 2つの値とも0
 /// </summary>

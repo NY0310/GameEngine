@@ -342,9 +342,9 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 
 	for (auto& triangle : trianglePolygonListCollider->GetTriangleList())
 	{
-		////ポリゴンの法線が無効な場合
-		//if (triangle.normal == D3DXVECTOR3(0, 0, 0))
-		//	continue;
+		//ポリゴンの法線が無効な場合
+		if (triangle.normal == D3DXVECTOR3(0, 0, 0))
+			continue;
 
 
 		// 上方向ベクトルと法線の内積

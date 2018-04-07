@@ -112,7 +112,7 @@ void InkParticle::LifeCheck()
 
 void InkParticle::OnCollisiton(Collider * collider)
 {
-	//Destroy();
+	Destroy();
 }
 
 

@@ -10,12 +10,12 @@ namespace NYLibrary
 	class WorldMatrixOrder {
 	public:
 		enum ORDER {
-			SCALEM_ROTOMAT_TRANSMAT,
-			SCALEM_TRANSMAT_ROTOMAT,
+			SCALEMAT_ROTOMAT_TRANSMAT,
+			SCALEMAT_TRANSMAT_ROTOMAT,
 			TRANSMAT_ROTOMAT_SCALEM,
-			TRANSMAT_SCALEM_ROTOMAT,
-			ROTOMAT_TRANSMAT_SCALEM,
-			ROTOMAT_SCALEM_TRANSMAT
+			TRANSMAT_SCALEMAT_ROTOMAT,
+			ROTOMAT_TRANSMAT_SCALEMAT,
+			ROTOMAT_SCALEMAT_TRANSMAT
 		};
 		virtual void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) {};
 	};
@@ -62,22 +62,22 @@ namespace NYLibrary
 		std::weak_ptr<WorldMatrixOrder> Set(WorldMatrixOrder::ORDER ORDER) {
 			switch (ORDER)
 			{
-			case WorldMatrixOrder::ORDER::SCALEM_ROTOMAT_TRANSMAT:
+			case WorldMatrixOrder::ORDER::SCALEMAT_ROTOMAT_TRANSMAT:
 				order = std::make_unique<SCALEM_ROTOMAT_TRANSMAT>();
 				break;
-			case WorldMatrixOrder::ORDER::SCALEM_TRANSMAT_ROTOMAT:
+			case WorldMatrixOrder::ORDER::SCALEMAT_TRANSMAT_ROTOMAT:
 				order = std::make_unique<SCALEM_TRANSMAT_ROTOMAT>();
 				break;
 			case WorldMatrixOrder::ORDER::TRANSMAT_ROTOMAT_SCALEM:
 				order = std::make_unique<TRANSMAT_ROTOMAT_SCALEM>();
 				break;
-			case WorldMatrixOrder::ORDER::TRANSMAT_SCALEM_ROTOMAT:
+			case WorldMatrixOrder::ORDER::TRANSMAT_SCALEMAT_ROTOMAT:
 				order = std::make_unique<TRANSMAT_SCALEM_ROTOMAT>();
 				break;
-			case WorldMatrixOrder::ORDER::ROTOMAT_TRANSMAT_SCALEM:
+			case WorldMatrixOrder::ORDER::ROTOMAT_TRANSMAT_SCALEMAT:
 				order = std::make_unique<ROTOMAT_TRANSMAT_SCALEM>();
 				break;
-			case WorldMatrixOrder::ORDER::ROTOMAT_SCALEM_TRANSMAT:
+			case WorldMatrixOrder::ORDER::ROTOMAT_SCALEMAT_TRANSMAT:
 				order = std::make_unique<ROTOMAT_SCALEM_TRANSMAT>();
 				break;
 			default:
@@ -104,81 +104,109 @@ namespace NYLibrary
 
 
 		//ワールド座標設定
-		virtual void SetPosition(const D3DXVECTOR3& position) { transfer = position; }
+		virtual void SetPosition(const D3DXVECTOR3& position) { transfer = position; isCalcTransferMatrix = true; }
 		//ワールド座標取得
 		virtual const D3DXVECTOR3& GetPosition() { return transfer; }
-		//ワールド座標設定
-		virtual void SetPositionX(float positionX) { transfer.x = positionX; }
-		//ワールド座標取得
+		//ワールド座標X設定
+		virtual void SetPositionX(float positionX) { transfer.x = positionX; isCalcTransferMatrix = true;}
+		//ワールド座標X取得
 		virtual float GetPositionX() { return transfer.x; }
-		//ワールド座標設定
-		virtual void SetPositionY(float positionY) { transfer.y = positionY; }
-		//ワールド座標取得
-		virtual float GetPositionY() { return transfer.y; }
-		//ワールド座標設定
-		virtual void SetPositionZ(float positionZ) { transfer.z = positionZ; }
-		//ワールド座標取得
+		//ワールド座標Y設定
+		virtual void SetPositionY(float positionY) { transfer.y = positionY; isCalcTransferMatrix = true; }
+		//ワールド座標Y取得
+		virtual float GetPositionY() { return transfer.y;}
+		//ワールド座標Z設定
+		virtual void SetPositionZ(float positionZ) { transfer.z = positionZ; isCalcTransferMatrix = true;}
+		//ワールド座標Z取得
 		virtual float GetPositionZ() { return transfer.z; }
 
 
 
 
 		//スケール設定
-		virtual void SetScale(const D3DXVECTOR3& scale) { this->scale = scale; }
+		virtual void SetScale(const D3DXVECTOR3& scale) { this->scale = scale; isCalcScaleMatrix = true;}
 		//スケール取得
 		virtual const D3DXVECTOR3& GetScale() { return  this->scale; }
-		virtual void SetScale(const float scale) { this->scale.x = scale; this->scale.y = scale; this->scale.z = scale; }
-		//スケール設定
-		virtual void SetScaleX(float scaleX) { this->scale.x = scaleX; }
-		//スケール取得
+		virtual void SetScale(const float scale) { this->scale.x = scale; this->scale.y = scale; this->scale.z = scale; isCalcScaleMatrix = true;}
+		//スケールX設定
+		virtual void SetScaleX(float scaleX) { this->scale.x = scaleX; isCalcScaleMatrix = true;}
+		//スケールX取得
 		virtual float GetScaleX() { return  this->scale.x; }
-		//スケール設定
-		virtual void SetScaleY(float scaleY) { this->scale.y = scaleY; }
-		//スケール取得
+		//スケールY設定
+		virtual void SetScaleY(float scaleY) { this->scale.y = scaleY; isCalcScaleMatrix = true;}
+		//スケールY取得
 		virtual float GetScaleY() { return  this->scale.y; }
-		//スケール設定
-		virtual void SetScaleZ(float scaleZ) { this->scale.z = scaleZ; }
-		//スケール取得
+		//スケールZ設定
+		virtual void SetScaleZ(float scaleZ) { this->scale.z = scaleZ; isCalcScaleMatrix = true;}
+		//スケールZ取得
 		virtual float GetScaleZ() { return  this->scale.z; }
 
 
 
 		//オイラー角設定
-		virtual void SetRotation(const D3DXVECTOR3& eulerAangle) { this->eulerAangle = eulerAangle; isUseQuternion = false; }
+		virtual void SetRotation(const D3DXVECTOR3& eulerAangle) { this->eulerAangle = eulerAangle; isUseQuternion = false;  isCalcRotationMatrix = true; }
 		//オイラー角取得
 		virtual const D3DXVECTOR3& GetRotation() { return  this->eulerAangle; }
-		//オイラー角設定
-		virtual void SetRotationX(float eulerAangleX) { this->eulerAangle.x = eulerAangleX; isUseQuternion = false; }
-		//オイラー角取得
+		//オイラー角X設定
+		virtual void SetRotationX(float eulerAangleX) { this->eulerAangle.x = eulerAangleX; isUseQuternion = false; isCalcRotationMatrix = true;}
+		//オイラー角X取得
 		virtual const float GetRotationX() { return  this->eulerAangle.x; }
-		//オイラー角設定
-		virtual void SetRotationY(const float eulerAangleY) { this->eulerAangle.y = eulerAangleY; isUseQuternion = false; }
-		//オイラー角取得
+		//オイラー角Y設定
+		virtual void SetRotationY(const float eulerAangleY) { this->eulerAangle.y = eulerAangleY; isUseQuternion = false; isCalcRotationMatrix = true;}
+		//オイラー角Y取得
 		virtual float GetRotationY() { return  this->eulerAangle.y; }
-		//オイラー角設定
-		virtual void SetRotationZ(float eulerAangleZ) { this->eulerAangle.z = eulerAangle.z; isUseQuternion = false; }
-		//オイラー角取得
+		//オイラー角Z設定
+		virtual void SetRotationZ(float eulerAangleZ) { this->eulerAangle.z = eulerAangle.z; isUseQuternion = false; isCalcRotationMatrix = true;}
+		//オイラー角Z取得
 		virtual float GetRotationZ() { return  this->eulerAangle.z; }
 
 
 		//クォータニオン設定
-		virtual void SetQuaternion(const D3DXQUATERNION& quaternion) { this->quaternion = quaternion; isUseQuternion = true; }
+		virtual void SetQuaternion(const D3DXQUATERNION& quaternion) { this->quaternion = quaternion; isUseQuternion = true; isCalcRotationMatrix = true;}
 		//クォータニオン取得
 		virtual const D3DXQUATERNION& GetQuaternion() { return  this->quaternion; }
+
+
 		//ワールド行列取得
 		const D3DXMATRIX& GetWorldMatrix() { return worldMatrix; }
 		//ワールド・ビュー・プロジェクション行列
 		const D3DXMATRIX& GetWVP() { return wvp; }
+		//移動行列設定
+		void SetTransferMatrix(const D3DXMATRIX& transMatrix) { transferMatrix = transMatrix; isCalcTransferMatrix = false; }
 		//移動行列取得
 		const D3DXMATRIX& GetTransferMatrix() { return this->transferMatrix; }
+		//回転行列設定
+		void SetRotationMatrix(const D3DXMATRIX& rotationMatrix) { this->rotationMatrix = rotationMatrix; isCalcRotationMatrix = false; }
 		//回転行列取得
 		const D3DXMATRIX& GetRotationMatrix() { return this->rotationMatrix; }
-		void ChangeOrder(WorldMatrixOrder::ORDER order);//ワールド行列の掛け算を入れ替える
+		//拡大行列設定
+		void SetScaleMatrix(const D3DXMATRIX& scaleMatrix) { this->scaleMatrix = scaleMatrix; isCalcRotationMatrix = false; }
+		//拡大行列取得
+		const D3DXMATRIX& GetScaleMarix() { return scaleMatrix; }
+
 
 		//クォータニオンを使用するか
 		void SetIsUseQuternion(bool isUseQuternion) { this->isUseQuternion = isUseQuternion; }
 		//クォータニオンを使用するか取得する
 		bool GetIsUseQuternion() { return isUseQuternion; }
+
+
+		//移動行列計算を行うか設定
+		void SetIsCalcTransferMatrix(bool isCalcTransferMatrix) { this->isCalcTransferMatrix = isCalcTransferMatrix; }
+		//移動行列計算を行うか取得
+		bool GetIsCalcTransferMatrix() { this->isCalcTransferMatrix; }
+		//拡大行列計算を行うか設定
+		void SetIsCalcScaleMatrix(bool isCalcScaleMatrix) { this->isCalcScaleMatrix = isCalcScaleMatrix; }
+		//拡大行列計算を行うか取得
+		bool GetIsCalcScaleMatrix() { return  isCalcScaleMatrix; }
+		//回転行列計算を行うか設定
+		void SetIsCalcRotationMatrix(bool isCalcRotationMatrix) { this->isCalcRotationMatrix = isCalcRotationMatrix; }
+		//回転行列計算を行うか取得
+		bool GetIsCalcRotationMatrix() {return isCalcRotationMatrix; }
+
+
+		//ワールド行列の掛け算順序を設定する
+		void ChangeOrder(WorldMatrixOrder::ORDER order);
 	private:
 		//全行列作成
 		void CreateAllMatrix();
@@ -200,9 +228,10 @@ namespace NYLibrary
 		D3DXMATRIX rotationMatrix;//回転行列
 		D3DXMATRIX wvp;//ワールドビュープロジェクション行列
 		bool isUseQuternion;//クォータニオンを使用するか
-		// ワールド行列の掛け算順序(ファクトリーメソッド)
-		std::weak_ptr<WorldMatrixOrder> order;
-		//ワールド行列の掛け算順序ファクトリー
-		WorldMatrixOrderFactory* worldMatrixOrderFactory;
+		std::weak_ptr<WorldMatrixOrder> order;// ワールド行列の掛け算順序(ファクトリーメソッド)
+		WorldMatrixOrderFactory* worldMatrixOrderFactory;//ワールド行列の掛け算順序ファクトリー
+		bool isCalcTransferMatrix;//移動行列計算を行うか
+		bool isCalcScaleMatrix;//拡大行列計算を行うか
+		bool isCalcRotationMatrix;//回転行列計算を行うか
 	};
 };

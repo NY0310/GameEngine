@@ -10,7 +10,7 @@ Stage::Stage()
 	SetTag("stage");
 	SetLocalSize(30);
 	SetScale(10);
-	AddComponent<TrianglePolygonListCollider>();
+	//AddComponent<TrianglePolygonListCollider>();
 }
 
 

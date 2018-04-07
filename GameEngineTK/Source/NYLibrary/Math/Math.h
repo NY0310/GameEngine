@@ -55,6 +55,16 @@ namespace NYLibrary
 		//static float D3DXVec3Lerp(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXVECTOR3& now);
 		//二つの値を比較して大きいほうを返す
 		static float ComparisonBig(float A, float B) {return  (A > B) ? A : B; }
+
+		//非数かチェックし非数なら0にする
+		static bool ValidateNan(float& A);
+
+		//非数かチェックし非数なら0にする
+		static bool ValidateNan(D3DXVECTOR2& A);
+
+		//非数かチェックし非数なら0にする
+		static bool ValidateNan(D3DXVECTOR4& A);
+
 	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);

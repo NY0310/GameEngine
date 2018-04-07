@@ -2,7 +2,7 @@
 
 using namespace NYLibrary;
 
-//const float PlayerState::ROTATION = 0.03f;
+const float PlayerState::ROTATION = 1.0f;
 
 void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 {
@@ -10,6 +10,8 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	KeyboardUtil* keyBoard = KeyboardUtil::GetInstance();
 	//移動速度
 	D3DXVECTOR3 saveSpeed(0,0,0);
+	//回転量
+	D3DXVECTOR2 savaRot(0, 0);
 	//前進
 	if (keyBoard->IsPressed(DirectX::Keyboard::W))
 		saveSpeed.z = -speed.z;
@@ -18,10 +20,10 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 		saveSpeed.z = speed.z;
 	//左旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::A))
-		saveSpeed.x = -speed.x;
+		rot.x -= ROTATION;
 	//右旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::D))
-		saveSpeed.x = speed.x;
+		rot.x += ROTATION;
 
 	//移動させる
 	if (saveSpeed.x != 0 || saveSpeed.z != 0)
@@ -38,11 +40,11 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 
 	float x = static_cast<float>(pos.x) / width;
 	float y = static_cast<float>(pos.y) / hight;
-	D3DXVECTOR2 c = Math::ChangeRegularDevice(D3DXVECTOR2(x,y));
-	c.x *= -1;
-	c*= 90.0f;
-	Rotation(player,c);
+	D3DXVECTOR2 mouseRot = Math::ChangeRegularDevice(D3DXVECTOR2(x,y));
+	//mouseRot.x *= -1;
+	mouseRot *= 90.0f;
 
+	player->SetQuaternion(Rotation(mouseRot) * Rotation(D3DXVECTOR2(rot.x,rot.y)));
 }
 
 /// <summary>
@@ -54,8 +56,11 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 {
 	//	移動ベクトルw
 	D3DXVECTOR3 moveV(speed);
+
+	D3DXMATRIX moveRot;
+	D3DXMatrixRotationY(&moveRot, player->GetRotationY());
 	//	移動ベクトルを自機の角度分回転させる
-	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());	
+	D3DXVec3TransformNormal(&moveV, &moveV,&moveRot);
 	//	自機の座標を移動
 	player->SetPosition(player->GetPosition() + moveV);
 
@@ -66,7 +71,7 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 /// </summary>
 /// <param name="player">プレイヤ</param>
 /// <param name="angle">回転量</param>
-void PlayerState::Rotation(Player * player, D3DXVECTOR2 angle)
+D3DXQUATERNION PlayerState::Rotation(D3DXVECTOR2 angle)
 {
 	D3DXQUATERNION q(0, 0, 0, 1);
 	D3DXQUATERNION q2(0, 0, 0, 1);
@@ -75,6 +80,5 @@ void PlayerState::Rotation(Player * player, D3DXVECTOR2 angle)
 
 	D3DXQuaternionRotationAxis(&q, &NAxis, D3DXToRadian(angle.x));
 	D3DXQuaternionRotationAxis(&q2, &NAxis2, D3DXToRadian(angle.y));
-	q *= q2;
-	player->SetQuaternion(q);
+	return  q * q2;
 }
