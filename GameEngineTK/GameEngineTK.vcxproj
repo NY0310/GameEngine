@@ -220,6 +220,7 @@
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.h" />
     <ClInclude Include="Source\Scene\GameScene\GameScene.h" />
+    <ClInclude Include="Source\Scene\GameScene\Stage\Floor.h" />
     <ClInclude Include="Source\Scene\GameScene\Stage\Stage.h" />
     <ClInclude Include="Source\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.cpp" />
     <ClCompile Include="Source\Scene\GameScene\GameScene.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Stage\Floor.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Stage\Stage.cpp" />
     <ClCompile Include="Source\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />

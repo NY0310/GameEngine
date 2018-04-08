@@ -28,8 +28,6 @@ public:
 private:
 	//インク発射
 	void Emit();
-	//エイムの更新処理
-	void AimUpdate();
 	//インクのパーティクルマネージャー
 	std::shared_ptr<InkParticleManager> inkParticleManager;
 	//エイム

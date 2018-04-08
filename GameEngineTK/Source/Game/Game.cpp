@@ -5,6 +5,7 @@
 #include "Game.h"
 #include <ctime>
 #include <d3d11.h>
+#include <Winuser.h>
 
 extern void ExitGame();
 
@@ -84,6 +85,9 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
+
+	auto& device = Devices::Get();
+	device.Device9()->ShowCursor(false);
 	//シーンマネージャの更新(これでゲーム内の更新処理が全て呼ばれる)
 	sceneManager->LoopUpdate();
 	//フォローカメラ更新
@@ -96,6 +100,11 @@ void Game::Update(DX::StepTimer const& timer)
 	light->Calc();
 	//当たり判定更新
 	collisionManager->Update();
+	auto& devices = Devices::Get();
+	//マウスの座標を固定
+	SetCursorPos(devices.Width(), devices.Height());
+	//マウスカーソル非表示
+	ShowCursor(false);
 
 }
 

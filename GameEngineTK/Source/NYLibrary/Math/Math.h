@@ -58,13 +58,15 @@ namespace NYLibrary
 
 		//非数かチェックし非数なら0にする
 		static bool ValidateNan(float& A);
-
 		//非数かチェックし非数なら0にする
 		static bool ValidateNan(D3DXVECTOR2& A);
-
 		//非数かチェックし非数なら0にする
 		static bool ValidateNan(D3DXVECTOR4& A);
 
+		//ワールド行列から移動成分を抽出する
+		D3DXVECTOR3 ExtractionPosition(const D3DXMATRIX& worldMatrix) { return D3DXVECTOR3(worldMatrix._41, worldMatrix._42, worldMatrix._43); }
+		//ワールド行列から回転成分を抽出する
+		D3DXVECTOR3 ExtractionScale(const D3DXMATRIX& worldMatrix) { D3DXVECTOR4 normal(1, 0, 0, 0); }
 	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);

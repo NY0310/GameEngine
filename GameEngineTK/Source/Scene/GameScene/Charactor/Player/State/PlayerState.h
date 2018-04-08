@@ -8,6 +8,8 @@
 //プレイヤの状態
 class PlayerState {
 public:
+	//コンストラクタ
+	PlayerState();
 	// 仮想デストラクタ
 	virtual ~PlayerState() {}
 	// 実行する
@@ -21,6 +23,9 @@ private:
 	//プレイヤの回転
 	D3DXQUATERNION Rotation(D3DXVECTOR2 angle);
 	//回転速度
-	static const float ROTATION;
-	D3DXVECTOR3 rot;
+	static const int ROTATION_COEFFICIENT;
+	//マウスの相移動量
+	D3DXVECTOR2 mouseTotalTrans;
+	//マウスの初期位置
+	D3DXVECTOR2 initialMousePosition;
 };

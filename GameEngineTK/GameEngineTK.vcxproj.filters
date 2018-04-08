@@ -325,6 +325,9 @@
     <ClInclude Include="Source\NYLibrary\ShadowMap\ShadowMap.h">
       <Filter>NYLibrary\ShadowMap</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Stage\Floor.h">
+      <Filter>Scene\GameScene\Stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -485,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\ShadowMap\ShadowMap.cpp">
       <Filter>NYLibrary\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Stage\Floor.cpp">
+      <Filter>Scene\GameScene\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

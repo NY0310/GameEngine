@@ -14,7 +14,7 @@ void Map::Initialize()
 	//マップデータ読み込み
 	attributeMap->ReadCSV("Resources/CSV/stage.csv");
 	//マップのサイズを変更する
-	MapObjResize(1,1);
+	MapObjResize(/*attributeMap->GetMapHight()*/1, /*attributeMap->GetMapWidth()*/1);
 	//マップデータからオブジェクトを生成
 	CreateMap();
 	int a = 0;
@@ -62,8 +62,8 @@ void Map::CreateMap()
 		"Resources/PNG/GoalPanel.png","Resources/PNG/WallPanel.png",
 		"Resources/PNG/planePanel.png", "Resources/PNG/SwampPanel.png"
 	};
-	for (int i = 0; i < 1; i++)
-		for (int j = 0; j < 1; j++)
+	for (int i = 0; i < /*attributeMap->GetMapHight()*/1; i++)
+		for (int j = 0; j < /*attributeMap->GetMapWidth()*/1; j++)
 		{
 			shared_ptr<PaintObj> obj = make_shared<PaintObj>(true);
 			obj->Initialize();
@@ -72,12 +72,12 @@ void Map::CreateMap()
 			D3DXVECTOR3 pos = D3DXVECTOR3(static_cast<float>(i), 0, static_cast<float>(j));
 			obj->SetPosition(pos);
 			//obj->LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
-			obj->LoadOBJFile("Resources/OBJ/floor.obj");
+			obj->LoadOBJFile("Resources/OBJ/Enemy.obj");
 
 			int a = attributeMap->GetAttributeMap(i, j);
 			obj->LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 			obj->SetTag("stage");
-
+			obj->SetScale(500);
 			obj->AddComponent<TrianglePolygonListCollider>();
 
 			//オブジェクト生成

@@ -23,37 +23,44 @@ namespace NYLibrary
 
 	class SCALEM_ROTOMAT_TRANSMAT :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
-			world = scalem * rotm * transm;
+			world = scalem * rotm;
+			world._41 = transm._41;
+			world._42 = transm._42;
+			world._43 = transm._43;
+
 		}
 	};
 
-	class SCALEM_TRANSMAT_ROTOMAT :public WorldMatrixOrder {
+	class SCALEMAT_TRANSMAT_ROTOMAT :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
 			world = scalem * transm * rotm;
 		}
 	};
 
-	class TRANSMAT_ROTOMAT_SCALEM :public WorldMatrixOrder {
+	class TRANSMAT_ROTOMAT_SCALEMAT :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
 			world = transm * rotm * scalem;
 		}
 	};
 
-	class TRANSMAT_SCALEM_ROTOMAT :public WorldMatrixOrder {
+	class TRANSMAT_SCALEMAT_ROTOMAT :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
 			world = transm * scalem * rotm;
 		}
 	};
 
-	class ROTOMAT_TRANSMAT_SCALEM :public WorldMatrixOrder {
+	class ROTOMAT_TRANSMAT_SCALEMAT :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
 			world = rotm * transm * scalem;
 		}
 	};
 
-	class ROTOMAT_SCALEM_TRANSMAT :public WorldMatrixOrder {
+	class ROTOMAT_SCALEMAT_TRANSMAT :public WorldMatrixOrder {
 		void Calculation(D3DXMATRIX& world, D3DXMATRIX scalem, D3DXMATRIX rotm, D3DXMATRIX transm) override {
-			world = rotm * transm * scalem;
+			world = rotm * scalem;
+			world._41 = transm._41;
+			world._42 = transm._42;
+			world._43 = transm._43;
 		}
 	};
 
@@ -66,19 +73,19 @@ namespace NYLibrary
 				order = std::make_unique<SCALEM_ROTOMAT_TRANSMAT>();
 				break;
 			case WorldMatrixOrder::ORDER::SCALEMAT_TRANSMAT_ROTOMAT:
-				order = std::make_unique<SCALEM_TRANSMAT_ROTOMAT>();
+				order = std::make_unique<SCALEMAT_TRANSMAT_ROTOMAT>();
 				break;
 			case WorldMatrixOrder::ORDER::TRANSMAT_ROTOMAT_SCALEM:
-				order = std::make_unique<TRANSMAT_ROTOMAT_SCALEM>();
+				order = std::make_unique<TRANSMAT_ROTOMAT_SCALEMAT>();
 				break;
 			case WorldMatrixOrder::ORDER::TRANSMAT_SCALEMAT_ROTOMAT:
-				order = std::make_unique<TRANSMAT_SCALEM_ROTOMAT>();
+				order = std::make_unique<TRANSMAT_SCALEMAT_ROTOMAT>();
 				break;
 			case WorldMatrixOrder::ORDER::ROTOMAT_TRANSMAT_SCALEMAT:
-				order = std::make_unique<ROTOMAT_TRANSMAT_SCALEM>();
+				order = std::make_unique<ROTOMAT_TRANSMAT_SCALEMAT>();
 				break;
 			case WorldMatrixOrder::ORDER::ROTOMAT_SCALEMAT_TRANSMAT:
-				order = std::make_unique<ROTOMAT_SCALEM_TRANSMAT>();
+				order = std::make_unique<ROTOMAT_SCALEMAT_TRANSMAT>();
 				break;
 			default:
 				break;

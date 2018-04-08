@@ -1,11 +1,20 @@
 #include "PlayerState.h"
+#include <Winuser.h>
 
 using namespace NYLibrary;
 
-const float PlayerState::ROTATION = 1.0f;
+const int PlayerState::ROTATION_COEFFICIENT = 35;
+
+PlayerState::PlayerState()
+{
+	initialMousePosition.x = Devices::Get().Width();
+	initialMousePosition.y = Devices::Get().Height();
+}
 
 void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 {
+	//デバイス
+	auto& devices = Devices::Get();
 	//キーボード
 	KeyboardUtil* keyBoard = KeyboardUtil::GetInstance();
 	//移動速度
@@ -20,10 +29,10 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 		saveSpeed.z = speed.z;
 	//左旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::A))
-		rot.x -= ROTATION;
+		saveSpeed.x -= speed.x;
 	//右旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::D))
-		rot.x += ROTATION;
+		saveSpeed.x += speed.x;
 
 	//移動させる
 	if (saveSpeed.x != 0 || saveSpeed.z != 0)
@@ -31,20 +40,24 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 		Move(player, saveSpeed);
 	}
 
-	//回転量
-	int width = static_cast<int>(Devices::Get().Width());
-	int hight = static_cast<int>(Devices::Get().Height());
-	MouseUtil* mouse = MouseUtil::GetInstance();
-	DirectX::XMINT2 pos = mouse->GetPos();
+
+	//マウスカーソルの座標を取得する
+	LPPOINT  mousePos = new POINT();
+	GetCursorPos(mousePos);
+
+	//現フレームでのマウスの移動量
+	D3DXVECTOR2 mouseTrans;
+	mouseTrans.x = static_cast<float>(mousePos->x) - initialMousePosition.x;
+	mouseTrans.y = static_cast<float>(mousePos->y) - initialMousePosition.y;
+
+	//そのままの数値でクォータニオンを作成すると回転しすぎるので係数で除算
+	mouseTotalTrans += mouseTrans / ROTATION_COEFFICIENT;
+	//クォータニオンを作成しプレイヤのを回転させる
+	player->SetQuaternion(Rotation(D3DXVECTOR2(mouseTotalTrans.x, -mouseTotalTrans.y)));
 
 
-	float x = static_cast<float>(pos.x) / width;
-	float y = static_cast<float>(pos.y) / hight;
-	D3DXVECTOR2 mouseRot = Math::ChangeRegularDevice(D3DXVECTOR2(x,y));
-	//mouseRot.x *= -1;
-	mouseRot *= 90.0f;
-
-	player->SetQuaternion(Rotation(mouseRot) * Rotation(D3DXVECTOR2(rot.x,rot.y)));
+	delete mousePos;
+	mousePos = nullptr;
 }
 
 /// <summary>
@@ -57,10 +70,8 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 	//	移動ベクトルw
 	D3DXVECTOR3 moveV(speed);
 
-	D3DXMATRIX moveRot;
-	D3DXMatrixRotationY(&moveRot, player->GetRotationY());
 	//	移動ベクトルを自機の角度分回転させる
-	D3DXVec3TransformNormal(&moveV, &moveV,&moveRot);
+	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());
 	//	自機の座標を移動
 	player->SetPosition(player->GetPosition() + moveV);
 
