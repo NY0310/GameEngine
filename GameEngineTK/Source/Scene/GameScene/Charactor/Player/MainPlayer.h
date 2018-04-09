@@ -28,6 +28,8 @@ public:
 	void Render();
 	//移動速度を設定する
 	void SetMoveSpeed(float speed) { moveSpeed = speed; }
+	//エイムの行列管理
+	std::shared_ptr<MatrixObject> aimMatrix;
 private:
 	std::shared_ptr<PaintGun> paintGun;
 	std::unique_ptr<PlayerState>playerState;

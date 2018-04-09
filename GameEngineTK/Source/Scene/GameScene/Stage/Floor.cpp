@@ -5,9 +5,9 @@ Floor::Floor()
 {
 	LoadOBJFile("Resources/OBJ/floor.obj");
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
-	SetScale(3);
+	SetScale(30);
 	SetTag("stage");
-	SetLocalSize(30);
+	SetPositionY(-1);
 	AddComponent<TrianglePolygonListCollider>();
 }
 

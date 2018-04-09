@@ -32,6 +32,10 @@ void Player::Initialize()
 	SetScale(D3DXVECTOR3(5, 5, 5));
 	//自身のステート
 	playerState.reset(PlayerWalk::GetInstance());
+	//エイムの行列
+	aimMatrix = make_unique<MatrixObject>();
+	aimMatrix->MatrixInitialize();
+	//カメラに自分を渡す
 	FollowCamera* camera = FollowCamera::GetInstance();
 	camera->SetPlayer(this);
 }
@@ -42,7 +46,7 @@ void Player::Initialize()
 /// </summary>
 void Player::Update()
 {
-	paintGun->SetEmitPosition(GetPosition());
+	paintGun->SetAimMatirx(aimMatrix);
 
 	playerState->Execute(this);
 }

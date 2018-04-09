@@ -18,8 +18,6 @@ namespace NYLibrary
 
 		//	自機とカメラの距離
 		static const float CAMERA_DISTANCE;
-		//	コンストラクタ
-		FollowCamera();
 		FollowCamera& operator= (const FollowCamera&) = delete;
 		FollowCamera(const FollowCamera&) = delete;
 		//	更新
@@ -27,6 +25,8 @@ namespace NYLibrary
 		//プレイヤをセット
 		void SetPlayer(Player* player) { this->player = player; }
 	private:
+		//	コンストラクタ
+		FollowCamera();
 		//自クラスインスタンス
 		static  std::unique_ptr<FollowCamera> camera;
 	protected:

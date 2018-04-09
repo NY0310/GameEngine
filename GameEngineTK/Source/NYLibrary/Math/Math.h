@@ -66,7 +66,33 @@ namespace NYLibrary
 		//ワールド行列から移動成分を抽出する
 		D3DXVECTOR3 ExtractionPosition(const D3DXMATRIX& worldMatrix) { return D3DXVECTOR3(worldMatrix._41, worldMatrix._42, worldMatrix._43); }
 		//ワールド行列から回転成分を抽出する
-		D3DXVECTOR3 ExtractionScale(const D3DXMATRIX& worldMatrix) { D3DXVECTOR4 normal(1, 0, 0, 0); }
+		//
+
+		//引数1を引数2の値のプラスからマイナスまでの間でクランプする
+		static void ClampAbsolute(D3DXVECTOR2& data, int maxAbsolute) {
+			ClampAbsolute(data.x, maxAbsolute);
+			ClampAbsolute(data.y, maxAbsolute);
+
+		}
+
+
+		//引数1を引数2の値のプラスからマイナスまでの間でクランプする
+		static void ClampAbsolute(D3DXVECTOR2& data,const D3DXVECTOR2& maxAbsolute) {
+			ClampAbsolute(data.x, maxAbsolute.x);
+			ClampAbsolute(data.y, maxAbsolute.y);
+		}
+
+		//引数1を引数2の値のプラスからマイナスまでの間でクランプする
+		static void ClampAbsolute(float& data, int max) {
+			if (max <= data)
+			{
+				data = max;
+			}
+			else if (max * -1 >= data)
+			{
+				data = max * -1;
+			}
+		}
 	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);

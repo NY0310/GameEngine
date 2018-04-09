@@ -22,8 +22,8 @@ public:
 	//終了処理
 	void Finalize();
 	//発射位置を設定する
-	void SetEmitPosition(const D3DXVECTOR3& emitPosition) {
-		this->emitPosition = emitPosition;
+	void SetAimMatirx(const std::shared_ptr<MatrixObject>& aimMatirx) {
+		this->aimMatirx = aimMatirx;
 	}
 private:
 	//インク発射
@@ -33,7 +33,7 @@ private:
 	//エイム
 	std::shared_ptr<Aim> aim;
 	//発射座標
-	D3DXVECTOR3 emitPosition;
+	std::shared_ptr<MatrixObject> aimMatirx;
 };
 
 

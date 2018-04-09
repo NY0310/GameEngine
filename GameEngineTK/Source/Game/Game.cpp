@@ -52,6 +52,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	//当たり判定取得
 	collisionManager = CollisionManager::GetInstance();
+	collisionManager->SetCollisitonIntervalFrame(COLLISITON_INTERVAL);
 	//ライトの取得
 	light = Light::GetInstance();
 
@@ -63,9 +64,6 @@ void Game::Initialize(HWND window, int width, int height)
 	sceneManager->LoopCreateAddChild();
 	//初期化
 	sceneManager->LoopInitialize();
-
-
-
 
 }
 
@@ -130,8 +128,8 @@ void Game::Render()
 
 
 
-	////影の描画
-	sceneManager->LoopShadowRender();
+	//////影の描画
+	//sceneManager->LoopShadowRender();
 
 	//#if 0
 	////アルファ値を有効にする

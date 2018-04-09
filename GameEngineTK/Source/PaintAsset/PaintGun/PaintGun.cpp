@@ -49,12 +49,12 @@ void PaintGun::Emit()
 	//親の情報を取得(プレイヤー)
 	MatrixObject* player = Getparent()._Get();
 	const D3DXVECTOR3 shitGunPosition(0, 0.5f, -0.2f);
-	emitPosition = player->GetPosition() + shitGunPosition ;
+	D3DXVECTOR3 emitPosition = aimMatirx->GetPosition() + shitGunPosition ;
 	//移動ベクトル
 	D3DXVECTOR3 moveV(0,0,-1);
 
 	//移動ベクトルを自機の角度分回転させる
-	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());	
+	D3DXVec3TransformNormal(&moveV, &moveV,&aimMatirx->GetRotationMatrix());
 
 	/// 
 	MouseUtil* mouse = MouseUtil::GetInstance();

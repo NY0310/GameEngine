@@ -88,4 +88,6 @@ private:
 	NYLibrary::KeyboardUtil* keyBoard;
 	NYLibrary::CollisionManager* collisionManager;
 	NYLibrary::Light* light;
+	//当たり判定を何フレームに一度行うか
+	static const int COLLISITON_INTERVAL = 20;
 };       

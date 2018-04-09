@@ -13,7 +13,7 @@ unique_ptr<FollowCamera> FollowCamera::camera ;
 FollowCamera* FollowCamera::GetInstance()
 {
 	if (!camera)
-		camera =  make_unique<FollowCamera>();
+		camera.reset(new FollowCamera());
 	return camera.get();
 }
 
@@ -23,6 +23,7 @@ FollowCamera::FollowCamera()
 	//	初期化処理
 	isFPS = false;
 	player = nullptr;
+
 }
 
 //	更新
@@ -58,7 +59,7 @@ void FollowCamera::Update()
 		D3DXMATRIX rotmat;
 		//D3DXMatrixRotationY(&rotmat,targetAngle);
 		//	カメラへのベクトルを回転
-		D3DXVec3TransformNormal(&cameraV,&cameraV,&player->GetRotationMatrix());
+		D3DXVec3TransformNormal(&cameraV,&cameraV,&player->aimMatrix->GetRotationMatrix());
 		//	カメラ座標を計算
 		eyepos = refpos + cameraV;
 	}

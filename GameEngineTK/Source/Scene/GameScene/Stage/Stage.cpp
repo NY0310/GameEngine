@@ -1,5 +1,8 @@
 #include "Stage.h"
 #include "../../../NYLibrary/Input/KeyboardUtil.h"
+using namespace std;
+
+
 Stage::Stage()
 	:PaintObj(true)
 {
@@ -8,9 +11,15 @@ Stage::Stage()
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
 	SetTag("stage");
-	SetLocalSize(30);
-	SetScale(10);
-	//AddComponent<TrianglePolygonListCollider>();
+	SetScale(30);
+	AddComponent<TrianglePolygonListCollider>();
+}
+
+void Stage::CreateAddChild()
+{
+	PaintObj::CreateAddChild();
+	floor = make_shared<Floor>();
+	AddChild(floor);
 }
 
 

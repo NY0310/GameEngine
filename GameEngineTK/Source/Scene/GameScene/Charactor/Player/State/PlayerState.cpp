@@ -1,10 +1,11 @@
 #include "PlayerState.h"
 #include <Winuser.h>
+#include <process.h>
 
 using namespace NYLibrary;
 
 const int PlayerState::ROTATION_COEFFICIENT = 35;
-
+const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 45);
 PlayerState::PlayerState()
 {
 	initialMousePosition.x = Devices::Get().Width();
@@ -29,11 +30,12 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 		saveSpeed.z = speed.z;
 	//左旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::A))
-		saveSpeed.x -= speed.x;
+		saveSpeed.x += speed.x;
 	//右旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::D))
-		saveSpeed.x += speed.x;
-
+		saveSpeed.x -= speed.x;
+	if (keyBoard->IsPressed(DirectX::Keyboard::E))
+		exit(0);
 	//移動させる
 	if (saveSpeed.x != 0 || saveSpeed.z != 0)
 	{
@@ -49,11 +51,16 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	D3DXVECTOR2 mouseTrans;
 	mouseTrans.x = static_cast<float>(mousePos->x) - initialMousePosition.x;
 	mouseTrans.y = static_cast<float>(mousePos->y) - initialMousePosition.y;
-
 	//そのままの数値でクォータニオンを作成すると回転しすぎるので係数で除算
 	mouseTotalTrans += mouseTrans / ROTATION_COEFFICIENT;
+	//回転に上限を設ける
+	Math::ClampAbsolute(mouseTotalTrans, MAX_ROTATION);
 	//クォータニオンを作成しプレイヤのを回転させる
-	player->SetQuaternion(Rotation(D3DXVECTOR2(mouseTotalTrans.x, -mouseTotalTrans.y)));
+	player->SetQuaternion(Rotation(D3DXVECTOR2(mouseTotalTrans.x,0)));
+	D3DXMATRIX rotY;
+
+	D3DXMatrixRotationQuaternion(&rotY,& Rotation(D3DXVECTOR2(mouseTotalTrans.x, -mouseTotalTrans.y)));
+	player->aimMatrix->SetRotationMatrix(rotY);
 
 
 	delete mousePos;
@@ -71,10 +78,15 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 	D3DXVECTOR3 moveV(speed);
 
 	//	移動ベクトルを自機の角度分回転させる
-	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());
+	D3DXMATRIX rotY;
+	D3DXMatrixRotationQuaternion(&rotY,&Rotation(D3DXVECTOR2(mouseTotalTrans.x,0)));
+	D3DXVec3TransformNormal(&moveV, &moveV,&rotY);
+
+
 	//	自機の座標を移動
 	player->SetPosition(player->GetPosition() + moveV);
-
+	//エイムの座標を移動
+	player->aimMatrix->SetPosition(player->GetPosition() + moveV);
 }
 
 /// <summary>

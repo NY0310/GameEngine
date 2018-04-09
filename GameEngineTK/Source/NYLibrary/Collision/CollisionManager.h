@@ -26,7 +26,10 @@ namespace NYLibrary
 		void AddCollider(Collider* collider) {
 			colliderList.emplace_back(collider);
 		}
+		void SetCollisitonIntervalFrame(int frame) { collisitonIntervalFrame = frame; frameCnt = 0; }
 	private:
+		//コンストラクタ
+		CollisionManager() { collisitonIntervalFrame = 0; }
 		//当たり判定を取るか判定する
 		bool CheckCallCollision(Collider* collider, Collider* collider_)const;
 		//自クラスのインスタンス
@@ -55,6 +58,9 @@ namespace NYLibrary
 
 		bool TypeCheckPlaneCollider(Collider * collider, Collider * collider_);
 
-
+		//当たり判定を行う
+		int collisitonIntervalFrame;
+		//フレームカウント
+		int frameCnt;
 	};
 };

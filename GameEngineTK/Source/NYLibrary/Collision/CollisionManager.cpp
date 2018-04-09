@@ -18,13 +18,18 @@ CollisionManager * CollisionManager::GetInstance()
 {
 	if (!collisionManager)
 	{
-		collisionManager = make_unique<CollisionManager>();
+		collisionManager.reset(new CollisionManager());
 	}
 	return collisionManager.get();
 }
 
 void CollisionManager::Update()
 {
+	if (collisitonIntervalFrame >= frameCnt)
+	{
+		frameCnt++;
+		return;
+	}
 
 	for (auto collider : colliderList)
 	{
@@ -36,6 +41,8 @@ void CollisionManager::Update()
 		}
 
 	}
+
+	frameCnt = 0;
 }
 
 void CollisionManager::AllTypeCheckAndCollisition(Collider* collider, Collider* _collider)
@@ -71,10 +78,10 @@ bool CollisionManager::CheckCallCollision(Collider * collider, Collider * collid
 	{
 		return false;
 	}
-	//if (!CheckSpere2Sphere(collider,collider_))
-	//{
-	//	return false;
-	//}
+	if (!CheckSpere2Sphere(collider,collider_))
+	{
+		return false;
+	}
 
 	return true;
 }
