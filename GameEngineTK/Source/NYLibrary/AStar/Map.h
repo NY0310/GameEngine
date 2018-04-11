@@ -4,7 +4,7 @@
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 #include "AttributeMap.h"
-#include "../../PaintAsset/PaintSystem/PaintObj.h"
+#include "../../Scene/GameScene/Charactor/Enemy/Enemy.h"
 #include "AStar.h"
 #include "../SceneGraph/Node/GameObjectNode.h"
 
@@ -23,15 +23,18 @@ namespace NYLibrary
 		void Render();
 		//最短経路取得
 		std::vector<DirectX::SimpleMath::Vector2> GetShortestPath() { aStar->SearchRoute(); return aStar->GetResultPath(); }
+	
+
 	private:
 		void ShadowRender();
 		//マップのリストサイズ変更
 		void MapObjResize(const int Hight, const int windth);
 		void ClearRenderConfig();
+		void CreateAddChild();
 		//マップ生成
 		void CreateMap();
 		//配置するオブジェクト
-		std::vector<std::vector<std::shared_ptr<PaintObj>>> mapObj;
+		std::vector<std::vector<std::shared_ptr<Enemy>>> mapObj;
 		//アトリビュートマップ
 		std::shared_ptr<AttributeMap> attributeMap;
 		//A*

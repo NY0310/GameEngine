@@ -1,7 +1,7 @@
 #include "PlayerWalk.h"
 //pPlayerState静的変数を初期化する
 PlayerState* PlayerWalk::state = nullptr;
-const D3DXVECTOR3 PlayerWalk::SPEED = D3DXVECTOR3(0.1f,0,0.5f);
+const D3DXVECTOR3 PlayerWalk::SPEED = D3DXVECTOR3(0.02f,0,0.05f);
 
 /***************************************************************************
 *|	概要　	Advanceクラスのインスタンスを取得する

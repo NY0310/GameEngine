@@ -12,6 +12,8 @@ void PaintGun::CreateAddChild()
 	AddChild(aim);
 	inkParticleManager = make_shared<InkParticleManager>();
 	AddChild(inkParticleManager);
+	inkTank = make_shared<InkTank>();
+	AddChild(inkTank);
 }
 
 /// <summary>
@@ -43,13 +45,13 @@ void PaintGun::Render()
 void PaintGun::Emit()
 {
 	//MouseRay* mouseRay = MouseRay::GetInstance();
-	D3DXVECTOR4 color = Colors::Orange;
+	D3DXVECTOR4 color = Colors::Yellow;
 
 
 	//親の情報を取得(プレイヤー)
 	MatrixObject* player = Getparent()._Get();
-	const D3DXVECTOR3 shitGunPosition(0, 0.5f, -0.2f);
-	D3DXVECTOR3 emitPosition = aimMatirx->GetPosition() + shitGunPosition ;
+	//const D3DXVECTOR3 shitGunPosition(0, 0, -1);
+	D3DXVECTOR3 emitPosition = aimMatirx->GetPosition();
 	//移動ベクトル
 	D3DXVECTOR3 moveV(0,0,-1);
 
@@ -58,8 +60,11 @@ void PaintGun::Emit()
 
 	/// 
 	MouseUtil* mouse = MouseUtil::GetInstance();
-	if (mouse->IsPressed(MouseUtil::Left))
-	inkParticleManager->Shoot(emitPosition, moveV, color);
+	if (mouse->IsPressed(MouseUtil::Left)&& !inkTank->IsEmptyInk())
+	{
+		inkParticleManager->Shoot(emitPosition, moveV, inkTank->GetInkColor());
+		inkTank->InkLost();
+	}
 }
 
 
@@ -70,39 +75,3 @@ void PaintGun::Finalize()
 	aim.reset();
 }
 
-
-/// <summary>
-/// タンククラス
-/// </summary>
-
-void InkTank::Update()
-{
-	colorAmount[total] = colorAmount[red] + colorAmount[green] + colorAmount[blue];
-}
-
-/// <summary>
-/// タンクのインクをリセット
-/// </summary>
-void InkTank::Initialize()
-{
-	for (int i = 0; i < total; i++)
-	{
-		colorAmount[i] = 0;
-	}
-}
-
-void InkTank::Emit()
-{
-
-}
-
-void InkTank::CalcColor()
-{
-	color = D3DXVECTOR4(static_cast<float>(colorAmount[red] / colorAmount[total]), static_cast<float>(colorAmount[green] / colorAmount[total]), static_cast<float>(colorAmount[blue] / colorAmount[total]), 1);
-}
-
-void InkTank::ChangeColor()
-{
-	MouseUtil* mouse = MouseUtil::GetInstance();
-	int wheel =  mouse->GetWheelValue();
-}

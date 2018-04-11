@@ -182,7 +182,7 @@ void PaintObj::OnCollisiton(Collider * collider)
 			uv = CalcInkCollisionUv(triangles[1], plane->GetInter());
 
 		}
-		campus->CreateInk(ink->GetColor(), uv ,0.5f);
+		campus->CreateInk(ink->GetColor(), uv ,0.01f);
 	}
 }
 
@@ -232,7 +232,8 @@ D3DXVECTOR2 PaintObj::CalcInkCollisionUv(const Triangle& triangle, const D3DXVEC
 		float tri3 = ((1 - tri1 - tri2));
 
 		float w = 1 / (tri3  / p1_p.w + tri1 / p2_p.w + tri2  / p3_p.w);
-		return tri3 * uv1 + tri1 * uv2 + tri2 * uv3;
+		D3DXVECTOR2 uv =  tri3 * uv1 + tri1 * uv2 + tri2 * uv3;
+		return uv;
 }
 
 

@@ -7,8 +7,7 @@ using namespace std;
 /// </summary>
 /// <param name="maxHp">体力上限</param>
 /// <param name="matrixObject">オブジェクト行列</param>
-Character::Character(int maxHp)
-	:MAX_HP(maxHp)
+Character::Character()
 {
 }
 
@@ -21,4 +20,12 @@ Character::~Character()
 {
 }
 
+
+
+
+void Character::CheckData()
+{
+	if (hp <= 0)
+		OnDied();
+}
 

@@ -48,6 +48,18 @@ namespace NYLibrary
 		void SetTransparency(float transparency) {
 			this->transparency = transparency;
 		}
+		//シェーダーリソースビューを設定
+		void SetShaderResourceView(const ComPtr<ID3D11ShaderResourceView>& SRV) { texture = SRV; GetTextureSize(texture.Get()); }
+		//シェーダーリソースビューを設定
+		const ComPtr<ID3D11ShaderResourceView>& GetShaderResourceView() { return texture; }
+		//スケール設定
+		void SetScale2D(const D3DXVECTOR2& scale) {
+			this->scale = scale;
+			CreateVertexBuffer2D();
+		}
+		//スケール取得
+		const D3DXVECTOR2& GetScale2D() { return scale; CreateVertexBuffer3D();}
+
 	private:
 		//バーテックスシェーダーに送るデータ
 		struct VertexData
@@ -59,7 +71,9 @@ namespace NYLibrary
 		struct CONSTANT_BUFFER
 		{
 			D3DXMATRIX wvp;
+			D3DXVECTOR4 color;
 			ALIGN16 float transparency;
+			ALIGN16 bool isUseColor;
 		};
 		//コンスタントバッファーをセットする(3Dのみ)
 		void SetConstantBuffer();
@@ -87,5 +101,6 @@ namespace NYLibrary
 		D3DXVECTOR2 vertexBufferPosition;//バーテックスバッファーの座標
 		Dimension dimension;//描画次元
 		float transparency;//透明度
+		D3DXVECTOR2 scale;//スケール
 	};
 };

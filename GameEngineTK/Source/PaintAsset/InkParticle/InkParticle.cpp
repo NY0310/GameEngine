@@ -8,7 +8,7 @@ const float InkParticle::SPEED = 0.1f;
 //落下速度
 const float InkParticle::GRAVITY = 0.01f;
 //ローカルの大きさ
-const float InkParticle::ROCAL_SIZE = 10.0f;
+const float InkParticle::ROCAL_SIZE = 15.0f;
 
 
 
@@ -19,7 +19,7 @@ const float InkParticle::ROCAL_SIZE = 10.0f;
 InkParticle::InkParticle()
 {
 	colisitionSegment = make_unique<InkSegment>();
-	SetScale(D3DXVECTOR3(0.4, 0.4, 0.4));
+	SetScale(0.2f);
 	birthFrame = 0;
 	isValidity = false;
 	SetLocalSize(ROCAL_SIZE);
@@ -118,7 +118,7 @@ void InkParticle::OnCollisiton(Collider * collider)
 
 ////////////////////////////////////////////////////////////////////
 
-const int InkParticleManager::INTERVAL_FRAME = 3;
+const int InkParticleManager::INTERVAL_FRAME = 10;
 const int InkParticleManager::MAX_SHIFT_DIRECTION = 80;
 
 

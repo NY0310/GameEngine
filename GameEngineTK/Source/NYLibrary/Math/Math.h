@@ -93,6 +93,12 @@ namespace NYLibrary
 				data = max * -1;
 			}
 		}
+
+		//Å‘å‚ÆÅ¬‚Ì”ÍˆÍ‚ÅƒNƒ‰ƒ“ƒv‚·‚é
+		static int Clamp(int maxNum, int minNum, int data)
+		{
+			return max(min(maxNum, data), minNum);
+		}
 	private:
 		//2‚Â‚Ì’l‚Æ‚à0
 		static bool Both0(int num1, int num2);

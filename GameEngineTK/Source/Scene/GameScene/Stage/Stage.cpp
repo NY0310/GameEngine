@@ -4,7 +4,7 @@ using namespace std;
 
 
 Stage::Stage()
-	:PaintObj(true)
+	:PaintObj(false)
 {
 	//LoadOBJFile("Resources/OBJ/floor.obj");
 	LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
@@ -12,6 +12,7 @@ Stage::Stage()
 	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
 	SetTag("stage");
 	SetScale(30);
+	SetPositionY(GetLocalSize() / 2);
 	AddComponent<TrianglePolygonListCollider>();
 }
 

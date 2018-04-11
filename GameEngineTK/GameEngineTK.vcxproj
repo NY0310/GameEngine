@@ -71,16 +71,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\cri\pc\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\cri\pc\libs\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\cri\pc\include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\cri\pc\libs\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -164,6 +164,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Resources\Sounds\CueSheet_0.h" />
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\Game\StepTimer.h" />
     <ClInclude Include="Source\NYLibrary\AStar\AStar.h" />
@@ -203,17 +204,23 @@
     <ClInclude Include="Source\NYLibrary\ShadowMap\ShadowMap.h" />
     <ClInclude Include="Source\NYLibrary\SimpleTexture\SimpleTextures.h" />
     <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h" />
+    <ClInclude Include="Source\NYLibrary\Sound\ADX2Le.h" />
+    <ClInclude Include="Source\NYLibrary\Sound\SoundManager.h" />
     <ClInclude Include="Source\NYLibrary\Sprite\Sprite.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkObj.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h" />
     <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h" />
     <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\Aim.h" />
+    <ClInclude Include="Source\PaintAsset\PaintGun\InkTank.h" />
+    <ClInclude Include="Source\PaintAsset\PaintGun\InkTankUI.h" />
+    <ClInclude Include="Source\PaintAsset\PaintGun\InputInkUI.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\PaintGun.h" />
     <ClInclude Include="Source\PaintAsset\PaintSystem\Paint.h" />
     <ClInclude Include="Source\PaintAsset\PaintSystem\PaintObj.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.h" />
@@ -259,17 +266,23 @@
     <ClCompile Include="Source\NYLibrary\ShadowMap\ShadowMap.cpp" />
     <ClCompile Include="Source\NYLibrary\SimpleTexture\SimpleTextures.cpp" />
     <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp" />
+    <ClCompile Include="Source\NYLibrary\Sound\ADX2Le.cpp" />
+    <ClCompile Include="Source\NYLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="Source\NYLibrary\Sprite\Sprite.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkObj.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp" />
     <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintGun\InkTank.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintGun\InkTankUI.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintGun\InputInkUI.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\PaintGun.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintSystem\Paint.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintSystem\PaintObj.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.cpp" />

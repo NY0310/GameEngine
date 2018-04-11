@@ -68,19 +68,15 @@ void Paint::Initialize()
 
 		//垂らすシェーダー
 		//バーテックスシェーダー
-		if (isPlane)
-		{
-			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripPlaneVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
-			//ピクセルシェーダー
-			MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPlanePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
-		}
-		else
-		{
-			MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
-			//ピクセルシェーダー
-			MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
+		MakeShader("Resources/HLSL/PlaneDrip.hlsl", "VS", "vs_5_0", (void**)DripPlaneVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
+		//ピクセルシェーダー
+		MakeShader("Resources/HLSL/PlaneDrip.hlsl", "PS", "ps_5_0", (void**)DripPlanePixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
+	
+		MakeShader("Resources/HLSL/Drip.hlsl", "VS", "vs_5_0", (void**)DripVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
+		//ピクセルシェーダー
+		MakeShader("Resources/HLSL/Drip.hlsl", "PS", "ps_5_0", (void**)DripPixelShader.ReleaseAndGetAddressOf(), &pCompiledShader);
 
-		}
+	
 
 		//更新するシェーダー
 		//バーテックスシェーダー
@@ -137,7 +133,7 @@ void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size)
 	InkData inkdata;
 	inkdata.Color = Color;
 	inkdata.Uv = uv;
-	inkdata.Scale  = 0.05f;
+	inkdata.Scale  = 0.01f;
 	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }

@@ -22,7 +22,6 @@ MouseUtil::MouseUtil(DirectX::Mouse::Mode mode)
 {
 	m_Mouse = std::make_unique<Mouse>();
 	m_Mouse->SetMode(mode);
-
 	// 押下状態の変数アドレスを記録
 	m_ButtonStates[Left] =		&m_State.leftButton;
 	m_ButtonStates[Middle] =	&m_State.middleButton;

@@ -21,6 +21,7 @@
 #include "../NYLibrary/Collision/CollisionManager.h"
 #include "../NYLibrary/Light/Light.h"
 #include "../NYLibrary/ShadowMap/ShadowMap.h"
+#include "../NYLibrary/Sound/SoundManager.h"
 
 #pragma comment(lib,"d3dx10.lib")
 #pragma comment(lib,"d3dx11.lib")
@@ -83,11 +84,12 @@ private:
 
 	//シーンマネージャ
 	std::shared_ptr<Scene::SceneManager> sceneManager;
-	NYLibrary::FollowCamera* camera;
-	NYLibrary::MouseUtil* mouse;
-	NYLibrary::KeyboardUtil* keyBoard;
-	NYLibrary::CollisionManager* collisionManager;
-	NYLibrary::Light* light;
+	NYLibrary::FollowCamera* camera;	//かめら
+	NYLibrary::MouseUtil* mouse;	//マウス
+	NYLibrary::KeyboardUtil* keyBoard;//キーボード
+	NYLibrary::CollisionManager* collisionManager;//当たり判定
+	NYLibrary::Light* light;//ライト
+	NYLibrary::SoundManager* soundManager;//音
 	//当たり判定を何フレームに一度行うか
-	static const int COLLISITON_INTERVAL = 20;
+	static const int COLLISITON_INTERVAL = 2;
 };       

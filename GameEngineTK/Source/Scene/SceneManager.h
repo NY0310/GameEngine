@@ -20,8 +20,14 @@ namespace Scene
 	class SceneManager : public NYLibrary::RootGameObjectNode
 	{
 	public:
-		//コンストラクタ
-		SceneManager() {};
+		//static SceneManager* GetInstance()
+		//{
+		//	if (!sceneManager.get())
+		//	{
+		//		sceneManager.reset(new SceneManager);
+		//	}
+		//	return sceneManager.get();
+		//}
 		//デストラクタ
 		~SceneManager() = default;
 		//コピーコンストラクタ禁止
@@ -31,6 +37,8 @@ namespace Scene
 		//シーン変更
 		void ReplaceScene(SceneKind scenekind);
 		//void CreateAddChild();
+		//コンストラクタ
+		SceneManager() {};
 	private:
 		//シーン
 		std::shared_ptr<SceneAbstract> scene;
@@ -39,6 +47,7 @@ namespace Scene
 			std::function<void(SceneKind)> thisFunction = std::bind(&SceneManager::ReplaceScene, this, std::placeholders::_1);
 			scene->addListener(thisFunction);
 		}
+	//	static std::unique_ptr<SceneManager> sceneManager;
 	};
 };
 

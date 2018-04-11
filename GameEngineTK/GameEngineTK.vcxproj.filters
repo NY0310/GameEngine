@@ -140,6 +140,12 @@
     <Filter Include="NYLibrary\SkinMeshAnimation">
       <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NYLibrary\Sound">
+      <UniqueIdentifier>{8ef497cf-f8b5-4f50-be05-82c98de92697}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sounds">
+      <UniqueIdentifier>{9bfa14dd-ae9c-41ee-a2d3-044fdd338d91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -328,6 +334,27 @@
     <ClInclude Include="Source\Scene\GameScene\Stage\Floor.h">
       <Filter>Scene\GameScene\Stage</Filter>
     </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Sound\ADX2Le.h">
+      <Filter>NYLibrary\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Sound\SoundManager.h">
+      <Filter>NYLibrary\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Sounds\CueSheet_0.h">
+      <Filter>Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PaintAsset\PaintGun\InkTank.h">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PaintAsset\PaintGun\InputInkUI.h">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PaintAsset\PaintGun\InkTankUI.h">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.h">
+      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -491,6 +518,24 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene\Stage\Floor.cpp">
       <Filter>Scene\GameScene\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Sound\ADX2Le.cpp">
+      <Filter>NYLibrary\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\Sound\SoundManager.cpp">
+      <Filter>NYLibrary\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PaintAsset\PaintGun\InkTank.cpp">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PaintAsset\PaintGun\InputInkUI.cpp">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PaintAsset\PaintGun\InkTankUI.cpp">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.cpp">
+      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

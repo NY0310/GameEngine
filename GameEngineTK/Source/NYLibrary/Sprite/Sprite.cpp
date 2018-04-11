@@ -6,8 +6,8 @@ using namespace NYLibrary;
 Sprite::Sprite(LPCWSTR FileName, Dimension dimension)
 	:dimension(dimension)
 {
+	scale = D3DXVECTOR2(1, 1);
 	LoadTexture(FileName);
-	transparency = 0;
 }
 
 Sprite::~Sprite()
@@ -49,6 +49,7 @@ void Sprite::Initialize()
 	UINT numElements = sizeof(layout) / sizeof(layout[0]);
 
 	//頂点インプットレイアウトを作成
+
 	devices.Device()->CreateInputLayout(layout, numElements, compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), vertexLayout.ReleaseAndGetAddressOf());
 
 	SAFE_RELEASE(compiledShader);
@@ -128,7 +129,7 @@ void Sprite::Render()
 	devices.Context().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	//テクスチャーをシェーダーに渡す
 	devices.Context().Get()->PSSetSamplers(0, 1, sampler.GetAddressOf());
-	devices.Context().Get()->PSSetShaderResources(0, 1, ShadowMap::GetInstance()->GetShaderResourceView().GetAddressOf());	//プリミティブをレンダリング
+	devices.Context().Get()->PSSetShaderResources(0, 1, texture.GetAddressOf());	//プリミティブをレンダリング
 
 	//バーテックスバッファーをセット
 	UINT stride = sizeof(VertexData);
@@ -151,7 +152,9 @@ void Sprite::SetConstantBuffer()
 		//ワールド、カメラ、射影行列を渡す
 		cb.wvp = GetWVP();
 		D3DXMatrixTranspose(&cb.wvp, &cb.wvp);
+		cb.color = D3DXVECTOR4(GetColor().x, GetColor().y, GetColor().z,GetIsUseColor());
 		cb.transparency = transparency;
+		cb.isUseColor = GetIsUseColor();
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		devices.Context().Get()->Unmap(constantBuffer.Get(), 0);
 	}
@@ -197,8 +200,8 @@ HRESULT Sprite::CreateVertexBuffer2D()
 	auto& devices = Devices::Get();
 	float width = static_cast<float>(devices.Width());
 	float hight = static_cast<float>(devices.Height());
-	float shiftX = static_cast<float>(widthSize / 2);
-	float shiftY = static_cast<float>(hightSize / 2);
+	float shiftX = static_cast<float>(widthSize  * scale.x  / 2);
+	float shiftY = static_cast<float>(hightSize * scale.y / 2) ;
 	//バーテックスバッファー作成
 	//頂点を定義
 	VertexData vertices[] =

@@ -1,20 +1,30 @@
 #pragma once
 #include <memory>
 
-class Character
+class Character 
 {
 public:
 	//コンストラクタ
-	Character(int maxHp);
+	Character();
 	//デストラクタ
 	virtual ~Character();
 	// コピーコンストラクタ禁止
 	Character(const Character&) = delete;
 	// 代入禁止
 	Character& operator=(const Character&) = delete;
+	//更新
+	void CheckData();
+	//ダメージを受ける
+	void HitDamage() { hp--;}
+	//ダメージを受ける
+	void WeakHitDamage() { hp -= WEAK_DAMAGE; }
+	//回復
+	void Recovery() { hp++; }
 protected:
-	//体力上限
-	const int MAX_HP;
+	//死んだとき
+	virtual void OnDied() = 0;
 	//残り体力
 	int hp;
+	//弱点ダメージ
+	static const int WEAK_DAMAGE = 2;
 };

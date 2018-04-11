@@ -4,8 +4,8 @@
 #include "../../NYLibrary/Collision/Collision.h"
 #include "../../NYLibrary/Device/Device.h"
 #include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
-#include "../../NYLibrary/Input/MouseRay.h"
 #include "Aim.h"
+#include "InkTank.h"
 
 class PaintGun : public NYLibrary::GameObjectNode
 {
@@ -34,35 +34,9 @@ private:
 	std::shared_ptr<Aim> aim;
 	//発射座標
 	std::shared_ptr<MatrixObject> aimMatirx;
+	//インクのタンク
+	std::shared_ptr<InkTank> inkTank;
 };
 
 
 
-
-class InkTank
-{
-public:
-	//初期化　
-	void Initialize();
-	//更新処理
-	void Update();
-	//発射
-	void Emit();
-private:
-	enum StandardColor
-	{
-		red,
-		green,
-		blue,
-		total
-	};
-	//色を計算
-	void CalcColor();
-	//追加する色を変更する
-	void ChangeColor();
-	D3DXVECTOR4 color;
-	//インク量
-	int colorAmount[total + 1];
-	//追加する色
-	StandardColor inColor;
-};

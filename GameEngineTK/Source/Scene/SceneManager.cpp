@@ -3,6 +3,9 @@ using namespace std;
 using namespace NYLibrary;
 using namespace Scene;
 
+
+////std::unique_ptr<SceneManager> SceneManager::sceneManager;
+
 /// <summary>
 /// ƒV[ƒ“‚ğ•ÏX‚·‚é
 /// </summary>

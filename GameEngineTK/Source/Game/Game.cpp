@@ -6,7 +6,9 @@
 #include <ctime>
 #include <d3d11.h>
 #include <Winuser.h>
+#include "../Sounds/CueSheet_0.h"
 
+#pragma comment(lib,"cri_ware_pcx86_LE_import.lib")
 extern void ExitGame();
 
 using namespace std;
@@ -58,13 +60,16 @@ void Game::Initialize(HWND window, int width, int height)
 
 
 	//シーンマネージャ取得する
-	sceneManager = make_unique<SceneManager>();
+	sceneManager = make_shared<SceneManager>();
 	//タイトルシーンを作成
 	sceneManager->ReplaceScene(SceneKind::Game);
 	sceneManager->LoopCreateAddChild();
 	//初期化
 	sceneManager->LoopInitialize();
-
+	//音
+	soundManager = SoundManager::GetInstance();
+	soundManager->Initialize("PaintGame", "CueSheet_0","CueSheet_0");
+	//soundManager->PlayAudio(1);
 }
 
 
@@ -103,6 +108,8 @@ void Game::Update(DX::StepTimer const& timer)
 	SetCursorPos(devices.Width(), devices.Height());
 	//マウスカーソル非表示
 	ShowCursor(false);
+	//音楽更新
+	soundManager->Update();
 
 }
 

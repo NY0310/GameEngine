@@ -10,8 +10,7 @@ using namespace NYLibrary;
 /// </summary>
 /// <param name="maxHp">体力</param>
 /// <param name="matrixObject">行列管理</param>
-Player::Player(int maxHp) :
-	Character(maxHp)
+Player::Player()
 {
 }
 
@@ -26,10 +25,9 @@ void Player::CreateAddChild()
 /// </summary>
 void Player::Initialize()
 {
+	//Character::Initialize(MAX_HP);
 	SkinMesh::Initialize();
 	CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
-	SetPosition(D3DXVECTOR3(0, 0, 0));
-	SetScale(D3DXVECTOR3(5, 5, 5));
 	//自身のステート
 	playerState.reset(PlayerWalk::GetInstance());
 	//エイムの行列
@@ -38,6 +36,10 @@ void Player::Initialize()
 	//カメラに自分を渡す
 	FollowCamera* camera = FollowCamera::GetInstance();
 	camera->SetPlayer(this);
+	//回復フレームカウントを初期化
+	recoveryFrameCnt = 0;
+	SetPositionY(1);
+	aimMatrix->SetPositionY(GetPositionY());
 }
 
 
@@ -71,4 +73,22 @@ void Player::ChangeState(PlayerState * state)
 void Player::Render()
 {
 	SkinMesh::Render();
+}
+
+/// <summary>
+/// 回復
+/// </summary>
+void Player::Recovery()
+{
+	if (RECOVERY_INTERVAL < recoveryFrameCnt)
+	{
+		Recovery();
+		recoveryFrameCnt = 0;
+	}
+	recoveryFrameCnt++;
+}
+
+void Player::OnDied()
+{
+
 }

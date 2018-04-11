@@ -11,13 +11,17 @@ void Aim::Initialize()
 	Sprite::Initialize();
 	auto& devices = Devices::Get();
 	Set2DPosition(D3DXVECTOR2(devices.Width() / 2.0f, devices.Height() / 2.0f));
-	//SetTransparency(0.5f);
-
+	SetTransparency(0.5f);
 }
 
 
 void Aim::Update()
 {
 
+
+}
+
+void Aim::Render()
+{
 
 }
