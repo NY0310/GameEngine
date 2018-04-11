@@ -9,7 +9,7 @@ public:
 	//コンストラクタ
 	InputInkUI();
 	//描画するテクスチャを設定する
-	void SetRenderTexture(InkTank::StandardColor standardColor) { SetShaderResourceView( srv[standardColor]); }
+	void SetRenderTexture(InkTank::StandardColor standardColor);
 private:
 	//シェーダーリソースビュー
 	ComPtr<ID3D11ShaderResourceView> srv[InkTank::StandardColor::total];

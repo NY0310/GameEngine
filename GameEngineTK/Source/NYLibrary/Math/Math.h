@@ -100,6 +100,16 @@ namespace NYLibrary
 			return max(min(maxNum, data), minNum);
 		}
 
+		//Å‘å‚ÆÅ¬‚Ì”ÍˆÍ‚ÅƒNƒ‰ƒ“ƒv‚·‚é
+		static D3DXVECTOR4 Clamp(int maxNum, int minNum, D3DXVECTOR4 data)
+		{
+			data.x =  max(min(maxNum, data.x), minNum);
+			data.y = max(min(maxNum, data.y), minNum);
+			data.z = max(min(maxNum, data.z), minNum);
+			data.w = max(min(maxNum, data.w), minNum);
+			return data;
+		}
+
 		//©‘R”‚ğ•Ô‚·
 		static int NaturalNumber(int number)
 		{

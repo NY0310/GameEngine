@@ -1,5 +1,9 @@
 #include "WeakSprite.h"
 
+
+const float WeakSprite::WAKE_DISTANCE = 0.4f;
+
+
 WeakSprite::WeakSprite()
 	:Sprite(L"Resources/PNG/weak.png",Dimension3)
 {
@@ -8,5 +12,8 @@ WeakSprite::WeakSprite()
 
 void WeakSprite::Update()
 {
-	SetPosition(this->Getparent()._Get()->GetPosition());
+	//“G‚Ìã‚É•`‰æ‚·‚é
+	D3DXVECTOR3 position = this->Getparent()._Get()->GetPosition();
+	position.y += this->Getparent()._Get()->GetScaleY() * this->Getparent()._Get()->GetLocalSize();
+	SetPosition(position);
 }

@@ -107,7 +107,9 @@ void InkTank::CalcTotalAmount()
 /// </summary>
 void InkTank::CalcColor()
 {
-	inkColor = D3DXVECTOR4(static_cast<float>(colorAmount[red]) / colorAmount[total], static_cast<float>(colorAmount[green]) / colorAmount[total], static_cast<float>(colorAmount[blue]) / colorAmount[total], 1);
+//	inkColor = D3DXVECTOR4(static_cast<float>(colorAmount[red]) / colorAmount[total], static_cast<float>(colorAmount[green]) / colorAmount[total], static_cast<float>(colorAmount[blue]) / colorAmount[total], 1);
+	inkColor = Math::Clamp(1,0,D3DXVECTOR4(colorAmount[red] , colorAmount[green] , colorAmount[blue], 1));
+
 	//îÒêîâÒî
 	Math::ValidateNan(inkColor);
 }

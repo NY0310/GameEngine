@@ -7,4 +7,6 @@ public:
 	WeakSprite();
 	void Update();
 private:
+	//ÉYÉå
+	static const float WAKE_DISTANCE;
 };
