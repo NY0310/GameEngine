@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
 
-const float Enemy::DIFFERENCE_UPPER = 0.7f;
+const float Enemy::DIFFERENCE_UPPER = 0.1f;
 
 
 
@@ -45,6 +45,7 @@ void Enemy::OnCollisiton(Collider* collider)
 	if (ink && triangleList)
 	{
 		D3DXVECTOR4 difference = weakColor - ink->GetColor();
+		difference = Math::NaturalNumber(difference);
 		int totlaDifference = difference.x + difference.y + difference.z;
 		if (DIFFERENCE_UPPER >= totlaDifference)
 		{

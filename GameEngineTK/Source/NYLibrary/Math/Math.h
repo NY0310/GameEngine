@@ -99,7 +99,34 @@ namespace NYLibrary
 		{
 			return max(min(maxNum, data), minNum);
 		}
-	private:
+
+		//自然数を返す
+		static int NaturalNumber(int number)
+		{
+			(number < 0) ? number * -1 : number;
+		}
+
+		//自然数を返す
+		static float NaturalNumber(float number)
+		{
+			(number < 0) ? number * -1.0f : number;
+		}
+
+		//自然数を返す
+		static D3DXVECTOR4 NaturalNumber(const D3DXVECTOR4& number)
+		{
+			D3DXVECTOR4 output = number;
+			if (number.x < 0)
+				output.x = number.x * -1;
+			if (number.y < 0)
+				output.y = number.y* -1;
+			if (number.z < 0)
+				output.z = number.z * -1;
+			if (number.w < 0)
+				output.w = number.w * -1;
+			return output;
+
+		}	private:
 		//2つの値とも0
 		static bool Both0(int num1, int num2);
 	};
