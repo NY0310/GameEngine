@@ -214,6 +214,11 @@ namespace NYLibrary
 
 		//ワールド行列の掛け算順序を設定する
 		void ChangeOrder(WorldMatrixOrder::ORDER order);
+
+		//ビルボードにするか設定
+		void SetIsBillBoard(bool isBillBoard) {
+			this->isBillBoard = isBillBoard;
+		}
 	private:
 		//全行列作成
 		void CreateAllMatrix();
@@ -240,5 +245,6 @@ namespace NYLibrary
 		bool isCalcTransferMatrix;//移動行列計算を行うか
 		bool isCalcScaleMatrix;//拡大行列計算を行うか
 		bool isCalcRotationMatrix;//回転行列計算を行うか
+		bool isBillBoard;
 	};
 };

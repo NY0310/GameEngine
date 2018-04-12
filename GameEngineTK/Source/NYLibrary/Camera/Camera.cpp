@@ -39,7 +39,24 @@ void Camera::Update()
 	//	射影行列の生成
 	D3DXMatrixPerspectiveFovLH(&proj, fovY / zoom, aspect, nearClip, farClip);
 
+	//ビルボード版ビュー行列
+	DisabledViewRotation(view);
+
 }
+
+
+void Camera::DisabledViewRotation(D3DXMATRIX view)
+{
+	//カメラの回転を無効
+	billBoardView = view;
+	//逆行列にする
+	D3DXMatrixInverse(&billBoardView, nullptr, &billBoardView);
+	//移動行列無効
+	billBoardView._41 = 0;
+	billBoardView._42 = 0;
+	billBoardView._43 = 0;
+}
+
 
 
 /// <summary>

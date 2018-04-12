@@ -303,33 +303,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="directx.ico" />
-    <Image Include="images.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="settings.manifest" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\..\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
       <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Assets\Arm.FBX" />
-    <MeshContentTask Include="Assets\Body.FBX" />
-    <MeshContentTask Include="Assets\Body2.FBX" />
-    <MeshContentTask Include="Assets\Fing.FBX" />
-    <MeshContentTask Include="Assets\Foot.FBX" />
-    <MeshContentTask Include="Assets\ground1m.FBX" />
-    <MeshContentTask Include="Assets\ground200m.FBX" />
-    <MeshContentTask Include="Assets\Gun.FBX" />
-    <MeshContentTask Include="Assets\head.FBX" />
-    <MeshContentTask Include="Assets\Leg.FBX" />
-    <MeshContentTask Include="Assets\Skydome.FBX" />
-    <MeshContentTask Include="Assets\Skydome2.FBX" />
-    <MeshContentTask Include="Assets\Sphere.FBX" />
-    <MeshContentTask Include="Assets\SphereNode.FBX" />
-    <MeshContentTask Include="Assets\Teapot.FBX" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\HLSL\Campus.hlsl">

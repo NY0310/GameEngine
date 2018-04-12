@@ -53,8 +53,8 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	mouseTrans.y = static_cast<float>(mousePos->y) - initialMousePosition.y;
 	//そのままの数値でクォータニオンを作成すると回転しすぎるので係数で除算
 	mouseTotalTrans += mouseTrans / ROTATION_COEFFICIENT;
-	//回転に上限を設ける
-	Math::ClampAbsolute(mouseTotalTrans, MAX_ROTATION);
+	//////回転に上限を設ける
+	//Math::ClampAbsolute(mouseTotalTrans, MAX_ROTATION);
 	//クォータニオンを作成しプレイヤのを回転させる
 	player->SetQuaternion(Rotation(D3DXVECTOR2(mouseTotalTrans.x,0)));
 	D3DXMATRIX rotY;

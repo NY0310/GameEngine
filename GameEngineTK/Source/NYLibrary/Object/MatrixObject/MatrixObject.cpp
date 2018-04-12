@@ -26,6 +26,8 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 	worldMatrixOrderFactory = new WorldMatrixOrderFactory();
 	//ワールド行列の掛け算順序ファクトリーの初期化
 	order = worldMatrixOrderFactory->Set(WorldMatrixOrder::ORDER::SCALEMAT_ROTOMAT_TRANSMAT);
+	//ビルボードにしない
+	isBillBoard = false;
 
 }
 
@@ -48,12 +50,28 @@ void MatrixObject::ChangeOrder(WorldMatrixOrder::ORDER order)
 void MatrixObject::Calc()
 {
 	FollowCamera* camera = FollowCamera::GetInstance();
+	D3DXMATRIX view;
+
 	//全ての行列を作成
 	CreateAllMatrix();
 	//スケール・回転・移動行列からワールド行列作成
 	order._Get()->Calculation(worldMatrix, scaleMatrix, rotationMatrix, transferMatrix);
-	//ワールド行列・ビュー行列・プロジェクション行列を作成
-	wvp = worldMatrix * camera->GetView() * camera->GetProjection();
+
+	if (isBillBoard)
+	{
+		D3DXMATRIX w;
+		D3DXMATRIX bill = camera->GetBillboard();
+		D3DXMATRIX test;
+		D3DXMatrixRotationY(&test, D3DX_PI);
+		//ワールド行列・ビュー行列・プロジェクション行列を作成
+		wvp = camera->GetBillboard()  * worldMatrix  * camera->GetView() * camera->GetProjection();
+	}
+	else
+	{
+		//ワールド行列・ビュー行列・プロジェクション行列を作成
+		wvp = worldMatrix * camera->GetView() * camera->GetProjection();
+	}
+
 }
 
 /// <summary>

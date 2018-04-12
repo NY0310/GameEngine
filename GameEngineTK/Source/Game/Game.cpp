@@ -147,6 +147,7 @@ void Game::Render()
 
 
 
+	devices.Context().Get()->RSSetState(m_states->CullNone());
 
 	////•`‰æ
 	sceneManager->LoopRender();

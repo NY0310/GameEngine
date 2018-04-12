@@ -944,13 +944,19 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 		{
 			strcpy(material[i].textureName, name);
 		}
+		char* buf = new char[100];
+		LPSTR upName = "Resources/BMP/";
+
+		strcpy(buf, upName);
+		strcat(buf, material[i].textureName);
+
 		//読み込んだテクスチャーを作成
-		if (material[i].textureName[0] != 0 && FAILED(D3DX11CreateShaderResourceViewFromFileA(device, material[i].textureName, nullptr, nullptr, material[i].texture.ReleaseAndGetAddressOf(), nullptr)))//絶対パスファイル名は、まず失敗すると思うが、、、
+		if (material[i].textureName[0] != 0 && FAILED(D3DX11CreateShaderResourceViewFromFileA(device, buf, nullptr, nullptr, material[i].texture.ReleaseAndGetAddressOf(), nullptr)))//絶対パスファイル名は、まず失敗すると思うが、、、
 		{
 			MessageBox(0, L"テクスチャー読み込み失敗", nullptr, MB_OK);
 			return E_FAIL;
 		}
-
+		delete[] buf;
 		//そのマテリアルであるインデックス配列内の開始インデックスを調べる　さらにインデックスの個数も調べる
 		int iCount = 0;
 		//メッシュ内のポリゴン数でメモリ確保
@@ -991,6 +997,7 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 	//一時的な入れ物は、もはや不要
 	delete piFaceBuffer;
 	if (pvVB) delete pvVB;
+
 	/*if (verPos) delete verPos;
 	if (verUv) delete verUv;*/
 

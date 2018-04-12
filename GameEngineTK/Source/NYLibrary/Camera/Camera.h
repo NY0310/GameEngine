@@ -32,8 +32,7 @@ namespace NYLibrary
 
 		void UnProject(const D3DXVECTOR2 & screenPos, Segment * worldSegment);
 
-		const D3DXMATRIX& GetBillboard() const { return billboard; }
-		const D3DXMATRIX& GetBillboardConstrainY() const { return billboardConstrainY; }
+		const D3DXMATRIX& GetBillboard() { return billBoardView; }
 
 		//	カメラの位置(視点座標）の取得
 		const D3DXVECTOR3& GetEyePos() { return eyepos; }
@@ -77,6 +76,12 @@ namespace NYLibrary
 		//拡大倍率のセット
 		void SetZoom(float zoom) { this->zoom = zoom; }
 
+	private:
+		//ビルボードのビュー
+		D3DXMATRIX billBoardView;
+		//ビュー行列の回転成分を無効にする
+		void DisabledViewRotation(D3DXMATRIX view);
+
 	protected:
 		//	カメラの位置(視点座標）
 		D3DXVECTOR3 eyepos;
@@ -96,10 +101,6 @@ namespace NYLibrary
 		float farClip;
 		//	射影行列
 		D3DXMATRIX proj;
-		// ビルボード行列
-		D3DXMATRIX billboard;
-		// ビルボード行列(Y軸周り限定）
-		D3DXMATRIX billboardConstrainY;
 		//拡大倍率
 		float zoom;
 	};
