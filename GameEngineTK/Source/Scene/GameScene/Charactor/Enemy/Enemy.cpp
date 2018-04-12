@@ -28,6 +28,7 @@ void Enemy::Initialize()
 	AddComponent<TrianglePolygonListCollider>();
 	weakSprite->SetColor(weakColor);
 	auto  a = GetLocalSize();
+	SetScale(0.5f);
 }
 
 void Enemy::Update()

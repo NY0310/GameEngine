@@ -12,6 +12,15 @@ InkTankUI::InkTankUI()
 }
 
 /// <summary>
+/// オブジェクトを生成し子供として登録
+/// </summary>
+void InkTankUI::CreateAddChild()
+{
+	inkContainerUI = make_shared<InkContainerUI>();
+	AddChild(inkContainerUI);
+}
+
+/// <summary>
 /// 初期化
 /// </summary>
 void InkTankUI::Initialize()

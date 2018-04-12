@@ -212,6 +212,7 @@
     <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h" />
     <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\Aim.h" />
+    <ClInclude Include="Source\PaintAsset\PaintGun\InkContainerUI.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\InkTank.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\InkTankUI.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\InputInkUI.h" />
@@ -274,6 +275,7 @@
     <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp" />
+    <ClCompile Include="Source\PaintAsset\PaintGun\InkContainerUI.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\InkTank.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\InkTankUI.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\InputInkUI.cpp" />
@@ -391,6 +393,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

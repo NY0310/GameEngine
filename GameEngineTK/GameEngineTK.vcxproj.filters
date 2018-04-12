@@ -100,9 +100,6 @@
     <Filter Include="NYLibrary\Camera">
       <UniqueIdentifier>{c7180978-e9e6-4655-9953-ba4723eac26c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Stage">
-      <UniqueIdentifier>{5a58c8a0-a6da-4b35-8e7d-db610c794055}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\ShadowMap">
       <UniqueIdentifier>{6ca9ac79-5e60-4a83-bd07-69af0dbd5d46}</UniqueIdentifier>
     </Filter>
@@ -351,6 +348,9 @@
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.h">
       <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Source\PaintAsset\PaintGun\InkContainerUI.h">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -533,6 +533,9 @@
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.cpp">
       <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PaintAsset\PaintGun\InkContainerUI.cpp">
+      <Filter>PaintAsset\PaintGun</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -571,5 +574,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest" />
   </ItemGroup>
 </Project>

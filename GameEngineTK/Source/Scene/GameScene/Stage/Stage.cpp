@@ -11,7 +11,7 @@ Stage::Stage()
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
 	SetTag("stage");
-	SetScale(30);
+	SetScale(0);
 	SetPositionY(GetLocalSize() / 2);
 	AddComponent<TrianglePolygonListCollider>();
 }
