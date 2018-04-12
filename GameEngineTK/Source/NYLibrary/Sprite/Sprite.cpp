@@ -15,6 +15,8 @@ Sprite::Sprite(LPCWSTR FileName, Dimension dimension)
 	:dimension(dimension)
 {
 	LoadTexture(FileName);
+	transparency = 1;
+	anchorPoint = D3DXVECTOR2(0.5f, 0.5f);
 }
 
 Sprite::~Sprite()
@@ -32,8 +34,6 @@ Sprite::~Sprite()
 
 void Sprite::Initialize()
 {
-	transparency = 1;
-	anchor = D3DXVECTOR2(0.5f, 0.5f);
 
 	if (vertexShader2D.Get())
 		return;
@@ -265,10 +265,10 @@ HRESULT Sprite::CreateVertexBuffer2D()
 	//頂点を定義
 	VertexData vertices[] =
 	{
-		D3DXVECTOR3(-shiftX * (1 - anchor.x), shiftY * anchor.y,0),D3DXVECTOR2(0,1),//頂点1,
-		D3DXVECTOR3(-shiftX * (1 - anchor.x),-shiftY * (1 - anchor.y),0), D3DXVECTOR2(0,0),//頂点2
-		D3DXVECTOR3(shiftX *  anchor.x, shiftY * anchor.y,0),D3DXVECTOR2(1,1), //頂点3
-		D3DXVECTOR3(shiftX *  anchor.x,-shiftY * (1 - anchor.y),0),D3DXVECTOR2(1,0), //頂点4
+		D3DXVECTOR3(-shiftX * (1 - anchorPoint.x), shiftY * anchorPoint.y,0),D3DXVECTOR2(0,1),//頂点1,
+		D3DXVECTOR3(-shiftX * (1 - anchorPoint.x),-shiftY * (1 - anchorPoint.y),0), D3DXVECTOR2(0,0),//頂点2
+		D3DXVECTOR3(shiftX *  anchorPoint.x, shiftY * anchorPoint.y,0),D3DXVECTOR2(1,1), //頂点3
+		D3DXVECTOR3(shiftX *  anchorPoint.x,-shiftY * (1 - anchorPoint.y),0),D3DXVECTOR2(1,0), //頂点4
 	};
 
 

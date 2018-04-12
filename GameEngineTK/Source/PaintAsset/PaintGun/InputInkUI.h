@@ -13,4 +13,6 @@ public:
 private:
 	//シェーダーリソースビュー
 	ComPtr<ID3D11ShaderResourceView> srv[InkTank::StandardColor::total];
+	//座標係数
+	static const D3DXVECTOR3 positionCoefficient;
 };

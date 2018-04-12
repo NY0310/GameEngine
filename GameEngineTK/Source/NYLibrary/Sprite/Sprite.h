@@ -44,13 +44,13 @@ namespace NYLibrary
 		//シェーダーリソースビューを設定
 		const ComPtr<ID3D11ShaderResourceView>& GetShaderResourceView() { return texture; }
 		//アクターを設定
-		void SetAnchor(D3DXVECTOR2& anchor) {
-			Math::Clamp(1, 0, anchor);
-			this->anchor = anchor;
+		void SetAnchorPoint(D3DXVECTOR2& anchorPoint) {
+			Math::Clamp(1, 0, anchorPoint);
+			this->anchorPoint = anchorPoint;
 		}
 		//アクターを取得
-		const D3DXVECTOR2& GetAnchor() {
-			return this->anchor;
+		const D3DXVECTOR2& GetAnchorPoint() {
+			return this->anchorPoint;
 		}
 	private:
 		//バーテックスシェーダーに送るデータ
@@ -103,6 +103,6 @@ namespace NYLibrary
 		int hightSize;//高さ
 		Dimension dimension;//描画次元
 		float transparency;//透明度
-		D3DXVECTOR2 anchor;//アクター
+		D3DXVECTOR2 anchorPoint;//アクター
 	};
 };
