@@ -38,7 +38,6 @@ void Player::Initialize()
 	camera->SetPlayer(this);
 	//回復フレームカウントを初期化
 	recoveryFrameCnt = 0;
-//	SetPositionY();
 	aimMatrix->SetPositionY(GetPositionY());
 }
 
