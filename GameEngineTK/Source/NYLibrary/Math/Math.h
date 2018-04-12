@@ -101,6 +101,15 @@ namespace NYLibrary
 		}
 
 		//最大と最小の範囲でクランプする
+		static D3DXVECTOR2 Clamp(int maxNum, int minNum, D3DXVECTOR2& data)
+		{
+			data.x = max(min(maxNum, data.x), minNum);
+			data.y = max(min(maxNum, data.y), minNum);
+			return data;
+		}
+
+
+		//最大と最小の範囲でクランプする
 		static D3DXVECTOR4 Clamp(int maxNum, int minNum, D3DXVECTOR4 data)
 		{
 			data.x =  max(min(maxNum, data.x), minNum);

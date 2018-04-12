@@ -3,18 +3,27 @@
 using namespace std;
 using namespace NYLibrary;
 
+ComPtr<ID3D11VertexShader> Sprite::vertexShader2D;//バーテックスシェーダ
+ComPtr<ID3D11VertexShader> Sprite::vertexShader3D;//バーテックスシェーダ
+ComPtr<ID3D11PixelShader> Sprite::pixelShader;//ピクセルシェーダ
+ComPtr<ID3D11InputLayout> Sprite::vertexLayout;//頂点インップットレイアウト
+ComPtr<ID3D11Buffer>Sprite::constantBuffer3D;
+ComPtr<ID3D11Buffer> Sprite::constantBuffer2D;
+
+
 Sprite::Sprite(LPCWSTR FileName, Dimension dimension)
 	:dimension(dimension)
 {
-	scale = D3DXVECTOR2(1, 1);
 	LoadTexture(FileName);
 }
 
 Sprite::~Sprite()
 {
-	vertexShader.Reset();
+	vertexShader2D.Reset();
+	vertexShader3D.Reset();
 	pixelShader.Reset();
-	constantBuffer.Reset();
+	constantBuffer2D.Reset();
+	constantBuffer3D.Reset();
 	vertexBuffer.Reset();
 	vertexLayout.Reset();
 	texture.Reset();
@@ -24,19 +33,18 @@ Sprite::~Sprite()
 void Sprite::Initialize()
 {
 	transparency = 1;
-	vertexBufferPosition = D3DXVECTOR2(0, 0);
+	anchor = D3DXVECTOR2(0.5f, 0.5f);
+
+	if (vertexShader2D.Get())
+		return;
 	auto& devices = Devices::Get();
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *compiledShader = nullptr;
 	//バーテックスシェーダー作成
-	if (dimension == Dimension2)
-	{
-		MakeShader("Resources/HLSL/Sprite.hlsl", "VS2D", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &compiledShader);
-	}
-	else
-	{
-		MakeShader("Resources/HLSL/Sprite.hlsl", "VS3D", "vs_5_0", (void**)vertexShader.ReleaseAndGetAddressOf(), &compiledShader);
-	}
+	MakeShader("Resources/HLSL/Sprite.hlsl", "VS2D", "vs_5_0", (void**)vertexShader2D.ReleaseAndGetAddressOf(), &compiledShader);
+
+	MakeShader("Resources/HLSL/Sprite.hlsl", "VS3D", "vs_5_0", (void**)vertexShader3D.ReleaseAndGetAddressOf(), &compiledShader);
+	
 
 
 	//頂点インプットレイアウトを定義	
@@ -65,14 +73,25 @@ void Sprite::Initialize()
 	//コンスタントバッファー作成　ここでは変換行列渡し用
 	D3D11_BUFFER_DESC cb;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
+	cb.ByteWidth = sizeof(ConstantBuffer3D);
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cb.MiscFlags = 0;
 	cb.StructureByteStride = 0;
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 
 
-	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer.ReleaseAndGetAddressOf());
+	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer3D.ReleaseAndGetAddressOf());
+
+	//コンスタントバッファー作成　ここでは変換行列渡し用
+	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb.ByteWidth = sizeof(ConstantBuffer2D);
+	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.MiscFlags = 0;
+	cb.StructureByteStride = 0;
+	cb.Usage = D3D11_USAGE_DYNAMIC;
+
+
+	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer2D.ReleaseAndGetAddressOf());
 
 
 
@@ -107,8 +126,7 @@ HRESULT Sprite::LoadTexture(LPCWSTR FileName)
 
 	//テクスチャのサイズを取得
 	GetTextureSize(texture.Get());
-	if (dimension == Dimension3)
-	CreateVertexBuffer3D();
+
 
 	return S_OK;
 }
@@ -117,11 +135,21 @@ void Sprite::Render()
 {
 	auto& devices = Devices::Get();
 
-	devices.Context()->VSSetShader(vertexShader.Get(), nullptr, 0);
+
+	if (dimension == Dimension2)
+	{
+		CreateVertexBuffer2D();
+		devices.Context()->VSSetShader(vertexShader2D.Get(), nullptr, 0);
+		SetConstantBuffer3D();
+		SetConstantBuffer2D();
+	}
+	else
+	{
+		CreateVertexBuffer3D();
+		devices.Context()->VSSetShader(vertexShader3D.Get(), nullptr, 0);
+		SetConstantBuffer3D();
+	}
 	devices.Context()->PSSetShader(pixelShader.Get(), nullptr, 0);
-
-	SetConstantBuffer();
-
 
 	//頂点インプットレイアウトをセット
 	devices.Context().Get()->IASetInputLayout(vertexLayout.Get());
@@ -140,31 +168,62 @@ void Sprite::Render()
 
 }
 
-void Sprite::SetConstantBuffer()
+void Sprite::SetConstantBuffer3D()
 {
 	auto& devices = Devices::Get();
 
 	//シェーダーのコンスタントバッファーに各種データを渡す
 	D3D11_MAPPED_SUBRESOURCE pData;
-	CONSTANT_BUFFER cb;
-	if (SUCCEEDED(devices.Context().Get()->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	ConstantBuffer3D cb;
+	if (SUCCEEDED(devices.Context().Get()->Map(constantBuffer3D.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
 	{
 		//ワールド、カメラ、射影行列を渡す
 		cb.wvp = GetWVP();
 		D3DXMatrixTranspose(&cb.wvp, &cb.wvp);
 		cb.color = D3DXVECTOR4(GetColor().x, GetColor().y, GetColor().z,GetIsUseColor());
 		cb.transparency = transparency;
-		cb.isUseColor = GetIsUseColor();
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
-		devices.Context().Get()->Unmap(constantBuffer.Get(), 0);
+		devices.Context().Get()->Unmap(constantBuffer3D.Get(), 0);
 	}
 
 
 	//このコンスタントバッファーをどのシェーダーで使うか
-	devices.Context().Get()->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
-	devices.Context().Get()->PSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+	devices.Context().Get()->VSSetConstantBuffers(0, 1, constantBuffer3D.GetAddressOf());
+	devices.Context().Get()->PSSetConstantBuffers(0, 1, constantBuffer3D.GetAddressOf());
 
 }
+
+
+
+void Sprite::SetConstantBuffer2D()
+{
+	auto& devices = Devices::Get();
+
+	//シェーダーのコンスタントバッファーに各種データを渡す
+	D3D11_MAPPED_SUBRESOURCE pData;
+	ConstantBuffer2D cb;
+	if (SUCCEEDED(devices.Context().Get()->Map(constantBuffer2D.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pData)))
+	{
+		//ワールド、カメラ、射影行列を渡す
+		cb.world = GetWorldMatrix();
+		D3DXMatrixTranspose(&cb.world, &cb.world);
+
+		cb.viewPortX = devices.Width();
+		cb.viewPortY = devices.Height();
+
+		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
+		devices.Context().Get()->Unmap(constantBuffer2D.Get(), 0);
+	}
+
+
+	//このコンスタントバッファーをどのシェーダーで使うか
+	devices.Context().Get()->VSSetConstantBuffers(1, 1, constantBuffer2D.GetAddressOf());
+	devices.Context().Get()->PSSetConstantBuffers(1, 1, constantBuffer2D.GetAddressOf());
+
+}
+
+
+
 
 /// <summary>
 /// テクスチャのサイズを取得
@@ -200,17 +259,19 @@ HRESULT Sprite::CreateVertexBuffer2D()
 	auto& devices = Devices::Get();
 	float width = static_cast<float>(devices.Width());
 	float hight = static_cast<float>(devices.Height());
-	float shiftX = static_cast<float>(widthSize  * scale.x  / 2);
-	float shiftY = static_cast<float>(hightSize * scale.y / 2) ;
-	//バーテックスバッファー作成
+	float shiftX = static_cast<float>(widthSize  / 2);
+	float shiftY = static_cast<float>(hightSize  / 2);
+
 	//頂点を定義
 	VertexData vertices[] =
 	{
-		{ Math::ChangeRegularDevice(D3DXVECTOR3((vertexBufferPosition.x - shiftX) / width,(vertexBufferPosition.y - shiftY) / hight,0)), D3DXVECTOR2(0,1) },//頂点1	
-		{ Math::ChangeRegularDevice(D3DXVECTOR3((vertexBufferPosition.x - shiftX) / width,(vertexBufferPosition.y + shiftY) / hight, 0)), D3DXVECTOR2(0, 0) }, //頂点2
-		{ Math::ChangeRegularDevice(D3DXVECTOR3((vertexBufferPosition.x + shiftX) / width, (vertexBufferPosition.y - shiftY) / hight, 0)), D3DXVECTOR2(1, 1) },  //頂点3
-		{ Math::ChangeRegularDevice(D3DXVECTOR3((vertexBufferPosition.x + shiftX) / width,  (vertexBufferPosition.y + shiftY) / hight, 0)), D3DXVECTOR2(1, 0) },//頂点4	
+		D3DXVECTOR3(-shiftX * (1 - anchor.x), shiftY * anchor.y,0),D3DXVECTOR2(0,1),//頂点1,
+		D3DXVECTOR3(-shiftX * (1 - anchor.x),-shiftY * (1 - anchor.y),0), D3DXVECTOR2(0,0),//頂点2
+		D3DXVECTOR3(shiftX *  anchor.x, shiftY * anchor.y,0),D3DXVECTOR2(1,1), //頂点3
+		D3DXVECTOR3(shiftX *  anchor.x,-shiftY * (1 - anchor.y),0),D3DXVECTOR2(1,0), //頂点4
 	};
+
+
 
 
 	D3D11_BUFFER_DESC bufferDesc;

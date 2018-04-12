@@ -30,15 +30,6 @@ namespace NYLibrary
 		HRESULT LoadTexture(LPCWSTR FileName);
 		//描画
 		void Render();
-		//座標を設定
-		void Set2DPosition(const D3DXVECTOR2& position) {
-			vertexBufferPosition = D3DXVECTOR2(0, 0);
-			if (vertexBufferPosition != position)
-			{
-				vertexBufferPosition = position;
-				CreateVertexBuffer2D();
-			}
-		}
 		//透明度取得
 		float GetTransparency()
 		{
@@ -52,14 +43,15 @@ namespace NYLibrary
 		void SetShaderResourceView(const ComPtr<ID3D11ShaderResourceView>& SRV) { texture = SRV; GetTextureSize(texture.Get()); }
 		//シェーダーリソースビューを設定
 		const ComPtr<ID3D11ShaderResourceView>& GetShaderResourceView() { return texture; }
-		//スケール設定
-		void SetScale2D(const D3DXVECTOR2& scale) {
-			this->scale = scale;
-			CreateVertexBuffer2D();
+		//アクターを設定
+		void SetAnchor(D3DXVECTOR2& anchor) {
+			Math::Clamp(1, 0, anchor);
+			this->anchor = anchor;
 		}
-		//スケール取得
-		const D3DXVECTOR2& GetScale2D() { return scale; CreateVertexBuffer3D();}
-
+		//アクターを取得
+		const D3DXVECTOR2& GetAnchor() {
+			return this->anchor;
+		}
 	private:
 		//バーテックスシェーダーに送るデータ
 		struct VertexData
@@ -67,16 +59,24 @@ namespace NYLibrary
 			D3DXVECTOR3 position;
 			D3DXVECTOR2 tex;
 		};
-		//シェーダー用のコンスタントバッファーのアプリ側構造体 もちろんシェーダー内のコンスタントバッファーと一致している必要あり
-		struct CONSTANT_BUFFER
+		//シェーダー用のコンスタントバッファーのアプリ側構造体 
+		struct ConstantBuffer3D
 		{
 			D3DXMATRIX wvp;
 			D3DXVECTOR4 color;
 			ALIGN16 float transparency;
-			ALIGN16 bool isUseColor;
 		};
-		//コンスタントバッファーをセットする(3Dのみ)
-		void SetConstantBuffer();
+
+		//シェーダー用のコ
+		struct ConstantBuffer2D 
+		{
+			D3DXMATRIX world;
+			ALIGN16 float viewPortX;
+			float viewPortY;
+		};
+
+		void SetConstantBuffer2D();
+		void SetConstantBuffer3D();
 
 		//テクスチャのサイズを取得する
 		void GetTextureSize(ID3D11ShaderResourceView* srv);
@@ -84,13 +84,16 @@ namespace NYLibrary
 		HRESULT CreateVertexBuffer3D();
 		//バーテックスバッファーを作成する
 
-		ComPtr<ID3D11VertexShader> vertexShader;//バーテックスシェーダ
-		ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダ
+		static ComPtr<ID3D11VertexShader> vertexShader2D;//バーテックスシェーダ
+		static ComPtr<ID3D11VertexShader> vertexShader3D;//バーテックスシェーダ
+		static ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダ
 
-		ComPtr<ID3D11Buffer> constantBuffer;
+		static ComPtr<ID3D11Buffer> constantBuffer3D;//3D用コンスタントバッファー
+		static ComPtr<ID3D11Buffer> constantBuffer2D;//2D用コンスタントバッファー
+
 
 		ComPtr<ID3D11Buffer> vertexBuffer;//バーテックスバッファー
-		ComPtr<ID3D11InputLayout> vertexLayout;//頂点インップットレイアウト
+		static ComPtr<ID3D11InputLayout> vertexLayout;//頂点インップットレイアウト
 
 		ComPtr<ID3D11ShaderResourceView> texture;//テクスチャー
 		ComPtr<ID3D11SamplerState> sampler;//テクスチャーのサンプラー
@@ -98,9 +101,8 @@ namespace NYLibrary
 
 		int widthSize;//幅
 		int hightSize;//高さ
-		D3DXVECTOR2 vertexBufferPosition;//バーテックスバッファーの座標
 		Dimension dimension;//描画次元
 		float transparency;//透明度
-		D3DXVECTOR2 scale;//スケール
+		D3DXVECTOR2 anchor;//アクター
 	};
 };
