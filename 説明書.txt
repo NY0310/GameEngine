@@ -14,3 +14,5 @@
 インクチャージ　右クリック
 挿入色選択　マウスホイール or ZXCキー
 
+
+GameEngineTK/GameEngineTK.exeからゲームを開始してください

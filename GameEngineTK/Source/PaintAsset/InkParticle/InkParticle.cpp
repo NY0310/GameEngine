@@ -8,7 +8,7 @@ const float InkParticle::SPEED = 0.1f;
 //落下速度
 const float InkParticle::GRAVITY = 0.01f;
 //ローカルの大きさ
-const float InkParticle::ROCAL_SIZE = 15.0f;
+const float InkParticle::ROCAL_SIZE = 12.0f;
 
 
 
