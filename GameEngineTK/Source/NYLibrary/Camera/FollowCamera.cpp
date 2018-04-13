@@ -30,7 +30,8 @@ FollowCamera::FollowCamera()
 void FollowCamera::Update()
 {
 
-
+	if (!player)
+		return;
 	//	カメラ視点座標、参照点座標
 	D3DXVECTOR3 eyepos, refpos;
 	if(isFPS == true)

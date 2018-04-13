@@ -5,6 +5,7 @@
 /// </summary>
 #pragma once
 #include "../Scene.h"
+#include "../GameScene/Charactor/Player/MainPlayer.h"
 
 namespace Scene
 {
@@ -12,6 +13,8 @@ namespace Scene
 	class TitleScene : public SceneAbstract {
 	public:
 		TitleScene() = default;
+		//オブジェクトを生成し子供として登録
+		void CreateAddChild();
 		//初期化
 		void Initialize()final;
 		//更新
@@ -24,5 +27,7 @@ namespace Scene
 		TitleScene(const TitleScene&) = delete;
 		//代入禁止
 		TitleScene& operator=(const TitleScene&) = delete;
+	private:
+		std::shared_ptr<Player> player;
 	};
 };

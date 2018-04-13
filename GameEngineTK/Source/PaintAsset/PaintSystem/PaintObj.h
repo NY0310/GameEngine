@@ -5,7 +5,7 @@
 /// </summary>
 
 #pragma once
-#include "../../NYLibrary/Obj/Obj.h"
+#include "../../NYLibrary/ObjModel/Obj.h"
 //#include "../../NYLibrary/Collision/Collision.h"
 #include "Paint.h"
 //#include "../../NYLibrary/Input/MouseRay.h"

@@ -186,9 +186,6 @@
     <ClInclude Include="Source\NYLibrary\SimpleTexture\SimpleTextures.h">
       <Filter>NYLibrary\SimpleTexture</Filter>
     </ClInclude>
-    <ClInclude Include="Source\NYLibrary\Obj\Obj.h">
-      <Filter>NYLibrary\OBJ</Filter>
-    </ClInclude>
     <ClInclude Include="Source\NYLibrary\Collision\Collision.h">
       <Filter>NYLibrary\Collision</Filter>
     </ClInclude>
@@ -232,9 +229,6 @@
       <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h">
-      <Filter>Scene\GameScene\Charactor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h">
       <Filter>Scene\GameScene\Charactor</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h">
@@ -351,6 +345,12 @@
     <ClInclude Include="Source\PaintAsset\PaintGun\InkContainerUI.h">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h">
+      <Filter>Scene\GameScene\Charactor\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\ObjModel\Obj.h">
+      <Filter>NYLibrary\OBJ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -391,9 +391,6 @@
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\SimpleTexture\SimpleTextures.cpp">
       <Filter>NYLibrary\SimpleTexture</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\NYLibrary\Obj\Obj.cpp">
-      <Filter>NYLibrary\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp">
       <Filter>NYLibrary\Collision</Filter>
@@ -438,9 +435,6 @@
       <Filter>Scene\GameScene\Charactor\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp">
-      <Filter>Scene\GameScene\Charactor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp">
       <Filter>Scene\GameScene\Charactor</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp">
@@ -535,6 +529,12 @@
     </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintGun\InkContainerUI.cpp">
       <Filter>PaintAsset\PaintGun</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp">
+      <Filter>Scene\GameScene\Charactor\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NYLibrary\ObjModel\Obj.cpp">
+      <Filter>NYLibrary\OBJ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

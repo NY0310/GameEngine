@@ -21,13 +21,12 @@ void Enemy::Initialize()
 {
 	PaintObj::CreateAddChild();
 	PaintObj::Initialize();
-	LoadOBJFile("Resources/OBJ/Enemy.obj");
+	LoadOBJFile("Resources/OBJMODEL/Enemy.obj");
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	SetTag("Enemy");
 	SetPositionY(GetLocalSize() / 2);
 	AddComponent<TrianglePolygonListCollider>();
 	weakSprite->SetColor(weakColor);
-	auto  a = GetLocalSize();
 	SetScale(0.5f);
 }
 

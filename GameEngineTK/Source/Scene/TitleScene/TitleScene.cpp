@@ -5,6 +5,15 @@
 /// </summary>
 #include "TitleScene.h"
 using namespace Scene;
+using namespace std;
+using namespace NYLibrary;
+
+void TitleScene::CreateAddChild()
+{
+	//オブジェクトを生成し子供として登録
+	player = make_shared<Player>();
+	AddChild(player);
+}
 
 /// <summary>
 /// 初期化

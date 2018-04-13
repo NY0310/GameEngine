@@ -91,5 +91,5 @@ private:
 	NYLibrary::Light* light;//ライト
 	NYLibrary::SoundManager* soundManager;//音
 	//当たり判定を何フレームに一度行うか
-	static const int COLLISITON_INTERVAL = 2;
+	static const int COLLISITON_INTERVAL = 1;
 };       

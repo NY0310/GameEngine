@@ -193,7 +193,7 @@
     <ClInclude Include="Source\NYLibrary\Object\LocalObject\LocalObject.h" />
     <ClInclude Include="Source\NYLibrary\Object\MatrixObject\MatrixObject.h" />
     <ClInclude Include="Source\NYLibrary\Object\Object.h" />
-    <ClInclude Include="Source\NYLibrary\Obj\Obj.h" />
+    <ClInclude Include="Source\NYLibrary\ObjModel\Obj.h" />
     <ClInclude Include="Source\NYLibrary\SceneGraph\Node\GameObjectNode.h" />
     <ClInclude Include="Source\NYLibrary\SceneGraph\Node\Leaf.h" />
     <ClInclude Include="Source\NYLibrary\SceneGraph\Node\Node.h" />
@@ -258,7 +258,7 @@
     <ClCompile Include="Source\NYLibrary\Line\Line.cpp" />
     <ClCompile Include="Source\NYLibrary\Math\Math.cpp" />
     <ClCompile Include="Source\NYLibrary\Object\MatrixObject\MatrixObject.cpp" />
-    <ClCompile Include="Source\NYLibrary\Obj\Obj.cpp" />
+    <ClCompile Include="Source\NYLibrary\ObjModel\Obj.cpp" />
     <ClCompile Include="Source\NYLibrary\SceneGraph\Node\GameObjectNode.cpp" />
     <ClCompile Include="Source\NYLibrary\SceneGraph\Node\Node.cpp" />
     <ClCompile Include="Source\NYLibrary\SceneGraph\Node\NodeAbstract.cpp" />

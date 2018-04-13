@@ -45,7 +45,7 @@ public:
 		DirectX::Colors::Green,
 		DirectX::Colors::Blue,
 		DirectX::Colors::Aqua,
-		DirectX::Colors::Pink,
+		DirectX::Colors::Magenta,
 		DirectX::Colors::Yellow,
 	};
 private:

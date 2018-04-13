@@ -157,7 +157,7 @@ void InkParticleManager::Initialize()
 	//インクオブジェクトのインスタンス生成、初期化
 	renderer = make_unique<InkObj>();
 	renderer->Initialize();
-	renderer->LoadOBJFile("Resources/OBJ/InkObj.obj");
+	renderer->LoadOBJFile("Resources/OBJMODEL/InkObj.obj");
 }
 
 

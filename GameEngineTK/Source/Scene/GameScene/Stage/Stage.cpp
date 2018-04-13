@@ -7,7 +7,7 @@ Stage::Stage()
 	:PaintObj(false)
 {
 	//LoadOBJFile("Resources/OBJ/floor.obj");
-	LoadOBJFile("Resources/OBJ/Geometry+Normal+UV.obj");
+	LoadOBJFile("Resources/OBJMODEL/Geometry+Normal+UV.obj");
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
 	SetTag("stage");
