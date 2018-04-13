@@ -371,8 +371,8 @@ void NYLibrary::CheckSegment2AllTriangle(SegmentCollider * segment, TrianglePoly
 				segment->AddCollisionCollider(trianglePolygonListCollider);
 				trianglePolygonListCollider->AddCollisionCollider(segment);
 				//“–‚½‚Á‚½’Ê’m‚ð‚·‚é
-				segment->OnCollision(trianglePolygonListCollider);
 				trianglePolygonListCollider->OnCollision(segment);
+				segment->OnCollision(trianglePolygonListCollider);
 			}
 		}
 	}
