@@ -15,13 +15,5 @@ void Aim::Initialize()
 }
 
 
-void Aim::Update()
-{
 
 
-}
-
-void Aim::Render()
-{
-
-}

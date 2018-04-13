@@ -47,7 +47,7 @@ void Enemy::OnCollisiton(Collider* collider)
 	{
 		D3DXVECTOR4 difference = weakColor - ink->GetColor();
 		difference = Math::NaturalNumber(difference);
-		int totlaDifference = difference.x + difference.y + difference.z;
+		float totlaDifference = difference.x + difference.y + difference.z;
 		if (DIFFERENCE_UPPER >= totlaDifference)
 		{
 			WeakHitDamage();

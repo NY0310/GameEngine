@@ -39,6 +39,7 @@ void Player::Initialize()
 	//回復フレームカウントを初期化
 	recoveryFrameCnt = 0;
 	aimMatrix->SetPositionY(GetPositionY());
+	SetPositionZ(1);
 }
 
 

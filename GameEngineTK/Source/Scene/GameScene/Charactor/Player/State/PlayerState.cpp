@@ -4,12 +4,12 @@
 
 using namespace NYLibrary;
 
-const int PlayerState::ROTATION_COEFFICIENT = 35;
+const float PlayerState::ROTATION_COEFFICIENT = 35.0f;
 const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 45);
 PlayerState::PlayerState()
 {
-	initialMousePosition.x = Devices::Get().Width();
-	initialMousePosition.y = Devices::Get().Height();
+	initialMousePosition.x = static_cast<float>(Devices::Get().Width());
+	initialMousePosition.y = static_cast<float>(Devices::Get().Height());
 }
 
 void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)

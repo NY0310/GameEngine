@@ -230,7 +230,7 @@ void AStar::CreateResultPath()
 {
 	MapNode* node = endNode;
 	while (node != nullptr) {
-		resultPath.insert(resultPath.begin(), Vector2(node->GetRow(), node->GetColumn()));
+		resultPath.insert(resultPath.begin(), Vector2(static_cast<float>(node->GetRow()), static_cast<float>(node->GetColumn())));
 		// ŽŸ‚Ìƒm[ƒh‚ðÝ’è‚·‚é
 		node = node->GetParent();
 	}

@@ -418,7 +418,7 @@ DWORD D3DXPARSER::GetBoneVerticesIndices(int iBoneIndex, int iIndexInGroup)
 //
 //指定されたボーンが影響を及ぼす頂点のボーンウェイトを返す 第2引数は、影響を受ける頂点のインデックスグループ内のインデックス（インデックスが若い順）
 //例えばボーンに影響をうける頂点が４つだとして、そのボーンに影響をうける４つの頂点のうち2番目の頂点のボーンウェイトを知りたい場合は、iIndexInGroupに1を指定する（0スタートなので）
-double D3DXPARSER::GetBoneVerticesWeights(int iBoneIndex, int iIndexInGroup)
+float D3DXPARSER::GetBoneVerticesWeights(int iBoneIndex, int iIndexInGroup)
 {
 	int Num = m_pContainer->pSkinInfo->GetNumBoneInfluences(iBoneIndex);
 	DWORD* pVerts = new DWORD[Num];
@@ -774,7 +774,7 @@ HRESULT SkinMesh::ReadSkinInfo(SkinVertex* pvVB)
 		int iNumIndex = d3dxMesh->GetNumBoneVertices(i);
 		int* piIndex = new int[iNumIndex];
 		for (k = 0; k<iNumIndex; k++) piIndex[k] = d3dxMesh->GetBoneVerticesIndices(i, k);
-		double* pdWeight = new double[iNumIndex];
+		float* pdWeight = new float[iNumIndex];
 		for (k = 0; k<iNumIndex; k++) pdWeight[k] = d3dxMesh->GetBoneVerticesWeights(i, k);
 		//頂点側からインデックスをたどって、頂点サイドで整理する
 		for (k = 0; k<iNumIndex; k++)
@@ -872,7 +872,7 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 
 	Triangle tri;
 	//頂点読み込み											
-	for (int i = 0; i<numVert; i++)
+	for (DWORD i = 0; i<numVert; i++)
 	{
 		D3DXVECTOR3 v = d3dxMesh->GetVertexCoord(i);
 
@@ -900,12 +900,12 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 		}
 	}
 	//ポリゴン情報（頂点インデックス）読み込み
-	for (int i = 0; i<numFace * 3; i++)
+	for (DWORD i = 0; i<numFace * 3; i++)
 	{
 		piFaceBuffer[i] = d3dxMesh->GetIndex(i);
 	}
 	//法線読み込み
-	for (int i = 0; i<numVert; i++)
+	for (DWORD i = 0; i<numVert; i++)
 	{
 		D3DXVECTOR3 v = d3dxMesh->GetNormal(i);
 		pvVB[i].norm.x = v.x;
@@ -920,7 +920,7 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 
 	//マテリアルの数だけインデックスバッファーを作成
 	pIndexBuffer = new ComPtr<ID3D11Buffer>[numMaterial];
-	for (int i = 0; i<numMaterial; i++)
+	for (int i = 0; i<static_cast<int>(numMaterial); i++)
 	{
 		//環境光	
 		material[i].Ka.x = d3dxMesh->GetAmbient(i).y;
@@ -962,7 +962,7 @@ HRESULT SkinMesh::CreateFromX(CHAR* szFileName)
 		//メッシュ内のポリゴン数でメモリ確保
 		int* pIndex = new int[numFace * 3];
 
-		for (int k = 0; k<numFace; k++)
+		for (DWORD k = 0; k<numFace; k++)
 		{
 			if (i == d3dxMesh->GetFaceMaterialIndex(k))//もし i == k番目のポリゴンのマテリアル番号 なら
 			{
@@ -1104,7 +1104,7 @@ void SkinMesh::UpDateTriangles()
 
 	Triangle tri;
 	//頂点読み込み											
-	for (int i = 0; i<numVert; i++)
+	for (DWORD i = 0; i<numVert; i++)
 	{
 		D3DXVECTOR3 v = d3dxMesh->GetVertexCoord(i);
 
@@ -1199,7 +1199,7 @@ void SkinMesh::Render()
 	deviceContext->PSSetConstantBuffers(0, 1, lightAndEyeBuffer.GetAddressOf());
 
 	//マテリアルの数だけ、それぞれのマテリアルのインデックスバッファ－を描画
-	for (int i = 0; i<numMaterial; i++)
+	for (DWORD i = 0; i<numMaterial; i++)
 	{
 		//使用されていないマテリアル対策
 		if (material[i].numFace == 0)

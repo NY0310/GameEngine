@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <string.h>
 #include "../Device/Device.h"
 #include "../ShaderManager/ShaderManager.h"
 #include "../Math/Math.h"
@@ -155,7 +156,7 @@ namespace NYLibrary
 		int GetNumBones();
 		int GetNumBoneVertices(int iBoneIndex);
 		DWORD GetBoneVerticesIndices(int iBoneIndex, int iIndexInGroup);
-		double GetBoneVerticesWeights(int iBoneIndex, int iIndexInGroup);
+		float GetBoneVerticesWeights(int iBoneIndex, int iIndexInGroup);
 		D3DXVECTOR3 GetVertexCoord(DWORD iIndex);
 		D3DXVECTOR3 GetNormal(DWORD iIndex);
 		D3DXVECTOR2 GetUV(DWORD iIndex);

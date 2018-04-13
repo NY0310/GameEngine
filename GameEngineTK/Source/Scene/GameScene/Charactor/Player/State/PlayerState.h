@@ -23,7 +23,7 @@ private:
 	//プレイヤの回転
 	D3DXQUATERNION Rotation(D3DXVECTOR2 angle);
 	//回転 Yを最大値をクランプする
-	void Clamp(float& rotY,int max) {
+	void Clamp(float& rotY,float max) {
 		if (max >= rotY)
 		{
 			rotY = max;
@@ -35,7 +35,7 @@ private:
 		}
 	}
 	//回転速度
-	static const int ROTATION_COEFFICIENT;
+	static const float ROTATION_COEFFICIENT;
 	//マウスの相移動量
 	D3DXVECTOR2 mouseTotalTrans;
 	//マウスの初期位置

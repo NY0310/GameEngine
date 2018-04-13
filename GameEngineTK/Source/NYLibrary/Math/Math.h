@@ -69,7 +69,7 @@ namespace NYLibrary
 		//
 
 		//引数1を引数2の値のプラスからマイナスまでの間でクランプする
-		static void ClampAbsolute(D3DXVECTOR2& data, int maxAbsolute) {
+		static void ClampAbsolute(D3DXVECTOR2& data, float maxAbsolute) {
 			ClampAbsolute(data.x, maxAbsolute);
 			ClampAbsolute(data.y, maxAbsolute);
 
@@ -82,8 +82,11 @@ namespace NYLibrary
 			ClampAbsolute(data.y, maxAbsolute.y);
 		}
 
+
+	
+
 		//引数1を引数2の値のプラスからマイナスまでの間でクランプする
-		static void ClampAbsolute(float& data, int max) {
+		static void ClampAbsolute(float& data, float max) {
 			if (max <= data)
 			{
 				data = max;

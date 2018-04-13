@@ -208,8 +208,8 @@ void Sprite::SetConstantBuffer2D()
 		cb.world = GetWorldMatrix();
 		D3DXMatrixTranspose(&cb.world, &cb.world);
 
-		cb.viewPortX = devices.Width();
-		cb.viewPortY = devices.Height();
+		cb.viewPortX = static_cast<float>(devices.Width());
+		cb.viewPortY = static_cast<float>(devices.Height());
 
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		devices.Context().Get()->Unmap(constantBuffer2D.Get(), 0);
