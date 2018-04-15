@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <functional>
 #include "../NYLibrary/SceneGraph/Node/GameObjectNode.h"
-#include "Scene.h"
 #include "GameScene/GameScene.h"
 #include "TitleScene/TitleScene.h"
 #include "ResultScene/ResultScene.h"
@@ -20,14 +19,8 @@ namespace Scene
 	class SceneManager : public NYLibrary::RootGameObjectNode
 	{
 	public:
-		//static SceneManager* GetInstance()
-		//{
-		//	if (!sceneManager.get())
-		//	{
-		//		sceneManager.reset(new SceneManager);
-		//	}
-		//	return sceneManager.get();
-		//}
+		//コンストラクタ
+		SceneManager() { SetReplaceSceneObject(); }
 		//デストラクタ
 		~SceneManager() = default;
 		//コピーコンストラクタ禁止
@@ -36,18 +29,22 @@ namespace Scene
 		SceneManager& operator=(const SceneManager&) = delete;
 		//シーン変更
 		void ReplaceScene(SceneKind scenekind);
-		//void CreateAddChild();
-		//コンストラクタ
-		SceneManager() {};
+		//更新
+		void Update();
+		//次のシーンを登録
+		void RegisterNextScene(SceneKind nextScene) {
+			this->nextScene = nextScene;
+		}
 	private:
 		//シーン
 		std::shared_ptr<SceneAbstract> scene;
-		//シーンオブジェクトににシーン変更のオブジェクト関数を登録する
-		void SetReplaceSceneObject(SceneKind scenekind){
-			std::function<void(SceneKind)> thisFunction = std::bind(&SceneManager::ReplaceScene, this, std::placeholders::_1);
-			scene->addListener(thisFunction);
+		//シーンオブジェクトにシーン変更のオブジェクト関数を登録する
+		void SetReplaceSceneObject(){
+			std::function<void(SceneKind)> thisFunction = std::bind(&SceneManager::RegisterNextScene, this, std::placeholders::_1);
+			AddRunWithScene(thisFunction);
 		}
-	//	static std::unique_ptr<SceneManager> sceneManager;
+		//次のシーン
+		SceneKind nextScene;
 	};
 };
 

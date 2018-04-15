@@ -6,17 +6,10 @@
 #pragma once
 #include "../NYLibrary/SceneGraph/Node/GameObjectNode.h"
 //#include "SceneManager.h"
+using namespace NYLibrary;
 
 namespace Scene
 {
-	//シーンの種類
-	enum SceneKind
-	{
-		Title,
-		Game,
-		Result
-	};
-
 	/// <summary>
 	/// シーンクラス
 	/// </summary>
@@ -35,21 +28,10 @@ namespace Scene
 		virtual void Render() = 0;
 		//終了
 		virtual void Finalize() = 0;
-		//処理を受け取る
-		void addListener(std::function<void(SceneKind)> listener) {
-			this->listener = listener;
-		}
-		//シーンを変更する
-		void RaiseReplaceScene(SceneKind scene) { listener(scene); }
 		//コピーコンストラクタ禁止
 		SceneAbstract(const SceneAbstract&) = delete;
 		//代入禁止
 		SceneAbstract& operator=(const SceneAbstract&) = delete;
-	protected:
-		SceneKind nextSceneKind;
-	private:
-		//ラムダ式を受け取る
-		std::function<void(SceneKind)> listener = [&](SceneKind SceneKind) {};
 	};
 
 

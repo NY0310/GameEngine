@@ -9,6 +9,7 @@ public:
 	void CreateAddChild();
 	void Update();
 	void ShadowRender();
+	void Finalize();
 	//void ShadowRender();
 	~Stage();
 private:

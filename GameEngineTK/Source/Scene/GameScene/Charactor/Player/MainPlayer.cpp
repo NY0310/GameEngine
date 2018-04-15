@@ -12,6 +12,12 @@ using namespace NYLibrary;
 /// <param name="matrixObject">行列管理</param>
 Player::Player()
 {
+	int a = 0;
+}
+
+Player::~Player()
+{
+	int a = 0;
 }
 
 void Player::CreateAddChild()
@@ -29,7 +35,8 @@ void Player::Initialize()
 	SkinMesh::Initialize();
 	CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
 	//自身のステート
-	playerState.reset(PlayerWalk::GetInstance());
+	playerState = PlayerWalk::GetInstance();
+
 	//エイムの行列
 	aimMatrix = make_unique<MatrixObject>();
 	aimMatrix->MatrixInitialize();
@@ -49,14 +56,19 @@ void Player::Initialize()
 void Player::Update()
 {
 	paintGun->SetAimMatirx(aimMatrix);
+	auto a = this;
 
-	playerState->Execute(this);
+	playerState->Execute(a);
 }
 
 
-
+/// <summary>
+/// 終了
+/// </summary>
 void Player::Finalize()
 {
+	aimMatrix.reset();
+	PlayerWalk::Dispose();
 }
 
 /// <summary>
@@ -65,7 +77,7 @@ void Player::Finalize()
 /// <param name="state">状態</param>
 void Player::ChangeState(PlayerState * state)
 {
-	playerState.reset(state);
+	playerState = state;
 }
 
 

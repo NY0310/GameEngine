@@ -139,6 +139,9 @@
     <Filter Include="Sounds">
       <UniqueIdentifier>{9bfa14dd-ae9c-41ee-a2d3-044fdd338d91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\TitleScene\PlayUI">
+      <UniqueIdentifier>{a1a56e64-0692-4139-bdd2-a191d3e6c7b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -351,6 +354,9 @@
     <ClInclude Include="Source\NYLibrary\ObjModel\Obj.h">
       <Filter>NYLibrary\OBJ</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\TitleScene\PlayUI\PlayUI.h">
+      <Filter>Scene\TitleScene\PlayUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -536,6 +542,9 @@
     <ClCompile Include="Source\NYLibrary\ObjModel\Obj.cpp">
       <Filter>NYLibrary\OBJ</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scene\TitleScene\PlayUI\PlayUI.cpp">
+      <Filter>Scene\TitleScene\PlayUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -574,6 +583,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />

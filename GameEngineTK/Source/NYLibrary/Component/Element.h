@@ -7,7 +7,7 @@
 #include "../Object/ColorObject/ColorObject.h"
 #include "Collider/TrianglePolygonListCollider/TrianglePolygonListCollider.h"
 #include "../../PaintAsset/InkSegmentCollider/InkSegmentCollider.h"
-#include "Collider\PlaneCollider\PlaneCollider.h"
+#include "Collider/PlaneCollider/PlaneCollider.h"
 
 namespace NYLibrary {
 	class ObjectData:  public MatrixObject, public LocalObject, public ColorObject
@@ -38,7 +38,7 @@ namespace NYLibrary {
 		// デストラクタ
 		virtual ~Element()
 		{
-			Clear();
+			ClearComponent();
 		}
 
 		//更新処理
@@ -117,11 +117,13 @@ namespace NYLibrary {
 		/// <summary>
 		/// コンポーネントリストをクリアする
 		/// </summary>
-		void Clear()
+		void ClearComponent()
 		{
 			for (auto& component : componentList)
 			{
+				component->Finalize();
 				delete component;
+				component = nullptr;
 			}
 
 			componentList.clear();

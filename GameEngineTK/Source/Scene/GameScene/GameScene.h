@@ -19,7 +19,7 @@ namespace Scene
 		//q‹Ÿ‚ğ’Ç‰Á‚·‚é
 		void CreateAddChild();
 		//‰Šú‰»
-		void Initialize()final { nextSceneKind = SceneKind::Result; };
+		void Initialize()final {};
 		//XV
 		void Update()final {};
 		//•`‰æ

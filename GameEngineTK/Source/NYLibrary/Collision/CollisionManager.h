@@ -26,7 +26,11 @@ namespace NYLibrary
 		void AddCollider(Collider* collider) {
 			colliderList.emplace_back(collider);
 		}
+		//当たり判定を行うインターバルを設定
 		void SetCollisitonIntervalFrame(int frame) { collisitonIntervalFrame = frame; frameCnt = 0; }
+
+		//コライダーの削除
+		void EraseCollider(Collider* collider);
 	private:
 		//コンストラクタ
 		CollisionManager() { collisitonIntervalFrame = 0; }
@@ -36,21 +40,6 @@ namespace NYLibrary
 		static std::unique_ptr<CollisionManager> collisionManager;
 		//コライダーリスト(タグ、コライダー)
 		std::vector<Collider*> colliderList;
-		//bool Collision(const Sphere & sphereA, const Sphere & sphereB);
-		//void Collision(const D3DXVECTOR3 & a, const D3DXVECTOR3 & b, const D3DXVECTOR3 & _p2, Triangle* c);
-		//bool Collision(const Sphere & _sphere, const Triangle & _triangle, D3DXVECTOR3 * _inter);
-		//bool Collision(const SegmentCollider& segment, const TrianglePolygonListCollider& _triangle, D3DXVECTOR3 *_inter);
-		//点と三角形の最近接点を計算
-		//void Collision(const D3DXVECTOR3& _point, const TriangleCollider& _triangle, D3DXVECTOR3*);
-		////線と三角形ポリゴンの当たり判定
-		//bool Collision(SegmentCollider* segment, TrianglePolygonListCollider* _triangle);
-		//線と三角形の当たり判定
-	//	bool Collision(const SegmentCollider* segment, const Triangle* triangle, D3DXVECTOR3 _inter);
-
-		//bool Collision(const  D3DXVECTOR3& _point, const TriangleCollider& _triangle);
-		//void Collision(const D3DXVECTOR3& _point, const TriangleCollider& _triangle, D3DXVECTOR3* _closest);
-
-
 		//線のコライダーか
 		bool TypeCheckSegmentCollider(Collider* collider, Collider * collider_);
 		//三角形ポリゴンのコライダーか

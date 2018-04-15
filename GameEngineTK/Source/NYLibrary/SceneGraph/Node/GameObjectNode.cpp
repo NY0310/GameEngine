@@ -29,6 +29,7 @@ void RootGameObjectNode::LoopCreateAddChild()
 
 void RootGameObjectNode::LoopUpdate()
 {
+	Update();
 	for (auto& child : children) {
 		child->LoopUpdate();
 	}
@@ -64,10 +65,11 @@ void RootGameObjectNode::LoopClearRenderConfig()
 
 void RootGameObjectNode::LoopFinalize()
 {
+
 	for (auto& child : children) {
 		child->LoopFinalize();
 	}
-
+	RemoveFromParent();
 }
 
 
@@ -159,11 +161,21 @@ void GameObjectNodeEmpty::LoopClearRenderConfig()
 
 void GameObjectNodeEmpty::LoopFinalize()
 {
-	this->Finalize();
-	for (auto& child : children) {
-		child->LoopFinalize();
+	//q‹Ÿ‚Ì”‚ğæ“¾
+	int childNum = children.size();
+
+	for (vector<shared_ptr<NodeAbstract>>::iterator child = children.begin(); child == children.end();  child++)
+	{
+		(*child)->LoopFinalize();
+		//q‹Ÿ‚ªíœ‚³‚ê‚½‚©
+		if (childNum > children.size())
+		{
+			child = children.begin();
+			childNum = children.size();
+		}
 	}
 
+	RemoveFromParent();
 }
 
 
@@ -194,6 +206,7 @@ shared_ptr<NodeAbstract>  GameObjectNodeEmpty::Clone()
 /// </summary>
 void GameObjectNode::LoopUpdate()
 {
+
 	this->Update();
 	this->Calc();
 	for (auto& child : children) {

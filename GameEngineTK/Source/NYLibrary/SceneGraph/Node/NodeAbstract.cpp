@@ -8,7 +8,6 @@ using namespace NYLibrary;
 
 NodeAbstract::NodeAbstract()
 	:parent(shared_ptr<NodeAbstract>(nullptr))
-	/*:parent(make_shared<NodeAbstract>(nullptr))*/
 {
 }
 

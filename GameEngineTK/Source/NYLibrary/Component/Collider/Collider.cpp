@@ -6,7 +6,7 @@ using namespace NYLibrary;
 Collider::Collider(ObjectData* objectData)
 	: tag(objectData->GetTag())
 {
-	this->objectData.reset(objectData);
+	this->objectData = objectData;
 
 }
 
@@ -29,4 +29,12 @@ void Collider::Update()
 
 	radius = MaxLocalSize * MaxScale / 2;
 
+}
+
+void Collider::Finalize()
+{
+	collisitonColliderListNow.clear();
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
+	collisionManager->EraseCollider(this);
+	listener = [&](Collider* collider) {};
 }

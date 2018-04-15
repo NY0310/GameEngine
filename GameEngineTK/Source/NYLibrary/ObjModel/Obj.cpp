@@ -180,6 +180,7 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 	if (modelDatas.count(FileName) != 0)
 	{
 		triangles = modelDatas[FileName].triangles;
+		SetPolygons(triangles);
 		mesh = modelDatas[FileName].mesh;
 		SetLocalSize(modelDatas[FileName].localSize);
 		return S_OK;

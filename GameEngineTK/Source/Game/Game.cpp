@@ -62,10 +62,7 @@ void Game::Initialize(HWND window, int width, int height)
 	//シーンマネージャ取得する
 	sceneManager = make_shared<SceneManager>();
 	//タイトルシーンを作成
-	sceneManager->ReplaceScene(SceneKind::Game);
-	sceneManager->LoopCreateAddChild();
-	//初期化
-	sceneManager->LoopInitialize();
+	sceneManager->ReplaceScene(SceneKind::TitleScene);
 	//音
 	soundManager = SoundManager::GetInstance();
 	soundManager->Initialize("PaintGame", "CueSheet_0","CueSheet_0");

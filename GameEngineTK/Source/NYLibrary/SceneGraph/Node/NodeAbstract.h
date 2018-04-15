@@ -10,7 +10,15 @@
 #include <vector> // std::vector
 #include "../../Component/Element.h"
 namespace NYLibrary
-{
+{	//シーンの種類
+	enum SceneKind
+	{
+		TitleScene,
+		GameScene,
+		ResultScene,
+		NullScene,
+	};
+
 	class VisitorInterface;
 	class NodeAbstract: public Element
 	{
@@ -82,6 +90,11 @@ namespace NYLibrary
 		virtual void Count(int& cnt) = 0;
 		//ノードを複製する
 		virtual std::shared_ptr<NodeAbstract> Clone() = 0;
+		//ラムダ式を受け取る
+		std::function<void(SceneKind)> RunWithScene = [&](SceneKind RunWithScene) {};
+		//処理を受け取る
+		virtual void AddRunWithScene(std::function<void(SceneKind)> RunWithScene) {this->RunWithScene = RunWithScene; }
+
 	protected:
 		//親へのポインタ
 		std::weak_ptr<NodeAbstract> parent;

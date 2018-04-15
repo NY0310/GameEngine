@@ -57,6 +57,21 @@ void CollisionManager::AllTypeCheckAndCollisition(Collider* collider, Collider* 
 	
 }
 
+/// <summary>
+/// 引数のコライダーと同じコライダーをリストから削除する
+/// </summary>
+/// <param name="collider">削除するコライダー</param>
+void CollisionManager::EraseCollider(Collider * collider)
+{
+	/*for (auto& coll : colliderList)
+	{
+		if (coll == collider) {
+			colliderList.erase(coll);
+		}
+	}*/
+	if(!colliderList.empty())
+	colliderList.clear();
+}
 
 /// <summary>
 /// 当たり判定を取るか判定する

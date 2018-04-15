@@ -6,14 +6,12 @@
 #pragma once
 #include "Node.h"
 #include "../../ShadowMap/ShadowMap.h"
-//
-//namespace gameobject {
-//	class GameObjectInterface;
-//}
 
 
 namespace NYLibrary
 {
+
+
 	/// <summary>
 	///	ルートノード
 	/// このクラスがプロジェクトのアダムとデネブになるように
@@ -91,6 +89,8 @@ namespace NYLibrary
 		void Finalize()override {}
 		// ノードを複製する(再起関数)
 		std::shared_ptr<NodeAbstract> Clone()final;
+		//終了
+		void LoopFinalize()final;
 	private:
 		void LoopCreateAddChild()final;
 		//初期化
@@ -103,9 +103,6 @@ namespace NYLibrary
 		void LoopShadowRender()final;
 		//この描画処理後に画面に映すレンダリングターゲットを適応
 		void LoopClearRenderConfig()final;
-		//終了
-		void LoopFinalize()final;
-
 	};
 
 	/// <summary>

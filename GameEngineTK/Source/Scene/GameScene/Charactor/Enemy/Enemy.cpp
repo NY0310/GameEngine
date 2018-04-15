@@ -15,6 +15,7 @@ void Enemy::CreateAddChild()
 {
 	weakSprite = make_shared<WeakSprite>();
 	AddChild(weakSprite);
+	hp = 10;
 }
 
 void Enemy::Initialize()
@@ -24,10 +25,10 @@ void Enemy::Initialize()
 	LoadOBJFile("Resources/OBJMODEL/Enemy.obj");
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	SetTag("Enemy");
-	SetPositionY(GetLocalSize() / 2);
-	AddComponent<TrianglePolygonListCollider>();
+	SetScale(0.2f);
+	SetPositionY(GetLocalSize() *GetScaleY() / 2);
 	weakSprite->SetColor(weakColor);
-	SetScale(0.5f);
+	AddComponent<TrianglePolygonListCollider>();
 }
 
 void Enemy::Update()
@@ -50,7 +51,6 @@ void Enemy::OnCollisiton(Collider* collider)
 		if (DIFFERENCE_UPPER >= totlaDifference)
 		{
 			WeakHitDamage();
-			exit(0);
 
 		}
 		else
@@ -66,6 +66,7 @@ void Enemy::OnCollisiton(Collider* collider)
 /// </summary>
 void Enemy::OnDied()
 {
+	exit(0);
 
 }
 

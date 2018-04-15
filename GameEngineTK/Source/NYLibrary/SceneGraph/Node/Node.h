@@ -46,10 +46,10 @@ namespace NYLibrary
 		inline void AddChild(std::shared_ptr<NodeAbstract>&& child)
 		{
 			//親を設定
-			auto a = child;
-			auto d = shared_from_this();
 			child->SetParent(shared_from_this());
 			children.emplace_back(child);
+			//シーン生成関数の情報を子供に渡す
+			child->AddRunWithScene(RunWithScene);
 		}
 
 		/// <summary>
@@ -64,6 +64,7 @@ namespace NYLibrary
 		/// </summary>
 		void RemoveFromParent() {
 			parent._Get()->RemoveChild(shared_from_this());
+			shared_from_this() = nullptr;
 		}
 
 		/// <summary>
@@ -117,9 +118,9 @@ namespace NYLibrary
 		virtual void Finalize() = 0;
 		//ノードの数を取得する
 		int GetSize();
-
 	protected:
 		//子供
 		NodeList children;
+
 	};
 };

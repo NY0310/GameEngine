@@ -22,7 +22,7 @@ namespace NYLibrary
 		Collider(ObjectData* objectData);
 		Collider() = delete;
 		//デストラクタ
-		virtual ~Collider() { objectData.release(); };
+		virtual ~Collider() {  };
 		//初期化
 		virtual void Initialize() {}
 		//更新
@@ -49,15 +49,17 @@ namespace NYLibrary
 		// アクティブを取得する
 		bool GetActive()const { return isActive; }
 		//オブジェクトデータを取得
-		ObjectData* GetObjectData() { return objectData.get(); }
+		ObjectData* GetObjectData() { return objectData; }
 		//当たった時にElement関数を呼び出す
 		void OnCollision(Collider* collision) { listener(collision); }
 		void AddCollisionCollider(Collider* collider) { collisitonColliderListNow.emplace_back(collider); }
+		//終了
+		void Finalize();
 	protected:
 		//オブジェクトのタグ(このタグが同じものは当たり判定を行わない)
 		std::string tag;
 		//座標、行列管理のアドレス
-		std::unique_ptr<ObjectData> objectData;
+		ObjectData* objectData;
 		//アクティブ状態か
 		bool isActive;
 		//現フレームにてコライダーに当たったコライダーリスト

@@ -45,5 +45,6 @@ void PlayerWalk::Dispose()
 	if (state != nullptr)
 	{
 		delete state;
+		state = nullptr;
 	}
 }

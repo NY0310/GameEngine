@@ -13,6 +13,10 @@ void TitleScene::CreateAddChild()
 	//オブジェクトを生成し子供として登録
 	player = make_shared<Player>();
 	AddChild(player);
+	playUI = make_shared<PlayUI>();
+	AddChild(playUI);
+	floor = make_shared<Floor>();
+	AddChild(floor);
 }
 
 /// <summary>
@@ -20,10 +24,6 @@ void TitleScene::CreateAddChild()
 /// </summary>
 void TitleScene::Initialize()
 {
-	Finalize();
-	nextSceneKind = SceneKind::Game;
-	RaiseReplaceScene(nextSceneKind);
-
 }
 
 /// <summary>

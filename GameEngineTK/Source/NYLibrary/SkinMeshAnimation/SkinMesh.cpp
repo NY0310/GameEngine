@@ -656,14 +656,16 @@ SkinMesh::SkinMesh()
 /// </summary>
 SkinMesh::~SkinMesh()
 {
-	delete[] boneArray;
-	delete[] material;
-	vertexBuffer.Reset();
-	for (DWORD i = 0; i<numMaterial; i++)
-	{
-		//SAFE_RELEASE(m_ppIndexBuffer[i]);
-	}
-	delete[] pIndexBuffer;
+	//if(boneArray)
+	//delete[] boneArray;
+
+	//delete[] material;
+	//vertexBuffer.Reset();
+	//for (DWORD i = 0; i<numMaterial; i++)
+	//{
+	//	//SAFE_RELEASE(m_ppIndexBuffer[i]);
+	//}
+//	delete[] pIndexBuffer;
 }
 
 /// <summary>

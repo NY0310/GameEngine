@@ -4,26 +4,37 @@ using namespace NYLibrary;
 using namespace Scene;
 
 
-////std::unique_ptr<SceneManager> SceneManager::sceneManager;
-
 /// <summary>
 /// シーンを変更する
 /// </summary>
 /// <param name="scene">次のシーン</param>
 void SceneManager::ReplaceScene(SceneKind scenekind)
 {
-	//現在のシーンとの親子関係を消す
-	RemoveChild(scene);
-	scene.reset();
+
+	if (scenekind == SceneKind::NullScene)
+		return;
+	int c = 0;
+	Count(c);
+	if (scene)
+	{
+		//現在のシーンとの親子関係を消す
+		scene->LoopFinalize();
+	}
+	c = 0;
+
+	Count(c);
+
+	scene = nullptr;
+	//scene.reset();
 	switch (scenekind)
 	{
-	case SceneKind::Title:
+	case SceneKind::TitleScene:
 		scene = make_shared<TitleScene>();
 		break;
-	case SceneKind::Game:
+	case SceneKind::GameScene:
 		scene = make_shared<GameScene>();
 		break;
-	case SceneKind::Result:
+	case SceneKind::ResultScene:
 		scene = make_shared<ResultScene>();
 		break;
 	default:
@@ -32,11 +43,29 @@ void SceneManager::ReplaceScene(SceneKind scenekind)
 		break;
 	}
 
+	c = 0;
+
+	Count(c);
+
+	//次のシーンをリセット
+	nextScene = SceneKind::NullScene;
 	//次のシーンを子供として登録
 	AddChild(scene);
+	LoopCreateAddChild();
+	LoopInitialize();
 
-	//シーンオブジェクトににシーン変更のオブジェクト関数を登録する
-	void SetReplaceSceneObject();
+	c = 0;
+
+	Count(c);
+
+}
+
+/// <summary>
+/// 更新
+/// </summary>
+void SceneManager::Update()
+{
+	ReplaceScene(nextScene);
 }
 
 

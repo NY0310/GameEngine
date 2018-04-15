@@ -233,6 +233,7 @@
     <ClInclude Include="Source\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
+    <ClInclude Include="Source\Scene\TitleScene\PlayUI\PlayUI.h" />
     <ClInclude Include="Source\Scene\TitleScene\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +297,7 @@
     <ClCompile Include="Source\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
+    <ClCompile Include="Source\Scene\TitleScene\PlayUI\PlayUI.cpp" />
     <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -393,9 +395,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="settings.manifest" />
+    <Manifest Include="settings.manifest">
+      <SubType>Designer</SubType>
+    </Manifest>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -54,6 +54,12 @@ void Stage::ShadowRender()
 
 }
 
+void Stage::Finalize()
+{
+	//RemoveChild(floor);
+	//floor.reset();
+}
+
 Stage::~Stage()
 {
 }

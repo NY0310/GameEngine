@@ -56,3 +56,9 @@ void TrianglePolygonListCollider::Collision(SegmentCollider* segment)
 }
 
 
+void TrianglePolygonListCollider::Finalize()
+{
+	Collider::Finalize();
+	triangleList.clear();
+}
+

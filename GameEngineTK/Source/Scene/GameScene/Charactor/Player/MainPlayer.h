@@ -10,7 +10,7 @@ public:
 	//コンストラクタ
 	Player();
 	//デストラクタ
-	~Player() = default;
+	~Player();
 	// コピーコンストラクタ禁止
 	Player(const Player&) = delete;
 	// 代入禁止
@@ -35,7 +35,7 @@ private:
 	//ペイント銃
 	std::shared_ptr<PaintGun> paintGun;
 	//プレイヤの状態
-	std::unique_ptr<PlayerState>playerState;
+	PlayerState* playerState;
 	//死んだとき
 	void OnDied();
 	//HP上限

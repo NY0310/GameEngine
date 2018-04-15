@@ -18,7 +18,6 @@ const float InkParticle::ROCAL_SIZE = 12.0f;
 /// </summary>
 InkParticle::InkParticle()
 {
-	colisitionSegment = make_unique<InkSegment>();
 	SetScale(0.2f);
 	birthFrame = 0;
 	isValidity = false;
@@ -31,7 +30,6 @@ InkParticle::InkParticle()
 /// </summary>
 InkParticle::~InkParticle()
 {
-	colisitionSegment.release();
 }
 
 /// <summary>
@@ -136,12 +134,14 @@ InkParticleManager::InkParticleManager()
 /// </summary>
 InkParticleManager::~InkParticleManager()
 {
-	for (auto child : inkParticle)
-	{
-		RemoveChild(child);
-		child.reset();
-	}
-	
+	//for (auto child : inkParticle)
+	//{
+	//	RemoveChild(child);
+	//	child.reset();
+	//}
+	//
+
+	int a = 0;
 }
 
 void InkParticleManager::Initialize()

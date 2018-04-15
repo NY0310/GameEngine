@@ -11,5 +11,7 @@ namespace NYLibrary
 		virtual void Initialize() = 0;
 		//XV
 		virtual void Update() = 0;
+		//I—¹
+		virtual void Finalize() = 0;
 	};
 };

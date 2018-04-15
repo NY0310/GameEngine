@@ -237,6 +237,8 @@ D3DXVECTOR2 PaintObj::CalcInkCollisionUv(const Triangle& triangle, const D3DXVEC
 }
 
 
+
+
 //D3DXVECTOR2 PaintObj::CalcInkCollisionUv(const Square & square, const D3DXVECTOR3 & inter)
 //{
 //	D3DXMATRIX vertexTrans[4];

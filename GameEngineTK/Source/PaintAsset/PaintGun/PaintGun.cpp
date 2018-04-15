@@ -70,8 +70,5 @@ void PaintGun::Emit()
 
 
 void PaintGun::Finalize()
-{
-	inkParticleManager.reset();
-	aim.reset();
-}
+{}
 

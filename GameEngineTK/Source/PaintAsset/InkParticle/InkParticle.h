@@ -49,8 +49,6 @@ private:
 	int birthFrame;
 	//動くか
 	bool isValidity;
-	//当たり判定用の線
-	std::unique_ptr<NYLibrary::InkSegment> colisitionSegment;
 	//落下速度
 	static const float GRAVITY;
 	//ローカルの大きさ

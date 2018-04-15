@@ -8,12 +8,13 @@ const float PlayerState::ROTATION_COEFFICIENT = 35.0f;
 const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 45);
 PlayerState::PlayerState()
 {
-	initialMousePosition.x = static_cast<float>(Devices::Get().Width());
-	initialMousePosition.y = static_cast<float>(Devices::Get().Height());
 }
 
 void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 {
+	initialMousePosition.x = static_cast<float>(Devices::Get().Width());
+	initialMousePosition.y = static_cast<float>(Devices::Get().Height());
+
 	//デバイス
 	auto& devices = Devices::Get();
 	//キーボード
@@ -52,15 +53,20 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	mouseTrans.x = static_cast<float>(mousePos->x) - initialMousePosition.x;
 	mouseTrans.y = static_cast<float>(mousePos->y) - initialMousePosition.y;
 	//そのままの数値でクォータニオンを作成すると回転しすぎるので係数で除算
-	mouseTotalTrans += mouseTrans / ROTATION_COEFFICIENT;
+	mouseTotalTrans = mouseTrans / ROTATION_COEFFICIENT;
 	//////回転に上限を設ける
-	//Math::ClampAbsolute(mouseTotalTrans, MAX_ROTATION);
+	Math::ClampAbsolute(mouseTotalTrans.y, MAX_ROTATION.y);
 	//クォータニオンを作成しプレイヤのを回転させる
-	player->SetQuaternion(Rotation(D3DXVECTOR2(mouseTotalTrans.x,0)));
 	D3DXMATRIX rotY;
+	D3DXMatrixRotationQuaternion(&rotY,& Rotation(D3DXVECTOR2(mouseTotalTrans.x, 0)));
+	player->SetRotationMatrix(player->GetRotationMatrix() *rotY);
+	D3DXMatrixRotationQuaternion(&rotY, &Rotation(D3DXVECTOR2(mouseTotalTrans.x, -mouseTotalTrans.y)));
+	player->aimMatrix->SetRotationMatrix(player->aimMatrix->GetRotationMatrix() *rotY);
 
-	D3DXMatrixRotationQuaternion(&rotY,& Rotation(D3DXVECTOR2(mouseTotalTrans.x, -mouseTotalTrans.y)));
-	player->aimMatrix->SetRotationMatrix(rotY);
+	//D3DXMatrixRotationX(&rotY, D3DXToRadian(mouseTotalTrans.x));
+	//player->SetRotationMatrix(player->GetRotationMatrix() *rotY);
+	//D3DXMatrixRotationYawPitchRoll(&rotY, D3DXToRadian(mouseTotalTrans.x), D3DXToRadian (-mouseTotalTrans.y),0);
+	//player->aimMatrix->SetRotationMatrix(player->aimMatrix->GetRotationMatrix() *rotY);
 
 
 	delete mousePos;
@@ -80,7 +86,7 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 	//	移動ベクトルを自機の角度分回転させる
 	D3DXMATRIX rotY;
 	D3DXMatrixRotationQuaternion(&rotY,&Rotation(D3DXVECTOR2(mouseTotalTrans.x,0)));
-	D3DXVec3TransformNormal(&moveV, &moveV,&rotY);
+	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());
 
 
 	//	自機の座標を移動
@@ -103,5 +109,6 @@ D3DXQUATERNION PlayerState::Rotation(D3DXVECTOR2 angle)
 
 	D3DXQuaternionRotationAxis(&q, &NAxis, D3DXToRadian(angle.x));
 	D3DXQuaternionRotationAxis(&q2, &NAxis2, D3DXToRadian(angle.y));
-	return  q * q2;
+	return q2 * q ;
 }
+

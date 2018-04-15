@@ -25,7 +25,7 @@ public:
 	//“–‚½‚è”»’è
 	void OnCollisiton(Collider * collider);
 	//Ž€‚ñ‚¾‚Æ‚«
-	void OnDied();
+	virtual void OnDied();
 
 	enum WeakColorKind
 	{

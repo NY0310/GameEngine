@@ -16,9 +16,9 @@ namespace NYLibrary
 		//三角形ポリゴンを取得する
 		std::vector<Triangle>& GetTriangleList() { return triangleList; }
 		//初期化処理
-		void Initialize()final;
+		void Initialize();
 		//更新処理
-		void Update()final;
+		void Update();
 		//交点を設定する
 		void SetInter(const D3DXVECTOR3& inter) { this->inter = inter; }
 		//当たった交点を取得
@@ -27,6 +27,7 @@ namespace NYLibrary
 		void SetCollisionTriangle(Triangle triangle) { collisionTriangle = triangle; }
 		//線と三角形ポリゴンの当たり判定
 		void Collision(SegmentCollider* segment);
+		void Finalize();
 		//三角形ポリゴンとの当たり判定
 		void Collision(TrianglePolygonListCollider* TrianglePolygonListCollider) {}
 		//当たった三角形を取得

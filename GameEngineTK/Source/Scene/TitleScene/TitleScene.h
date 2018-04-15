@@ -6,7 +6,8 @@
 #pragma once
 #include "../Scene.h"
 #include "../GameScene/Charactor/Player/MainPlayer.h"
-
+#include "../TitleScene/PlayUI/PlayUI.h"
+#include "../GameScene/Stage/Floor.h"
 namespace Scene
 {
 
@@ -29,5 +30,7 @@ namespace Scene
 		TitleScene& operator=(const TitleScene&) = delete;
 	private:
 		std::shared_ptr<Player> player;
+		std::shared_ptr<PlayUI> playUI;
+		std::shared_ptr<Floor> floor;
 	};
 };

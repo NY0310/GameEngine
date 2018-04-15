@@ -13,7 +13,7 @@ namespace Scene
 		//コンストラクタ
 		ResultScene() = default;
 		//初期化
-		void Initialize()final { nextSceneKind = SceneKind::Title; };
+		void Initialize()final {};
 		//更新
 		void Update()final {};
 		//描画
