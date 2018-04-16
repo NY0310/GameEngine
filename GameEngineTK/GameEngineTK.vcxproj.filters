@@ -130,9 +130,6 @@
     <Filter Include="Scene\ResoultScene">
       <UniqueIdentifier>{b0bad162-746c-4536-bd7f-438fccc477f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\SkinMeshAnimation">
-      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Sound">
       <UniqueIdentifier>{8ef497cf-f8b5-4f50-be05-82c98de92697}</UniqueIdentifier>
     </Filter>
@@ -141,6 +138,9 @@
     </Filter>
     <Filter Include="Scene\TitleScene\PlayUI">
       <UniqueIdentifier>{a1a56e64-0692-4139-bdd2-a191d3e6c7b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NYLibrary\SkinMeshAnimation">
+      <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +233,6 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h">
       <Filter>Scene\GameScene\Charactor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h">
-      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\AStar\AStar.h">
       <Filter>NYLibrary\Astar</Filter>
@@ -342,9 +339,6 @@
     <ClInclude Include="Source\PaintAsset\PaintGun\InkTankUI.h">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.h">
-      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PaintAsset\PaintGun\InkContainerUI.h">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
@@ -356,6 +350,15 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\TitleScene\PlayUI\PlayUI.h">
       <Filter>Scene\TitleScene\PlayUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Target.h">
+      <Filter>Scene\GameScene\Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\WeakSprite.h">
+      <Filter>Scene\GameScene\Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h">
+      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,9 +446,6 @@
     <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp">
       <Filter>Scene\GameScene\Charactor</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp">
-      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Source\NYLibrary\AStar\AStar.cpp">
       <Filter>NYLibrary\Astar</Filter>
     </ClCompile>
@@ -530,9 +530,6 @@
     <ClCompile Include="Source\PaintAsset\PaintGun\InkTankUI.cpp">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.cpp">
-      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintGun\InkContainerUI.cpp">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClCompile>
@@ -544,6 +541,15 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\TitleScene\PlayUI\PlayUI.cpp">
       <Filter>Scene\TitleScene\PlayUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Target.cpp">
+      <Filter>Scene\GameScene\Charactor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\WeakSprite.cpp">
+      <Filter>Scene\GameScene\Charactor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp">
+      <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

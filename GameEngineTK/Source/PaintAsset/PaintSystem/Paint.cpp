@@ -133,7 +133,7 @@ void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size)
 	InkData inkdata;
 	inkdata.Color = Color;
 	inkdata.Uv = uv;
-	inkdata.Scale  = 0.01f;
+	inkdata.Size = 0.01f;
 	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }
@@ -170,7 +170,7 @@ void Paint::CreateVertexBuffer()
 ID3D11Buffer* Paint::CreateVertexBuffer(InkData & inkdata)
 {
 	//インクサイズを正規デバイス座標系にする
-	float uvSize = inkdata.Scale;
+	float uvSize = inkdata.Size;
 	D3DXVECTOR2 Uv = inkdata.Uv;
 
 	PaintVertex vertex[] = {
@@ -315,6 +315,7 @@ void Paint::DripRender()
 	{
 		deviceContext->PSSetShaderResources(0, 1, textures->GetShaderResourceView().GetAddressOf());//インクのレクスチャ
 	}
+
 
 	//頂点インプットレイアウトをセット
 	deviceContext->IASetInputLayout(inkVertexLayout.Get());

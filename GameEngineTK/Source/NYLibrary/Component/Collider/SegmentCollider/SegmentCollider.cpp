@@ -38,7 +38,7 @@ void SegmentCollider::Update()
 void SegmentCollider::CalcSegmentPosition()
 {
 	D3DXVECTOR3 positon = objectData->GetPosition();
-	float worldHalfSize = objectData->GetScale().z * objectData->GetLocalSize() / 2;
+	float worldHalfSize = objectData->GetScale().z * objectData->GetLocalSize().z / 2;
 	start = CalcSegmentPosition(D3DXVECTOR3(0, 0, + worldHalfSize), startWorldMatrix);
 	end = CalcSegmentPosition(D3DXVECTOR3(0, 0, - worldHalfSize), endWorldMatrix);
 }

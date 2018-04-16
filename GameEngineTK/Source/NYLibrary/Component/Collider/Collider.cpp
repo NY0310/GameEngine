@@ -21,11 +21,9 @@ void Collider::Update()
 	float MaxLocalSize = 0.0f;
 	float MaxScale = 0.0f;
 
-	MaxLocalSize = Math::ComparisonBig(MaxLocalSize, objectData->GetLocalSize());
+	MaxLocalSize = Math::ComparisonBig(objectData->GetLocalSize());
 
-	MaxScale = Math::ComparisonBig(MaxScale, objectData->GetScale().x);
-	MaxScale = Math::ComparisonBig(MaxScale, objectData->GetScale().y);
-	MaxScale = Math::ComparisonBig(MaxScale, objectData->GetScale().z);
+	MaxScale = Math::ComparisonBig(objectData->GetScale());
 
 	radius = MaxLocalSize * MaxScale / 2;
 

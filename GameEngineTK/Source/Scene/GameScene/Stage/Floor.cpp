@@ -1,9 +1,8 @@
 #include "Floor.h"
 #include "../../../NYLibrary/Input/KeyboardUtil.h"
 Floor::Floor()
-	:PaintObj(true)
+	:PaintObj("Resources/OBJMODEL/floor.obj",true)
 {
-	LoadOBJFile("Resources/OBJMODEL/floor.obj");
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	SetTag("stage");
 	SetPositionY(-30.3);

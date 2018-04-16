@@ -51,10 +51,19 @@ namespace NYLibrary
 		static const DirectX::SimpleMath::Vector2& ChangeRegularDevice(const DirectX::SimpleMath::Vector2& position);
 		//行列とfloat4の積
 		static const D3DXVECTOR4 & MatrixTimes(const D3DXMATRIX & matrix, const D3DXVECTOR4 & vector);
-		////線形補間いよる進行度算出
-		//static float D3DXVec3Lerp(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXVECTOR3& now);
+		////線形補間
+		static float Lerp(const float start, const float end, const float now)
+		{
+			return  start * (1.0f - now) + end * now; 
+		}
+	
 		//二つの値を比較して大きいほうを返す
 		static float ComparisonBig(float A, float B) {return  (A > B) ? A : B; }
+		//二つの値を比較して大きいほうを返す
+		static float ComparisonBig(const D3DXVECTOR3& vec3) {
+			float max = ComparisonBig(vec3.x, vec3.y);
+			return ComparisonBig(max, vec3.z);
+		}
 
 		//非数かチェックし非数なら0にする
 		static bool ValidateNan(float& A);
@@ -148,8 +157,20 @@ namespace NYLibrary
 				output.w = number.w * -1;
 			return output;
 
-		}	private:
+		}	
+
+
 		//2つの値とも0
 		static bool Both0(int num1, int num2);
+
+		//D3DXVECTOR3 * D3DXVECTOR3
+		static D3DXVECTOR3 D3DXVec3Multiplication(const D3DXVECTOR3& A, const D3DXVECTOR3& B)
+		{
+			D3DXVECTOR3 output;
+			output.x = A.x * B.x;
+			output.x = A.y * B.y;
+			output.x = A.z * B.z;
+			return output;
+		}
 	};
 };

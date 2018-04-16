@@ -221,12 +221,13 @@
     <ClInclude Include="Source\PaintAsset\PaintSystem\PaintObj.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h" />
-    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Target.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\WeakSprite.h" />
     <ClInclude Include="Source\Scene\GameScene\GameScene.h" />
     <ClInclude Include="Source\Scene\GameScene\Stage\Floor.h" />
     <ClInclude Include="Source\Scene\GameScene\Stage\Stage.h" />
@@ -285,12 +286,13 @@
     <ClCompile Include="Source\PaintAsset\PaintSystem\PaintObj.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp" />
-    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\WeakSprite.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerStop.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Target.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\WeakSprite.cpp" />
     <ClCompile Include="Source\Scene\GameScene\GameScene.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Stage\Floor.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Stage\Stage.cpp" />
@@ -343,8 +345,8 @@
     <FxCompile Include="Resources\HLSL\OBJ.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\HLSL\PaintUpdate.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

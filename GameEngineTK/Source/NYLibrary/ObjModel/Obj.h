@@ -39,6 +39,7 @@ namespace NYLibrary
 			D3DXMATRIX wlpt;//ワールド・”ライトビュー”・プロジェクション・テクスチャ座標行列の合成
 			D3DXVECTOR4 lightDir;//ライト方向
 			D3DXVECTOR4 eyesPos;//カメラ位置
+			ALIGN16 float frame;
 		};
 
 
@@ -68,13 +69,13 @@ namespace NYLibrary
 		{
 			std::vector<Triangle> triangles;
 			MY_MESH mesh;
-			float localSize;
+			D3DXVECTOR3 localSize;
 		};
 
 		using Vector3 = DirectX::SimpleMath::Vector3;
 	public:
-
-		Obj();
+		Obj(LPSTR filename);
+		Obj() = delete;
 		virtual ~Obj();
 		//初期化処理
 		virtual void Initialize();
@@ -86,7 +87,12 @@ namespace NYLibrary
 		void Render();
 		//深度値の描画
 		void ShadowRender();
-
+		//破壊カウントを設定
+		void SetBreakCnt(int breakCnt) {
+			this->breakCnt = breakCnt;}
+		//破壊カウントを取得
+		int GetBreakCnt() { return breakCnt; }
+		void BreakStart() { isUpdateBreak = true; }
 	private:
 		//シェーダー作成
 		HRESULT CreateShader();
@@ -100,7 +106,6 @@ namespace NYLibrary
 		HRESULT InitStaticMesh(LPSTR FileName, MY_MESH * pMesh);
 		//マテリアルファイル読み込み
 		HRESULT LoadMaterialFromFile(LPSTR FileName, MY_MATERIAL * pMarial);
-
 	protected:
 		/// <summary>
 		/// メッシュ
@@ -109,17 +114,16 @@ namespace NYLibrary
 		MY_MATERIAL material;//マテリアル構造体
 		ComPtr<ID3D11VertexShader> vertexShader;//バッテックスシェーダー
 		ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダー
+		ComPtr<ID3D11GeometryShader> geometryShader;//ジオメトリシェーダー
 		ComPtr<ID3D11Buffer> constantBuffer;//コンスタントバッファ
 		ComPtr<ID3D11InputLayout> vertexLayout;//頂点インプットレイアウト
 		ComPtr<ID3D11SamplerState> sampleLimear;//テクスチャサンプラ
 		ComPtr<ID3D11ShaderResourceView> texture;//テクスチャ
-
-
-
-
 		static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
 		std::vector<Triangle> triangles;
-
+		
+		float breakCnt;//壊すカウント
+		bool isUpdateBreak;//壊すカウントを更新するか
 
 		/// <summary>
 		/// 委譲

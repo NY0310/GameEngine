@@ -4,16 +4,14 @@ using namespace std;
 
 
 Stage::Stage()
-	:PaintObj(false)
+	:PaintObj("Resources/OBJMODEL/Geometry+Normal+UV.obj",false)
 {
 	//LoadOBJFile("Resources/OBJ/floor.obj");
-	LoadOBJFile("Resources/OBJMODEL/Geometry+Normal+UV.obj");
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
 	SetTag("stage");
 	SetScale(0);
-	SetPositionY(GetLocalSize() / 2);
-	AddComponent<TrianglePolygonListCollider>();
+	SetPositionY(GetLocalSize().y / 2);
 }
 
 void Stage::CreateAddChild()

@@ -7,11 +7,9 @@ using namespace NYLibrary;
 
 
 std::map < LPSTR, Obj::MeshAndTriangles> Obj::modelDatas;
-//ComPtr<ID3D11VertexShader> Obj::vertexShader;
-//ComPtr<ID3D11PixelShader> Obj::pixelShader;
 
 
-Obj::Obj()
+Obj::Obj(LPSTR FileName)
 {
 	ZeroMemory(&clipToUV, sizeof(D3DXMATRIX));
 	clipToUV._11 = 0.5f;
@@ -20,7 +18,7 @@ Obj::Obj()
 	clipToUV._41 = 0.5f;
 	clipToUV._42 = 0.5f;
 	clipToUV._44 = 1;
-
+	LoadOBJFile(FileName);
 }
 
 
@@ -39,7 +37,8 @@ void Obj::Initialize()
 	CreateSampler();
 	//コンスタントバッファ作成
 	constantBuffer = CreateConstantBuffer(sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-
+	breakCnt = 0;
+	isUpdateBreak = false;
 }
 
 
@@ -54,6 +53,8 @@ HRESULT Obj::CreateShader()
 	CreateVertexInputLayout(pCompiledShader);
 	//ブロブからピクセルシェーダー作成
 	if (FAILED(MakeShader("Resources/HLSL/OBJ.hlsl", "PS", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
+	//ジオメトリシェーダー作成
+	if (FAILED(MakeShader("Resources/HLSL/OBJ.hlsl", "GS", "gs_5_0", (void**)geometryShader.ReleaseAndGetAddressOf(), &pCompiledShader)))return E_FAIL;
 
 	return S_OK;
 }
@@ -344,8 +345,10 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 			//法線 読み込み
 			if (strcmp(key, "s") == 0)
 			{
-				fscanf_s(fp, "%f", &x);
-				SetLocalSize(x);
+				fscanf_s(fp, "%f %f %f", &x, &y ,&z);
+				SetLocalSizeX(x);
+				SetLocalSizeY(y);
+				SetLocalSizeZ(z);
 			}
 
 		}
@@ -388,9 +391,6 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 		delete[] pvVertexBuffer;
 		delete[] piFaceBuffer;
 
-
-		auto s = GetPolygons();
-
 		return S_OK;
 }
 
@@ -416,6 +416,7 @@ void Obj::Render()
 	D3DXMATRIX World;
 	//使用するシェーダーの登録	
 	deviceContext->VSSetShader(vertexShader.Get(), nullptr, 0);
+	deviceContext->GSSetShader(geometryShader.Get(), nullptr, 0);
 	deviceContext->PSSetShader(pixelShader.Get(), nullptr, 0);
 	//シェーダーのコンスタントバッファーに各種データを渡す	
 	D3D11_MAPPED_SUBRESOURCE pData;
@@ -459,6 +460,7 @@ void Obj::Render()
 	deviceContext->PSSetShaderResources(2, 1, shadowMap->GetShaderResourceView().GetAddressOf());
 	//このコンスタントバッファーを使うシェーダーの登録
 	deviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf() );
+	deviceContext->GSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 	deviceContext->PSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf() );
 	//頂点インプットレイアウトをセット
 	deviceContext->IASetInputLayout(vertexLayout.Get());
@@ -474,6 +476,8 @@ void Obj::Render()
 	deviceContext->IASetIndexBuffer(mesh.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	//プリミティブをレンダリング
 	deviceContext->DrawIndexed(mesh.dwNumFace * 3, 0, 0);
+	deviceContext->GSSetConstantBuffers(0, 1, nullptr);
+	deviceContext->GSSetShader(nullptr, nullptr, 0);
 
 
 }

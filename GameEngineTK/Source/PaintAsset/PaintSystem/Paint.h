@@ -17,7 +17,7 @@ private:
 	{
 		D3DXVECTOR4 Color;
 		ALIGN16 D3DXVECTOR2 Uv;
-		ALIGN16 float Scale = 5.0f;
+		ALIGN16 float Size = 5.0f;
 		ID3D11Buffer* vertexBuffer;
 	};
 

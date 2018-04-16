@@ -67,6 +67,8 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	//player->SetRotationMatrix(player->GetRotationMatrix() *rotY);
 	//D3DXMatrixRotationYawPitchRoll(&rotY, D3DXToRadian(mouseTotalTrans.x), D3DXToRadian (-mouseTotalTrans.y),0);
 	//player->aimMatrix->SetRotationMatrix(player->aimMatrix->GetRotationMatrix() *rotY);
+	//エイムの座標を移動
+	player->aimMatrix->SetPosition(player->GetPosition());
 
 
 	delete mousePos;
@@ -91,8 +93,6 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 
 	//	自機の座標を移動
 	player->SetPosition(player->GetPosition() + moveV);
-	//エイムの座標を移動
-	player->aimMatrix->SetPosition(player->GetPosition() + moveV);
 }
 
 /// <summary>

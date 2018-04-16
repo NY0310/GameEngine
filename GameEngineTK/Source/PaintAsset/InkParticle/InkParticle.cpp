@@ -134,12 +134,6 @@ InkParticleManager::InkParticleManager()
 /// </summary>
 InkParticleManager::~InkParticleManager()
 {
-	//for (auto child : inkParticle)
-	//{
-	//	RemoveChild(child);
-	//	child.reset();
-	//}
-	//
 
 	int a = 0;
 }

@@ -20,6 +20,9 @@ Player::~Player()
 	int a = 0;
 }
 
+/// <summary>
+/// q‹Ÿ‚ğ¶¬‚µ“o˜^
+/// </summary>
 void Player::CreateAddChild()
 {
 	paintGun = make_shared<PaintGun>();

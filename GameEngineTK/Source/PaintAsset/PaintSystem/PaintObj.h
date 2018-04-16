@@ -15,13 +15,13 @@
 class PaintObj : public Obj
 {
 public:
-	PaintObj(bool isPlane = false);
+	PaintObj(LPSTR fileName,bool isPlane = false);
+	PaintObj() = delete;
 	~PaintObj() = default;
 	//子供を生成し、子供として登録
 	void CreateAddChild();
+	//初期化
 	void Initialize();
-	//更新処理
-	void Update();
 	//描画
 	void Render();
 	//インク描画
@@ -30,7 +30,7 @@ public:
 	void OnCollisiton(Collider* collider);
 	D3DXVECTOR2 CalcInkCollisionUv(const Triangle& triangle, const D3DXVECTOR3 & inter);
 private:
-	//インクが当たったUV値を算出する
+	//インクを塗るキャンパス
 	std::shared_ptr<Paint>campus;
 	//平面化
 	bool isPlane;

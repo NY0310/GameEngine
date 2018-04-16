@@ -1,11 +1,13 @@
 #pragma once
-#include "../../GameScene/Charactor/Enemy/Enemy.h"
+#include "../../GameScene/Charactor/Target.h"
 
 
-class PlayUI : public Enemy
+class PlayUI : public Target
 {
 public:
-	PlayUI() = default;
+	PlayUI();
+	//初期化
+	void Initialize();
 	// コピーコンストラクタ禁止
 	PlayUI(const PlayUI&) = delete;
 	// 代入禁止

@@ -33,7 +33,10 @@ void InkTank::Initialize()
 
 void InkTank::Update()
 {
+
 	MouseUtil* mouse = MouseUtil::GetInstance();
+
+
 	auto key = KeyboardUtil::GetInstance();
 	//押されたキーによりタンクに入れるインクを決定する
 	if (key->IsPressed(Keyboard::Z))
@@ -50,10 +53,9 @@ void InkTank::Update()
 	}
 
 	//インクをタンクに入れる
-	if (mouse->IsPressed(MouseUtil::Right) && MAX_INK >= colorAmount[total])
+	if (!mouse->IsPressed(MouseUtil::Left) && mouse->IsPressed(MouseUtil::Right) && MAX_INK >= colorAmount[total])
 	{
 		colorAmount[inColor] += ADD_INK;
-		//colorAmount[inColor]  = max( MAX_INK, colorAmount[inColor]);
 	}
 
 

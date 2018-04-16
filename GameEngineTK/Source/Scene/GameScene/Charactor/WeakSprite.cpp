@@ -16,8 +16,6 @@ void WeakSprite::Update()
 {
 	//“G‚Ìã‚É•`‰æ‚·‚é
 	D3DXVECTOR3 position = this->Getparent()._Get()->GetPosition();
-	position.y += this->Getparent()._Get()->GetScaleY() * this->Getparent()._Get()->GetLocalSize() * 4;
+	position.y += this->Getparent()._Get()->GetScaleY() * this->Getparent()._Get()->GetLocalSize().y;
 	SetPosition(position);
-//	SetScale(3);
-
 }

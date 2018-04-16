@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../../NYLibrary/Sprite/Sprite.h"
+#include "../../../NYLibrary/Sprite/Sprite.h"
 class WeakSprite : public NYLibrary::Sprite
 {
 public:
