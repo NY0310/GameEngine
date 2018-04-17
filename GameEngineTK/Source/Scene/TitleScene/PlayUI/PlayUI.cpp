@@ -14,6 +14,7 @@ void PlayUI::Initialize()
 	Target::Initialize();
 	LoadTextuerFile("Resources/PNG/start.png");
 	SetTag("Stage");
+	SetScale(3);
 }
 
 void PlayUI::OnDied(){

@@ -29,6 +29,11 @@ void Target::Initialize()
 void Target::Update()
 {
 	Character::CheckData();
+	if (IsBreakEnd())
+	{
+		/*weakSprite->RemoveFromParent();
+		RemoveFromParent();*/
+	}
 }
 
 
@@ -80,4 +85,9 @@ bool Target::IsWeakColor(const D3DXVECTOR4& hitColor)
 	difference = Math::NaturalNumber(difference);
 	float totlaDifference = difference.x + difference.y + difference.z;
 	return DIFFERENCE_UPPER >= totlaDifference;
+}
+
+void Target::Finalize()
+{
+
 }

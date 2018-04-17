@@ -83,6 +83,11 @@ HRESULT Obj::CreateVertexInputLayout(ID3DBlob *compiledshader)
 
 }
 
+/// <summary>
+/// コンスタントバッファー作成
+/// </summary>
+/// <param name="size">サイズ</param>
+/// <returns>作成したコンスタントバッファー</returns>
 ID3D11Buffer* Obj::CreateConstantBuffer(UINT size)
 {
 	ID3D11Buffer* buffer;
@@ -396,7 +401,9 @@ HRESULT Obj::InitStaticMesh(LPSTR FileName, MY_MESH * pMesh)
 
 
 
-
+/// <summary>
+/// 描画
+/// </summary>
 void Obj::Render()
 {
 

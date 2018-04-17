@@ -15,6 +15,7 @@ cbuffer global_0:register(b0)
 	matrix mWLPT; //ワールド・ライトビュー・プロジェクション・UV行列
 	float4 vLightDir;  //ライトの視点
 	float4 vEye;//カメラ位置
+	float4 speed = float4(0,0,0,0);//速度
 	float frame;//フレーム数
 };
 
@@ -125,6 +126,17 @@ void SetRotate(float3 rotang, out float3x3 mat)
 	mat._33 = roty.y;
 }
 
+bool IsSpeedZero(float4 speed)
+{
+	if (speed.x <= 0)
+		return true;
+	if (speed.y <= 0)
+		return true;
+	if (speed.z <= 0)
+		return true;
+	return false;
+}
+
 
 [maxvertexcount(3)]
 void GS(triangle VS_OUTPUT In[3],
@@ -165,10 +177,17 @@ void GS(triangle VS_OUTPUT In[3],
 		//回転量を計算
 		float t2 = t * t;
 		fallSpeed = cV0 * t + cAG * t2;
-		faceSpeed = FACE_VELOCITY * fnormal * t;
 		ang.z = frame * 0.13f;
 		ang.y = frame * 0.013f * In[1].Pos.x;
 		ang.x = 0.0f;
+		if (IsSpeedZero(speed))
+		{
+			faceSpeed = FACE_VELOCITY * fnormal * t;
+		}
+		else
+		{
+			faceSpeed = FACE_VELOCITY * speed * t;
+		}
 	}
 
 	float3x3 rotmat;
@@ -190,12 +209,15 @@ void GS(triangle VS_OUTPUT In[3],
 		CIn[i].Pos.xyz = center + newpos.xyz + faceSpeed;
 		//法線を回転させる
 		CIn[i].Normal = mul(CIn[i].Normal, rotmat);
-
+		//ワールド行列を求める
 		float4	wpos = mul(CIn[i].Pos, mW);
+		//移動量を加味する
 		wpos.xyz += fallSpeed;
 		Out.PosWorld = wpos;
+		//ワールド・ビュー・プロジェクション行列
 		Out.Pos = mul(CIn[i].Pos, mWVP);
 		Out.Normal = mul(CIn[i].Normal, (float3x3)mW);
+		//UV
 		Out.Tex = CIn[i].Tex;
 
 		gsstream.Append(Out);

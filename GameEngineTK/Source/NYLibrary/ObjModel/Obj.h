@@ -39,6 +39,7 @@ namespace NYLibrary
 			D3DXMATRIX wlpt;//ワールド・”ライトビュー”・プロジェクション・テクスチャ座標行列の合成
 			D3DXVECTOR4 lightDir;//ライト方向
 			D3DXVECTOR4 eyesPos;//カメラ位置
+			ALIGN16 D3DXVECTOR3 speed;//速度
 			ALIGN16 float frame;
 		};
 
@@ -92,7 +93,12 @@ namespace NYLibrary
 			this->breakCnt = breakCnt;}
 		//破壊カウントを取得
 		int GetBreakCnt() { return breakCnt; }
+		//破壊を開始
 		void BreakStart() { isUpdateBreak = true; }
+		//破壊されたと判断される経過時間
+		static const int BREAK_CNT = 60;
+		//破壊が終わったか
+		bool IsBreakEnd() { return BREAK_CNT <= breakCnt; }
 	private:
 		//シェーダー作成
 		HRESULT CreateShader();
@@ -124,7 +130,7 @@ namespace NYLibrary
 		
 		float breakCnt;//壊すカウント
 		bool isUpdateBreak;//壊すカウントを更新するか
-
+		D3DXVECTOR3 speed;//移動するスピード
 		/// <summary>
 		/// 委譲
 		/// </summary>

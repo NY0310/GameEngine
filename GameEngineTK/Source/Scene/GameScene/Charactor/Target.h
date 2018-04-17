@@ -1,7 +1,6 @@
 #pragma once
 #include "../../../PaintAsset/PaintSystem/PaintObj.h"
 #include "Character.h"
-#include "../../../PaintAsset/PaintGun/PaintGun.h"
 #include "WeakSprite.h"
 
 class Target : public PaintObj , public Character
@@ -29,6 +28,8 @@ public:
 	//弱点化
 	bool IsWeakColor(const D3DXVECTOR4 & hitColor);
 
+	virtual void Finalize();
+
 	enum WeakColorKind
 	{
 		red,
@@ -53,8 +54,6 @@ public:
 private:
 	//HP上限
 	static const int MAX_HP = 3;
-	//ペイント銃
-	std::shared_ptr<PaintGun> paintGun;
 	//弱点色
 	D3DXVECTOR4 weakColor;
 	//誤差上限

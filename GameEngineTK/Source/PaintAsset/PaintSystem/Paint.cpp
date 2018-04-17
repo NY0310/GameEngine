@@ -133,7 +133,7 @@ void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size)
 	InkData inkdata;
 	inkdata.Color = Color;
 	inkdata.Uv = uv;
-	inkdata.Size = 0.01f;
+	inkdata.Size = 0.02f;
 	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }
