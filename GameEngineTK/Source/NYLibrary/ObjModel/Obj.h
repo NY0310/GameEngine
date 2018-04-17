@@ -39,7 +39,6 @@ namespace NYLibrary
 			D3DXMATRIX wlpt;//ワールド・”ライトビュー”・プロジェクション・テクスチャ座標行列の合成
 			D3DXVECTOR4 lightDir;//ライト方向
 			D3DXVECTOR4 eyesPos;//カメラ位置
-			ALIGN16 D3DXVECTOR3 speed;//速度
 			ALIGN16 float frame;
 		};
 
@@ -89,16 +88,16 @@ namespace NYLibrary
 		//深度値の描画
 		void ShadowRender();
 		//破壊カウントを設定
-		void SetBreakCnt(int breakCnt) {
-			this->breakCnt = breakCnt;}
+		void SetBreakTime(float breakTime) {
+			this->breakTime = breakTime;}
 		//破壊カウントを取得
-		int GetBreakCnt() { return breakCnt; }
+		int GetBreakTime() { return breakTime; }
 		//破壊を開始
 		void BreakStart() { isUpdateBreak = true; }
 		//破壊されたと判断される経過時間
 		static const int BREAK_CNT = 60;
 		//破壊が終わったか
-		bool IsBreakEnd() { return BREAK_CNT <= breakCnt; }
+		bool IsBreakEnd() { return BREAK_CNT <= breakTime; }
 	private:
 		//シェーダー作成
 		HRESULT CreateShader();
@@ -128,9 +127,10 @@ namespace NYLibrary
 		static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
 		std::vector<Triangle> triangles;
 		
-		float breakCnt;//壊すカウント
+		float breakTime;//壊すカウント
+		static const float MAX_BREAK_CNT;//破壊カウントの上限
 		bool isUpdateBreak;//壊すカウントを更新するか
-		D3DXVECTOR3 speed;//移動するスピード
+
 		/// <summary>
 		/// 委譲
 		/// </summary>

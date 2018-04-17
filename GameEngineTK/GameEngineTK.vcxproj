@@ -221,6 +221,9 @@
     <ClInclude Include="Source\PaintAsset\PaintSystem\PaintObj.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Character.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyMove.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyState.h" />
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.h" />
@@ -286,6 +289,8 @@
     <ClCompile Include="Source\PaintAsset\PaintSystem\PaintObj.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Character.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyMove.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\MainPlayer.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerRun.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerState.cpp" />

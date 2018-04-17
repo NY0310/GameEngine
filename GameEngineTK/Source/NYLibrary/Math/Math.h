@@ -51,12 +51,37 @@ namespace NYLibrary
 		static const DirectX::SimpleMath::Vector2& ChangeRegularDevice(const DirectX::SimpleMath::Vector2& position);
 		//行列とfloat4の積
 		static const D3DXVECTOR4 & MatrixTimes(const D3DXMATRIX & matrix, const D3DXVECTOR4 & vector);
-		////線形補間
+		//線形補間
 		static float Lerp(const float start, const float end, const float now)
 		{
 			return  start * (1.0f - now) + end * now; 
 		}
-	
+		//線形補間
+		static D3DXVECTOR3 Lerp(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const float time)
+		{
+			return  start * (1.0f - time) + end * time;
+		}
+		//線形補間(進行度算出)
+		static float ReverseLerp(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXVECTOR3& now)
+		{
+			D3DXVECTOR3 seVec,snVec;//始点から終点のベクトル　、始点から現在地へのベクトル
+			float projectionLength;//射影の長さ
+			float seLength;//始点から終点の長さ
+			D3DXVec3Normalize(&seVec,&(end - start));//始点から終点の正規化ベクトル
+			snVec = now - start;
+			projectionLength = D3DXVec3Dot(&seVec, &snVec);
+			seLength = D3DXVec3Length(&seVec);
+			return projectionLength / seLength;//全体の長さと射影の長さが現在の進行度
+		}
+		//線形補間(進行度算出)
+		static float ReverseLerp(float start, float end, float now)
+		{
+			float seLength, snLength;//始点から終点の長さ、始点から現在の長さ
+			seLength = end - start;
+			snLength = now - start;
+			return snLength / seLength;
+		}
+
 		//二つの値を比較して大きいほうを返す
 		static float ComparisonBig(float A, float B) {return  (A > B) ? A : B; }
 		//二つの値を比較して大きいほうを返す

@@ -6,9 +6,7 @@ using namespace NYLibrary;
 
 const float PlayerState::ROTATION_COEFFICIENT = 35.0f;
 const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 45);
-PlayerState::PlayerState()
-{
-}
+
 
 void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 {
@@ -59,9 +57,11 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	//クォータニオンを作成しプレイヤのを回転させる
 	D3DXMATRIX rotY;
 	D3DXMatrixRotationQuaternion(&rotY,& Rotation(D3DXVECTOR2(mouseTotalTrans.x, 0)));
-	player->SetRotationMatrix(player->GetRotationMatrix() *rotY);
+	player->SetRotationMatrix(rotY * player->GetRotationMatrix() );
+
+
 	D3DXMatrixRotationQuaternion(&rotY, &Rotation(D3DXVECTOR2(mouseTotalTrans.x, -mouseTotalTrans.y)));
-	player->aimMatrix->SetRotationMatrix(player->aimMatrix->GetRotationMatrix() *rotY);
+	player->aimMatrix->SetRotationMatrix(rotY * player->aimMatrix->GetRotationMatrix());
 
 	//D3DXMatrixRotationX(&rotY, D3DXToRadian(mouseTotalTrans.x));
 	//player->SetRotationMatrix(player->GetRotationMatrix() *rotY);
@@ -109,6 +109,6 @@ D3DXQUATERNION PlayerState::Rotation(D3DXVECTOR2 angle)
 
 	D3DXQuaternionRotationAxis(&q, &NAxis, D3DXToRadian(angle.x));
 	D3DXQuaternionRotationAxis(&q2, &NAxis2, D3DXToRadian(angle.y));
-	return q2 * q ;
+	return q2 * q;
 }
 

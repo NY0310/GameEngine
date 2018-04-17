@@ -18,7 +18,7 @@ void Enemy::Initialize()
 	SetScale(0.2f);
 	SetPositionY(GetLocalSize().y *GetScaleY() / 2);
 	SetTag("Enemy");
-	frameCnt = 0;
+	enemyState = EnemyMove::GetInstance();
 }
 
 /// <summary>
@@ -27,8 +27,7 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 	Target::Update();
-	Move();
-	frameCnt++;
+	enemyState->Execute(this);
 }
 
 /// <summary>
@@ -40,42 +39,13 @@ void Enemy::OnDied()
 
 }
 
-/// <summary>
-/// 移動
-/// </summary>
-void Enemy::Move()
-{
-	if (MOVE_INTERVAL < frameCnt)
-	{
-		endPosition = GetMovePosition();
-		frameCnt = 0;
-	}
-
-}
-
-/// <summary>
-/// 移動先の座標を取得する
-/// </summary>
-/// <returns>移動先の座標を取得</returns>
-D3DXVECTOR3 Enemy::GetMovePosition()
-{
-	D3DXVECTOR3 position;
-	position.x = RandMovePosition();
-	position.y = 0;
-	position.z = RandMovePosition();
-	return position;
-}
 
 
 /// <summary>
-/// ずらす値を乱数で算出し渡す
+/// 状態を変更する
 /// </summary>
-/// <returns>ずらす値</returns>
-float Enemy::RandMovePosition()
+/// <param name="state">状態</param>
+void Enemy::ChangeState(EnemyState * state)
 {
-	float shift = static_cast<float>(rand() % MAX_MOVE_RADIUS) / 1000;
-	shift /= 2;
-	if (rand() % 2)
-		shift *= -1;
-	return shift;
+	enemyState = state;
 }

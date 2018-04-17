@@ -9,7 +9,7 @@
 class PlayerState {
 public:
 	//コンストラクタ
-	PlayerState();
+	PlayerState() = default;
 	// 仮想デストラクタ
 	virtual ~PlayerState() {}
 	// 実行する

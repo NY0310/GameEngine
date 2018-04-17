@@ -7,6 +7,7 @@ using namespace NYLibrary;
 
 
 std::map < LPSTR, Obj::MeshAndTriangles> Obj::modelDatas;
+const float Obj::MAX_BREAK_CNT = 100.0f;//破壊カウントの上限
 
 
 Obj::Obj(LPSTR FileName)
@@ -37,8 +38,8 @@ void Obj::Initialize()
 	CreateSampler();
 	//コンスタントバッファ作成
 	constantBuffer = CreateConstantBuffer(sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-	breakCnt = 0;
 	isUpdateBreak = false;
+	breakTime = 0;
 }
 
 

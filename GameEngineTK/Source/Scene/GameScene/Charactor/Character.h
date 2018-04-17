@@ -22,7 +22,7 @@ public:
 	void Recovery() { hp++; }
 protected:
 	//死んだとき
-	virtual void OnDied() = 0;
+	virtual void OnDied() {};
 	//残り体力
 	int hp;
 	//弱点ダメージ

@@ -46,8 +46,6 @@ void Player::Initialize()
 	//カメラに自分を渡す
 	FollowCamera* camera = FollowCamera::GetInstance();
 	camera->SetPlayer(this);
-	//回復フレームカウントを初期化
-	recoveryFrameCnt = 0;
 	aimMatrix->SetPositionY(GetPositionY());
 	SetPositionZ(1);
 }
@@ -85,25 +83,7 @@ void Player::ChangeState(PlayerState * state)
 
 
 
-void Player::Render()
-{
-	SkinMesh::Render();
-}
 
-/// <summary>
-/// 回復
-/// </summary>
-void Player::Recovery()
-{
-	if (RECOVERY_INTERVAL < recoveryFrameCnt)
-	{
-		Recovery();
-		recoveryFrameCnt = 0;
-	}
-	recoveryFrameCnt++;
-}
 
-void Player::OnDied()
-{
 
-}
+

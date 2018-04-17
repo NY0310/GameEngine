@@ -142,6 +142,9 @@
     <Filter Include="NYLibrary\SkinMeshAnimation">
       <UniqueIdentifier>{2a0f0005-2c30-468c-985f-aff3f7856254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\GameScene\Charactor\Enemy\State">
+      <UniqueIdentifier>{883d4238-1a5c-43ef-b26d-b8fbe7808a36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -360,6 +363,15 @@
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.h">
       <Filter>Scene\GameScene\Charactor\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyState.h">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyMove.h">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.h">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -550,6 +562,12 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\Enemy.cpp">
       <Filter>Scene\GameScene\Charactor\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyMove.cpp">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.cpp">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

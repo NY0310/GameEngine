@@ -25,10 +25,6 @@ public:
 	void Finalize();
 	//状態変化
 	void ChangeState(PlayerState* state);
-	//描画
-	void Render();
-	//回復
-	void Recovery();
 	//エイムの行列管理
 	std::shared_ptr<MatrixObject> aimMatrix;
 private:
@@ -36,14 +32,6 @@ private:
 	std::shared_ptr<PaintGun> paintGun;
 	//プレイヤの状態
 	PlayerState* playerState;
-	//死んだとき
-	void OnDied();
-	//HP上限
-	static const int MAX_HP = 5;
-	//HP回復インターバル
-	static const int RECOVERY_INTERVAL = 120;
-	//回復フレームカウント
-	int recoveryFrameCnt;
 };
 
 #include "State/PlayerState.h"

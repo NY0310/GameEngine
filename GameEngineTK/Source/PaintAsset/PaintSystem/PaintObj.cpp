@@ -94,14 +94,10 @@ void PaintObj::Render()
 		//視点位置を渡す
 		cb.eyesPos = D3DXVECTOR4(camera->GetEyePos().x, camera->GetEyePos().y, camera->GetEyePos().z, 1.0f);
 		//フレームを渡す
-		cb.frame = breakCnt;
+		cb.frame = Math::Lerp(0, MAX_BREAK_CNT, breakTime);
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
 		deviceContext->Unmap(constantBuffer.Get(), 0);
 
-	}
-	if (isUpdateBreak)
-	{
-		breakCnt += 2.0f;
 	}
 	//サンプラーをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());

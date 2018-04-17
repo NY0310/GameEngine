@@ -15,7 +15,6 @@ cbuffer global_0:register(b0)
 	matrix mWLPT; //ワールド・ライトビュー・プロジェクション・UV行列
 	float4 vLightDir;  //ライトの視点
 	float4 vEye;//カメラ位置
-	float4 speed = float4(0,0,0,0);//速度
 	float frame;//フレーム数
 };
 
@@ -180,14 +179,7 @@ void GS(triangle VS_OUTPUT In[3],
 		ang.z = frame * 0.13f;
 		ang.y = frame * 0.013f * In[1].Pos.x;
 		ang.x = 0.0f;
-		if (IsSpeedZero(speed))
-		{
-			faceSpeed = FACE_VELOCITY * fnormal * t;
-		}
-		else
-		{
-			faceSpeed = FACE_VELOCITY * speed * t;
-		}
+		faceSpeed = FACE_VELOCITY * fnormal * t;
 	}
 
 	float3x3 rotmat;
