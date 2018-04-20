@@ -103,10 +103,12 @@ namespace NYLibrary
 		//デストラクタ
 		virtual ~MatrixObject() = default;
 
-
+		//初期化
 		void MatrixInitialize();
 		//ワールド行列作成
 		void Calc();
+		//親のワールド行列に影響を与える
+		void Calc(const D3DXMATRIX & worldMatrix);
 
 
 
@@ -130,10 +132,11 @@ namespace NYLibrary
 
 
 
-		//スケール設定
+		//スケールXYZ設定
 		virtual void SetScale(const D3DXVECTOR3& scale) { this->scale = scale; isCalcScaleMatrix = true;}
-		//スケール取得
+		//スケールXYZ取得
 		virtual const D3DXVECTOR3& GetScale() { return  this->scale; }
+		//スケールXYZ設定
 		virtual void SetScale(const float scale) { this->scale.x = scale; this->scale.y = scale; this->scale.z = scale; isCalcScaleMatrix = true;}
 		//スケールX設定
 		virtual void SetScaleX(float scaleX) { this->scale.x = scaleX; isCalcScaleMatrix = true;}
@@ -219,18 +222,34 @@ namespace NYLibrary
 		void SetIsBillBoard(bool isBillBoard) {
 			this->isBillBoard = isBillBoard;
 		}
+		//ビルボードにするか取得
+		bool SetIsBillBoard() {
+			return isBillBoard;
+		}
+
+		//親に影響されるか設定
+		void SetIsParantInfluence(bool isParantInfluence) {
+			this->isParantInfluence = isParantInfluence;
+		}
+		//親に影響されるか取得
+		bool GetIsParantInfluence() {
+			return isParantInfluence;
+		}
 	private:
 		//全行列作成
-		void CreateAllMatrix();
+		void CalcAllMatrix();
 		//ワールド行列作成
-		void CreateTransferMatrix();
+		void CalcWorldMatrix();
+		void CalcWVP();
+		//移動行列作成
+		void CalcTransferMatrix();
 		//スケール行列作成
-		void CreateScaleMatrix();
+		void CalcScaleMatrix();
 		//回転行列作成
-		void CreateRotationMatrix();
+		void CalcRotationMatrix();
 	private:
 		D3DXMATRIX worldMatrix;//ワールド行列
-		D3DXVECTOR3 transfer;//移動量
+		D3DXVECTOR3 transfer;//移動
 		D3DXVECTOR3 scale;//サイズ
 		float localSize;//ローカルでのサイズ
 		D3DXVECTOR3 eulerAangle;//回転
@@ -245,6 +264,7 @@ namespace NYLibrary
 		bool isCalcTransferMatrix;//移動行列計算を行うか
 		bool isCalcScaleMatrix;//拡大行列計算を行うか
 		bool isCalcRotationMatrix;//回転行列計算を行うか
-		bool isBillBoard;
+		bool isBillBoard;//ブルボードを使用するか
+		bool isParantInfluence;//親に影響されるか
 	};
 };

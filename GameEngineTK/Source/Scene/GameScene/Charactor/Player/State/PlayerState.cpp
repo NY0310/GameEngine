@@ -4,7 +4,7 @@
 
 using namespace NYLibrary;
 
-const float PlayerState::ROTATION_COEFFICIENT = 35.0f;
+const float PlayerState::ROTATION_COEFFICIENT = 17.0f;
 const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 45);
 
 

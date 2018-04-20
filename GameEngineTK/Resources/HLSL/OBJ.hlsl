@@ -157,7 +157,7 @@ void GS(triangle VS_OUTPUT In[3],
 	//³‹K‰»–@ü‚ğ‹‚ß‚é
 	float3	v0 = In[1].Pos.xyz - In[0].Pos.xyz;
 	float3	v1 = In[2].Pos.xyz - In[0].Pos.xyz;
-	float3	fnormal = normalize(cross(v0, v1));
+	float3	fnormal = normalize(center);
 
 	//ƒ|ƒŠƒSƒ“‚Ì‰ñ“]—Ê
 	float3	ang = float3(0, 0, 0);

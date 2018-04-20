@@ -15,12 +15,13 @@ void Enemy::Initialize()
 {
 	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
 	Target::Initialize();
-	SetScale(0.2f);
+	SetScale(0.3);
 	SetPositionY(GetLocalSize().y *GetScaleY() / 2);
 	SetTag("Enemy");
 	enemyState = EnemyStop::GetInstance();
 	hp = MAX_HP;
 	isDied = false;
+	diedCnt = 0;
 }
 
 /// <summary>
@@ -52,4 +53,13 @@ void Enemy::Revival()
 	hp = MAX_HP;
 	isDied = false;
 	ChangeWeakColor();
+}
+
+void Enemy::OnBreakEnd()
+{
+	diedCnt++;
+	if (MAX_DIED == diedCnt)
+	{
+		RunWithScene(SceneKind::TitleScene);
+	}
 }

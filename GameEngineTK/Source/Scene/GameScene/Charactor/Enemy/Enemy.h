@@ -19,11 +19,17 @@ public:
 	void ChangeState(EnemyState * state);
 	//‘h¶
 	void Revival();
+	//€–S‚µ‚½‚Æ‚«‚ÉŒÄ‚Ño‚µ
+	void OnBreakEnd();
 private:
 	//ó‘Ô
 	EnemyState* enemyState;
 	//HPãŒÀ
 	static const int MAX_HP = 10;
+	//‰ñ•œ‰ñ”
+	static const int MAX_DIED = 5;
+	//€–S‰ñ”
+	int diedCnt;
 };
 
 #include "State/EnemyState.h"

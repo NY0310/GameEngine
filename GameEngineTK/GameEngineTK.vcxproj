@@ -232,6 +232,7 @@
     <ClInclude Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\Target.h" />
     <ClInclude Include="Source\Scene\GameScene\Charactor\WeakSprite.h" />
+    <ClInclude Include="Source\Scene\GameScene\Clear\ClearUI.h" />
     <ClInclude Include="Source\Scene\GameScene\GameScene.h" />
     <ClInclude Include="Source\Scene\GameScene\Stage\Floor.h" />
     <ClInclude Include="Source\Scene\GameScene\Stage\Stage.h" />
@@ -302,6 +303,7 @@
     <ClCompile Include="Source\Scene\GameScene\Charactor\Player\State\PlayerWalk.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\Target.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Charactor\WeakSprite.cpp" />
+    <ClCompile Include="Source\Scene\GameScene\Clear\ClearUI.cpp" />
     <ClCompile Include="Source\Scene\GameScene\GameScene.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Stage\Floor.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Stage\Stage.cpp" />

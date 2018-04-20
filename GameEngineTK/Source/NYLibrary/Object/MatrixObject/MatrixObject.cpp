@@ -28,6 +28,7 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 	order = worldMatrixOrderFactory->Set(WorldMatrixOrder::ORDER::SCALEMAT_ROTOMAT_TRANSMAT);
 	//ビルボードにしない
 	isBillBoard = false;
+	isParantInfluence = false;
 
 }
 
@@ -38,7 +39,6 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 /// <param name="order"></param>
 void MatrixObject::ChangeOrder(WorldMatrixOrder::ORDER order)
 {
-	//this->order.release();
 	this->order = worldMatrixOrderFactory->Set(order);
 }
 
@@ -49,21 +49,67 @@ void MatrixObject::ChangeOrder(WorldMatrixOrder::ORDER order)
 /// </summary>
 void MatrixObject::Calc()
 {
-	FollowCamera* camera = FollowCamera::GetInstance();
-	D3DXMATRIX view;
 
 	//全ての行列を作成
-	CreateAllMatrix();
+	CalcAllMatrix();
+	//ワールド行列を作成
+	CalcWorldMatrix();
+	//ワールド・ビュー・プロジェクション行列を作成
+	CalcWVP();
+}
+
+/// <summary>
+/// 親のワールド行列に影響を与える
+/// </summary>
+/// <param name="parentWorldMatrix">親のワールド行列</param>
+void MatrixObject::Calc(const D3DXMATRIX& parentWorldMatrix)
+{
+	//全ての行列を作成
+	CalcAllMatrix();
+	//ワールド行列を作成
+	CalcWorldMatrix();
+	this->worldMatrix *= parentWorldMatrix;
+	//ワールド・ビュー・プロジェクション行列を作成
+	CalcWVP();
+
+}
+
+
+/// <summary>
+/// 全行列作成
+/// </summary>
+void MatrixObject::CalcAllMatrix()
+{
+	//移動行列作成
+	CalcTransferMatrix();
+	//回転行列作成
+	CalcScaleMatrix();
+	//スケール行列作成
+	CalcRotationMatrix();
+}
+
+
+/// <summary>
+/// ワールド行列を作成
+/// </summary>
+void MatrixObject::CalcWorldMatrix()
+{
 	//スケール・回転・移動行列からワールド行列作成
 	order._Get()->Calculation(worldMatrix, scaleMatrix, rotationMatrix, transferMatrix);
+}
+
+
+/// <summary>
+/// ワールド・ビュー・プロジェクション行列を作成
+/// </summary>
+void MatrixObject::CalcWVP()
+{
+	FollowCamera* camera = FollowCamera::GetInstance();
 
 	if (isBillBoard)
 	{
-		D3DXMATRIX w;
-		D3DXMATRIX bill = camera->GetBillboard();
-		D3DXMATRIX test;
-		D3DXMatrixRotationY(&test, D3DX_PI);
-		//ワールド行列・ビュー行列・プロジェクション行列を作成
+
+		//ビルボード行列、ワールド行列・ビュー行列・プロジェクション行列を作成
 		wvp = camera->GetBillboard()  * worldMatrix  * camera->GetView() * camera->GetProjection();
 	}
 	else
@@ -71,26 +117,12 @@ void MatrixObject::Calc()
 		//ワールド行列・ビュー行列・プロジェクション行列を作成
 		wvp = worldMatrix * camera->GetView() * camera->GetProjection();
 	}
-
-}
-
-/// <summary>
-/// 全行列作成
-/// </summary>
-void MatrixObject::CreateAllMatrix()
-{
-	//移動行列作成
-	CreateTransferMatrix();
-	//回転行列作成
-	CreateScaleMatrix();
-	//スケール行列作成
-	CreateRotationMatrix();
 }
 
 /// <summary>
 /// 移動行列作成
 /// </summary>
-void MatrixObject::CreateTransferMatrix()
+void MatrixObject::CalcTransferMatrix()
 {
 	if(isCalcTransferMatrix)
 	D3DXMatrixTranslation(&transferMatrix, this->transfer.x, this->transfer.y, this->transfer.z);
@@ -99,7 +131,7 @@ void MatrixObject::CreateTransferMatrix()
 /// <summary>
 /// 回転行列作成
 /// </summary>
-void MatrixObject::CreateRotationMatrix()
+void MatrixObject::CalcRotationMatrix()
 {
 	if(isCalcRotationMatrix)
 	//クォータニオンを使用するか
@@ -117,7 +149,7 @@ void MatrixObject::CreateRotationMatrix()
 /// <summary>
 /// スケール行列作成
 /// </summary>
-void MatrixObject::CreateScaleMatrix()
+void MatrixObject::CalcScaleMatrix()
 {
 	if(isCalcScaleMatrix)
 	D3DXMatrixScaling(&scaleMatrix, scale.x, scale.y, scale.z);

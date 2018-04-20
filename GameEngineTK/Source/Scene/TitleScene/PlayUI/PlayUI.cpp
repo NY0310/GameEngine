@@ -4,7 +4,7 @@
 /// コンストラクタ
 /// </summary>
 PlayUI::PlayUI()
-	:Target("Resources/OBJMODEL/enemy.obj")
+	:Target("Resources/OBJMODEL/start.obj")
 {
 
 }

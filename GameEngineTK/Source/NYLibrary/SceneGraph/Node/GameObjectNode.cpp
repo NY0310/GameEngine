@@ -212,13 +212,27 @@ shared_ptr<NodeAbstract>  GameObjectNodeEmpty::Clone()
 /// </summary>
 void GameObjectNode::LoopUpdate()
 {
+	//更新可能か
 	if (CanUpdate())
 	{
 		this->Update();
 	}
-	this->Calc();
+	//親行列に影響するか
+	if (GetIsParantInfluence())
+	{
+		this->Calc(Getparent()._Get()->GetWorldMatrix());
+	}
+	else
+	{
+		this->Calc();
+	}
+
+	//コンポーネントの更新処理
+	this->ComponentUpdate();
+
+
 	for (auto& child : children) {
 		child->LoopUpdate();
 	}
-	this->ComponentUpdate();
+
 }

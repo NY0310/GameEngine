@@ -26,7 +26,6 @@ void InkTankUI::CreateAddChild()
 void InkTankUI::Initialize()
 {
 	auto& devices = Devices::Get();
-
 	SetPosition(D3DXVECTOR3(devices.Width() * positionCoefficient.x, devices.Height() * positionCoefficient.y, positionCoefficient.z));
 	SetAnchorPoint(D3DXVECTOR2(0.5f, 0));
 }

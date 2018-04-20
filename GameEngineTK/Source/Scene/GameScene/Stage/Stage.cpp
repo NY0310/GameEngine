@@ -4,14 +4,10 @@ using namespace std;
 
 
 Stage::Stage()
-	:PaintObj("Resources/OBJMODEL/Geometry+Normal+UV.obj",false)
+	:PaintObj("Resources/OBJMODEL/Dome.obj",false)
 {
-	//LoadOBJFile("Resources/OBJ/floor.obj");
-	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
-	//SetScale(D3DXVECTOR3(0.1, 0.1, 0.1));
+	LoadTextuerFile("Resources/JPG/Summer.jpg");
 	SetTag("stage");
-	SetScale(0);
-	SetPositionY(GetLocalSize().y / 2);
 }
 
 void Stage::CreateAddChild()
@@ -54,8 +50,6 @@ void Stage::ShadowRender()
 
 void Stage::Finalize()
 {
-	//RemoveChild(floor);
-	//floor.reset();
 }
 
 Stage::~Stage()

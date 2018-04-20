@@ -28,8 +28,6 @@ protected:
 		position.z = RandMovePosition();
 		return position;
 	}
-
-
 private:
 	//Å‘åˆÚ“®”¼Œa
 	static const int MAX_MOVE_RADIUS = 10000;

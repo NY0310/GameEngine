@@ -145,6 +145,9 @@
     <Filter Include="PaintAsset\PaintSystem\CampusTexture">
       <UniqueIdentifier>{0c4eacb2-dc78-4c00-8d54-8ad598268458}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\GameScene\Clear">
+      <UniqueIdentifier>{5582d428-151f-4e62-a819-86ee47b8759a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -381,6 +384,9 @@
     <ClInclude Include="Source\NYLibrary\Math\Lerp.h">
       <Filter>NYLibrary\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Clear\ClearUI.h">
+      <Filter>Scene\GameScene\Clear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -580,6 +586,9 @@
     </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintSystem\CampusTexture\CampusTextures.cpp">
       <Filter>PaintAsset\PaintSystem\CampusTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Clear\ClearUI.cpp">
+      <Filter>Scene\GameScene\Clear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
