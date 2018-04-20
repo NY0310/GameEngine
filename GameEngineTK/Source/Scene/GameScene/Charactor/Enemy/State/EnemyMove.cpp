@@ -33,22 +33,24 @@ void EnemyMove::Execute(Enemy * enemy)
 		endPosition = GetMovePosition();
 		frameCnt = 0;
 		isFirst = false;
+		//移動中は当たり判定を行わない
+		enemy->SetComponentActive(true);
 	}
 
 	float time = static_cast<float>(frameCnt) / MOVE_TIME;
-	float breaktime = time;
-	if (breaktime <= 0.5f)
-	{
-		breaktime *= 2;
-	}
-	else
-	{
-		breaktime -= 1.0f;
-		breaktime *= -2.0f;
-	}
+	//float breaktime = time;
+	//if (breaktime <= 0.5f)
+	//{
+	//	breaktime *= 2;
+	//}
+	//else
+	//{
+	//	breaktime -= 1.0f;
+	//	breaktime *= -2.0f;
+	//}
 
 
-	enemy->SetBreakTime(breaktime);
+	//enemy->SetBreakTime(breaktime);
 	//線形補間で移動させる
 	enemy->SetPosition(Math::Lerp(startPosition, endPosition, time));
 	frameCnt++;
@@ -63,32 +65,6 @@ void EnemyMove::Execute(Enemy * enemy)
 
 }
 
-/// <summary>
-/// 移動先の座標を取得する
-/// </summary>
-/// <returns>移動先の座標を取得</returns>
-D3DXVECTOR3 EnemyMove::GetMovePosition()
-{
-	D3DXVECTOR3 position;
-	position.x = RandMovePosition();
-	position.y = 0;
-	position.z = RandMovePosition();
-	return position;
-}
-
-
-/// <summary>
-/// ずらす値を乱数で算出し渡す
-/// </summary>
-/// <returns>ずらす値</returns>
-float EnemyMove::RandMovePosition()
-{
-	float shift = static_cast<float>(rand() % MAX_MOVE_RADIUS) / 1000;
-	shift /= 2;
-	if (rand() % 2)
-		shift *= -1;
-	return shift;
-}
 
 
 /***************************************************************************

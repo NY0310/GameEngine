@@ -15,7 +15,6 @@ Sprite::Sprite(LPCWSTR FileName, Dimension dimension)
 	:dimension(dimension)
 {
 	LoadTexture(FileName);
-	transparency = 1;
 	anchorPoint = D3DXVECTOR2(0.5f, 0.5f);
 }
 
@@ -181,7 +180,7 @@ void Sprite::SetConstantBuffer3D()
 		cb.wvp = GetWVP();
 		D3DXMatrixTranspose(&cb.wvp, &cb.wvp);
 		cb.color = D3DXVECTOR4(GetColor().x, GetColor().y, GetColor().z,GetIsUseColor());
-		cb.transparency = transparency;
+		cb.transparency = GetTransparency();
 		memcpy_s(pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb));
 		devices.Context().Get()->Unmap(constantBuffer3D.Get(), 0);
 	}

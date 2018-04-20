@@ -30,15 +30,7 @@ namespace NYLibrary
 		HRESULT LoadTexture(LPCWSTR FileName);
 		//描画
 		void Render();
-		//透明度取得
-		float GetTransparency()
-		{
-			return transparency;
-		}
-		//透明度設定
-		void SetTransparency(float transparency) {
-			this->transparency = transparency;
-		}
+
 		//シェーダーリソースビューを設定
 		void SetShaderResourceView(const ComPtr<ID3D11ShaderResourceView>& SRV) { texture = SRV; GetTextureSize(texture.Get()); }
 		//シェーダーリソースビューを設定
@@ -102,7 +94,7 @@ namespace NYLibrary
 		int widthSize;//幅
 		int hightSize;//高さ
 		Dimension dimension;//描画次元
-		float transparency;//透明度
+
 		D3DXVECTOR2 anchorPoint;//アクター
 	};
 };

@@ -9,6 +9,7 @@ namespace NYLibrary
 	public:
 		//コンストラクタ
 		InkSegmentCollider(ObjectData* objectData);
+		InkSegmentCollider() = default;
 		//初期化
 		void Initialize();
 		void Update();

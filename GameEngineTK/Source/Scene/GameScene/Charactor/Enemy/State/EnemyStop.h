@@ -2,6 +2,7 @@
 #include "EnemyMove.h"
 #include "EnemyState.h"
 
+
 class EnemyStop :public EnemyState
 {
 public:
@@ -14,5 +15,5 @@ public:
 private:
 	static EnemyStop* state;
 	//移動のインターバル
-	static const int MOVE_INTERVAL = 360;
+	static const int MOVE_INTERVAL = 1;
 };

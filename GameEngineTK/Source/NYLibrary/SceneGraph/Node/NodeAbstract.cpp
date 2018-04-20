@@ -9,6 +9,8 @@ using namespace NYLibrary;
 NodeAbstract::NodeAbstract()
 	:parent(shared_ptr<NodeAbstract>(nullptr))
 {
+	//XV‰Â”\
+	EnableUpdate();
 }
 
 /// <summary>

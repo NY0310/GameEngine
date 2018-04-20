@@ -1,4 +1,5 @@
 #include "EnemyStop.h"
+#include "EnemyDied.h"
 
 EnemyStop* EnemyStop::state = nullptr;
 
@@ -22,16 +23,29 @@ EnemyStop* EnemyStop::GetInstance()
 
 /***************************************************************************
 *|	概要　　実行する
-*|	引数　　プレイヤ
+*|	引数　　敵
 *|　戻り値　無し
 ****************************************************************************/
 void EnemyStop::Execute(Enemy * enemy)
 {
+	//死んだとき		
+	if (enemy->GetDied())
+	{
+		frameCnt = 0;
+		enemy->ChangeState(EnemyDied::GetInstance());
+	}
+	
+
 	if (MOVE_INTERVAL <= frameCnt)
 	{
 		frameCnt = 0;
 		enemy->ChangeState(EnemyMove::GetInstance());
 	}
+
+
+	//停止中は当たり判定を行なう
+	enemy->SetComponentActive(true);
+
 	frameCnt++;
 }
 

@@ -49,8 +49,8 @@ namespace NYLibrary
 			std::string filePathAwb = FILE_PATH_SOUND + awb + EXT_AWB;
 
 			// サウンドデータの読み込み
-			ADX2Le::Initialize(filePathAcf.c_str());
-			ADX2Le::LoadAcb(filePathAcb.c_str(), filePathAwb.c_str());
+			//ADX2Le::Initialize(filePathAcf.c_str());
+			//ADX2Le::LoadAcb(filePathAcb.c_str(), filePathAwb.c_str());
 		}
 
 		/*
@@ -59,7 +59,7 @@ namespace NYLibrary
 		*/
 		void Update()
 		{
-			ADX2Le::Update();
+			//ADX2Le::Update();
 		}
 
 		/*
@@ -69,7 +69,7 @@ namespace NYLibrary
 		*/
 		void PlayAudio(int audioID)
 		{
-			ADX2Le::Play(audioID);
+			//ADX2Le::Play(audioID);
 		}
 
 		/*
@@ -78,7 +78,7 @@ namespace NYLibrary
 		*/
 		void StopAudio()
 		{
-			ADX2Le::Stop();
+			//ADX2Le::Stop();
 		}
 
 		/*
@@ -87,7 +87,7 @@ namespace NYLibrary
 		*/
 		void Dispose()
 		{
-			ADX2Le::Finalize();
+			//ADX2Le::Finalize();
 		}
 	};
 

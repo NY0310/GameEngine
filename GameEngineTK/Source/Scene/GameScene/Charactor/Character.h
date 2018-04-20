@@ -5,9 +5,9 @@ class Character
 {
 public:
 	//コンストラクタ
-	Character();
+	Character() = default;
 	//デストラクタ
-	virtual ~Character();
+	virtual ~Character() = default;
 	// コピーコンストラクタ禁止
 	Character(const Character&) = delete;
 	// 代入禁止
@@ -20,11 +20,16 @@ public:
 	void WeakHitDamage() { hp -= WEAK_DAMAGE; }
 	//回復
 	void Recovery() { hp++; }
+	//死んだか取得
+	bool GetDied() { return isDied; }
 protected:
 	//死んだとき
-	virtual void OnDied() {};
+	virtual void OnDied() {}
 	//残り体力
 	int hp;
+	//死んだか
+	bool isDied;
+private:
 	//弱点ダメージ
 	static const int WEAK_DAMAGE = 2;
 };

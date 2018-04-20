@@ -57,23 +57,11 @@ namespace NYLibrary {
 		/// </summary>
 		template <class C> void AddComponent()
 		{ 
-			//Collider* coll = new Collider();
-			//C* type = dynamic_cast<C*>(coll);
-			//delete coll;
-			//coll = nullptr;
-			////s//コライダーならMatrixObjectの情報を渡す
-			//if (type)
-			//{
-				Collider * callCollision = new C(this);
-				SetReplaceSceneObject(callCollision);
-				componentList.emplace_back(callCollision);
-			//}
-			//else
-			//{
-			//	componentList.emplace_back(new C());
-			//}
 
-
+			Collider * callCollision = new C(this);
+			SetReplaceSceneObject(callCollision);
+			componentList.emplace_back(callCollision);
+			
 			// 重複防止
 			componentList.unique();
 		}

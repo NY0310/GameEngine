@@ -15,6 +15,7 @@ PaintObj::PaintObj( LPSTR fileName, bool isPlane)
 
 void PaintObj::CreateAddChild()
 {
+	Obj::CreateAddChild();
 	campus = make_shared<Paint>(isPlane);
 	AddChild(campus);
 
@@ -94,7 +95,10 @@ void PaintObj::Render()
 		//Ž‹“_ˆÊ’u‚ð“n‚·
 		cb.eyesPos = D3DXVECTOR4(camera->GetEyePos().x, camera->GetEyePos().y, camera->GetEyePos().z, 1.0f);
 		//ƒtƒŒ[ƒ€‚ð“n‚·
-		cb.frame = Math::Lerp(0, MAX_BREAK_CNT, breakTime);
+		cb.frame = breakLerp->GetNow();
+	
+
+
 		memcpy_s(pData.pData, pData.RowPitch, (void*)&cb, sizeof(SIMPLESHADER_CONSTANT_BUFFER));
 		deviceContext->Unmap(constantBuffer.Get(), 0);
 

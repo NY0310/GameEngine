@@ -11,6 +11,7 @@ namespace NYLibrary
 	class TrianglePolygonListCollider : public Collider
 	{
 	public:
+		TrianglePolygonListCollider() = delete;
 		//コンストラクタ
 		TrianglePolygonListCollider(ObjectData* objectData);
 		//三角形ポリゴンを取得する

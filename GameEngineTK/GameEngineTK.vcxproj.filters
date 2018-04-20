@@ -37,9 +37,6 @@
     <Filter Include="NYLibrary\ShaderManager">
       <UniqueIdentifier>{31e9ac9e-af67-4dc3-9146-6c3731fa0c5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NYLibrary\SimpleTexture">
-      <UniqueIdentifier>{d8ff60c8-0ac4-45bb-beff-c8c4c72c0610}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PaintAsset">
       <UniqueIdentifier>{dbb51dd8-26bb-48e0-ad80-8e8f69d8cddf}</UniqueIdentifier>
     </Filter>
@@ -145,6 +142,9 @@
     <Filter Include="Scene\GameScene\Charactor\Enemy\State">
       <UniqueIdentifier>{883d4238-1a5c-43ef-b26d-b8fbe7808a36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PaintAsset\PaintSystem\CampusTexture">
+      <UniqueIdentifier>{0c4eacb2-dc78-4c00-8d54-8ad598268458}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\NYLibrary\Device\Device.h">
@@ -188,9 +188,6 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\TitleScene\TitleScene.h">
       <Filter>Scene\TitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\NYLibrary\SimpleTexture\SimpleTextures.h">
-      <Filter>NYLibrary\SimpleTexture</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Collision\Collision.h">
       <Filter>NYLibrary\Collision</Filter>
@@ -330,9 +327,6 @@
     <ClInclude Include="Source\NYLibrary\Sound\SoundManager.h">
       <Filter>NYLibrary\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Sounds\CueSheet_0.h">
-      <Filter>Sounds</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PaintAsset\PaintGun\InkTank.h">
       <Filter>PaintAsset\PaintGun</Filter>
     </ClInclude>
@@ -372,6 +366,21 @@
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.h">
       <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Sounds\CueSheet_0.h">
+      <Filter>Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyDied.h">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sounds\PaintCue.h">
+      <Filter>Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PaintAsset\PaintSystem\CampusTexture\CampusTextures.h">
+      <Filter>PaintAsset\PaintSystem\CampusTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NYLibrary\Math\Lerp.h">
+      <Filter>NYLibrary\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\NYLibrary\Device\Device.cpp">
@@ -409,9 +418,6 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp">
       <Filter>Scene\TitleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\NYLibrary\SimpleTexture\SimpleTextures.cpp">
-      <Filter>NYLibrary\SimpleTexture</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Collision\Collision.cpp">
       <Filter>NYLibrary\Collision</Filter>
@@ -568,6 +574,12 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.cpp">
       <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyDied.cpp">
+      <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PaintAsset\PaintSystem\CampusTexture\CampusTextures.cpp">
+      <Filter>PaintAsset\PaintSystem\CampusTexture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

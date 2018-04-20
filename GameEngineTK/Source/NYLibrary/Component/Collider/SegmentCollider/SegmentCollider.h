@@ -11,6 +11,7 @@ namespace NYLibrary
 	public:
 		//コンストラクタ
 		SegmentCollider(ObjectData* objectData);
+		SegmentCollider() = delete;
 		virtual ~SegmentCollider() = default;
 		//初期化
 		void Initialize();

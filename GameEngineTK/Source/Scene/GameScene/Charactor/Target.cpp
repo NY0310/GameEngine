@@ -4,20 +4,28 @@
 const float Target::DIFFERENCE_UPPER = 0.1f;
 
 
-
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="fileName">objファイル名</param>
 Target::Target(LPSTR fileName):PaintObj(fileName)
 {
-	weakColor = WeakColorList[static_cast<int>(rand()% total)];
+	//弱点色を変更する
+	ChangeWeakColor();
 }
 
-
+/// <summary>
+/// オブジェクトを生成し子供として登録
+/// </summary>
 void Target::CreateAddChild()
 {
-	weakSprite = make_shared<WeakSprite>();
+	weakSprite = make_shared<WeakSprite>(this);
 	AddChild(weakSprite);
-	hp = 10;
 }
 
+/// <summary>
+/// 初期化
+/// </summary>
 void Target::Initialize()
 {
 	PaintObj::CreateAddChild();
@@ -26,18 +34,18 @@ void Target::Initialize()
 	AddComponent<TrianglePolygonListCollider>();
 }
 
+/// <summary>
+/// 更新
+/// </summary>
 void Target::Update()
 {
 	Character::CheckData();
-	if (IsBreakEnd())
-	{
-		/*weakSprite->RemoveFromParent();
-		RemoveFromParent();*/
-	}
 }
 
-
-
+/// <summary>
+/// オブジェクトと登録したら呼び出される	
+/// </summary>
+/// <param name="collider">当たったオブジェクト</param>
 void Target::OnCollisiton(Collider* collider)
 {
 	PaintObj::OnCollisiton(collider);
@@ -60,12 +68,11 @@ void Target::OnCollisiton(Collider* collider)
 }
 
 /// <summary>
-/// 死んだとき
+/// 死んだとき呼び出される
 /// </summary>
 void Target::OnDied()
 {
-	exit(0);
-
+	weakSprite->SetVisible(false);
 }
 
 
@@ -87,7 +94,8 @@ bool Target::IsWeakColor(const D3DXVECTOR4& hitColor)
 	return DIFFERENCE_UPPER >= totlaDifference;
 }
 
-void Target::Finalize()
+void Target::ChangeWeakColor()
 {
-
+	weakColor = WeakColorList[static_cast<int>(rand() % total)];
 }
+

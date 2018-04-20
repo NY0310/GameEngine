@@ -17,11 +17,13 @@ public:
 	void Update();
 	//ó‘Ô•Ï‰»
 	void ChangeState(EnemyState * state);
+	//‘h¶
+	void Revival();
 private:
-	//€‚ñ‚¾‚Æ‚«
-	void OnDied();
 	//ó‘Ô
 	EnemyState* enemyState;
+	//HPãŒÀ
+	static const int MAX_HP = 10;
 };
 
 #include "State/EnemyState.h"

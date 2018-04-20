@@ -2,23 +2,6 @@
 
 using namespace std;
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="maxHp">体力上限</param>
-/// <param name="matrixObject">オブジェクト行列</param>
-Character::Character()
-{
-}
-
-
-
-/// <summary>
-/// デストラクタ
-/// </summary>
-Character::~Character()
-{
-}
 
 
 
@@ -26,6 +9,9 @@ Character::~Character()
 void Character::CheckData()
 {
 	if (hp <= 0)
+	{
+		isDied = true;
 		OnDied();
+	}
 }
 

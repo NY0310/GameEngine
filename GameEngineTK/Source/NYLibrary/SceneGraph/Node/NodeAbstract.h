@@ -61,7 +61,6 @@ namespace NYLibrary
 		virtual void ClearRenderConfig() = 0;
 		//終了
 		virtual void Finalize() = 0;
-
 		//子を追加
 		virtual void AddChild(std::shared_ptr<NodeAbstract>&& child) = 0;
 		//子を切り離す
@@ -94,7 +93,6 @@ namespace NYLibrary
 		std::function<void(SceneKind)> RunWithScene = [&](SceneKind RunWithScene) {};
 		//処理を受け取る
 		virtual void AddRunWithScene(std::function<void(SceneKind)> RunWithScene) {this->RunWithScene = RunWithScene; }
-
 	protected:
 		//親へのポインタ
 		std::weak_ptr<NodeAbstract> parent;

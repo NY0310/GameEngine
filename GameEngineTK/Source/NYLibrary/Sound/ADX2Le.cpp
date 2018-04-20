@@ -1,378 +1,393 @@
-/* =====================================================================
-//! @param		「ADX2Le」ソース
-//! @create		樋口 裕太
-//! @date		17/12/01
-===================================================================== */
-#pragma comment(lib, "cri_ware_pcx86_LE_import.lib")
-
-// ヘッダファイルのインクルード
 #include "ADX2Le.h"
-//#include "../System/DebugSystem.h"
+#include <codecvt> 
 
-// 名前空間
-using namespace NYLibrary;
+using namespace MyLibrary;
 
-// 静的メンバの定義
-const int ADX2Le::MAX_VOICE = 24;
-const int ADX2Le::MAX_VIRTUAL_VOICE = 64;
-const int ADX2Le::MAX_CRIFS_LOADER = 64;
-const int ADX2Le::MAX_SAMPLING_RATE = (48000 * 2);
-const int ADX2Le::SAMPLINGRATE_HCAMX = 32000;
-CriAtomExVoicePoolHn	ADX2Le::standardVoicePool_;
-CriAtomExVoicePoolHn	ADX2Le::hcamxVoicePool_;
-CriAtomDbasId			ADX2Le::dbasID_;
-ADX2LePlayer			ADX2Le::player_;
+//////////////////////////////////
+// リンクするライブラリ指定		//
+//////////////////////////////////
+#pragma comment(lib, "cri_ware_pcx86_le_import.lib")
 
-// メンバ関数の定義
+// 定数
+// リソースディレクトリパス
+const std::wstring ADX2Le::RESOURCE_DIRECTORY = L"Resources/Sounds/";
 
-// コンストラクタ
-ADX2LePlayer::ADX2LePlayer()
-	: acbHandle_(nullptr)
-	, player_(nullptr)
-{
-}
+std::unique_ptr<ADX2Le> ADX2Le::m_Instance;
 
-/*==============================================================
-// @brief		プレイヤーの作成
-// @param		なし
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::Create()
-{
-	// プレイヤーの作成
-	if (!player_)
-	{
-		player_ = criAtomExPlayer_Create(nullptr, nullptr, 0);
-	}
-}
-
-/*==============================================================
-// @brief		Acbファイルの読み込み
-// @param		Acbファイル名（char*）、Awbファイル名（char*）
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::LoadAcb(const char* acb, const char* awb)
-{
-	if (acbHandle_)
-	{
-		// Acbハンドルの破棄
-		criAtomExAcb_Release(acbHandle_);
-	}
-
-	// Acbファイルの読み込み
-	acbHandle_ = criAtomExAcb_LoadAcbFile(nullptr, acb, nullptr, awb, nullptr, 0);
-}
-
-/*==============================================================
-// @brief		プレイヤーの解放
-// @param		なし
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::Release()
-{
-	// プレイヤーハンドルの破棄
-	if (player_)
-	{
-		criAtomExPlayer_Destroy(player_);
-	}
-
-	// Acbハンドルの破棄
-	if (acbHandle_)
-	{
-		criAtomExAcb_Release(acbHandle_);
-	}
-}
-
-/*==============================================================
-// @brief		指定したキューの再生
-// @param		キューID（CriAtomExCueId）、音量（float）
-// @return		なし
-===============================================================*/
-CriAtomExPlaybackId ADX2LePlayer::Play(CriAtomExCueId cueID, float volume)
-{
-	// 音量設定
-	criAtomExPlayer_SetVolume(player_, volume);
-
-	// キューIDの指定
-	criAtomExPlayer_SetCueId(player_, acbHandle_, cueID);
-
-	// 再生
-	return criAtomExPlayer_Start(player_);
-}
-
-/*==============================================================
-// @brief		音量設定
-// @param		音量（float）
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::SetVolume(float volume)
-{
-	criAtomExPlayer_SetVolume(player_, volume);
-	criAtomExPlayer_UpdateAll(player_);
-}
-
-/*==============================================================
-// @brief		指定した再生IDの音量設定
-// @param		再生ID（CriAtomExPlaybackId）、音量（float）
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::SetVolumeByID(CriAtomExPlaybackId playbackID, float volume)
-{
-	criAtomExPlayer_SetVolume(player_, volume);
-	criAtomExPlayer_Update(player_, playbackID);
-}
-
-/*==============================================================
-// @brief		プレイヤーの一時停止
-// @param		なし
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::Pause()
-{
-	// ポーズ中であれば解除し、なければポーズする
-	criAtomExPlayer_Pause(player_, criAtomExPlayer_IsPaused(player_) == CRI_TRUE ? CRI_FALSE : CRI_TRUE);
-}
-
-/*==============================================================
-// @brief		指定した再生IDの一時停止
-// @param		再生ID（CriAtomExPlaybackId）
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::PauseByID(CriAtomExPlaybackId playbackID)
-{
-	// ポーズ中であれば解除し、なければポーズする
-	criAtomExPlayback_Pause(playbackID, criAtomExPlayback_IsPaused(playbackID) == CRI_TRUE ? CRI_FALSE : CRI_TRUE);
-}
-
-/*==============================================================
-// @brief		プレイヤーのポーズ状態の取得
-// @param		なし
-// @return		ポーズ状態（bool）
-===============================================================*/
-bool ADX2LePlayer::IsPause()
-{
-	return criAtomExPlayer_IsPaused(player_) == CRI_TRUE ? true : false;
-}
-
-/*==============================================================
-// @brief		指定した再生IDのポーズ状態の取得
-// @param		再生ID（CriAtomExPlaybackId）
-// @return		ポーズ状態（bool）
-===============================================================*/
-bool ADX2LePlayer::IsPauseByID(CriAtomExPlaybackId playbackID)
-{
-	return criAtomExPlayback_IsPaused(playbackID) == CRI_TRUE ? true : false;
-}
-
-/*==============================================================
-// @brief		プレイヤーの停止
-// @param		なし
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::Stop()
-{
-	criAtomExPlayer_Stop(player_);
-}
-
-/*==============================================================
-// @brief		指定した再生IDの停止
-// @param		再生ID（CriAtomExPlaybackId）
-// @return		なし
-===============================================================*/
-void ADX2LePlayer::StopByID(CriAtomExPlaybackId playbackID)
-{
-	criAtomExPlayback_Stop(playbackID);
-}
-
-// エラーコールバック関数のユーザ実装
-void ADX2Le::UserErrorCallback(const CriChar8* errID, CriUint32 p1, CriUint32 p2, CriUint32* parray)
-{
-	const CriChar8* errmsg;
-
-	// エラーコードからエラー文字列に変換してコンソール出力する
-	errmsg = criErr_ConvertIdToMessage(errID, p1, p2);
-
-	const unsigned int dataSize = 256;
-	wchar_t wlocal[dataSize + 1] = { 0x00 };
-
-	// マルチバイト文字をUnicodeへ変換する
-	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, errmsg, dataSize, wlocal, dataSize + 1);
-
-	// コンソール出力する
-	//DebugLog::DebugLog(wlocal);
-}
-
-//	メモリ確保関数のユーザ実装
-void* ADX2Le::UserAlloc(void* obj, CriUint32 size)
-{
-	void* ptr;
-	ptr = malloc(size);
-
-	return ptr;
-}
-
-// メモリ解放関数のユーザ実装
-void ADX2Le::UserFree(void* obj, void* ptr)
-{
-	free(ptr);
-}
-
-/*==============================================================
-// @brief		初期化処理
-// @param		acfファイル名（char*）
-// @return		なし
-===============================================================*/
-void ADX2Le::Initialize(const char* acf)
+//--------------------------------------------------------------------------------------
+// 初期化処理
+//--------------------------------------------------------------------------------------
+void ADX2Le::Initialize(const wchar_t *acf)
 {
 	// エラーコールバック関数の登録
-	criErr_SetCallback(UserErrorCallback);
+	criErr_SetCallback(user_error_callback_func);
 
 	// メモリアロケータの登録
-	criAtomEx_SetUserAllocator(UserAlloc, UserFree, nullptr);
+	criAtomEx_SetUserAllocator(user_alloc_func, user_free_func, NULL);
 
 	// ライブラリ初期化
-	CriAtomExConfig_PC libConfig;
-	CriFsConfig fsConfig;
-	criAtomEx_SetDefaultConfig_PC(&libConfig);
-	criFs_SetDefaultConfig(&fsConfig);
-	libConfig.atom_ex.max_virtual_voices = MAX_VIRTUAL_VOICE;
-	libConfig.hca_mx.output_sampling_rate = SAMPLINGRATE_HCAMX;
-	fsConfig.num_loaders = MAX_CRIFS_LOADER;
-	libConfig.atom_ex.fs_config = &fsConfig;
-	criAtomEx_Initialize_PC(&libConfig, nullptr, 0);
+	CriAtomExConfig_WASAPI lib_config;
+	CriFsConfig fs_config;
+	criAtomEx_SetDefaultConfig_WASAPI(&lib_config);
+	criFs_SetDefaultConfig(&fs_config);
+	lib_config.atom_ex.max_virtual_voices = MAX_VIRTUAL_VOICE;
+	lib_config.hca_mx.output_sampling_rate = SAMPLINGRATE_HCAMX;
+	fs_config.num_loaders = MAX_CRIFS_LOADER;
+	lib_config.atom_ex.fs_config = &fs_config;
+	criAtomEx_Initialize_WASAPI(&lib_config, NULL, 0);
 
 	// ストリーミング用バッファの作成
-	dbasID_ = criAtomDbas_Create(nullptr, nullptr, 0);
+	m_dbas_id = criAtomDbas_Create(NULL, NULL, 0);
 
+	// フルパスに補完
+	std::wstring fullpath_wstr = RESOURCE_DIRECTORY + acf;
+	// stringに変換
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> cv;
+	std::string fullpath_str = cv.to_bytes(fullpath_wstr);
 	// ACFファイルの読み込みと登録
-	criAtomEx_RegisterAcfFile(nullptr, acf, nullptr, 0);
+	CriBool result = criAtomEx_RegisterAcfFile(NULL, fullpath_str.c_str(), NULL, 0);
 
 	// DSPバス設定の登録
-	criAtomEx_AttachDspBusSetting("DspBusSetting_0", nullptr, 0);
+	criAtomEx_AttachDspBusSetting("DspBusSetting_0", NULL, 0);
 
 	// ボイスプールの作成（最大ボイス数変更／最大ピッチ変更／ストリーム再生対応）
-	CriAtomExStandardVoicePoolConfig standardVpoolConfig;
-	criAtomExVoicePool_SetDefaultConfigForStandardVoicePool(&standardVpoolConfig);
-	standardVpoolConfig.num_voices = MAX_VOICE;
-	standardVpoolConfig.player_config.max_sampling_rate = MAX_SAMPLING_RATE;
-	standardVpoolConfig.player_config.streaming_flag = CRI_TRUE;
-	standardVoicePool_ = criAtomExVoicePool_AllocateStandardVoicePool(&standardVpoolConfig, nullptr, 0);
+	CriAtomExStandardVoicePoolConfig standard_vpool_config;
+	criAtomExVoicePool_SetDefaultConfigForStandardVoicePool(&standard_vpool_config);
+	standard_vpool_config.num_voices = MAX_VOICE;
+	standard_vpool_config.player_config.max_sampling_rate = MAX_SAMPLING_RATE;
+	standard_vpool_config.player_config.streaming_flag = CRI_TRUE;
+	m_standard_voice_pool = criAtomExVoicePool_AllocateStandardVoicePool(&standard_vpool_config, NULL, 0);
 
 	// HCA-MX再生用：ボイスプールの作成
-	CriAtomExHcaMxVoicePoolConfig hcamxVpoolConfig;
-	criAtomExVoicePool_SetDefaultConfigForHcaMxVoicePool(&hcamxVpoolConfig);
-	hcamxVpoolConfig.num_voices = MAX_VOICE;
-	hcamxVpoolConfig.player_config.max_sampling_rate = MAX_SAMPLING_RATE;
-	hcamxVpoolConfig.player_config.streaming_flag = CRI_TRUE;
-	hcamxVoicePool_ = criAtomExVoicePool_AllocateHcaMxVoicePool(&hcamxVpoolConfig, NULL, 0);
+	CriAtomExHcaMxVoicePoolConfig hcamx_vpool_config;
+	criAtomExVoicePool_SetDefaultConfigForHcaMxVoicePool(&hcamx_vpool_config);
+	hcamx_vpool_config.num_voices = MAX_VOICE;
+	hcamx_vpool_config.player_config.max_sampling_rate = MAX_SAMPLING_RATE;
+	hcamx_vpool_config.player_config.streaming_flag = CRI_TRUE;
+	m_hcamx_voice_pool = criAtomExVoicePool_AllocateHcaMxVoicePool(&hcamx_vpool_config, NULL, 0);
 
 	// プレイヤーの作成
-	player_.Create();
+	m_player.Create();
 }
 
-/*==============================================================
-// @brief		更新処理
-// @param		なし
-// @return		なし
-===============================================================*/
-void ADX2Le::Update()
-{
-	criAtomEx_ExecuteMain();
-}
-
-/*==============================================================
-// @brief		終了処理
-// @param		なし
-// @return		なし
-===============================================================*/
+//--------------------------------------------------------------------------------------
+// 終了処理
+//--------------------------------------------------------------------------------------
 void ADX2Le::Finalize()
 {
 	// プレイヤーの破棄
-	player_.Release();
+	m_player.Release();
 
 	// DSPのデタッチ
 	criAtomEx_DetachDspBusSetting();
 
 	// ボイスプールの破棄
-	criAtomExVoicePool_Free(hcamxVoicePool_);
-	criAtomExVoicePool_Free(standardVoicePool_);
+	criAtomExVoicePool_Free(m_hcamx_voice_pool);
+	criAtomExVoicePool_Free(m_standard_voice_pool);
 
 	// ACFの登録解除
 	criAtomEx_UnregisterAcf();
 
 	// D-BASの破棄
-	criAtomDbas_Destroy(dbasID_);
+	criAtomDbas_Destroy(m_dbas_id);
 
 	// ライブラリの終了
-	criAtomEx_Finalize_PC();
+	criAtomEx_Finalize_WASAPI();
 }
 
-/*==============================================================
-// @brief		プレイヤーの取得
-// @param		なし
-// @return		プレイヤー（ADX2LePlayer*）
-===============================================================*/
-ADX2LePlayer* ADX2Le::GetPlayer()
+//--------------------------------------------------------------------------------------
+// 更新処理
+//--------------------------------------------------------------------------------------
+void ADX2Le::Update()
 {
-	return &player_;
+	criAtomEx_ExecuteMain();
 }
 
-/*==============================================================
-// @brief		Acbファイルの読み込み
-// @param		Acbファイル名（char*）、Awbファイル名（char*）
-// @return		なし
-===============================================================*/
-void ADX2Le::LoadAcb(const char* acb, const char* awb)
+ADX2Le * ADX2Le::GetInstance()
 {
-	player_.LoadAcb(acb, awb);
+	if (!m_Instance)
+	{
+		m_Instance.reset(new ADX2Le);
+	}
+
+	return m_Instance.get();
 }
 
-/*==============================================================
-// @brief		指定したキューの再生
-// @param		キューID（CriAtomExCueId）、音量（float）
-// @return		再生ID（CriAtomExPlaybackId）
-===============================================================*/
-CriAtomExPlaybackId ADX2Le::Play(CriAtomExCueId cueID, float volume)
+//--------------------------------------------------------------------------------------
+// エラーコールバック関数のユーザ実装
+//--------------------------------------------------------------------------------------
+void ADX2Le::user_error_callback_func(const CriChar8 *errid, CriUint32 p1, CriUint32 p2, CriUint32 *parray)
 {
-	return player_.Play(cueID, volume);
+	const CriChar8 *errmsg;
+
+	// エラーコードからエラー文字列に変換してコンソール出力する
+	errmsg = criErr_ConvertIdToMessage(errid, p1, p2);
+
+	const unsigned int dataSize = 256;
+	wchar_t wlocal[dataSize + 1] = { 0x00 };
+
+	// マルチバイト文字をunicodeへ変換する
+	MultiByteToWideChar(
+		CP_ACP,
+		MB_PRECOMPOSED,
+		errmsg,
+		dataSize,
+		wlocal,
+		dataSize + 1);
+
+	// コンソール出力する
+	OutputDebugString(wlocal);
+
+	return;
 }
 
-/*==============================================================
-// @brief		プレイヤーの音量設定
-// @param		音量（float）
-// @return		なし
-===============================================================*/
+//--------------------------------------------------------------------------------------
+//	メモリ確保関数のユーザ実装
+//--------------------------------------------------------------------------------------
+void *ADX2Le::user_alloc_func(void *obj, CriUint32 size)
+{
+	void *ptr;
+	ptr = malloc(size);
+	return ptr;
+}
+
+//--------------------------------------------------------------------------------------
+// メモリ解放関数のユーザ実装
+//--------------------------------------------------------------------------------------
+void ADX2Le::user_free_func(void *obj, void *ptr)
+{
+	free(ptr);
+}
+
+//--------------------------------------------------------------------------------------
+// コンストラクタ
+//--------------------------------------------------------------------------------------
+ADX2Le_Player::ADX2Le_Player()
+{
+	// Acbハンドルの初期化
+	m_acb_hn = nullptr;
+
+	// プレイヤーの初期化
+	m_player = nullptr;
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーの作成
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::Create()
+{
+	// プレイヤーの作成
+	if (m_player == nullptr) m_player = criAtomExPlayer_Create(NULL, NULL, 0);
+}
+
+//--------------------------------------------------------------------------------------
+// Acbファイルのロード
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::LoadAcb(const char *acb, const char *awb)
+{
+		// ACBファイル読み込み
+	if (m_acb_hn != nullptr)
+	{
+		// ACBハンドルの破棄
+		criAtomExAcb_Release(m_acb_hn);
+	}
+	m_acb_hn = criAtomExAcb_LoadAcbFile(NULL, acb, NULL, awb, NULL, 0);
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーの解放関数
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::Release()
+{
+	// プレーヤハンドルの破棄
+	if (m_player != nullptr) criAtomExPlayer_Destroy(m_player);
+	// ACBハンドルの破棄
+	if (m_acb_hn != nullptr) criAtomExAcb_Release(m_acb_hn);
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーハンドルの取得
+//--------------------------------------------------------------------------------------
+CriAtomExPlayerHn ADX2Le_Player::GetPlayerHandle()
+{
+	return m_player;
+}
+
+//--------------------------------------------------------------------------------------
+// 指定キューの再生 
+//--------------------------------------------------------------------------------------
+CriAtomExPlaybackId ADX2Le_Player::Play(CriAtomExCueId cue_id, float volume)
+{
+	// 音量の設定
+	criAtomExPlayer_SetVolume(m_player, volume);
+	// キューIDの指定
+	criAtomExPlayer_SetCueId(m_player, m_acb_hn, cue_id);
+
+	// 再生の開始
+	return criAtomExPlayer_Start(m_player);
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーの音量の設定
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::SetVolume(float volume)
+{
+	criAtomExPlayer_SetVolume(m_player, volume);
+	criAtomExPlayer_UpdateAll(m_player);
+}
+
+//--------------------------------------------------------------------------------------
+// 再生ID指定の音量の設定
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::SetVolumeByID(CriAtomExPlaybackId playback_id, float volume)
+{
+	criAtomExPlayer_SetVolume(m_player, volume);
+	criAtomExPlayer_Update(m_player, playback_id);
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーのポーズ
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::Pause()
+{
+	// ポーズ中？
+	if (criAtomExPlayer_IsPaused(m_player) == CRI_TRUE)
+	{
+		// ポーズ解除
+		criAtomExPlayer_Pause(m_player, CRI_FALSE);
+	}
+	else
+	{
+		// ポーズ
+		criAtomExPlayer_Pause(m_player, CRI_TRUE);
+	}
+}
+
+//--------------------------------------------------------------------------------------
+// 再生ID指定のポーズ
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::PauseByID(CriAtomExPlaybackId playback_id)
+{
+	// ポーズ中？
+	if (criAtomExPlayback_IsPaused(playback_id) == CRI_TRUE)
+	{
+		// ポーズ解除
+		criAtomExPlayback_Pause(playback_id, CRI_FALSE);
+	}
+	else
+	{
+		// ポーズ
+		criAtomExPlayback_Pause(playback_id, CRI_TRUE);
+	}
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーのポーズ状態の取得
+//--------------------------------------------------------------------------------------
+bool ADX2Le_Player::IsPause()
+{
+	if (criAtomExPlayer_IsPaused(m_player) == CRI_TRUE)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+//--------------------------------------------------------------------------------------
+// 再生ID指定のポーズ状態の取得
+//--------------------------------------------------------------------------------------
+bool ADX2Le_Player::IsPauseByID(CriAtomExPlaybackId playback_id)
+{
+	if (criAtomExPlayback_IsPaused(playback_id) == CRI_TRUE)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーの停止
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::Stop()
+{
+	criAtomExPlayer_Stop(m_player);
+}
+
+//--------------------------------------------------------------------------------------
+// 特定の再生音の停止
+//--------------------------------------------------------------------------------------
+void ADX2Le_Player::StopByID(CriAtomExPlaybackId playback_id)
+{
+	criAtomExPlayback_Stop(playback_id);
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーの取得関数
+//--------------------------------------------------------------------------------------
+ADX2Le_Player* ADX2Le::GetPlayer()
+{
+	return &m_player;
+}
+
+//--------------------------------------------------------------------------------------
+// Acbファイルのロード
+//--------------------------------------------------------------------------------------
+void ADX2Le::LoadAcb(const wchar_t *acb, const wchar_t *awb)
+{
+	// フルパスに補完
+	std::wstring fullpath_acb_wstr = RESOURCE_DIRECTORY + acb;
+	std::wstring fullpath_awb_wstr = RESOURCE_DIRECTORY + awb;
+	// stringに変換
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> cv;
+	std::string fullpath_acb_str = cv.to_bytes(fullpath_acb_wstr);
+	std::string fullpath_awb_str = cv.to_bytes(fullpath_awb_wstr);
+
+	m_player.LoadAcb(fullpath_acb_str.c_str(), fullpath_awb_str.c_str());
+}
+
+//--------------------------------------------------------------------------------------
+// 指定キューの再生 
+//--------------------------------------------------------------------------------------
+CriAtomExPlaybackId ADX2Le::Play(CriAtomExCueId cue_id, float volume)
+{
+	return m_player.Play(cue_id, volume);
+}
+
+//--------------------------------------------------------------------------------------
+// プレイヤーの音量の設定
+//--------------------------------------------------------------------------------------
 void ADX2Le::SetVolume(float volume)
 {
-	player_.SetVolume(volume);
+	m_player.SetVolume(volume);
 }
 
-/*==============================================================
-// @brief		プレイヤーのポーズ
-// @param		なし
-// @return		なし
-===============================================================*/
+//--------------------------------------------------------------------------------------
+// プレイヤーのポーズ
+//--------------------------------------------------------------------------------------
 void ADX2Le::Pause()
 {
-	player_.Pause();
+	m_player.Pause();
 }
 
-/*==============================================================
-// @brief		プレイヤーのポーズ状態の取得
-// @param		なし
-// @return		ポーズ状態（bool）
-===============================================================*/
+//--------------------------------------------------------------------------------------
+// プレイヤーのポーズ状態の取得
+//--------------------------------------------------------------------------------------
 bool ADX2Le::IsPause()
 {
-	return player_.IsPause();
+	return m_player.IsPause();
 }
 
-/*==============================================================
-// @brief		プレイヤーの停止
-// @param		なし
-// @return		なし
-===============================================================*/
+//--------------------------------------------------------------------------------------
+// プレイヤーの停止
+//--------------------------------------------------------------------------------------
 void ADX2Le::Stop()
 {
-	player_.Stop();
+	m_player.Stop();
 }
+

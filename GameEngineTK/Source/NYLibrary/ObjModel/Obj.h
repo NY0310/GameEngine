@@ -11,6 +11,7 @@
 #include "../ShaderManager/ShaderManager.h"
 #include "../SceneGraph/Node/GameObjectNode.h"
 #include "../Light/Light.h"
+#include "../../NYLibrary/Math/Lerp.h"
 
 using namespace Microsoft::WRL;
 
@@ -77,6 +78,8 @@ namespace NYLibrary
 		Obj(LPSTR filename);
 		Obj() = delete;
 		virtual ~Obj();
+		//オブジェクトを生成し子供として登録
+		void CreateAddChild();
 		//初期化処理
 		virtual void Initialize();
 		//OBJファイル読み込み
@@ -89,15 +92,19 @@ namespace NYLibrary
 		void ShadowRender();
 		//破壊カウントを設定
 		void SetBreakTime(float breakTime) {
-			this->breakTime = breakTime;}
+	/*	breakLerp->SetTime(this->breakTime); */useBreakLerp = false;	}
 		//破壊カウントを取得
-		int GetBreakTime() { return breakTime; }
+		int GetBreakTime() { return breakTime;}
 		//破壊を開始
-		void BreakStart() { isUpdateBreak = true; }
+		void BreakStart() { breakLerp->EnableUpdate(); useBreakLerp = true; }
+		void BreakClear() { breakLerp->Clear(); useBreakLerp = true;}
+		//破壊が終わったか
+		bool IsBreakEnd() { return breakLerp->IsLerpEnd(); }
+		//破壊され終わったときに呼び出される
+		virtual void OnBreakEnd(){}
 		//破壊されたと判断される経過時間
 		static const int BREAK_CNT = 60;
-		//破壊が終わったか
-		bool IsBreakEnd() { return BREAK_CNT <= breakTime; }
+
 	private:
 		//シェーダー作成
 		HRESULT CreateShader();
@@ -129,7 +136,6 @@ namespace NYLibrary
 		
 		float breakTime;//壊すカウント
 		static const float MAX_BREAK_CNT;//破壊カウントの上限
-		bool isUpdateBreak;//壊すカウントを更新するか
 
 		/// <summary>
 		/// 委譲
@@ -140,6 +146,8 @@ namespace NYLibrary
 
 		D3DXMATRIX clipToUV;//テクスチャ行列
 		D3DXMATRIX mLight;//ライト行列
+		std::shared_ptr<Lerp> breakLerp;//破壊のラープ
+		bool useBreakLerp;//破壊のラープを使用するか
 	};
 
 };

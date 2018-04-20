@@ -12,7 +12,14 @@ public:
 	PlayUI(const PlayUI&) = delete;
 	// ‘ã“ü‹Ö~
 	PlayUI& operator=(const PlayUI&) = delete;
+	//XV
+	void Update();
+	//‰ó‚ê‚½
+	void OnBreakEnd();
 private:
+	//€‚ñ‚¾‚Æ‚«
 	void OnDied();
+	//HPãŒÀ
+	static const int MAX_HP = 10;
 
 };

@@ -4,7 +4,7 @@
 #include "../../NYLibrary/ShaderManager/ShaderManager.h"
 #include "../../NYLibrary/Camera/FollowCamera.h"
 #include "../../NYLibrary/Math/Math.h"
-#include "../../NYLibrary/SimpleTexture/SimpleTextures.h"
+#include "CampusTexture/CampusTextures.h"
 #include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
 
 using namespace Microsoft::WRL;
@@ -29,18 +29,31 @@ private:
 	};
 
 public:
+	//コンストラクタ
 	Paint(bool isPlane = false);
+	//デストラクタ
 	~Paint();
+	//代入禁止
 	Paint& operator= (const Paint&) = delete;
+	//コピーコンストラクタ禁止
 	Paint(const Paint&) = delete;
-
+	//付着したインクを生成
 	void CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size);
+	//バーテックスバッファー作成
 	void CreateVertexBuffer();
-	ID3D11ShaderResourceView** GetInkTexSRV();
+	//インクのシェーダリソースビューを取得
+	ID3D11ShaderResourceView** Paint::GetInkTexSRV()
+	{
+		return dripTextures->GetShaderResourceView().GetAddressOf();
+	}
+
+	//初期化
 	void Initialize();
+	//インクの描画
 	void ClearRenderConfig();
+	//キャンパスに付着したインクをクリアする
+	void ClearCampus();
 private:
-	bool isPlane;
 	ID3D11Buffer* CreateVertexBuffer(InkData& inkdata);
 	void InkRender();
 	void DripRender();
@@ -69,12 +82,13 @@ private:
 	static ComPtr<ID3D11PixelShader>  DripPlanePixelShader;//インクテクスチャ用ピクセルシェーダー
 
 
-	ComPtr<ID3D11Buffer> dripVertexBuffer;//
-	std::unique_ptr<SimpleTextures> textures;//テクスチャ
-	std::unique_ptr<SimpleTextures> dripTextures;//テクスチャ
+	ComPtr<ID3D11Buffer> dripVertexBuffer;//垂れ流し用バーテックスバッファー
+	std::unique_ptr<CampusTextures> textures;//テクスチャ
+	std::unique_ptr<CampusTextures> dripTextures;//垂れたテクスチャ
 
 
-	static ComPtr<ID3D11VertexShader> updateVertexShader;//インクテクスチャ用バーテックスシェーダー
-	static ComPtr<ID3D11PixelShader> updatePixelShader;//インクテクスチャ用ピクセルシェーダー
+	static ComPtr<ID3D11VertexShader> updateVertexShader;//垂れ流し更新用バーテックスシェーダー
+	static ComPtr<ID3D11PixelShader> updatePixelShader;//垂れ流し更新用ピクセルシェーダー
 
+	bool isPlane;//平面か
 };

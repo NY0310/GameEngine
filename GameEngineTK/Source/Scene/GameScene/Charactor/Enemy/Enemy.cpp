@@ -18,7 +18,9 @@ void Enemy::Initialize()
 	SetScale(0.2f);
 	SetPositionY(GetLocalSize().y *GetScaleY() / 2);
 	SetTag("Enemy");
-	enemyState = EnemyMove::GetInstance();
+	enemyState = EnemyStop::GetInstance();
+	hp = MAX_HP;
+	isDied = false;
 }
 
 /// <summary>
@@ -30,14 +32,6 @@ void Enemy::Update()
 	enemyState->Execute(this);
 }
 
-/// <summary>
-/// éÄÇÒÇæÇ∆Ç´
-/// </summary>
-void Enemy::OnDied()
-{
-	BreakStart();
-
-}
 
 
 
@@ -48,4 +42,14 @@ void Enemy::OnDied()
 void Enemy::ChangeState(EnemyState * state)
 {
 	enemyState = state;
+}
+
+/// <summary>
+/// ëhê∂
+/// </summary>
+void Enemy::Revival()
+{
+	hp = MAX_HP;
+	isDied = false;
+	ChangeWeakColor();
 }

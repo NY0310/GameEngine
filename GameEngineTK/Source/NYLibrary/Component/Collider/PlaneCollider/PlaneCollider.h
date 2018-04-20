@@ -11,6 +11,7 @@ namespace NYLibrary
 	public:
 		//コンストラクタ
 		PlaneCollider(ObjectData* objectData);
+		PlaneCollider() = delete;
 		virtual ~PlaneCollider() = default;
 		//初期化
 		void Initialize();

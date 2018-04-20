@@ -124,7 +124,10 @@ void GameObjectNodeEmpty::LoopInitialize()
 
 void GameObjectNodeEmpty::LoopUpdate()
 {
-	this->Update();
+	if (CanUpdate())
+	{
+		this->Update();
+	}
 	for (auto& child : children) {
 		child->LoopUpdate();
 	}
@@ -136,7 +139,10 @@ void GameObjectNodeEmpty::LoopUpdate()
 void GameObjectNodeEmpty::LoopRender()
 {
 	//ƒXƒNƒŠ[ƒ“•`‰æ
-	this->Render();
+	if (GetVisible())
+	{
+		this->Render();
+	}
 	for (auto& child : children) {
 		child->LoopRender();
 	}
@@ -206,8 +212,10 @@ shared_ptr<NodeAbstract>  GameObjectNodeEmpty::Clone()
 /// </summary>
 void GameObjectNode::LoopUpdate()
 {
-
-	this->Update();
+	if (CanUpdate())
+	{
+		this->Update();
+	}
 	this->Calc();
 	for (auto& child : children) {
 		child->LoopUpdate();

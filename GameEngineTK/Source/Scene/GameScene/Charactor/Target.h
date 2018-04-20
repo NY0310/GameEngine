@@ -27,9 +27,8 @@ public:
 	virtual void OnDied();
 	//弱点化
 	bool IsWeakColor(const D3DXVECTOR4 & hitColor);
-
-	virtual void Finalize();
-
+	//弱点色を変更する
+	void ChangeWeakColor();
 	enum WeakColorKind
 	{
 		red,

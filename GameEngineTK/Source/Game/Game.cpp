@@ -7,6 +7,7 @@
 #include <d3d11.h>
 #include <Winuser.h>
 #include "../Sounds/CueSheet_0.h"
+#include "../Sounds/PaintCue.h"
 
 #pragma comment(lib,"cri_ware_pcx86_LE_import.lib")
 extern void ExitGame();
@@ -64,9 +65,14 @@ void Game::Initialize(HWND window, int width, int height)
 	//タイトルシーンを作成
 	sceneManager->ReplaceScene(SceneKind::TitleScene);
 	//音
-	soundManager = SoundManager::GetInstance();
-	soundManager->Initialize("PaintGame", "CueSheet_0","CueSheet_0");
-	//soundManager->PlayAudio(1);
+	//soundManager = SoundManager::GetInstance();
+	//soundManager->Initialize("PaintGame3","PaintCue","PaintCue");
+	//soundManager->PlayAudio(0);
+
+	MyLibrary::ADX2Le* adx2 = MyLibrary::ADX2Le::GetInstance();
+	adx2->Initialize(L"PaintGame2.acf");
+	adx2->LoadAcb(L"CueSheet_0.acb", L"CueSheet_0.awb");
+	adx2->Play(0);
 }
 
 
@@ -107,6 +113,7 @@ void Game::Update(DX::StepTimer const& timer)
 	ShowCursor(false);
 	//音楽更新
 	soundManager->Update();
+	//ADX2Le::Update();
 
 }
 

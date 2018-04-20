@@ -11,10 +11,6 @@ ComPtr<ID3D11VertexShader> Paint::updateVertexShader;
 ComPtr<ID3D11PixelShader> Paint::updatePixelShader;
 ComPtr<ID3D11InputLayout> Paint::inkVertexLayout;
 
-ID3D11ShaderResourceView** Paint::GetInkTexSRV()
-{ 
-	return dripTextures->GetShaderResourceView().GetAddressOf();
-}
 
 /// <summary>
 /// コンストラクタ
@@ -43,9 +39,9 @@ Paint::~Paint()
 /// </summary>
 void Paint::Initialize()
 {
-	textures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
+	textures = make_unique<CampusTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
 	textures->Initialize();
-	dripTextures = make_unique<SimpleTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
+	dripTextures = make_unique<CampusTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
 	dripTextures->Initialize();
 
 	if (!inkVertexShader.Get())
@@ -211,6 +207,15 @@ void Paint::ClearRenderConfig()
 	UpDateRender();
 	//インクデータを初期化
 	inkData.clear();
+}
+
+/// <summary>
+/// キャンパスに付着したインクをクリアする
+/// </summary>
+void Paint::ClearCampus()
+{
+	textures->ClearRenderTargetView();
+	dripTextures->ClearRenderTargetView();
 }
 
 

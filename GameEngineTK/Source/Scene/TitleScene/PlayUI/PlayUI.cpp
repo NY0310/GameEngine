@@ -1,7 +1,10 @@
 #include "PlayUI.h"
 
+/// <summary>
+/// コンストラクタ
+/// </summary>
 PlayUI::PlayUI()
-	:Target("Resources/OBJMODEL/start.obj")
+	:Target("Resources/OBJMODEL/enemy.obj")
 {
 
 }
@@ -15,8 +18,28 @@ void PlayUI::Initialize()
 	LoadTextuerFile("Resources/PNG/start.png");
 	SetTag("Stage");
 	SetScale(3);
+	hp = MAX_HP;
 }
 
-void PlayUI::OnDied(){
+/// <summary>
+/// 更新
+/// </summary>
+void PlayUI::Update()
+{
+	Target::Update();
+}
+
+/// <summary>
+/// 破壊されたとき
+/// </summary>
+void PlayUI::OnBreakEnd()
+{
 	RunWithScene(SceneKind::GameScene);
+}
+
+/// <summary>
+/// 死んだとき
+/// </summary>
+void PlayUI::OnDied(){
+	BreakStart();
 }
