@@ -10,7 +10,7 @@ NodeAbstract::NodeAbstract()
 	:parent(shared_ptr<NodeAbstract>(nullptr))
 {
 	//XV‰Â”\
-	EnableUpdate();
+	canUpdate = true;
 }
 
 /// <summary>

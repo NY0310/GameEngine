@@ -22,8 +22,6 @@ namespace NYLibrary
 			if (useUpdateTime)
 			{
 				frameCnt++;
-
-
 				time = frameCnt / playTime;
 			}
 			
@@ -31,7 +29,7 @@ namespace NYLibrary
 
 			if (time >= 1.0f)
 			{
-				DisableUpdate();
+				SetCanUpDate(false);
 				listener();
 			}
 		//	useUpdateTime = true;
@@ -49,17 +47,17 @@ namespace NYLibrary
 		//進行度を設定
 		void SetTime(float time) { this->time = time; useUpdateTime = false; }
 		//最初を設定
-		void SetStart(float start) { this->start = start; useUpdateTime = true; }
+		void SetStart(float start) { this->start = start; useUpdateTime = true; SetCanUpDate(true);}
 		//最終を設定
 		void SetEnd(float end) { this->end = end; }
 		//ラープが終了したか
-		bool IsLerpEnd() { return time >= 1; DisableUpdate(); }
+		bool IsLerpEnd() { return time >= 1; }
 		//処理を受け取る
 		void addListener(std::function<void()> listener) {
 			this->listener = listener;
 		}
 		//クリア
-		void Clear() { frameCnt = 0; now = start; Update(); }
+		void Clear() { frameCnt = 0; now = start; time = 0; }
 	private:
 		float start;//始点
 		float end;//終点

@@ -15,9 +15,9 @@ public:
 	Target(const Target&) = delete;
 	// 代入禁止
 	Target& operator=(const Target&) = delete;
-	//子を生成し子供として登録
+	//生成し子供として登録
 	void CreateAddChild();
-	//初期化処理
+	//初期化
 	void Initialize();
 	//更新
 	void Update();
@@ -25,7 +25,7 @@ public:
 	void OnCollisiton(Collider * collider);
 	//死んだとき
 	virtual void OnDied();
-	//弱点化
+	//弱点か
 	bool IsWeakColor(const D3DXVECTOR4 & hitColor);
 	//弱点色を変更する
 	void ChangeWeakColor();
@@ -57,6 +57,7 @@ private:
 	D3DXVECTOR4 weakColor;
 	//誤差上限
 	static const float DIFFERENCE_UPPER;
+protected:
 	//弱点UI
 	std::shared_ptr<WeakSprite> weakSprite;
 };

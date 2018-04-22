@@ -55,11 +55,22 @@ void Enemy::Revival()
 	ChangeWeakColor();
 }
 
+/// <summary>
+/// 壊れた時
+/// </summary>
 void Enemy::OnBreakEnd()
 {
 	diedCnt++;
 	if (MAX_DIED == diedCnt)
 	{
-		RunWithScene(SceneKind::TitleScene);
+		//クリアクラス作成
+		clearUI = make_shared<ClearUI>();
+		AddChild(clearUI);
+		//更新不可能にする
+		SetCanUpDate(false);
+		//非表示
+		SetVisible(false);
+		//弱点を非表示
+		weakSprite->SetVisible(false);
 	}
 }

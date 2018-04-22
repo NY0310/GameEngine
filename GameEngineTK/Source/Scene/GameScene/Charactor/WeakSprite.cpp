@@ -1,7 +1,7 @@
 #include "WeakSprite.h"
 #include "Target.h"
 
-const float WeakSprite::WAKE_DISTANCE = 0.4f;
+const float WeakSprite::PARENT_DISTANCE = 0.4f;
 
 /// <summary>
 /// コンストラクタ
@@ -12,6 +12,10 @@ WeakSprite::WeakSprite(Target* target)
 {
 	//ビルボードにする
 	SetIsBillBoard(true);
+	//親行列の影響を受ける
+	SetParantMatrixInfluence(true);
+	//親の頭に設置する
+	SetPositionY(PARENT_DISTANCE);
 }
 
 /// <summary>
@@ -19,12 +23,9 @@ WeakSprite::WeakSprite(Target* target)
 /// </summary>
 void WeakSprite::Update()
 {
-	////敵の上に描画する
-	//D3DXVECTOR3 position = this->Getparent()._Get()->GetPosition();
-	//position.y += this->Getparent()._Get()->GetScaleY() * this->Getparent()._Get()->GetLocalSize().y / 2;
-	//SetPosition(position);
 	//表示非表示切り替え
 	VisibleUpdate();
+
 }
 
 /// <summary>

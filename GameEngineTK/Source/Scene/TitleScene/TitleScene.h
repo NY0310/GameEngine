@@ -7,7 +7,11 @@
 #include "../Scene.h"
 #include "../GameScene/Charactor/Player/MainPlayer.h"
 #include "../TitleScene/PlayUI/PlayUI.h"
-#include "../GameScene/Stage/Floor.h"
+#include "../GameScene/Stage/Stage.h"
+#include "../../NYLibrary/Sound/ADX2Le.h"
+#include "../../Sounds/CueSheet_0.h"
+
+
 namespace Scene
 {
 
@@ -23,7 +27,7 @@ namespace Scene
 		//描画
 		void Render()final {};
 		//終了
-		void Finalize()final {};
+		void Finalize();
 		//コピーコンストラクタ禁止
 		TitleScene(const TitleScene&) = delete;
 		//代入禁止
@@ -31,6 +35,6 @@ namespace Scene
 	private:
 		std::shared_ptr<Player> player;
 		std::shared_ptr<PlayUI> playUI;
-		std::shared_ptr<Floor> floor;
+		std::shared_ptr<Stage> floor;
 	};
 };

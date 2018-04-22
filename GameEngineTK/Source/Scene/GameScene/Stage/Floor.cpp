@@ -3,7 +3,7 @@
 Floor::Floor()
 	:PaintObj("Resources/OBJMODEL/floor.obj",true)
 {
-	LoadTextuerFile("Resources/BMP/Hand_ColorMap.bmp");
+	LoadTextuerFile("Resources/JPG/floor.jpg");
 	SetTag("stage");
 	SetPositionY(-30.3);
 	SetScale(30);

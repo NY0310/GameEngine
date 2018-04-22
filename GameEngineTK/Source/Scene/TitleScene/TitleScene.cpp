@@ -15,7 +15,7 @@ void TitleScene::CreateAddChild()
 	AddChild(player);
 	playUI = make_shared<PlayUI>();
 	AddChild(playUI);
-	floor = make_shared<Floor>();
+	floor = make_shared<Stage>();
 	AddChild(floor);
 }
 
@@ -24,6 +24,8 @@ void TitleScene::CreateAddChild()
 /// </summary>
 void TitleScene::Initialize()
 {
+	ADX2Le* adx2 = ADX2Le::GetInstance();
+	adx2->Play(CRI_CUESHEET_0_TITLE_0);
 }
 
 /// <summary>
@@ -31,4 +33,11 @@ void TitleScene::Initialize()
 /// </summary>
 void TitleScene::Update()
 {
+}
+
+
+void TitleScene::Finalize()
+{
+	ADX2Le* adx2 = ADX2Le::GetInstance();
+	adx2->Stop();
 }

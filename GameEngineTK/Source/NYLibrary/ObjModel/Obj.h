@@ -92,12 +92,10 @@ namespace NYLibrary
 		void ShadowRender();
 		//破壊カウントを設定
 		void SetBreakTime(float breakTime) {
-	/*	breakLerp->SetTime(this->breakTime); */useBreakLerp = false;	}
-		//破壊カウントを取得
-		int GetBreakTime() { return breakTime;}
+	/*	breakLerp->SetTime(this->breakTime); */}
 		//破壊を開始
-		void BreakStart() { breakLerp->EnableUpdate(); useBreakLerp = true; }
-		void BreakClear() { breakLerp->Clear(); useBreakLerp = true;}
+		void BreakStart() { breakLerp->SetCanUpDate(true);}
+		void BreakClear() { breakLerp->Clear(); }
 		//破壊が終わったか
 		bool IsBreakEnd() { return breakLerp->IsLerpEnd(); }
 		//破壊され終わったときに呼び出される
@@ -134,7 +132,6 @@ namespace NYLibrary
 		static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
 		std::vector<Triangle> triangles;
 		
-		float breakTime;//壊すカウント
 		static const float MAX_BREAK_CNT;//破壊カウントの上限
 
 		/// <summary>
@@ -147,7 +144,6 @@ namespace NYLibrary
 		D3DXMATRIX clipToUV;//テクスチャ行列
 		D3DXMATRIX mLight;//ライト行列
 		std::shared_ptr<Lerp> breakLerp;//破壊のラープ
-		bool useBreakLerp;//破壊のラープを使用するか
 	};
 
 };

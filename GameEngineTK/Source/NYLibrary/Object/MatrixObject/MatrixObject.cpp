@@ -28,7 +28,7 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 	order = worldMatrixOrderFactory->Set(WorldMatrixOrder::ORDER::SCALEMAT_ROTOMAT_TRANSMAT);
 	//ビルボードにしない
 	isBillBoard = false;
-	isParantInfluence = false;
+	isParantMatrixInfluence = false;
 
 }
 
@@ -68,7 +68,7 @@ void MatrixObject::Calc(const D3DXMATRIX& parentWorldMatrix)
 	CalcAllMatrix();
 	//ワールド行列を作成
 	CalcWorldMatrix();
-	this->worldMatrix *= parentWorldMatrix;
+	this->worldMatrix = parentWorldMatrix * this->worldMatrix;
 	//ワールド・ビュー・プロジェクション行列を作成
 	CalcWVP();
 

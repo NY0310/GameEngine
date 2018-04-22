@@ -124,7 +124,7 @@ void GameObjectNodeEmpty::LoopInitialize()
 
 void GameObjectNodeEmpty::LoopUpdate()
 {
-	if (CanUpdate())
+	if (GetCanUpdate())
 	{
 		this->Update();
 	}
@@ -167,18 +167,22 @@ void GameObjectNodeEmpty::LoopClearRenderConfig()
 
 void GameObjectNodeEmpty::LoopFinalize()
 {
+	this->Finalize();
 	//子供の数を取得
 	int childNum = children.size();
 
-	for (vector<shared_ptr<NodeAbstract>>::iterator child = children.begin(); child == children.end();  child++)
+	for (vector<shared_ptr<NodeAbstract>>::iterator child = children.begin(); child != children.end();  child++)
 	{
 		(*child)->LoopFinalize();
 		//子供が削除されたか
-		if (childNum > children.size())
+		if (childNum != static_cast<int>(children.size()))
 		{
 			child = children.begin();
 			childNum = children.size();
 		}
+		if (childNum == 0)
+			break;
+
 	}
 
 	RemoveFromParent();
@@ -213,12 +217,12 @@ shared_ptr<NodeAbstract>  GameObjectNodeEmpty::Clone()
 void GameObjectNode::LoopUpdate()
 {
 	//更新可能か
-	if (CanUpdate())
+	if (GetCanUpdate())
 	{
 		this->Update();
 	}
 	//親行列に影響するか
-	if (GetIsParantInfluence())
+	if (GetParantMatrixInfluence())
 	{
 		this->Calc(Getparent()._Get()->GetWorldMatrix());
 	}
@@ -230,9 +234,16 @@ void GameObjectNode::LoopUpdate()
 	//コンポーネントの更新処理
 	this->ComponentUpdate();
 
+	int childNum = children.size();
 
-	for (auto& child : children) {
-		child->LoopUpdate();
+	for (vector<shared_ptr<NodeAbstract>>::iterator child = children.begin(); child != children.end(); child++)
+	{
+		(*child)->LoopUpdate();
+		//子供が削除されたか
+		if (childNum != children.size())
+		{
+			child = children.begin();
+			childNum = children.size();
+		}
 	}
-
 }

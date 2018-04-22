@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-namespace MyLibrary
+namespace NYLibrary
 {
 	// ADX2Leの再生プレイヤークラス
 	class ADX2Le_Player
@@ -143,6 +143,10 @@ namespace MyLibrary
 
 		// プレイヤーの停止
 		void Stop();
+		//指定キューの再生
+		void Stop(CriAtomExCueId cue_id);
+
+		bool IsPauseByID(CriAtomExCueId cue_id);
 
 	};
 }

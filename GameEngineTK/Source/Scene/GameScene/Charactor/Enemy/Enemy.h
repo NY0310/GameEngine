@@ -1,5 +1,6 @@
 #pragma once
 #include "../Target.h"
+#include "../../Clear/ClearUI.h"
 
 class EnemyState;
 class Enemy : public Target
@@ -19,7 +20,7 @@ public:
 	void ChangeState(EnemyState * state);
 	//‘h¶
 	void Revival();
-	//€–S‚µ‚½‚Æ‚«‚ÉŒÄ‚Ño‚µ
+	//‰ó‚ê‚½‚ÉŒÄ‚Ño‚µ
 	void OnBreakEnd();
 private:
 	//ó‘Ô
@@ -30,6 +31,8 @@ private:
 	static const int MAX_DIED = 5;
 	//€–S‰ñ”
 	int diedCnt;
+	//ƒNƒŠƒA
+	std::shared_ptr<ClearUI> clearUI;
 };
 
 #include "State/EnemyState.h"

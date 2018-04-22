@@ -78,11 +78,9 @@ namespace NYLibrary
 		//親のアドレスを設定する
 		inline void SetParent(const std::shared_ptr<NodeAbstract>& parent) { this->parent = parent; }
 		//更新可能か
-		bool CanUpdate() { return canUpdate;}
-		//更新可能にする
-		inline void EnableUpdate() { canUpdate = true; }
-		//更新不可にする
-		inline void DisableUpdate() { canUpdate = false;}
+		bool GetCanUpdate() { return canUpdate;}
+		//更新可能かを設定
+		inline void SetCanUpDate(bool canUpdate) { this->canUpdate = canUpdate; }
 		//ノードの数を取得する
 		int GetSize();
 		//ノードの数をカウントする(再起関数)

@@ -16,5 +16,5 @@ private:
 	//ターゲット
 	Target* target;
 	//ズレ
-	static const float WAKE_DISTANCE;
+	static const float PARENT_DISTANCE;
 };

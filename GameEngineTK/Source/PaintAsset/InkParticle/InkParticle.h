@@ -8,6 +8,8 @@
 #include "InkObj.h"
 #include "../../NYLibrary/SceneGraph/Node/GameObjectNode.h"
 #include "../InkSegmentCollider/InkSegmentCollider.h"
+#include "../../NYLibrary/Sound/ADX2Le.h"
+#include "../../Sounds/CueSheet_0.h"
 
 /// <summary>
 /// ƒCƒ“ƒNˆê“H•ª

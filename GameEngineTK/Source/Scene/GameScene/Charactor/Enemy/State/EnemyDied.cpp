@@ -29,18 +29,21 @@ void EnemyDied::Execute(Enemy * enemy)
 {
 	if (isFirst)
 	{
-		//敵についたインクをクリア
-		enemy->ClearCampus();
 		//オブジェクトを破壊する
 		enemy->BreakStart();
 		isFirst = false;
+		//停止中は当たり判定を行わない
+		enemy->SetComponentActive(false);
+
 	}
+
 
 	//破壊され終わったか
 	if (enemy->IsBreakEnd())
 	{
 		isFirst = true;
-	//	enemy->SetPosition(GetMovePosition());
+		//敵についたインクをクリア
+		enemy->ClearCampus();
 		enemy->BreakClear();
 		enemy->Revival();
 		enemy->ChangeState(EnemyMove::GetInstance());

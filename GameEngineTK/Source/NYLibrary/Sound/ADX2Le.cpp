@@ -1,7 +1,7 @@
 #include "ADX2Le.h"
 #include <codecvt> 
 
-using namespace MyLibrary;
+using namespace NYLibrary;
 
 //////////////////////////////////
 // リンクするライブラリ指定		//
@@ -389,5 +389,21 @@ bool ADX2Le::IsPause()
 void ADX2Le::Stop()
 {
 	m_player.Stop();
+}
+
+//--------------------------------------------------------------------------------------
+// 指定キューの再生 
+//--------------------------------------------------------------------------------------
+void ADX2Le::Stop(CriAtomExCueId cue_id)
+{
+	m_player.StopByID(cue_id);
+}
+
+//--------------------------------------------------------------------------------------
+// 指定キューの状態を取得
+//--------------------------------------------------------------------------------------
+bool ADX2Le::IsPauseByID(CriAtomExCueId cue_id)
+{
+	return m_player.IsPauseByID(cue_id);
 }
 

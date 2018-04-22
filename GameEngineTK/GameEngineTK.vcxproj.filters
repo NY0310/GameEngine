@@ -369,14 +369,8 @@
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyStop.h">
       <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Sounds\CueSheet_0.h">
-      <Filter>Sounds</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Scene\GameScene\Charactor\Enemy\State\EnemyDied.h">
       <Filter>Scene\GameScene\Charactor\Enemy\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sounds\PaintCue.h">
-      <Filter>Sounds</Filter>
     </ClInclude>
     <ClInclude Include="Source\PaintAsset\PaintSystem\CampusTexture\CampusTextures.h">
       <Filter>PaintAsset\PaintSystem\CampusTexture</Filter>
@@ -386,6 +380,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\GameScene\Clear\ClearUI.h">
       <Filter>Scene\GameScene\Clear</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sounds\CueSheet_0.h">
+      <Filter>Sounds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

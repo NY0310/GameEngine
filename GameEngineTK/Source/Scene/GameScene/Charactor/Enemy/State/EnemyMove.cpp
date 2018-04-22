@@ -33,11 +33,10 @@ void EnemyMove::Execute(Enemy * enemy)
 		endPosition = GetMovePosition();
 		frameCnt = 0;
 		isFirst = false;
-		//ˆÚ“®’†‚Í“–‚½‚è”»’è‚ðs‚í‚È‚¢
+		//ˆÚ“®’†‚Í“–‚½‚è”»’è‚ðs‚¤
 		enemy->SetComponentActive(true);
 	}
 
-	float time = static_cast<float>(frameCnt) / MOVE_TIME;
 	//float breaktime = time;
 	//if (breaktime <= 0.5f)
 	//{
@@ -48,18 +47,32 @@ void EnemyMove::Execute(Enemy * enemy)
 	//	breaktime -= 1.0f;
 	//	breaktime *= -2.0f;
 	//}
-
-
-	//enemy->SetBreakTime(breaktime);
+	float time = static_cast<float>(frameCnt) / MOVE_TIME;
 	//üŒ`•âŠÔ‚ÅˆÚ“®‚³‚¹‚é
 	enemy->SetPosition(Math::Lerp(startPosition, endPosition, time));
 	frameCnt++;
-	if (time > 1)
+
+	if (time >= 1)
 	{
-		enemy->ChangeState(EnemyStop::GetInstance());
-		frameCnt = 0;
 		isFirst = true;
 	}
+
+	//Ž€‚ñ‚¾‚Æ‚«		
+	if (enemy->GetDied())
+	{
+		frameCnt = 0;
+		isFirst = true;
+		enemy->ChangeState(EnemyDied::GetInstance());
+	}
+
+
+	//enemy->SetBreakTime(breaktime);
+	//if (time > 1)
+	//{
+	//	enemy->ChangeState(EnemyStop::GetInstance());
+	//	frameCnt = 0;
+	//	isFirst = true;
+	//}
 
 
 

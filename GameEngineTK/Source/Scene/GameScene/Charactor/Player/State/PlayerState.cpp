@@ -33,8 +33,10 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	//右旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::D))
 		saveSpeed.x -= speed.x;
-	if (keyBoard->IsPressed(DirectX::Keyboard::E))
+	if (keyBoard->IsPressed(DirectX::Keyboard::U))
+	{
 		exit(0);
+	}
 	//移動させる
 	if (saveSpeed.x != 0 || saveSpeed.z != 0)
 	{
@@ -52,7 +54,7 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	mouseTrans.y = static_cast<float>(mousePos->y) - initialMousePosition.y;
 	//そのままの数値でクォータニオンを作成すると回転しすぎるので係数で除算
 	mouseTotalTrans = mouseTrans / ROTATION_COEFFICIENT;
-	//////回転に上限を設ける
+	//回転に上限を設ける
 	Math::ClampAbsolute(mouseTotalTrans.y, MAX_ROTATION.y);
 	//クォータニオンを作成しプレイヤのを回転させる
 	D3DXMATRIX rotY;
@@ -90,9 +92,22 @@ void PlayerState::Move(Player * player, D3DXVECTOR3 speed)
 	D3DXMatrixRotationQuaternion(&rotY,&Rotation(D3DXVECTOR2(mouseTotalTrans.x,0)));
 	D3DXVec3TransformNormal(&moveV, &moveV,&player->GetRotationMatrix());
 
-
+	//移動量の上限
+	const float MAX_CENTER_DIRECTION = 14.0f;
 	//	自機の座標を移動
-	player->SetPosition(player->GetPosition() + moveV);
+	D3DXVECTOR3 newPosition = player->GetPosition() + moveV;
+	//移動量
+	float direction = D3DXVec3Length(&newPosition);
+
+	if (direction >= MAX_CENTER_DIRECTION)
+	{
+		float distnce = direction - MAX_CENTER_DIRECTION;
+		D3DXVECTOR3 nInverce;
+		D3DXVec3Normalize(&nInverce,&-newPosition);
+		newPosition += nInverce * distnce;
+	}
+
+	player->SetPosition(newPosition);
 }
 
 /// <summary>

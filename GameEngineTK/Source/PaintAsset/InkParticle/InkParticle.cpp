@@ -4,9 +4,9 @@ using namespace std;
 using namespace DirectX::Colors;
 
 //速度	
-const float InkParticle::SPEED = 0.1f;
+const float InkParticle::SPEED = 0.2f;
 //落下速度
-const float InkParticle::GRAVITY = 0.01f;
+const float InkParticle::GRAVITY = 0.02f;
 //ローカルの大きさ
 const float InkParticle::ROCAL_SIZE = 12.0f;
 
@@ -51,6 +51,10 @@ void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirecti
 	birthFrame = 0;
 	isValidity = true;
 	SetComponentActive(true);
+
+	ADX2Le* adx2 = ADX2Le::GetInstance();
+	adx2->Play(CRI_CUESHEET_0_SHOOT_0,2.0f);
+
 
 	Update();
 	Calc();
@@ -216,55 +220,6 @@ void InkParticleManager::InkDataUpdate()
 	{
 		if (inkParticle[i]->IsValidity())
 		{
-			//D3DXMATRIX matrix;
-			//D3DXMATRIX trans;
-			//D3DXMATRIX rotMat;
-			//D3DXVECTOR3 localposition = GetChild(i)->GetPosition();
-			////D3DXMatrixScaling(&mat, objectData->GetScaleX(), objectData->GetScaleY(), objectData->GetScaleZ());
-			//D3DXMatrixTranslation(&trans, 0, 0, - 2);
-			//if (GetChild(i)->GetIsUseQuternion())
-			//{
-			//	D3DXMatrixRotationQuaternion(&rotMat, &GetChild(i)->GetQuaternion());
-			//}
-			//else
-			//{
-			//	D3DXMatrixRotationYawPitchRoll(&rotMat, GetChild(i)->GetRotation().x, GetChild(i)->GetRotation().y, GetChild(i)->GetRotation().z);
-			//}
-
-			//
-
-			//matrix = trans *  GetChild(i)->GetRotationMatrix() * GetChild(i)->GetTransferMatrix();
-
-
-
-
-
-			//auto camera = FollowCamera::GetInstance();
-
-			//inkdata.wvp = matrix *  camera->GetView() * camera->GetProjection();
-
-			//inkdata.color = GetChild(i)->GetColor();
-			//inkParticledata.emplace_back(inkdata);
-
-
-
-
-
-			//localposition = GetChild(i)->GetPosition();
-			////D3DXMatrixScaling(&mat, objectData->GetScaleX(), objectData->GetScaleY(), objectData->GetScaleZ());
-			//D3DXMatrixTranslation(&trans, 0, 0, + 2);
-			//if (GetChild(i)->GetIsUseQuternion())
-			//{
-			//	D3DXMatrixRotationQuaternion(&rotMat, &GetChild(i)->GetQuaternion());
-			//}
-			//else
-			//{
-			//	D3DXMatrixRotationYawPitchRoll(&rotMat, GetChild(i)->GetRotation().x, GetChild(i)->GetRotation().y, GetChild(i)->GetRotation().z);
-			//}
-			//matrix = trans *  GetChild(i)->GetRotationMatrix() * GetChild(i)->GetTransferMatrix();
-			//inkdata.wvp = matrix *  camera->GetView() * camera->GetProjection();
-			//inkdata.color = GetChild(i)->GetColor();
-			//inkParticledata.emplace_back(inkdata);
 
 			inkdata.wvp = GetChild(i)->GetWVP();
 			inkdata.color = GetChild(i)->GetColor();

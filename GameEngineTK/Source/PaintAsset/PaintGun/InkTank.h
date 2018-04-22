@@ -3,6 +3,10 @@
 #include "../../NYLibrary/Input/KeyboardUtil.h"
 #include "../../NYLibrary/Input/MouseUtil.h"
 #include "InkTankUI.h"
+#include "../../NYLibrary/Sound/ADX2Le.h"
+#include "../../Sounds/CueSheet_0.h"
+
+
 
 class InputInkUI;
 
@@ -38,6 +42,8 @@ private:
 	void CalcColor();
 	//追加する色を変更する
 	void ChangeColor();
+	//タンクをリセット
+	void TankReset();
 	//インクの色
 	D3DXVECTOR4 inkColor;
 	//インク量

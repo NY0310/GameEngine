@@ -30,7 +30,7 @@ Obj::~Obj()
 void Obj::CreateAddChild()
 {
 	breakLerp = make_shared<Lerp>(0, BREAK_CNT,100.0f);
-	breakLerp->DisableUpdate();
+	breakLerp->SetCanUpDate(false);
 	std::function<void()> thisFunction = std::bind(&Obj::OnBreakEnd, this);
 	breakLerp->addListener(thisFunction);
 	AddChild(breakLerp);
@@ -47,7 +47,6 @@ void Obj::Initialize()
 	CreateSampler();
 	//コンスタントバッファ作成
 	constantBuffer = CreateConstantBuffer(sizeof(SIMPLESHADER_CONSTANT_BUFFER));
-	breakTime = 0;
 }
 
 

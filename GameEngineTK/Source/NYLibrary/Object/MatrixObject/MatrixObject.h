@@ -228,12 +228,12 @@ namespace NYLibrary
 		}
 
 		//親に影響されるか設定
-		void SetIsParantInfluence(bool isParantInfluence) {
-			this->isParantInfluence = isParantInfluence;
+		void SetParantMatrixInfluence(bool isParantMatrixInfluence) {
+			this->isParantMatrixInfluence = isParantMatrixInfluence;
 		}
 		//親に影響されるか取得
-		bool GetIsParantInfluence() {
-			return isParantInfluence;
+		bool GetParantMatrixInfluence() {
+			return isParantMatrixInfluence;
 		}
 	private:
 		//全行列作成
@@ -265,6 +265,6 @@ namespace NYLibrary
 		bool isCalcScaleMatrix;//拡大行列計算を行うか
 		bool isCalcRotationMatrix;//回転行列計算を行うか
 		bool isBillBoard;//ブルボードを使用するか
-		bool isParantInfluence;//親に影響されるか
+		bool isParantMatrixInfluence;//親に影響されるか
 	};
 };

@@ -31,5 +31,5 @@ protected:
 	bool isDied;
 private:
 	//弱点ダメージ
-	static const int WEAK_DAMAGE = 2;
+	static const int WEAK_DAMAGE = 3;
 };

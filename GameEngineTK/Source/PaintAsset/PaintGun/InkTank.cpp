@@ -35,6 +35,7 @@ void InkTank::Update()
 {
 
 	MouseUtil* mouse = MouseUtil::GetInstance();
+	ADX2Le* adx2 = ADX2Le::GetInstance();
 
 
 	auto key = KeyboardUtil::GetInstance();
@@ -51,11 +52,22 @@ void InkTank::Update()
 	{
 		inColor = blue;
 	}
+	if (key->IsPressed(Keyboard::R))
+	{
+		TankReset();
+		adx2->Play(CRI_CUESHEET_0_LOST_0);
+	}
 
 	//インクをタンクに入れる
 	if (!mouse->IsPressed(MouseUtil::Left) && mouse->IsPressed(MouseUtil::Right) && MAX_INK >= colorAmount[total])
 	{
 		colorAmount[inColor] += ADD_INK;
+
+		if (!adx2->IsPauseByID(CRI_CUESHEET_0_CHAGE))
+		{
+			adx2->Play(CRI_CUESHEET_0_CHAGE);
+		}
+
 	}
 
 
@@ -85,7 +97,7 @@ void InkTank::InkLost()
 		const float LOST_COEFFICIENT = 0.3f;
 		float coefficient  = static_cast<float>(colorAmount[i]) / colorAmount[total];
 		colorAmount[i] -= coefficient * LOST_COEFFICIENT;
-		if (colorAmount[i] < 0)
+		if (colorAmount[i] < 0.3f)
 		{
 			colorAmount[i] = 0;
 		}
@@ -109,36 +121,44 @@ void InkTank::CalcTotalAmount()
 /// </summary>
 void InkTank::CalcColor()
 {
-//	inkColor = D3DXVECTOR4(static_cast<float>(colorAmount[red]) / colorAmount[total], static_cast<float>(colorAmount[green]) / colorAmount[total], static_cast<float>(colorAmount[blue]) / colorAmount[total], 1);
 	inkColor = Math::Clamp(1,0,D3DXVECTOR4(colorAmount[red] , colorAmount[green] , colorAmount[blue], 1));
 
 	//非数回避
 	Math::ValidateNan(inkColor);
 }
 
+/// <summary>
+/// 入れるインクの色を変化させる
+/// </summary>
 void InkTank::ChangeColor()
 {
 	MouseUtil* mouse = MouseUtil::GetInstance();
-	if (mouse->GetWheelValue() > oldWheel)
+	const int ONE_WHEEL_VALUE = 120;
+	if (mouse->GetWheelValue() > oldWheel + ONE_WHEEL_VALUE)
 	{
 		//増やすインク量
 		inColor = static_cast<StandardColor>(inColor + 1);
+		oldWheel = oldWheel + ONE_WHEEL_VALUE * 2;
 	}
 
-	if (mouse->GetWheelValue() < oldWheel)
+	if (mouse->GetWheelValue() < oldWheel - ONE_WHEEL_VALUE)
 	{
 		inColor = static_cast<StandardColor>(inColor - 1);
+		oldWheel = oldWheel - ONE_WHEEL_VALUE * 2;
 	}
-	//mouse->ResetWheelValue();
-	inColor = static_cast<StandardColor>(Math::Clamp(2, 0, inColor));
 
-	//inColor = static_cast<StandardColor>(wheel);
-	//if (inColor != 0)
-	//{
-	//	int ab = 0;
-	//}
+	inColor = static_cast<StandardColor>(Math::Clamp(blue, red, inColor));
+	
+}
 
 
-
-	oldWheel = mouse->GetWheelValue();
+/// <summary>
+/// タンクをリセット
+/// </summary>
+void InkTank::TankReset()
+{
+	for (int i = red; i < total; i++)
+	{
+		colorAmount[i] = 0;
+	}
 }

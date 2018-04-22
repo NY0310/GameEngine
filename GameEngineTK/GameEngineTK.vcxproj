@@ -242,7 +242,6 @@
     <ClInclude Include="Source\Scene\TitleScene\PlayUI\PlayUI.h" />
     <ClInclude Include="Source\Scene\TitleScene\TitleScene.h" />
     <ClInclude Include="Source\Sounds\CueSheet_0.h" />
-    <ClInclude Include="Source\Sounds\PaintCue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game\Game.cpp" />

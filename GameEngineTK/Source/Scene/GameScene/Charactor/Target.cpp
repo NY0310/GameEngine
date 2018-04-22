@@ -10,8 +10,6 @@ const float Target::DIFFERENCE_UPPER = 0.1f;
 /// <param name="fileName">objファイル名</param>
 Target::Target(LPSTR fileName):PaintObj(fileName)
 {
-	//弱点色を変更する
-	ChangeWeakColor();
 }
 
 /// <summary>
@@ -21,6 +19,9 @@ void Target::CreateAddChild()
 {
 	weakSprite = make_shared<WeakSprite>(this);
 	AddChild(weakSprite);
+	//弱点色を変更する
+	ChangeWeakColor();
+
 }
 
 /// <summary>
@@ -54,6 +55,7 @@ void Target::OnCollisiton(Collider* collider)
 	//当たったのがインクか
 	if (ink && triangleList)
 	{
+		//当たったインクが弱点色か
 		if(IsWeakColor(ink->GetColor()))
 		{
 			WeakHitDamage();
@@ -94,8 +96,12 @@ bool Target::IsWeakColor(const D3DXVECTOR4& hitColor)
 	return DIFFERENCE_UPPER >= totlaDifference;
 }
 
+/// <summary>
+/// 弱点を変更する
+/// </summary>
 void Target::ChangeWeakColor()
 {
 	weakColor = WeakColorList[static_cast<int>(rand() % total)];
+	weakSprite->SetColor(weakColor);
 }
 

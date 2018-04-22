@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyStop.h"
+#include "EnemyDied.h"
 #include "EnemyState.h"
 
 class EnemyMove :public EnemyState
