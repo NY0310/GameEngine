@@ -1,6 +1,9 @@
 #include "EnemyDied.h"
 
 EnemyDied* EnemyDied::state = nullptr;
+//最初か
+bool EnemyDied::isFirst = true;
+
 
 /***************************************************************************
 *|	概要　	インスタンスを取得する
@@ -13,7 +16,7 @@ EnemyDied* EnemyDied::GetInstance()
 	{
 		state = new EnemyDied();
 	}
-
+	isFirst = true;
 	return state;
 }
 
@@ -31,10 +34,9 @@ void EnemyDied::Execute(Enemy * enemy)
 	{
 		//オブジェクトを破壊する
 		enemy->BreakStart();
-		isFirst = false;
 		//停止中は当たり判定を行わない
 		enemy->SetComponentActive(false);
-
+		isFirst = false;
 	}
 
 

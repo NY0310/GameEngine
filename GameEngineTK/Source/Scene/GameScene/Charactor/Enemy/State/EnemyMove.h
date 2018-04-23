@@ -15,6 +15,8 @@ public:
 private:
 	//ŠÔ
 	static const int MOVE_TIME = 180;
+	//Å‰‚©
+	static bool isFirst;
 	//ˆÚ“®‘OÀ•W
 	D3DXVECTOR3 startPosition;
 	//ˆÚ“®ŒãÀ•W

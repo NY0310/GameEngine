@@ -17,7 +17,7 @@ ClearUI::ClearUI()
 	ADX2Le* adx2 = ADX2Le::GetInstance();
 	adx2->Stop();
 	adx2->Play(CRI_CUESHEET_0_CLEAR_0);
-	SetScale(5);
+	SetScale(1.3f);
 }
 
 /// <summary>

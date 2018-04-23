@@ -5,7 +5,7 @@
 using namespace NYLibrary;
 
 const float PlayerState::ROTATION_COEFFICIENT = 17.0f;
-const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 45);
+const D3DXVECTOR2 PlayerState::MAX_ROTATION = D3DXVECTOR2(90, 1);
 
 
 void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
@@ -52,10 +52,15 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	D3DXVECTOR2 mouseTrans;
 	mouseTrans.x = static_cast<float>(mousePos->x) - initialMousePosition.x;
 	mouseTrans.y = static_cast<float>(mousePos->y) - initialMousePosition.y;
+	//mouseTrans.y = 0;
+	//static float a = 0;
+	//a++;
+	//mouseTrans.y = a * 0.1f;
+	//mouseTrans.x = 0;
 	//そのままの数値でクォータニオンを作成すると回転しすぎるので係数で除算
 	mouseTotalTrans = mouseTrans / ROTATION_COEFFICIENT;
 	//回転に上限を設ける
-	Math::ClampAbsolute(mouseTotalTrans.y, MAX_ROTATION.y);
+	//Math::ClampAbsolute(mouseTotalTrans.y, MAX_ROTATION.y);
 	//クォータニオンを作成しプレイヤのを回転させる
 	D3DXMATRIX rotY;
 	D3DXMatrixRotationQuaternion(&rotY,& Rotation(D3DXVECTOR2(mouseTotalTrans.x, 0)));

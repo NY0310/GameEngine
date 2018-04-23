@@ -1,6 +1,8 @@
 #include "EnemyMove.h"
 
 EnemyMove* EnemyMove::state = nullptr;
+//最初か
+bool EnemyMove::isFirst = true;
 
 /***************************************************************************
 *|	概要　	インスタンスを取得する
@@ -13,6 +15,7 @@ EnemyMove* EnemyMove::GetInstance()
 	{
 		state = new EnemyMove();
 	}
+	isFirst = true;
 
 	return state;
 }

@@ -6,7 +6,7 @@
 class EnemyState {
 public:
 	//コンストラクタ
-	EnemyState() { frameCnt = 0; isFirst = true; };
+	EnemyState() { frameCnt = 0; };
 	// 仮想デストラクタ
 	virtual ~EnemyState() {}
 	// 実行する
@@ -14,8 +14,6 @@ public:
 protected:
 	//フレームカウント
 	int frameCnt;
-	//最初か
-	bool isFirst;
 	/// <summary>
 	/// 移動先の座標を取得する
 	/// </summary>
@@ -45,5 +43,4 @@ private:
 			shift *= -1;
 		return shift;
 	}
-
 };

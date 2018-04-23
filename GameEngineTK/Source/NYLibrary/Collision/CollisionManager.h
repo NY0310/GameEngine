@@ -33,7 +33,7 @@ namespace NYLibrary
 		void EraseCollider(Collider* collider);
 	private:
 		//コンストラクタ
-		CollisionManager() { collisitonIntervalFrame = 0; }
+		CollisionManager() { collisitonIntervalFrame = 0; frameCnt = 0; colliderList.clear(); }
 		//当たり判定を取るか判定する
 		bool CheckCallCollision(Collider* collider, Collider* collider_)const;
 		//自クラスのインスタンス

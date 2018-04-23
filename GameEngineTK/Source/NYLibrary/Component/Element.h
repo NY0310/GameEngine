@@ -25,7 +25,6 @@ namespace NYLibrary {
 	class Element : public ObjectData
 	{
 	private:
-		std::string tag;//タグ
 		std::list<Component*> componentList;// コンポーネントリスト
 		bool isActive;// アクティブ状態
 	public:
@@ -33,6 +32,7 @@ namespace NYLibrary {
 		Element()
 			: isActive(true)
 		{
+			componentList.clear();
 		}
 
 		// デストラクタ

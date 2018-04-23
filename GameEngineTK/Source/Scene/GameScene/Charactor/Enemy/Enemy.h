@@ -28,7 +28,7 @@ private:
 	//HPãŒÀ
 	static const int MAX_HP = 10;
 	//‰ñ•œ‰ñ”
-	static const int MAX_DIED = 5;
+	static const int MAX_DIED = 2;
 	//€–S‰ñ”
 	int diedCnt;
 	//ƒNƒŠƒA

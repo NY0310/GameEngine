@@ -14,7 +14,7 @@ namespace NYLibrary
 	public:
 		//始点、終点、プレイ時間
 		Lerp(float start, float end, float playTime) :
-			start(start), end(end), frameCnt(0.0f), playTime(playTime) {}
+			start(start), end(end), frameCnt(0.0f), playTime(playTime), now(0.0f), useUpdateTime(true){}
 		
 		//更新
 		void Update()
@@ -32,7 +32,6 @@ namespace NYLibrary
 				SetCanUpDate(false);
 				listener();
 			}
-		//	useUpdateTime = true;
 		}
 		//時間をリセット
 		void TimeReset()
@@ -58,6 +57,7 @@ namespace NYLibrary
 		}
 		//クリア
 		void Clear() { frameCnt = 0; now = start; time = 0; }
+		void Start() { SetCanUpDate(true); }
 	private:
 		float start;//始点
 		float end;//終点

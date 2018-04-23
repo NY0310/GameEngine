@@ -40,7 +40,7 @@ namespace NYLibrary
 			D3DXMATRIX wlpt;//ワールド・”ライトビュー”・プロジェクション・テクスチャ座標行列の合成
 			D3DXVECTOR4 lightDir;//ライト方向
 			D3DXVECTOR4 eyesPos;//カメラ位置
-			ALIGN16 float frame;
+			ALIGN16 float frame = 0.0f;
 		};
 
 
@@ -73,7 +73,6 @@ namespace NYLibrary
 			D3DXVECTOR3 localSize;
 		};
 
-		using Vector3 = DirectX::SimpleMath::Vector3;
 	public:
 		Obj(LPSTR filename);
 		Obj() = delete;
@@ -94,7 +93,7 @@ namespace NYLibrary
 		void SetBreakTime(float breakTime) {
 	/*	breakLerp->SetTime(this->breakTime); */}
 		//破壊を開始
-		void BreakStart() { breakLerp->SetCanUpDate(true);}
+		void BreakStart() { breakLerp->Start(); }
 		void BreakClear() { breakLerp->Clear(); }
 		//破壊が終わったか
 		bool IsBreakEnd() { return breakLerp->IsLerpEnd(); }

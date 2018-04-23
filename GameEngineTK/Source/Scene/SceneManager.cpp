@@ -13,16 +13,12 @@ void SceneManager::ReplaceScene(SceneKind scenekind)
 
 	if (scenekind == SceneKind::NullScene)
 		return;
-	int c = 0;
-	Count(c);
+
 	if (scene)
 	{
 		//現在のシーンとの親子関係を消す
 		scene->LoopFinalize();
 	}
-	c = 0;
-
-	Count(c);
 
 	scene = nullptr;
 	//scene.reset();
@@ -43,9 +39,7 @@ void SceneManager::ReplaceScene(SceneKind scenekind)
 		break;
 	}
 
-	c = 0;
 
-	Count(c);
 
 	//次のシーンをリセット
 	nextScene = SceneKind::NullScene;
@@ -53,11 +47,6 @@ void SceneManager::ReplaceScene(SceneKind scenekind)
 	AddChild(scene);
 	LoopCreateAddChild();
 	LoopInitialize();
-
-	c = 0;
-
-	Count(c);
-
 }
 
 /// <summary>

@@ -107,7 +107,6 @@ void Game::Update(DX::StepTimer const& timer)
 	ShowCursor(false);
 	//‰¹ŠyXV
 	soundManager->Update();
-	//ADX2Le::Update();
 }
 
 // Draws the scene.

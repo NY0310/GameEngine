@@ -59,7 +59,7 @@ void InkTank::Update()
 	}
 
 	//インクをタンクに入れる
-	if (!mouse->IsPressed(MouseUtil::Left) && mouse->IsPressed(MouseUtil::Right) && MAX_INK >= colorAmount[total])
+	if (mouse->IsPressed(MouseUtil::Right) && MAX_INK >= colorAmount[total])
 	{
 		colorAmount[inColor] += ADD_INK;
 

@@ -7,7 +7,7 @@ Collider::Collider(ObjectData* objectData)
 	: tag(objectData->GetTag())
 {
 	this->objectData = objectData;
-
+	isActive = true;
 }
 
 void Collider::Update()

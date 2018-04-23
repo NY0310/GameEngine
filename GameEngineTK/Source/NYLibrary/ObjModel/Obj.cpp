@@ -20,6 +20,7 @@ Obj::Obj(LPSTR FileName)
 	clipToUV._42 = 0.5f;
 	clipToUV._44 = 1;
 	LoadOBJFile(FileName);
+	triangles.clear();
 }
 
 

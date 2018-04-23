@@ -14,4 +14,6 @@ public:
 private:
 	//自身のインスタンス
 	static EnemyDied* state;
+	//最初か
+	static bool isFirst;
 };

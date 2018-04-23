@@ -12,7 +12,6 @@ MatrixObject::MatrixObject()
 
 void NYLibrary::MatrixObject::MatrixInitialize()
 {
-	isUseQuternion = true;
 	transfer = D3DXVECTOR3(0, 0, 0);
 	scale = D3DXVECTOR3(1, 1, 1);
 	localSize = 0;
@@ -29,7 +28,10 @@ void NYLibrary::MatrixObject::MatrixInitialize()
 	//ビルボードにしない
 	isBillBoard = false;
 	isParantMatrixInfluence = false;
-
+	isCalcRotationMatrix = false;
+	isCalcScaleMatrix = false;
+	isCalcTransferMatrix = false;
+	isUseQuternion = false;
 }
 
 
