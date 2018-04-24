@@ -138,7 +138,7 @@ namespace NYLibrary
 	class D3DXPARSER
 	{
 	public:
-
+		D3DXPARSER();
 		MY_HIERARCHY cHierarchy;
 		MY_HIERARCHY* m_pHierarchy;
 		LPD3DXFRAME m_pFrameRoot;

@@ -296,6 +296,11 @@ HRESULT D3DXPARSER::AllocateAllBoneMatrices(LPD3DXFRAME pFrame)
 	}
 	return S_OK;
 }
+D3DXPARSER::D3DXPARSER()
+{
+	m_pHierarchy = nullptr;
+	m_pContainer = nullptr;
+}
 //
 //
 //
@@ -648,6 +653,19 @@ int D3DXPARSER::GetNumBones()
 SkinMesh::SkinMesh()
 {
 	///	ZeroMemory(this, sizeof(SkinMesh));
+	sampleLinear.Reset();
+	vertexShader.Reset();
+	pixelShader.Reset();
+	vertexLayout.Reset();
+	lightAndEyeBuffer.Reset();
+	skinMeshBuffer.Reset();
+	boneBuffer.Reset();
+	vertexBuffer.Reset();
+	pIndexBuffer = nullptr;
+	material = nullptr;
+	triangles.clear();
+	boneArray = nullptr;
+	d3dxMesh = nullptr;
 }
 
 

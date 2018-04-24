@@ -204,12 +204,10 @@
     <ClInclude Include="Source\NYLibrary\ShadowMap\ShadowMap.h" />
     <ClInclude Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.h" />
     <ClInclude Include="Source\NYLibrary\Sound\ADX2Le.h" />
-    <ClInclude Include="Source\NYLibrary\Sound\SoundManager.h" />
     <ClInclude Include="Source\NYLibrary\Sprite\Sprite.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkObj.h" />
     <ClInclude Include="Source\PaintAsset\InkParticle\InkParticle.h" />
     <ClInclude Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.h" />
-    <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\Aim.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\InkContainerUI.h" />
     <ClInclude Include="Source\PaintAsset\PaintGun\InkTank.h" />
@@ -275,12 +273,10 @@
     <ClCompile Include="Source\NYLibrary\ShadowMap\ShadowMap.cpp" />
     <ClCompile Include="Source\NYLibrary\SkinMeshAnimation\SkinMesh.cpp" />
     <ClCompile Include="Source\NYLibrary\Sound\ADX2Le.cpp" />
-    <ClCompile Include="Source\NYLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="Source\NYLibrary\Sprite\Sprite.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkObj.cpp" />
     <ClCompile Include="Source\PaintAsset\InkParticle\InkParticle.cpp" />
     <ClCompile Include="Source\PaintAsset\InkSegmentCollider\InkSegmentCollider.cpp" />
-    <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\Aim.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\InkContainerUI.cpp" />
     <ClCompile Include="Source\PaintAsset\PaintGun\InkTank.cpp" />
@@ -307,7 +303,6 @@
     <ClCompile Include="Source\Scene\GameScene\Stage\Floor.cpp" />
     <ClCompile Include="Source\Scene\GameScene\Stage\Stage.cpp" />
     <ClCompile Include="Source\Scene\ResultScene\ResultScene.cpp" />
-    <ClCompile Include="Source\Scene\Scene.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
     <ClCompile Include="Source\Scene\TitleScene\PlayUI\PlayUI.cpp" />
     <ClCompile Include="Source\Scene\TitleScene\TitleScene.cpp" />

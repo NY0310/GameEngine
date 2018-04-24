@@ -10,14 +10,32 @@ ComPtr<ID3D11PixelShader>  Paint::DripPlanePixelShader;
 ComPtr<ID3D11VertexShader> Paint::updateVertexShader;
 ComPtr<ID3D11PixelShader> Paint::updatePixelShader;
 ComPtr<ID3D11InputLayout> Paint::inkVertexLayout;
-
+bool Paint::isFirst = true;
 
 /// <summary>
 /// コンストラクタ
 /// </summary>
 /// <param name="isPlane">平面か</param>
 Paint::Paint(bool isPlane ):isPlane(isPlane)
-{}
+{
+	if (isFirst)
+	{
+		inkVertexShader.Reset();
+		inkPixelShader.Reset();
+		DripVertexShader.Reset();
+		DripPixelShader.Reset();
+		DripPlaneVertexShader.Reset();
+		DripPlanePixelShader.Reset();
+		DripPlanePixelShader.Reset();
+		updateVertexShader.Reset();
+		updatePixelShader.Reset();
+		inkVertexLayout.Reset();
+	}
+	inkConstantBuffer.Reset();
+	sampleLimear.Reset();
+	inkNormalMap.Reset();
+	dripVertexBuffer.Reset();
+}
 
 
 /// <summary>
@@ -44,8 +62,9 @@ void Paint::Initialize()
 	dripTextures = make_unique<CampusTextures>(D3DXVECTOR2(Devices::Get().Width() * 2.0f, Devices::Get().Height() * 2.0f));
 	dripTextures->Initialize();
 
-	if (!inkVertexShader.Get())
+	if (isFirst)
 	{
+		isFirst = false;
 		ID3DBlob *pCompiledShader = nullptr;
 		//インクテクスチャ用バーテックスシェーダー作成
 		MakeShader("Resources/HLSL/Campus.hlsl", "VS", "vs_5_0", (void**)inkVertexShader.ReleaseAndGetAddressOf(), &pCompiledShader);
@@ -129,7 +148,7 @@ void Paint::CreateInk(D3DXVECTOR4 Color, D3DXVECTOR2 uv, float size)
 	InkData inkdata;
 	inkdata.Color = Color;
 	inkdata.Uv = uv;
-	inkdata.Size = 0.02f;
+	inkdata.Size = size;
 	inkdata.vertexBuffer = CreateVertexBuffer(inkdata);
 	inkData.emplace_back(inkdata);
 }
@@ -348,7 +367,6 @@ void Paint::UpDateRender()
 	deviceContext->VSSetShader(updateVertexShader.Get(), nullptr, 0);
 	deviceContext->PSSetShader(updatePixelShader.Get(), nullptr, 0);
 
-	static int cnt = 0;
 	//サンプラーとテクスチャをシェーダーに渡す
 	deviceContext->PSSetSamplers(0, 1, sampleLimear.GetAddressOf());
 

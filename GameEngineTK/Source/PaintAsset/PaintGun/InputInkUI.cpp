@@ -9,7 +9,6 @@ InputInkUI::InputInkUI()
 	:Sprite(L"Resources/PNG/pink1.png", Dimension::Dimension2)
 {
 	auto& devices = Devices::Get();
-	srv[InkTank::StandardColor::red] = GetShaderResourceView();
 
 	SetTransparency(0.5f);
 
@@ -19,6 +18,8 @@ InputInkUI::InputInkUI()
 void InputInkUI::SetRenderTexture(InkTank::StandardColor standardColor)
 {
 	D3DXVECTOR4 color;
+	srv[InkTank::StandardColor::red] = GetShaderResourceView();
+
 	switch (standardColor)
 	{
 	case InkTank::red:

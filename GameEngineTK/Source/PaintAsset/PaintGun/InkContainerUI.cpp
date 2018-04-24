@@ -16,6 +16,7 @@ InkContainerUI::InkContainerUI()
 /// </summary>
 void InkContainerUI::Initialize()
 {
+	Sprite::Initialize();
 	auto& devices = Devices::Get();
 	D3DXVECTOR3 parentPosition = Getparent()._Get()->GetPosition();
 //	parentPosition.y += PARENT_DISTANCE;

@@ -12,12 +12,10 @@ using namespace NYLibrary;
 /// <param name="matrixObject">行列管理</param>
 Player::Player()
 {
-	int a = 0;
 }
 
 Player::~Player()
 {
-	int a = 0;
 }
 
 /// <summary>
@@ -34,7 +32,6 @@ void Player::CreateAddChild()
 /// </summary>
 void Player::Initialize()
 {
-	//Character::Initialize(MAX_HP);
 	SkinMesh::Initialize();
 	CreateFromX("Resources/X/Hand_animation_2motion_1truck.x");
 	//自身のステート
@@ -43,10 +40,10 @@ void Player::Initialize()
 	//エイムの行列
 	aimMatrix = make_unique<MatrixObject>();
 	aimMatrix->MatrixInitialize();
+	aimMatrix->SetPositionY(GetPositionY());
 	//カメラに自分を渡す
 	FollowCamera* camera = FollowCamera::GetInstance();
 	camera->SetPlayer(this);
-	aimMatrix->SetPositionY(GetPositionY());
 	SetPositionZ(1);
 }
 
@@ -57,9 +54,7 @@ void Player::Initialize()
 void Player::Update()
 {
 	paintGun->SetAimMatirx(aimMatrix);
-	auto a = this;
-
-	playerState->Execute(a);
+	playerState->Execute(this);
 }
 
 

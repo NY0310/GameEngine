@@ -121,12 +121,12 @@ namespace NYLibrary
 		/// </summary>
 		MY_MESH mesh;//メッシュ情報
 		MY_MATERIAL material;//マテリアル構造体
-		ComPtr<ID3D11VertexShader> vertexShader;//バッテックスシェーダー
-		ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダー
-		ComPtr<ID3D11GeometryShader> geometryShader;//ジオメトリシェーダー
+		static ComPtr<ID3D11VertexShader> vertexShader;//バッテックスシェーダー
+		static ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダー
+		static ComPtr<ID3D11GeometryShader> geometryShader;//ジオメトリシェーダー
 		ComPtr<ID3D11Buffer> constantBuffer;//コンスタントバッファ
-		ComPtr<ID3D11InputLayout> vertexLayout;//頂点インプットレイアウト
-		ComPtr<ID3D11SamplerState> sampleLimear;//テクスチャサンプラ
+		static ComPtr<ID3D11InputLayout> vertexLayout;//頂点インプットレイアウト
+		static ComPtr<ID3D11SamplerState> sampleLimear;//テクスチャサンプラ
 		ComPtr<ID3D11ShaderResourceView> texture;//テクスチャ
 		static std::map<LPSTR, MeshAndTriangles> modelDatas;//OBJモデル情報
 		std::vector<Triangle> triangles;
@@ -143,6 +143,7 @@ namespace NYLibrary
 		D3DXMATRIX clipToUV;//テクスチャ行列
 		D3DXMATRIX mLight;//ライト行列
 		std::shared_ptr<Lerp> breakLerp;//破壊のラープ
+		static bool isFirst;
 	};
 
 };

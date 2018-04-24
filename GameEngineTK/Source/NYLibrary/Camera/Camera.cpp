@@ -47,7 +47,6 @@ void Camera::Update()
 
 void Camera::DisabledViewRotation(D3DXMATRIX view)
 {
-	//ƒJƒƒ‰‚Ì‰ñ“]‚ğ–³Œø
 	billBoardView = view;
 	//‹ts—ñ‚É‚·‚é
 	D3DXMatrixInverse(&billBoardView, nullptr, &billBoardView);

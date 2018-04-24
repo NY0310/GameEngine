@@ -18,25 +18,22 @@ void PlayerState::MoveUpdate(Player * player, D3DXVECTOR3 speed)
 	//キーボード
 	KeyboardUtil* keyBoard = KeyboardUtil::GetInstance();
 	//移動速度
-	D3DXVECTOR3 saveSpeed(0,0,0);
+	D3DXVECTOR3 saveSpeed = D3DXVECTOR3(0,0,0);
 	//回転量
-	D3DXVECTOR2 savaRot(0, 0);
+	D3DXVECTOR2 savaRot = D3DXVECTOR2(0, 0);
 	//前進
 	if (keyBoard->IsPressed(DirectX::Keyboard::W))
-		saveSpeed.z = -speed.z;
+		saveSpeed.z -= speed.z;
 	//後退
 	if (keyBoard->IsPressed(DirectX::Keyboard::S))
-		saveSpeed.z = speed.z;
+		saveSpeed.z += speed.z;
 	//左旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::A))
 		saveSpeed.x += speed.x;
 	//右旋回
 	if (keyBoard->IsPressed(DirectX::Keyboard::D))
 		saveSpeed.x -= speed.x;
-	if (keyBoard->IsPressed(DirectX::Keyboard::U))
-	{
-		exit(0);
-	}
+
 	//移動させる
 	if (saveSpeed.x != 0 || saveSpeed.z != 0)
 	{

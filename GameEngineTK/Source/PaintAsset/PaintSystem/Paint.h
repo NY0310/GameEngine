@@ -91,4 +91,6 @@ private:
 	static ComPtr<ID3D11PixelShader> updatePixelShader;//垂れ流し更新用ピクセルシェーダー
 
 	bool isPlane;//平面か
+
+	static bool isFirst;
 };

@@ -90,6 +90,7 @@ void Game::Update(DX::StepTimer const& timer)
 	device.Device9()->ShowCursor(false);
 	//シーンマネージャの更新(これでゲーム内の更新処理が全て呼ばれる)
 	sceneManager->LoopUpdate();
+
 	//フォローカメラ更新
 	camera->Update();
 	//マウス更新
@@ -101,12 +102,17 @@ void Game::Update(DX::StepTimer const& timer)
 	//当たり判定更新
 	collisionManager->Update();
 	auto& devices = Devices::Get();
-	//マウスの座標を固定
+	////マウスの座標を固定
 	SetCursorPos(devices.Width(), devices.Height());
 	//マウスカーソル非表示
 	ShowCursor(false);
 	//音楽更新
 	soundManager->Update();
+
+	if (keyBoard->IsPressed(DirectX::Keyboard::U))
+	{
+		exit(0);
+	}
 }
 
 // Draws the scene.

@@ -8,7 +8,7 @@ namespace NYLibrary
 	class LocalObject : public virtual Object
 	{
 	public:
-		LocalObject() {}
+		LocalObject() { polygons.clear(); }
 		//三角形ポリゴンを設定する
 		void SetPolygons(std::vector<Triangle> polygons) { this->polygons = polygons; }
 		//三角形ポリゴンを取得する

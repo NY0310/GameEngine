@@ -53,7 +53,7 @@ void InkParticle::Create(const D3DXVECTOR3& position,const D3DXVECTOR3& nDirecti
 	SetComponentActive(true);
 
 	ADX2Le* adx2 = ADX2Le::GetInstance();
-	adx2->Play(CRI_CUESHEET_0_SHOOT_0,2.0f);
+	adx2->Play(CRI_CUESHEET_0_SHOOT_0,3.0f);
 
 
 	Update();

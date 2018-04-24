@@ -5,7 +5,7 @@ class Character
 {
 public:
 	//コンストラクタ
-	Character() = default;
+	Character();
 	//デストラクタ
 	virtual ~Character() = default;
 	// コピーコンストラクタ禁止
@@ -31,5 +31,5 @@ protected:
 	bool isDied;
 private:
 	//弱点ダメージ
-	static const int WEAK_DAMAGE = 3;
+	static const int WEAK_DAMAGE = 5;
 };

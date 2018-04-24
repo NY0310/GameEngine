@@ -1,7 +1,7 @@
 #include "WeakSprite.h"
 #include "Target.h"
 
-const float WeakSprite::PARENT_DISTANCE = 0.4f;
+const float WeakSprite::PARENT_DISTANCE = 0.5f;
 
 /// <summary>
 /// コンストラクタ

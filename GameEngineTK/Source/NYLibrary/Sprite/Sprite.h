@@ -80,15 +80,15 @@ namespace NYLibrary
 		static ComPtr<ID3D11VertexShader> vertexShader3D;//バーテックスシェーダ
 		static ComPtr<ID3D11PixelShader> pixelShader;//ピクセルシェーダ
 
-		static ComPtr<ID3D11Buffer> constantBuffer3D;//3D用コンスタントバッファー
-		static ComPtr<ID3D11Buffer> constantBuffer2D;//2D用コンスタントバッファー
+		ComPtr<ID3D11Buffer> constantBuffer3D;//3D用コンスタントバッファー
+		ComPtr<ID3D11Buffer> constantBuffer2D;//2D用コンスタントバッファー
 
 
 		ComPtr<ID3D11Buffer> vertexBuffer;//バーテックスバッファー
 		static ComPtr<ID3D11InputLayout> vertexLayout;//頂点インップットレイアウト
 
 		ComPtr<ID3D11ShaderResourceView> texture;//テクスチャー
-		ComPtr<ID3D11SamplerState> sampler;//テクスチャーのサンプラー
+		static ComPtr<ID3D11SamplerState> sampler;//テクスチャーのサンプラー
 
 
 		int widthSize;//幅
@@ -96,5 +96,7 @@ namespace NYLibrary
 		Dimension dimension;//描画次元
 
 		D3DXVECTOR2 anchorPoint;//アクター
+
+		static bool isFirst;
 	};
 };

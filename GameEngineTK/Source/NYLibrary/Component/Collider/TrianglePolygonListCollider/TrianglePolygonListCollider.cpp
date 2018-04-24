@@ -11,6 +11,7 @@ TrianglePolygonListCollider::TrianglePolygonListCollider(ObjectData * objectData
 	:Collider(objectData)
 {
 	Initialize();
+	triangleList.clear();
 
 }
 

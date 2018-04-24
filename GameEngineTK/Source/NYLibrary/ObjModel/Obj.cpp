@@ -7,6 +7,13 @@ using namespace NYLibrary;
 
 
 std::map < LPSTR, Obj::MeshAndTriangles> Obj::modelDatas;
+ComPtr<ID3D11VertexShader> Obj::vertexShader;//バッテックスシェーダー
+ComPtr<ID3D11PixelShader> Obj::pixelShader;//ピクセルシェーダー
+ComPtr<ID3D11GeometryShader> Obj::geometryShader;//ジオメトリシェーダー
+ComPtr<ID3D11InputLayout> Obj::vertexLayout;//頂点インプットレイアウト
+ComPtr<ID3D11SamplerState> Obj::sampleLimear;//テクスチャサンプラ
+bool Obj::isFirst = true;
+
 const float Obj::MAX_BREAK_CNT = 150.0f;//破壊カウントの上限
 
 
@@ -19,8 +26,23 @@ Obj::Obj(LPSTR FileName)
 	clipToUV._41 = 0.5f;
 	clipToUV._42 = 0.5f;
 	clipToUV._44 = 1;
+
+	if (isFirst)
+	{
+		triangles.clear();
+		vertexShader.Reset();
+		pixelShader.Reset();
+		geometryShader.Reset();
+		vertexLayout.Reset();
+		sampleLimear.Reset();
+	}
+	texture.Reset();
+	constantBuffer.Reset();
+	mesh.pIndexBuffer = nullptr;
+	mesh.pVertexBuffer = nullptr;
+
 	LoadOBJFile(FileName);
-	triangles.clear();
+
 }
 
 
@@ -40,12 +62,14 @@ void Obj::CreateAddChild()
 void Obj::Initialize()
 {
 	////シェーダー作成
-	if (!vertexShader.Get())
+	if (isFirst)
 	{
+		isFirst = false;
 		CreateShader();
+		//サンプラー作成
+		CreateSampler();
+
 	}
-	//サンプラー作成
-	CreateSampler();
 	//コンスタントバッファ作成
 	constantBuffer = CreateConstantBuffer(sizeof(SIMPLESHADER_CONSTANT_BUFFER));
 }

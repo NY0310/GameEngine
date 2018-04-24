@@ -141,8 +141,9 @@ void PaintObj::OnCollisiton(Collider * collider)
 	TrianglePolygonListCollider* triangleList = GetComponent<TrianglePolygonListCollider>();
 	if (ink && triangleList)
 	{
-		auto a = GetLocalSize();
-		campus->CreateInk(ink->GetColor(), CalcInkCollisionUv(triangleList->GetCollisionTriangle(), triangleList->GetInter()),0.01f);
+		auto aa = GetLocalSize().x *  GetScale().x / 10;
+
+		campus->CreateInk(ink->GetColor(), CalcInkCollisionUv(triangleList->GetCollisionTriangle(), triangleList->GetInter()), 0.01f);
 	}
 	PlaneCollider* plane = GetComponent<PlaneCollider>();
 	if (ink && plane)
@@ -154,7 +155,8 @@ void PaintObj::OnCollisiton(Collider * collider)
 			uv = CalcInkCollisionUv(triangles[1], plane->GetInter());
 
 		}
-		campus->CreateInk(ink->GetColor(), uv , 10.0f / Math::ComparisonBig(Math::D3DXVec3Multiplication(GetLocalSize(), GetScale())) );
+		auto aa = 1.0f / Math::ComparisonBig(Math::D3DXVec3Multiplication(GetLocalSize(), GetScale()));
+		campus->CreateInk(ink->GetColor(), uv , 1.0f / Math::ComparisonBig(Math::D3DXVec3Multiplication(GetLocalSize(), GetScale())) );
 	}
 }
 

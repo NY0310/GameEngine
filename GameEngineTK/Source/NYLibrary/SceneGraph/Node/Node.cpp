@@ -35,7 +35,6 @@ shared_ptr<NodeAbstract> Node::RemoveChild(const shared_ptr<NodeAbstract>& child
 	{
 		if ((*itr) == child) {
 			auto node = (*itr);
-			//(*itr).reset();
 			children.erase(itr);
 			return node;
 		}

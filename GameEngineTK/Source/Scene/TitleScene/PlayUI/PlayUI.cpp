@@ -6,7 +6,7 @@
 PlayUI::PlayUI()
 	:Target("Resources/OBJMODEL/start.obj")
 {
-
+	SetScale(0.3);
 }
 
 /// <summary>

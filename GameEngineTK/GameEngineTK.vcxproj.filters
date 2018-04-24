@@ -49,9 +49,6 @@
     <Filter Include="PaintAsset\PaintSystem">
       <UniqueIdentifier>{bb3a50df-135d-460e-b6f3-019b55541589}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PaintAsset\PaintCollisiton">
-      <UniqueIdentifier>{14e703cd-cc0b-4c16-9aac-afb61aa13a3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="NYLibrary\Component">
       <UniqueIdentifier>{cb46fb5f-8edd-458d-8bc4-633fd5366090}</UniqueIdentifier>
     </Filter>
@@ -255,9 +252,6 @@
     <ClInclude Include="Source\Scene\SceneManager.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PaintAsset\PaintCollision\PaintCollision.h">
-      <Filter>PaintAsset\PaintCollisiton</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PaintAsset\PaintSystem\Paint.h">
       <Filter>PaintAsset\PaintSystem</Filter>
     </ClInclude>
@@ -325,9 +319,6 @@
       <Filter>Scene\GameScene\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Source\NYLibrary\Sound\ADX2Le.h">
-      <Filter>NYLibrary\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\NYLibrary\Sound\SoundManager.h">
       <Filter>NYLibrary\Sound</Filter>
     </ClInclude>
     <ClInclude Include="Source\PaintAsset\PaintGun\InkTank.h">
@@ -479,14 +470,8 @@
     <ClCompile Include="Source\NYLibrary\Math\Math.cpp">
       <Filter>NYLibrary\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene\Scene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PaintAsset\PaintCollision\PaintCollision.cpp">
-      <Filter>PaintAsset\PaintCollisiton</Filter>
     </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintSystem\Paint.cpp">
       <Filter>PaintAsset\PaintSystem</Filter>
@@ -537,9 +522,6 @@
       <Filter>Scene\GameScene\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Source\NYLibrary\Sound\ADX2Le.cpp">
-      <Filter>NYLibrary\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\NYLibrary\Sound\SoundManager.cpp">
       <Filter>NYLibrary\Sound</Filter>
     </ClCompile>
     <ClCompile Include="Source\PaintAsset\PaintGun\InkTank.cpp">

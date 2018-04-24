@@ -14,7 +14,6 @@ PlayerState* PlayerWalk::GetInstance()
 	{
 		state = new PlayerWalk();
 	}
-
 	return state;
 }
 

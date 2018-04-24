@@ -8,6 +8,8 @@ Collider::Collider(ObjectData* objectData)
 {
 	this->objectData = objectData;
 	isActive = true;
+	collisitonColliderListNow.clear();
+	objectData = nullptr;
 }
 
 void Collider::Update()

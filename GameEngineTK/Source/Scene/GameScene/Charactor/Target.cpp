@@ -75,6 +75,7 @@ void Target::OnCollisiton(Collider* collider)
 void Target::OnDied()
 {
 	weakSprite->SetVisible(false);
+	SetComponentActive(false);
 }
 
 

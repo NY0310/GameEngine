@@ -5,6 +5,11 @@ using namespace std;
 
 InkObj::InkObj()
 {
+	vertexShader.Reset();
+	pixelShader.Reset();
+	constantBuffer.Reset();
+	vertexLayout.Reset();
+	triangles.clear();
 }
 
 

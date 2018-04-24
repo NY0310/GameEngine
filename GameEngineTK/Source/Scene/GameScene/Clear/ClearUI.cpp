@@ -8,7 +8,7 @@ const float ClearUI::POSITION_COEFFICIENT_Y = 0.2f;
 /// コンストラクタ
 /// </summary>
 ClearUI::ClearUI()
-	:Sprite(L"Resources/PNG/clear.png", Dimension::Dimension2)
+	:Sprite(L"Resources/PNG/Clear.png", Dimension::Dimension2)
 {
 	auto& devices = Devices::Get();
 	frameCnt = 0;
@@ -18,6 +18,7 @@ ClearUI::ClearUI()
 	adx2->Stop();
 	adx2->Play(CRI_CUESHEET_0_CLEAR_0);
 	SetScale(1.3f);
+	Sprite::Initialize();
 }
 
 /// <summary>

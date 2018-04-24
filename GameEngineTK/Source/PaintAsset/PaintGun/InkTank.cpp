@@ -63,10 +63,10 @@ void InkTank::Update()
 	{
 		colorAmount[inColor] += ADD_INK;
 
-		if (!adx2->IsPauseByID(CRI_CUESHEET_0_CHAGE))
-		{
-			adx2->Play(CRI_CUESHEET_0_CHAGE);
-		}
+		//if (!adx2->IsPauseByID(CRI_CUESHEET_0_CHAGE))
+		//{
+		//	adx2->Play(CRI_CUESHEET_0_CHAGE,0.3f);
+		//}
 
 	}
 

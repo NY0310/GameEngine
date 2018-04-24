@@ -26,9 +26,9 @@ private:
 	//ó‘Ô
 	EnemyState* enemyState;
 	//HPãŒÀ
-	static const int MAX_HP = 10;
+	static const int MAX_HP = 15;
 	//‰ñ•œ‰ñ”
-	static const int MAX_DIED = 2;
+	static const int MAX_DIED = 5;
 	//€–S‰ñ”
 	int diedCnt;
 	//ƒNƒŠƒA

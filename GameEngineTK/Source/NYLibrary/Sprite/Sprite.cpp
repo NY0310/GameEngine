@@ -7,36 +7,70 @@ ComPtr<ID3D11VertexShader> Sprite::vertexShader2D;//バーテックスシェーダ
 ComPtr<ID3D11VertexShader> Sprite::vertexShader3D;//バーテックスシェーダ
 ComPtr<ID3D11PixelShader> Sprite::pixelShader;//ピクセルシェーダ
 ComPtr<ID3D11InputLayout> Sprite::vertexLayout;//頂点インップットレイアウト
-ComPtr<ID3D11Buffer>Sprite::constantBuffer3D;
-ComPtr<ID3D11Buffer> Sprite::constantBuffer2D;
+ComPtr<ID3D11SamplerState> Sprite::sampler;//テクスチャーのサンプラー
 
+bool Sprite::isFirst = true;
 
 Sprite::Sprite(LPCWSTR FileName, Dimension dimension)
 	:dimension(dimension)
 {
-	LoadTexture(FileName);
 	anchorPoint = D3DXVECTOR2(0.5f, 0.5f);
+	if (isFirst)
+	{
+		vertexShader2D.Reset();
+		vertexShader3D.Reset();
+		pixelShader.Reset();
+		vertexBuffer.Reset();
+		vertexLayout.Reset();
+		sampler.Reset();
+	}
+	constantBuffer2D.Reset();
+	constantBuffer3D.Reset();
+	texture.Reset();
+	vertexBuffer.Reset();
+	LoadTexture(FileName);
 }
 
 Sprite::~Sprite()
 {
-	vertexShader2D.Reset();
-	vertexShader3D.Reset();
-	pixelShader.Reset();
-	constantBuffer2D.Reset();
-	constantBuffer3D.Reset();
-	vertexBuffer.Reset();
-	vertexLayout.Reset();
-	texture.Reset();
-	sampler.Reset();
+	
 }
 
 void Sprite::Initialize()
 {
-
-	if (vertexShader2D.Get())
-		return;
 	auto& devices = Devices::Get();
+
+
+	//コンスタントバッファー作成　ここでは変換行列渡し用
+	D3D11_BUFFER_DESC cb;
+	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb.ByteWidth = sizeof(ConstantBuffer3D);
+	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.MiscFlags = 0;
+	cb.StructureByteStride = 0;
+	cb.Usage = D3D11_USAGE_DYNAMIC;
+
+
+	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer3D.ReleaseAndGetAddressOf());
+
+	//コンスタントバッファー作成　ここでは変換行列渡し用
+	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb.ByteWidth = sizeof(ConstantBuffer2D);
+	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.MiscFlags = 0;
+	cb.StructureByteStride = 0;
+	cb.Usage = D3D11_USAGE_DYNAMIC;
+
+
+	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer2D.ReleaseAndGetAddressOf());
+
+
+
+	if (isFirst)
+	{
+		isFirst = false;
+		return;
+	}
 	//hlslファイル読み込み ブロブ作成　ブロブとはシェーダーの塊みたいなもの。XXシェーダーとして特徴を持たない。後で各種シェーダーに成り得る。
 	ID3DBlob *compiledShader = nullptr;
 	//バーテックスシェーダー作成
@@ -67,30 +101,6 @@ void Sprite::Initialize()
 	MakeShader("Resources/HLSL/Sprite.hlsl", "PS", "ps_5_0", (void**)pixelShader.ReleaseAndGetAddressOf(), &compiledShader);
 	SAFE_RELEASE(compiledShader);
 
-
-
-	//コンスタントバッファー作成　ここでは変換行列渡し用
-	D3D11_BUFFER_DESC cb;
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(ConstantBuffer3D);
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.StructureByteStride = 0;
-	cb.Usage = D3D11_USAGE_DYNAMIC;
-
-
-	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer3D.ReleaseAndGetAddressOf());
-
-	//コンスタントバッファー作成　ここでは変換行列渡し用
-	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cb.ByteWidth = sizeof(ConstantBuffer2D);
-	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cb.MiscFlags = 0;
-	cb.StructureByteStride = 0;
-	cb.Usage = D3D11_USAGE_DYNAMIC;
-
-
-	devices.Device()->CreateBuffer(&cb, nullptr, constantBuffer2D.ReleaseAndGetAddressOf());
 
 
 
@@ -138,15 +148,15 @@ void Sprite::Render()
 	if (dimension == Dimension2)
 	{
 		CreateVertexBuffer2D();
-		devices.Context()->VSSetShader(vertexShader2D.Get(), nullptr, 0);
-		SetConstantBuffer3D();
 		SetConstantBuffer2D();
+		SetConstantBuffer3D();
+		devices.Context()->VSSetShader(vertexShader2D.Get(), nullptr, 0);
 	}
 	else
 	{
 		CreateVertexBuffer3D();
-		devices.Context()->VSSetShader(vertexShader3D.Get(), nullptr, 0);
 		SetConstantBuffer3D();
+		devices.Context()->VSSetShader(vertexShader3D.Get(), nullptr, 0);
 	}
 	devices.Context()->PSSetShader(pixelShader.Get(), nullptr, 0);
 
